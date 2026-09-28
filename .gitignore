@@ -1,0 +1,44 @@
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtual environments and packaging output
+.venv/
+venv/
+env/
+build/
+dist/
+*.egg-info/
+
+# Editors and operating systems
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+*.local.yaml
+*.local.yml
+
+# Local geospatial inputs and generated products. Common large formats such as
+# GeoTIFF, LAS/LAZ, GeoPackage, and shapefiles belong here; small intentional
+# test fixtures can still be committed under tests/fixtures/.
+/data/raw/
+/data/interim/
+/data/processed/
+/outputs/
+
+# GIS application scratch and lock files
+*.qgs~
+*.qgz~
+*.gpkg-wal
+*.gpkg-shm
