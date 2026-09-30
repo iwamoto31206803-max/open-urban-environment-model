@@ -1,1 +1,1 @@
-"""OUEM Phase A package namespace."""
+"""Provider-specific building processing."""

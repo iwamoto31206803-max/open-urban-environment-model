@@ -94,9 +94,9 @@ tiles can overlap the canonical extent differently. Implementations will
 select intersecting provider data, mosaic it where necessary, and clip the
 result to the canonical extent. This work is deferred from this scaffold.
 
-## 5. Standard Building v0.1
+## 5. Standard Building v0.1 — PROVISIONAL
 
-The normative [OUEM Standard Building v0.1](OUEM_Standard_Building_v0.1.md)
+The provisional [OUEM Standard Building v0.1](OUEM_Standard_Building_v0.1.md)
 defines provider-independent 3D building geometry. Its coordinate contract is:
 
 - the study-area projected horizontal CRS, which is EPSG:6677 for Komae;

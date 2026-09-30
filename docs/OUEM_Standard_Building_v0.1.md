@@ -1,12 +1,13 @@
 # OUEM Standard Building v0.1
 
-**Status:** Standard contract
+**Status:** PROVISIONAL contract pending A1 end-to-end VoxCity validation
 
 **Scope:** Provider-independent 3D building geometry
 
-This document defines the coordinate and geometry contract for OUEM Standard
-Building v0.1. Standardization from PLATEAU CityGML must produce data that
-conforms to this contract before model preparation or adapter code consumes it.
+This document provisionally defines the coordinate and geometry contract for
+OUEM Standard Building v0.1. Standardization from PLATEAU CityGML must produce
+data that conforms to this contract before model preparation or adapter code
+consumes it.
 
 ## 1. Coordinate reference
 

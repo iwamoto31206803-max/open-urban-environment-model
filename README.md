@@ -41,6 +41,35 @@ for the conceptual baseline and implementation contracts respectively. The
 coordinate, geometry, PLATEAU source, and minimum metadata contract for
 standardized buildings.
 
+## PLATEAU Building Provider v0.1
+
+The provider command recursively discovers building GML below a downloaded
+PLATEAU package (for example, `udx/bldg/*.gml`), converts each accepted file to
+a restartable Native GeoPackage, and writes one Standard Building GeoPackage
+containing every complete building geometry that intersects the canonical
+study-area extent:
+
+```shell
+ouem-plateau-buildings /path/to/plateau-package \
+  --study-area config/study_areas/komae_09LD3451.yaml \
+  --native-dir data/native/building/komae \
+  --output data/standard/building/komae.gpkg
+```
+
+The command requires the `ogr2ogr` executable and Python GDAL bindings from a
+compatible GDAL installation. Native outputs retain CityGML fields and XYZ
+geometry. A source fingerprint receipt beside each Native file enables reuse;
+`--force` rebuilds them. Standard output contains only the common OUEM fields,
+uses the study-area horizontal CRS, and retains source Z as absolute T.P.
+elevation in metres. Selection does not clip a boundary-crossing building.
+
+The run prints discovery, feature, intersection, reuse, and geometry-failure
+counts. A `.manifest.json` file beside the Standard GeoPackage records source
+files and CRS, target CRS, study area and extent, vertical semantics,
+parameters, timestamp, counts, warnings, and errors. PLATEAU downloading,
+VoxCity execution, DEM, LiDAR/CHM, canopy, solar/shade, and GVI processing are
+outside this provider's scope.
+
 ## Relationship to VoxCity
 
 [VoxCity](https://github.com/kunifujiwara/VoxCity) is intended to remain an
