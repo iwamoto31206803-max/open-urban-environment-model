@@ -2,9 +2,9 @@
 
 **オープン都市環境モデル**
 
-OUEM is an early proof-of-concept project for building reproducible 3D urban
-environment models from open or otherwise available geospatial data and
-evaluating human-scale environmental functions.
+OUEM is an early-stage project for building reproducible 3D urban environment
+models from open or otherwise available geospatial data and evaluating
+human-scale environmental functions.
 
 ## Scope
 
@@ -16,9 +16,27 @@ evaluating human-scale environmental functions.
   - B1 — Solar & Shade Assessment
   - B2 — Green View Assessment
 
-The first target is a small-area, end-to-end **A1 Tokyo Reference** pilot.
-This repository currently establishes only the project and architecture
-baseline; the pilot and assessment capabilities have not been implemented.
+The current target is the **A1 Komae end-to-end pilot**. This repository
+currently provides the Phase A architecture and package scaffold only; data
+processing, model construction, VoxCity execution, and assessment capabilities
+have not been implemented.
+
+## Phase A data lifecycle
+
+Phase A separates provider data from reusable downstream processing:
+
+```text
+RAW → NATIVE → STANDARD → MODEL → OUTPUT
+```
+
+`RAW` preserves source inputs, `NATIVE` holds provider-specific processing,
+and `STANDARD` is OUEM's provider-independent boundary. Analysis-ready models
+and derived GIS products follow in `MODEL` and `OUTPUT`. The canonical Komae
+extent is defined in [`config/study_areas/komae_09LD3451.yaml`](config/study_areas/komae_09LD3451.yaml).
+
+See the governing [Concept & Architecture v0.1](docs/OUEM_Concept_Architecture_v0.1.md)
+and the [Phase A Implementation Design v0.1](docs/Phase_A_Implementation_Design_v0.1.md)
+for the conceptual baseline and implementation contracts respectively.
 
 ## Relationship to VoxCity
 
