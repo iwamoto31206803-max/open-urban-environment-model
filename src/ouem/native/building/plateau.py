@@ -70,7 +70,7 @@ class PlateauRunResult:
 
 
 def discover_building_gml(dataset_dir: str | Path) -> DiscoveryResult:
-    """Recursively find GML files located in a PLATEAU ``udx/bldg`` tree."""
+    """Find packaged and conservatively named standalone building GML files."""
     root = Path(dataset_dir)
     if not root.is_dir():
         raise PlateauBuildingError(f"provider dataset directory not found: {root}")
@@ -78,7 +78,17 @@ def discover_building_gml(dataset_dir: str | Path) -> DiscoveryResult:
     skipped: list[Path] = []
     for path in sorted((p for p in root.rglob("*") if p.is_file() and p.suffix.lower() == ".gml"), key=lambda p: p.as_posix()):
         parts = [part.lower() for part in path.relative_to(root).parts[:-1]]
-        is_building = any(parts[index : index + 2] == ["udx", "bldg"] for index in range(len(parts) - 1))
+        in_building_tree = any(
+            parts[index : index + 2] == ["udx", "bldg"]
+            for index in range(len(parts) - 1)
+        )
+        name = path.name.lower()
+        standalone_building = (
+            path.parent == root
+            and "_bldg_" in name
+            and name.endswith("_op.gml")
+        )
+        is_building = in_building_tree or standalone_building
         (accepted if is_building else skipped).append(path)
     return DiscoveryResult(tuple(accepted), tuple(skipped))
 

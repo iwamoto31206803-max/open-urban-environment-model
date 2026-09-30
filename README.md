@@ -44,10 +44,11 @@ standardized buildings.
 ## PLATEAU Building Provider v0.1
 
 The provider command recursively discovers building GML below a downloaded
-PLATEAU package (for example, `udx/bldg/*.gml`), converts each accepted file to
-a restartable Native GeoPackage, and writes one Standard Building GeoPackage
-containing every complete building geometry that intersects the canonical
-study-area extent:
+PLATEAU package (for example, `udx/bldg/*.gml`). It also accepts conservatively
+named PLATEAU building files such as `*_bldg_*_op.gml` placed directly in the
+provider dataset directory. It converts each accepted file to a restartable
+Native GeoPackage and writes one Standard Building GeoPackage containing every
+complete building geometry that intersects the canonical study-area extent:
 
 ```shell
 ouem-plateau-buildings /path/to/plateau-package \

@@ -7,20 +7,38 @@ from ouem.native.building import plateau
 from ouem.study_area import StudyArea
 
 
-def test_recursive_discovery_accepts_only_udx_bldg(tmp_path):
+def test_recursive_discovery_accepts_packaged_and_standalone_buildings(tmp_path):
     accepted_upper = tmp_path / "download" / "UDX" / "BLDG" / "A.GML"
     accepted_nested = tmp_path / "city" / "udx" / "bldg" / "nested" / "b.gml"
+    accepted_standalone = tmp_path / "53394525_bldg_6697_op.gml"
     skipped = tmp_path / "city" / "udx" / "tran" / "road.gml"
+    skipped_arbitrary = tmp_path / "buildings.gml"
+    skipped_nested_standalone = tmp_path / "loose" / "53394526_bldg_6697_op.gml"
+    skipped_wrong_suffix = tmp_path / "53394527_bldg_6697.gml"
     ignored = tmp_path / "city" / "udx" / "bldg" / "readme.txt"
-    for path in (accepted_upper, accepted_nested, skipped, ignored):
+    for path in (
+        accepted_upper,
+        accepted_nested,
+        accepted_standalone,
+        skipped,
+        skipped_arbitrary,
+        skipped_nested_standalone,
+        skipped_wrong_suffix,
+        ignored,
+    ):
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text("fixture", encoding="utf-8")
 
     result = plateau.discover_building_gml(tmp_path)
 
-    assert result.accepted == (accepted_nested, accepted_upper)
-    assert result.skipped == (skipped,)
-    assert result.discovered == 3
+    assert result.accepted == (accepted_standalone, accepted_nested, accepted_upper)
+    assert result.skipped == (
+        skipped_wrong_suffix,
+        skipped_arbitrary,
+        skipped,
+        skipped_nested_standalone,
+    )
+    assert result.discovered == 7
 
 
 def test_deterministic_ids_ignore_iteration_order_and_distinguish_sources():
