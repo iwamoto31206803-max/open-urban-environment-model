@@ -29,13 +29,32 @@ dist/
 *.local.yaml
 *.local.yml
 
-# Local geospatial inputs and generated products. Common large formats such as
-# GeoTIFF, LAS/LAZ, GeoPackage, and shapefiles belong here; small intentional
-# test fixtures can still be committed under tests/fixtures/.
-/data/raw/
-/data/interim/
-/data/processed/
-/outputs/
+# Local geospatial inputs and generated products. Directory marker files remain
+# tracked; manifests and deliberately small test fixtures may be force-added.
+/data/raw/**/*
+/data/native/**/*
+/data/standard/**/*
+/data/model/**/*
+/data/output/**/*
+!/data/raw/**/
+!/data/native/**/
+!/data/standard/**/
+!/data/**/.gitkeep
+
+# Large geospatial formats outside the lifecycle directories
+*.las
+*.laz
+*.tif
+*.tiff
+*.gml
+*.gpkg
+*.shp
+*.shx
+*.dbf
+*.vrt
+*.copc
+*.tmp
+*.temp
 
 # GIS application scratch and lock files
 *.qgs~

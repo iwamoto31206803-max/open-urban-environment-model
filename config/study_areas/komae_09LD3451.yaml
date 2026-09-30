@@ -1,0 +1,17 @@
+study_area:
+  id: komae_09LD3451
+  name: Komae A1 E2E Pilot
+  phase: A1_Tokyo_Reference
+
+crs:
+  epsg: 6677
+
+extent:
+  xmin: -23600.0
+  ymin: -40800.0
+  xmax: -23200.0
+  ymax: -40500.0
+
+size:
+  width_m: 400
+  height_m: 300
