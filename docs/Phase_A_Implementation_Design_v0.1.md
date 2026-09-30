@@ -77,6 +77,29 @@ Shell, BAT, CMD, and PowerShell files should preferably invoke package code,
 not contain core processing logic. Core processing should remain portable
 where practical.
 
+### 3.1 Execution-environment boundary
+
+The data lifecycle boundary and the runtime boundary are related but distinct:
+
+| Environment | Responsibility |
+| --- | --- |
+| **OSGeo4W GIS environment** | Provider/native subprocesses implemented by GDAL/OGR, PDAL, or other GIS-native tools, plus capability checks for those tools. |
+| **OUEM Python environment** | The repository-local `.venv`, the installed `ouem.*` package, orchestration, provider adapters, and portable Python processing. |
+
+On Windows, `.venv\Scripts\python.exe` is the standard OUEM interpreter.
+Launchers must fail clearly if it is absent and must use it explicitly rather
+than inheriting the OSGeo4W Python. Native environment setup should be scoped
+to the native command/check subprocess so its Python and `PATH` do not become
+the OUEM runtime by accident. OUEM is not installed into QGIS's bundled
+Python.
+
+This rule does not alter the RAW/NATIVE/STANDARD provider contract. It records
+which runtime executes a step so providers can use the same composition for
+PLATEAU now and Tokyo LiDAR/CHM later: GIS-native work runs in OSGeo4W, and
+OUEM orchestration runs in `.venv`. Compatibility is determined by required
+capabilities, not a QGIS 4.x version gate; QGIS 3.44.14 with GDAL 3.13.3 is a
+confirmed working environment for the current checks.
+
 The Python namespaces mirror the processing boundaries: `acquire`, `native`,
 `standardize`, `model`, and `adapters`. Terrain, building, and canopy are kept
 as explicit domains where applicable. Empty namespaces intentionally contain
