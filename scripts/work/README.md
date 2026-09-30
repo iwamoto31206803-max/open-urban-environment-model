@@ -20,14 +20,34 @@ scripts\work\plateau_komae_local_acceptance.cmd D:\path\to\plateau-dataset
 ```
 
 With no argument, it expects source data at
-`data\raw\building\plateau_komae`. The script changes to the repository root,
-checks the active `ogr2ogr` and Python installations, and runs the provider
-with repository-relative study-area, Native, and Standard paths.
+`data\raw\building\plateau_komae`. Before the first run after `git pull`, open
+an OSGeo4W/QGIS command environment, change to the repository, and create the
+standard repository-local OUEM environment:
 
-The expected workstation setup currently combines OSGeo4W for GDAL/OGR/PDAL
-with a VS Code Python virtual environment for ordinary project work. The script
-deliberately tests `osgeo.ogr` and `osgeo.osr` in the **currently active
-Python**. It stops with a visible explanation if that Python cannot import the
-bindings, even when OSGeo4W's `ogr2ogr` is available. It does not alter
-`PATH`, `PYTHONPATH`, activate another environment, or otherwise hide a GDAL
-and Python compatibility issue.
+```bat
+py -3.12 -m venv .venv
+.venv\Scripts\python.exe -m pip install -e .
+scripts\work\plateau_komae_local_acceptance.cmd
+```
+
+The script changes to the repository root, checks the GIS tools and both Python
+environments, and runs the provider with repository-relative study-area,
+Native, and Standard paths. A different dataset directory may be passed as the
+first argument.
+
+The environment boundary is deliberate:
+
+- the active **OSGeo4W/QGIS GIS environment** owns GDAL, OGR, PDAL, and other
+  native GIS tools; and
+- `.venv\Scripts\python.exe` is the **OUEM Python environment** and owns the
+  installed `ouem` package and Python orchestration code.
+
+The script captures the active GIS Python for the small standalone OGR worker,
+then launches OUEM with `.venv\Scripts\python.exe`. It does not install OUEM
+into OSGeo4W Python, require `osgeo` in `.venv`, or alter `PATH`/`PYTHONPATH` to
+hide a compatibility issue. QGIS 3.44.14 with GDAL 3.13.3 has passed these
+environment checks; QGIS 4.x is not required.
+
+This same responsibility boundary should be retained when Tokyo LiDAR and CHM
+work is integrated: PDAL/GDAL/OGR operations belong to the GIS environment,
+while orchestration and OUEM package logic belong to the project-local venv.

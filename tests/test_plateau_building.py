@@ -79,7 +79,26 @@ def test_missing_gdal_has_actionable_failure(monkeypatch):
     monkeypatch.setattr(plateau.shutil, "which", lambda _name: None)
 
     with pytest.raises(plateau.PlateauBuildingError, match="ogr2ogr executable"):
-        plateau.require_gdal()
+        plateau.require_gdal("gis-python")
+
+
+def test_gdal_check_uses_external_gis_python(monkeypatch):
+    calls = []
+    monkeypatch.setattr(plateau.shutil, "which", lambda name: f"/gis/{name}")
+
+    def run(command, **kwargs):
+        calls.append((command, kwargs))
+        return plateau.subprocess.CompletedProcess(command, 0, "", "")
+
+    monkeypatch.setattr(plateau.subprocess, "run", run)
+
+    plateau.require_gdal("gis-python")
+
+    assert calls[0][0] == [
+        "/gis/gis-python",
+        "-c",
+        "from osgeo import ogr, osr",
+    ]
 
 
 def test_manifest_contains_provenance_counts_and_parameters(tmp_path):

@@ -54,11 +54,17 @@ complete building geometry that intersects the canonical study-area extent:
 ouem-plateau-buildings /path/to/plateau-package \
   --study-area config/study_areas/komae_09LD3451.yaml \
   --native-dir data/native/building/komae \
-  --output data/standard/building/komae.gpkg
+  --output data/standard/building/komae.gpkg \
+  --gis-python /path/to/osgeo-python
 ```
 
-The command requires the `ogr2ogr` executable and Python GDAL bindings from a
-compatible GDAL installation. Native outputs retain CityGML fields and XYZ
+The command runs from the repository-local OUEM Python environment
+(`.venv/Scripts/python.exe` on Windows). GDAL, OGR, PDAL, and other native GIS
+tools remain the responsibility of a separate OSGeo4W/QGIS environment; pass
+its Python to `--gis-python` for the standalone OGR worker. OUEM is not
+installed into GIS Python, and the OUEM venv does not need `osgeo`. QGIS 3.44.14
+with GDAL 3.13.3 has passed the local environment checks; QGIS 4.x is not a
+requirement. Native outputs retain CityGML fields and XYZ
 geometry. A source fingerprint receipt beside each Native file enables reuse;
 `--force` rebuilds them. Standard output contains only the common OUEM fields,
 uses the study-area horizontal CRS, and retains source Z as absolute T.P.
@@ -70,6 +76,12 @@ files and CRS, target CRS, study area and extent, vertical semantics,
 parameters, timestamp, counts, warnings, and errors. PLATEAU downloading,
 VoxCity execution, DEM, LiDAR/CHM, canopy, solar/shade, and GVI processing are
 outside this provider's scope.
+
+This environment boundary also applies to future Tokyo LiDAR and CHM work:
+PDAL/GDAL/OGR execution belongs to the GIS environment, while reusable OUEM
+orchestration and domain logic belong to the project-local Python venv. See
+[`scripts/work/README.md`](scripts/work/README.md) for the complete local setup
+and acceptance commands.
 
 ## Relationship to VoxCity
 
