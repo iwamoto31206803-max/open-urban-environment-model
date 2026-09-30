@@ -94,34 +94,24 @@ tiles can overlap the canonical extent differently. Implementations will
 select intersecting provider data, mosaic it where necessary, and clip the
 result to the canonical extent. This work is deferred from this scaffold.
 
-## 5. Standard Building v0.1 — PROVISIONAL
+## 5. Standard Building v0.1
 
-> **PROVISIONAL:** GeoPackage plus PolyhedralSurface is technically usable for
-> the current PLATEAU test, but it is not established as OUEM's permanent
-> internal building format. This contract may be revised after the A1
-> end-to-end VoxCity test.
+The normative [OUEM Standard Building v0.1](OUEM_Standard_Building_v0.1.md)
+defines provider-independent 3D building geometry. Its coordinate contract is:
 
-| Property | Standard Building v0.1 candidate |
-| --- | --- |
-| Container | GeoPackage |
-| Geometry | 3D building geometry; PolyhedralSurface where supported |
-| Coordinates | Projected CRS appropriate to the study area |
-| Horizontal unit | metre |
-| Vertical unit | metre |
+- the study-area projected horizontal CRS, which is EPSG:6677 for Komae;
+- horizontal coordinates in metres;
+- Z coordinates expressed as absolute T.P. (Tokyo Peil) elevation in metres;
+  and
+- explicit CRS, Z interpretation, and source provenance.
 
-Minimum common metadata:
+The initial source profile is PLATEAU CityGML in EPSG:6697 (JGD2011 geographic
+coordinates with T.P. elevation). Standardization projects the horizontal
+coordinates while preserving the absolute T.P. interpretation of Z.
 
-| Field | Meaning |
-| --- | --- |
-| `ouem_id` | Stable OUEM feature identifier |
-| `source_id` | Identifier in the source data |
-| `source_dataset` | Source dataset/provenance reference |
-| `source_lod` | Source level of detail |
-| `measured_height` | Measured height in metres, nullable |
-
-Every dataset must have an explicit CRS, an explicit interpretation of Z,
-valid 3D building geometry, and retained source provenance. Provider-specific
-attributes need not be copied into Standard Building.
+Container and container-specific geometry encoding remain implementation
+choices. They must preserve the Standard Building coordinate and geometry
+contract and will be validated during the A1 end-to-end VoxCity test.
 
 ## 6. Standard CHM and tree-height-platform
 

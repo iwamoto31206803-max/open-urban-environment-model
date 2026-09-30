@@ -36,7 +36,10 @@ extent is defined in [`config/study_areas/komae_09LD3451.yaml`](config/study_are
 
 See the governing [Concept & Architecture v0.1](docs/OUEM_Concept_Architecture_v0.1.md)
 and the [Phase A Implementation Design v0.1](docs/Phase_A_Implementation_Design_v0.1.md)
-for the conceptual baseline and implementation contracts respectively.
+for the conceptual baseline and implementation contracts respectively. The
+[OUEM Standard Building v0.1](docs/OUEM_Standard_Building_v0.1.md) defines the
+coordinate, geometry, PLATEAU source, and minimum metadata contract for
+standardized buildings.
 
 ## Relationship to VoxCity
 
