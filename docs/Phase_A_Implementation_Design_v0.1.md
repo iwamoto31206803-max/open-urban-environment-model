@@ -88,6 +88,10 @@ for later building, Tokyo LiDAR, and CHM providers without coupling OUEM's
 Python dependencies to an OSGeo4W installation. The currently accepted local
 combination is QGIS 4.2.3, GDAL 3.13.3, and GIS Python 3.12.14 with OUEM Python
 3.11.9; these observations do not impose package-wide version requirements.
+External GIS stdout and stderr are captured as bytes and decoded at the
+boundary rather than implicitly with the OUEM process locale. This is required
+because GDAL/GIS Python output can be UTF-8 while Japanese Windows defaults to
+cp932.
 
 The Python namespaces mirror the processing boundaries: `acquire`, `native`,
 `standardize`, `model`, and `adapters`. Terrain, building, and canopy are kept

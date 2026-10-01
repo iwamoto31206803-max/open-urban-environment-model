@@ -56,6 +56,11 @@ OUEM into GIS Python or require `osgeo` in `.venv`. The current confirmed GIS
 runtime is QGIS 4.2.3, GDAL 3.13.3, and Python 3.12.14. These versions document
 the acceptance result; they are not package-wide minimum requirements.
 
+The snapshot also records the GIS runtime's preferred output encoding. OUEM
+captures GIS child-process streams as bytes and decodes them explicitly, so a
+Japanese Windows OUEM locale such as cp932 cannot raise `UnicodeDecodeError`
+when a GDAL or GIS Python child emits UTF-8 diagnostics.
+
 This same responsibility boundary should be retained when Tokyo LiDAR and CHM
 work is integrated: PDAL/GDAL/OGR operations belong to the GIS environment,
 while orchestration and OUEM package logic belong to the project-local venv.

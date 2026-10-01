@@ -39,6 +39,7 @@ class GISRuntime:
     python: str
     ogr2ogr: str = "ogr2ogr"
     ogrinfo: str = "ogrinfo"
+    output_encoding: str | None = None
     environment: dict[str, str] | None = None
 
 
@@ -51,6 +52,7 @@ def load_gis_runtime(path: str | Path) -> GISRuntime:
             python=value["python"],
             ogr2ogr=value["ogr2ogr"],
             ogrinfo=value["ogrinfo"],
+            output_encoding=value.get("output_encoding"),
             environment=value.get("environment"),
         )
     except (OSError, KeyError, TypeError, json.JSONDecodeError) as exc:
@@ -193,30 +195,51 @@ def require_gdal(runtime: GISRuntime) -> None:
         raise PlateauBuildingError("GDAL is required; missing " + " and ".join(missing))
     check = subprocess.run(
         [gis_python_path, "-c", "from osgeo import ogr, osr"],
-        text=True,
         capture_output=True,
         env=runtime.environment,
     )
     if check.returncode:
         raise PlateauBuildingError(
             f"GIS Python cannot import osgeo.ogr/osgeo.osr: {gis_python_path}: "
-            f"{check.stderr.strip()}"
+            f"{_decode_output(check.stderr, runtime).strip()}"
         )
+
+
+def _decode_output(value: bytes | str | None, runtime: GISRuntime) -> str:
+    """Decode diagnostics without relying on the OUEM process locale.
+
+    GDAL and Python child processes may emit UTF-8 even when the Windows OUEM
+    process defaults to cp932. Prefer UTF-8, then the encoding recorded by the
+    GIS stage, and finally replace undecodable bytes for safe diagnostics.
+    """
+    if value is None:
+        return ""
+    if isinstance(value, str):
+        return value
+    encodings = ["utf-8-sig"]
+    if runtime.output_encoding:
+        encodings.append(runtime.output_encoding)
+    for encoding in encodings:
+        try:
+            return value.decode(encoding)
+        except (LookupError, UnicodeDecodeError):
+            continue
+    return value.decode("utf-8", errors="replace")
 
 
 def _count_layer(path: Path, runtime: GISRuntime) -> int:
     completed = subprocess.run(
         [runtime.ogrinfo, "-json", "-so", str(path), "building"],
-        text=True,
         capture_output=True,
         env=runtime.environment,
     )
     if completed.returncode:
         raise PlateauBuildingError(
-            f"GDAL could not inspect Native output {path}: {completed.stderr.strip()}"
+            f"GDAL could not inspect Native output {path}: "
+            f"{_decode_output(completed.stderr, runtime).strip()}"
         )
     try:
-        info = json.loads(completed.stdout)
+        info = json.loads(_decode_output(completed.stdout, runtime))
         return max(0, int(info["layers"][0]["featureCount"]))
     except (KeyError, IndexError, TypeError, ValueError, json.JSONDecodeError) as exc:
         raise PlateauBuildingError(f"unexpected ogrinfo output for {path}: {exc}") from exc
@@ -249,13 +272,16 @@ def _create_standard(runtime: GISRuntime, native_sources: Sequence[tuple[Path, P
         job_path.write_text(json.dumps(job), encoding="utf-8")
         completed = subprocess.run(
             [runtime.python, str(worker), str(job_path), str(result_path)],
-            text=True,
             capture_output=True,
             env=runtime.environment,
         )
         if completed.returncode:
             raise PlateauBuildingError(
-                "external GDAL worker failed: " + (completed.stderr.strip() or completed.stdout.strip())
+                "external GDAL worker failed: "
+                + (
+                    _decode_output(completed.stderr, runtime).strip()
+                    or _decode_output(completed.stdout, runtime).strip()
+                )
             )
         worker_result = json.loads(result_path.read_text(encoding="utf-8"))
     result.standard_features = worker_result["standard_features"]
@@ -316,9 +342,12 @@ def run_plateau_building_pipeline(dataset_dir: str | Path, study_area_config: st
         if not force and _receipt_matches(source, output, command) and _valid_native(output, runtime):
             result.native_reused += 1
         else:
-            completed = subprocess.run(command, text=True, capture_output=True, env=runtime.environment)
+            completed = subprocess.run(command, capture_output=True, env=runtime.environment)
             if completed.returncode:
-                result.errors.append(f"Native conversion failed for {source}: {completed.stderr.strip()}")
+                result.errors.append(
+                    f"Native conversion failed for {source}: "
+                    f"{_decode_output(completed.stderr, runtime).strip()}"
+                )
                 raise PlateauBuildingError(result.errors[-1])
             _write_receipt(source, output, command)
             result.native_created += 1

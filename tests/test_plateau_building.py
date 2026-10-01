@@ -101,6 +101,22 @@ def test_gdal_check_uses_external_gis_python(monkeypatch):
     ]
 
 
+def test_gdal_subprocess_output_does_not_depend_on_cp932(monkeypatch):
+    monkeypatch.setattr(plateau.shutil, "which", lambda name, **_kwargs: f"/gis/{name}")
+    utf8_diagnostic = "GIS子プロセスの診断".encode("utf-8")
+    monkeypatch.setattr(
+        plateau.subprocess,
+        "run",
+        lambda command, **kwargs: plateau.subprocess.CompletedProcess(
+            command, 1, b"", utf8_diagnostic
+        ),
+    )
+    runtime = plateau.GISRuntime("gis-python", output_encoding="cp932")
+
+    with pytest.raises(plateau.PlateauBuildingError, match="GIS子プロセスの診断"):
+        plateau.require_gdal(runtime)
+
+
 def test_load_gis_runtime_snapshot(tmp_path):
     snapshot = tmp_path / "gis.json"
     snapshot.write_text(
@@ -109,6 +125,7 @@ def test_load_gis_runtime_snapshot(tmp_path):
                 "python": "C:/QGIS/bin/python.exe",
                 "ogr2ogr": "C:/QGIS/bin/ogr2ogr.exe",
                 "ogrinfo": "C:/QGIS/bin/ogrinfo.exe",
+                "output_encoding": "cp932",
                 "environment": {"PATH": "C:/QGIS/bin"},
             }
         ),
@@ -119,6 +136,7 @@ def test_load_gis_runtime_snapshot(tmp_path):
 
     assert runtime.python == "C:/QGIS/bin/python.exe"
     assert runtime.ogr2ogr.endswith("ogr2ogr.exe")
+    assert runtime.output_encoding == "cp932"
     assert runtime.environment == {"PATH": "C:/QGIS/bin"}
 
 

@@ -1,6 +1,7 @@
 """Capture the active GIS runtime for later OUEM child processes."""
 
 import json
+import locale
 import os
 import shutil
 import sys
@@ -20,6 +21,7 @@ def main(destination: str) -> int:
         "python": sys.executable,
         "ogr2ogr": ogr2ogr,
         "ogrinfo": ogrinfo,
+        "output_encoding": locale.getpreferredencoding(False),
         "environment": dict(os.environ),
     }
     output.write_text(json.dumps(value, indent=2) + "\n", encoding="utf-8")
