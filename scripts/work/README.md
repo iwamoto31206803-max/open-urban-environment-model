@@ -10,30 +10,37 @@ findings and accepted project decisions belong under `docs`.
 
 ## Komae PLATEAU local acceptance
 
-`plateau_komae_local_acceptance.cmd` is a readable Windows walkthrough for the
-first local PLATEAU Building Provider acceptance run. Run it from Command
-Prompt, optionally passing the provider dataset directory as its first
-argument:
+`plateau_komae_local_acceptance.cmd` is a two-stage Windows walkthrough. The
+stages must run in separate shells; the script never starts OUEM's venv Python
+from an OSGeo4W/QGIS shell.
+
+First, in the **QGIS/OSGeo4W command environment**, run only the GIS stage:
 
 ```bat
-scripts\work\plateau_komae_local_acceptance.cmd D:\path\to\plateau-dataset
+scripts\work\plateau_komae_local_acceptance.cmd gis
 ```
 
-With no argument, it expects source data at
-`data\raw\building\plateau_komae`. Before the first run after `git pull`, open
-an OSGeo4W/QGIS command environment, change to the repository, and create the
-standard repository-local OUEM environment:
+This verifies GDAL/OGR and `osgeo`, then writes an ignored local runtime snapshot
+for GIS child processes. Close that shell. In a **normal Command Prompt or VS
+Code terminal**, use the existing repository-local `.venv`, install the pulled
+OUEM revision, and run the OUEM stage:
 
 ```bat
-py -3.12 -m venv .venv
 .venv\Scripts\python.exe -m pip install -e .
-scripts\work\plateau_komae_local_acceptance.cmd
+scripts\work\plateau_komae_local_acceptance.cmd ouem
 ```
 
-The script changes to the repository root, checks the GIS tools and both Python
-environments, and runs the provider with repository-relative study-area,
-Native, and Standard paths. A different dataset directory may be passed as the
-first argument.
+If `.venv` does not exist, create it with the ordinary project Python selected
+for OUEM (for example, through VS Code's **Python: Create Environment**), not
+with OSGeo4W Python. No package-wide Python micro-version is prescribed. The
+confirmed OUEM workstation currently uses Python 3.11.9.
+
+The default source is `data\raw\building\plateau_komae`. Pass a different
+dataset directory to the OUEM stage as its second argument:
+
+```bat
+scripts\work\plateau_komae_local_acceptance.cmd ouem D:\path\to\plateau-dataset
+```
 
 The environment boundary is deliberate:
 
@@ -42,11 +49,12 @@ The environment boundary is deliberate:
 - `.venv\Scripts\python.exe` is the **OUEM Python environment** and owns the
   installed `ouem` package and Python orchestration code.
 
-The script captures the active GIS Python for the small standalone OGR worker,
-then launches OUEM with `.venv\Scripts\python.exe`. It does not install OUEM
-into OSGeo4W Python, require `osgeo` in `.venv`, or alter `PATH`/`PYTHONPATH` to
-hide a compatibility issue. QGIS 3.44.14 with GDAL 3.13.3 has passed these
-environment checks; QGIS 4.x is not required.
+The GIS stage captures the external executables, GIS Python, and the child
+environment needed by the small standalone OGR worker. The later OUEM stage
+launches `.venv\Scripts\python.exe` only from a normal shell. It does not install
+OUEM into GIS Python or require `osgeo` in `.venv`. The current confirmed GIS
+runtime is QGIS 4.2.3, GDAL 3.13.3, and Python 3.12.14. These versions document
+the acceptance result; they are not package-wide minimum requirements.
 
 This same responsibility boundary should be retained when Tokyo LiDAR and CHM
 work is integrated: PDAL/GDAL/OGR operations belong to the GIS environment,

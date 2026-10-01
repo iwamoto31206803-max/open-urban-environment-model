@@ -80,12 +80,14 @@ where practical.
 Native GIS runtimes and OUEM Python have a deliberate execution boundary.
 GDAL, OGR, PDAL, and similar native GIS operations run in the OSGeo4W/QGIS
 environment, while orchestration and reusable OUEM logic run from the
-repository-local Python virtual environment (`.venv`). A narrowly scoped GIS
-worker may be launched as an external process; it must not require the `ouem`
-package to be installed in the GIS Python. This keeps the same boundary usable
+repository-local Python virtual environment (`.venv`) in a separate shell. A
+narrowly scoped GIS worker may be launched only as a child process; it must not
+require the `ouem` package to be installed in GIS Python. OUEM's venv must not
+be launched from the OSGeo4W/QGIS shell. This keeps the same boundary usable
 for later building, Tokyo LiDAR, and CHM providers without coupling OUEM's
-Python dependencies to an OSGeo4W installation. QGIS 3.44.14 with GDAL 3.13.3
-has passed the initial environment check; QGIS 4.x is not required.
+Python dependencies to an OSGeo4W installation. The currently accepted local
+combination is QGIS 4.2.3, GDAL 3.13.3, and GIS Python 3.12.14 with OUEM Python
+3.11.9; these observations do not impose package-wide version requirements.
 
 The Python namespaces mirror the processing boundaries: `acquire`, `native`,
 `standardize`, `model`, and `adapters`. Terrain, building, and canopy are kept

@@ -1,112 +1,74 @@
 @echo off
 setlocal
 
-rem OUEM local acceptance helper -- not a formal processing record.
-rem Run from any directory. Optionally pass the PLATEAU dataset directory.
-
+rem Two-stage local acceptance helper. Never mix GIS and OUEM Python runtimes.
 for %%I in ("%~dp0..\..") do set "REPO_ROOT=%%~fI"
-pushd "%REPO_ROOT%" || goto :repo_error
-
-set "DATASET_DIR=data\raw\building\plateau_komae"
-if not "%~1"=="" set "DATASET_DIR=%~1"
+set "RUNTIME_FILE=%REPO_ROOT%\scripts\work\.runtime\plateau_komae_gis.json"
 set "OUEM_PYTHON=%REPO_ROOT%\.venv\Scripts\python.exe"
-set "GIS_PYTHON="
+set "DATASET_DIR=data\raw\building\plateau_komae"
+if not "%~2"=="" set "DATASET_DIR=%~2"
 
-echo === OUEM Komae PLATEAU local acceptance ===
-echo Repository:  %CD%
-echo Dataset:     %DATASET_DIR%
+if /I "%~1"=="gis" goto :gis
+if /I "%~1"=="ouem" goto :ouem
+goto :usage
+
+:gis
+echo === Stage 1: OSGeo4W / QGIS GIS runtime ===
+echo Run this stage only in the QGIS/OSGeo4W command environment.
+where ogr2ogr || exit /b 2
+where ogrinfo || exit /b 2
+ogr2ogr --version || exit /b 2
+python --version || exit /b 2
+python -c "from osgeo import ogr, osr; print('osgeo.ogr and osgeo.osr import OK')" || exit /b 2
+python "%REPO_ROOT%\scripts\work\capture_gis_runtime.py" "%RUNTIME_FILE%" || exit /b 2
 echo.
+echo GIS stage complete. Close this shell before running the OUEM stage.
+echo Next, open a normal Command Prompt or VS Code terminal and run:
+echo   scripts\work\plateau_komae_local_acceptance.cmd ouem
+exit /b 0
 
-echo [1/6] Locate ogr2ogr in the OSGeo4W / QGIS GIS environment
-where ogr2ogr
-if errorlevel 1 goto :environment_error
-echo.
-
-echo [2/6] Report GDAL/OGR version
-ogr2ogr --version
-if errorlevel 1 goto :environment_error
-echo.
-
-echo [3/6] Report the GIS environment Python version
-python --version
-if errorlevel 1 goto :environment_error
-for /f "delims=" %%I in ('where python') do if not defined GIS_PYTHON set "GIS_PYTHON=%%I"
-echo.
-
-echo [4/6] Verify that GIS Python imports GDAL's OGR and OSR bindings
-python -c "from osgeo import ogr, osr; print('osgeo.ogr and osgeo.osr import OK')"
-if errorlevel 1 goto :python_gdal_error
-echo.
-
-echo [5/6] Locate the repository-local OUEM Python venv
-echo Expected: %OUEM_PYTHON%
+:ouem
+echo === Stage 2: repository-local OUEM runtime ===
+echo Do not run this stage in the QGIS/OSGeo4W command environment.
+pushd "%REPO_ROOT%" || exit /b 2
+if not exist "%RUNTIME_FILE%" goto :runtime_missing
 if not exist "%OUEM_PYTHON%" goto :venv_missing
-"%OUEM_PYTHON%" --version
-if errorlevel 1 goto :venv_error
-echo.
-
-echo [6/6] Verify that OUEM is installed in the repository-local venv
-"%OUEM_PYTHON%" -c "import ouem; print('OUEM package import OK')"
-if errorlevel 1 goto :ouem_missing
-echo.
-
-echo Environment checks passed. Running:
-echo "%OUEM_PYTHON%" -m ouem.native.building.plateau "%DATASET_DIR%" ^
-echo   --study-area config\study_areas\komae_09LD3451.yaml ^
-echo   --native-dir data\native\building\komae ^
-echo   --output data\standard\building\komae.gpkg ^
-echo   --gis-python "%GIS_PYTHON%"
-echo.
-
+"%OUEM_PYTHON%" --version || goto :ouem_error
+"%OUEM_PYTHON%" -c "import ouem; print('OUEM package import OK')" || goto :ouem_missing
 "%OUEM_PYTHON%" -m ouem.native.building.plateau "%DATASET_DIR%" ^
   --study-area config\study_areas\komae_09LD3451.yaml ^
   --native-dir data\native\building\komae ^
   --output data\standard\building\komae.gpkg ^
-  --gis-python "%GIS_PYTHON%"
+  --gis-runtime "%RUNTIME_FILE%"
 set "RUN_EXIT=%ERRORLEVEL%"
-echo.
-if not "%RUN_EXIT%"=="0" echo Provider failed with exit code %RUN_EXIT%.
 popd
 exit /b %RUN_EXIT%
 
-:python_gdal_error
-echo.
-echo ERROR: The active Python cannot import osgeo.ogr and osgeo.osr.
-echo OSGeo4W ogr2ogr and the VS Code virtual environment may be using separate runtimes.
-echo This helper will not modify PATH or PYTHONPATH. Resolve or document the real
-echo workstation compatibility before changing the provider.
+:runtime_missing
+echo ERROR: GIS runtime snapshot not found. Run the GIS stage first.
 popd
 exit /b 2
 
 :venv_missing
-echo.
-echo ERROR: Repository-local OUEM venv was not found:
-echo   %OUEM_PYTHON%
-echo Create and install it from the repository root with:
-echo   py -3.12 -m venv .venv
+echo ERROR: Repository-local venv not found: %OUEM_PYTHON%
+echo Create it from a normal Python terminal, then install with:
 echo   .venv\Scripts\python.exe -m pip install -e .
 popd
 exit /b 2
 
-:venv_error
-echo.
-echo ERROR: The repository-local OUEM Python could not run.
-popd
-exit /b 2
-
 :ouem_missing
-echo.
-echo ERROR: The OUEM package is not installed in the repository-local venv.
+echo ERROR: OUEM is not installed in the repository-local venv.
 echo Run: .venv\Scripts\python.exe -m pip install -e .
 popd
 exit /b 2
 
-:environment_error
-echo.
-echo ERROR: An environment check failed. Review the command output above.
+:ouem_error
+echo ERROR: Repository-local OUEM Python could not run.
 popd
 exit /b 2
 
-:repo_error
-echo ERROR: Could not enter repository root "%REPO_ROOT%".
+:usage
+echo Usage:
+echo   In QGIS/OSGeo4W shell: plateau_komae_local_acceptance.cmd gis
+echo   Then in normal shell: plateau_komae_local_acceptance.cmd ouem [dataset-dir]
 exit /b 2

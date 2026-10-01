@@ -28,6 +28,7 @@ dist/
 !.env.example
 *.local.yaml
 *.local.yml
+scripts/work/.runtime/
 
 # Local geospatial inputs and generated products. Directory marker files remain
 # tracked; manifests and deliberately small test fixtures may be force-added.

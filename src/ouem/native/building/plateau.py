@@ -33,6 +33,31 @@ class PlateauBuildingError(RuntimeError):
 
 
 @dataclass(frozen=True)
+class GISRuntime:
+    """External GIS executables and environment for child processes only."""
+
+    python: str
+    ogr2ogr: str = "ogr2ogr"
+    ogrinfo: str = "ogrinfo"
+    environment: dict[str, str] | None = None
+
+
+def load_gis_runtime(path: str | Path) -> GISRuntime:
+    """Load a runtime snapshot created by the separate GIS acceptance stage."""
+    source = Path(path)
+    try:
+        value = json.loads(source.read_text(encoding="utf-8"))
+        return GISRuntime(
+            python=value["python"],
+            ogr2ogr=value["ogr2ogr"],
+            ogrinfo=value["ogrinfo"],
+            environment=value.get("environment"),
+        )
+    except (OSError, KeyError, TypeError, json.JSONDecodeError) as exc:
+        raise PlateauBuildingError(f"invalid GIS runtime snapshot {source}: {exc}") from exc
+
+
+@dataclass(frozen=True)
 class DiscoveryResult:
     accepted: tuple[Path, ...]
     skipped: tuple[Path, ...]
@@ -107,10 +132,10 @@ def intersects_extent(envelope: Sequence[float], extent: Sequence[float]) -> boo
     return not (max_x < xmin or min_x > xmax or max_y < ymin or min_y > ymax)
 
 
-def build_native_command(source: Path, output: Path, source_layer: str = "Building") -> list[str]:
+def build_native_command(source: Path, output: Path, source_layer: str = "Building", ogr2ogr: str = "ogr2ogr") -> list[str]:
     """Build the GDAL conversion command used for one source package file."""
     return [
-        "ogr2ogr", "-f", "GPKG", str(output), str(source), source_layer,
+        ogr2ogr, "-f", "GPKG", str(output), str(source), source_layer,
         "-nln", "building", "-dim", "XYZ",
         "-lco", "SPATIAL_INDEX=YES",
     ]
@@ -155,21 +180,22 @@ def _write_receipt(source: Path, output: Path, command: Sequence[str]) -> None:
     )
 
 
-def require_gdal(gis_python: str | Path) -> None:
+def require_gdal(runtime: GISRuntime) -> None:
     """Validate external GIS tools without importing GDAL into OUEM Python."""
     missing = []
-    for executable in ("ogr2ogr", "ogrinfo"):
-        if shutil.which(executable) is None:
+    for executable in (runtime.ogr2ogr, runtime.ogrinfo):
+        if shutil.which(executable, path=(runtime.environment or {}).get("PATH")) is None:
             missing.append(f"{executable} executable")
-    gis_python_path = shutil.which(str(gis_python))
+    gis_python_path = shutil.which(runtime.python, path=(runtime.environment or {}).get("PATH"))
     if gis_python_path is None:
-        missing.append(f"GIS Python ({gis_python})")
+        missing.append(f"GIS Python ({runtime.python})")
     if missing:
         raise PlateauBuildingError("GDAL is required; missing " + " and ".join(missing))
     check = subprocess.run(
         [gis_python_path, "-c", "from osgeo import ogr, osr"],
         text=True,
         capture_output=True,
+        env=runtime.environment,
     )
     if check.returncode:
         raise PlateauBuildingError(
@@ -178,11 +204,12 @@ def require_gdal(gis_python: str | Path) -> None:
         )
 
 
-def _count_layer(path: Path) -> int:
+def _count_layer(path: Path, runtime: GISRuntime) -> int:
     completed = subprocess.run(
-        ["ogrinfo", "-json", "-so", str(path), "building"],
+        [runtime.ogrinfo, "-json", "-so", str(path), "building"],
         text=True,
         capture_output=True,
+        env=runtime.environment,
     )
     if completed.returncode:
         raise PlateauBuildingError(
@@ -195,15 +222,15 @@ def _count_layer(path: Path) -> int:
         raise PlateauBuildingError(f"unexpected ogrinfo output for {path}: {exc}") from exc
 
 
-def _valid_native(path: Path) -> bool:
+def _valid_native(path: Path, runtime: GISRuntime) -> bool:
     try:
-        _count_layer(path)
+        _count_layer(path, runtime)
     except PlateauBuildingError:
         return False
     return True
 
 
-def _create_standard(gis_python: str | Path, native_sources: Sequence[tuple[Path, Path]], output: Path, area: StudyArea, result: PlateauRunResult) -> None:
+def _create_standard(runtime: GISRuntime, native_sources: Sequence[tuple[Path, Path]], output: Path, area: StudyArea, result: PlateauRunResult) -> None:
     """Delegate OGR work to a standalone worker in the external GIS Python."""
     output.parent.mkdir(parents=True, exist_ok=True)
     job = {
@@ -221,9 +248,10 @@ def _create_standard(gis_python: str | Path, native_sources: Sequence[tuple[Path
         result_path = Path(temporary) / "result.json"
         job_path.write_text(json.dumps(job), encoding="utf-8")
         completed = subprocess.run(
-            [str(gis_python), str(worker), str(job_path), str(result_path)],
+            [runtime.python, str(worker), str(job_path), str(result_path)],
             text=True,
             capture_output=True,
+            env=runtime.environment,
         )
         if completed.returncode:
             raise PlateauBuildingError(
@@ -270,9 +298,9 @@ def write_manifest(path: str | Path, *, dataset_dir: Path, sources: Sequence[Pat
     destination.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
-def run_plateau_building_pipeline(dataset_dir: str | Path, study_area_config: str | Path, native_dir: str | Path, standard_output: str | Path, *, gis_python: str | Path, source_layer: str = "Building", force: bool = False) -> PlateauRunResult:
+def run_plateau_building_pipeline(dataset_dir: str | Path, study_area_config: str | Path, native_dir: str | Path, standard_output: str | Path, *, runtime: GISRuntime, source_layer: str = "Building", force: bool = False) -> PlateauRunResult:
     """Run discovery, restartable Native conversion, and Standard selection."""
-    require_gdal(gis_python)
+    require_gdal(runtime)
     root = Path(dataset_dir).resolve()
     area = load_study_area(study_area_config)
     discovery = discover_building_gml(root)
@@ -284,23 +312,23 @@ def run_plateau_building_pipeline(dataset_dir: str | Path, study_area_config: st
     native_sources: list[tuple[Path, Path]] = []
     for source in discovery.accepted:
         output = native_root / _native_name(root, source)
-        command = build_native_command(source, output, source_layer)
-        if not force and _receipt_matches(source, output, command) and _valid_native(output):
+        command = build_native_command(source, output, source_layer, runtime.ogr2ogr)
+        if not force and _receipt_matches(source, output, command) and _valid_native(output, runtime):
             result.native_reused += 1
         else:
-            completed = subprocess.run(command, text=True, capture_output=True)
+            completed = subprocess.run(command, text=True, capture_output=True, env=runtime.environment)
             if completed.returncode:
                 result.errors.append(f"Native conversion failed for {source}: {completed.stderr.strip()}")
                 raise PlateauBuildingError(result.errors[-1])
             _write_receipt(source, output, command)
             result.native_created += 1
-        count = _count_layer(output)
+        count = _count_layer(output, runtime)
         result.source_features += count
         result.native_features += count
         native_sources.append((output, source.relative_to(root)))
     standard = Path(standard_output)
-    _create_standard(gis_python, native_sources, standard, area, result)
-    parameters = {"source_layer": source_layer, "force": force, "gis_python": str(gis_python), "selection": "intersects; complete geometry retained"}
+    _create_standard(runtime, native_sources, standard, area, result)
+    parameters = {"source_layer": source_layer, "force": force, "gis_python": runtime.python, "selection": "intersects; complete geometry retained"}
     write_manifest(standard.with_suffix(standard.suffix + ".manifest.json"), dataset_dir=root, sources=list(discovery.accepted), native_outputs=[item[0] for item in native_sources], standard_output=standard, area=area, parameters=parameters, result=result)
     return result
 
@@ -313,14 +341,15 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--output", required=True, help="single Standard Building GeoPackage")
     parser.add_argument("--source-layer", default="Building", help="OGR CityGML building layer name")
     parser.add_argument("--force", action="store_true", help="rebuild Native outputs even when valid receipts match")
-    parser.add_argument("--gis-python", required=True, help="external OSGeo4W/QGIS Python with osgeo bindings")
+    parser.add_argument("--gis-runtime", required=True, help="snapshot produced by the separate GIS runtime stage")
     return parser
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = _parser().parse_args(argv)
     try:
-        result = run_plateau_building_pipeline(args.dataset_dir, args.study_area, args.native_dir, args.output, source_layer=args.source_layer, force=args.force, gis_python=args.gis_python)
+        runtime = load_gis_runtime(args.gis_runtime)
+        result = run_plateau_building_pipeline(args.dataset_dir, args.study_area, args.native_dir, args.output, runtime=runtime, source_layer=args.source_layer, force=args.force)
     except (PlateauBuildingError, OSError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 2

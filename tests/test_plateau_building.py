@@ -76,15 +76,15 @@ def test_native_gdal_command_preserves_xyz_and_layer(tmp_path):
 
 
 def test_missing_gdal_has_actionable_failure(monkeypatch):
-    monkeypatch.setattr(plateau.shutil, "which", lambda _name: None)
+    monkeypatch.setattr(plateau.shutil, "which", lambda _name, **_kwargs: None)
 
     with pytest.raises(plateau.PlateauBuildingError, match="ogr2ogr executable"):
-        plateau.require_gdal("gis-python")
+        plateau.require_gdal(plateau.GISRuntime("gis-python"))
 
 
 def test_gdal_check_uses_external_gis_python(monkeypatch):
     calls = []
-    monkeypatch.setattr(plateau.shutil, "which", lambda name: f"/gis/{name}")
+    monkeypatch.setattr(plateau.shutil, "which", lambda name, **_kwargs: f"/gis/{name}")
 
     def run(command, **kwargs):
         calls.append((command, kwargs))
@@ -92,13 +92,34 @@ def test_gdal_check_uses_external_gis_python(monkeypatch):
 
     monkeypatch.setattr(plateau.subprocess, "run", run)
 
-    plateau.require_gdal("gis-python")
+    plateau.require_gdal(plateau.GISRuntime("gis-python"))
 
     assert calls[0][0] == [
         "/gis/gis-python",
         "-c",
         "from osgeo import ogr, osr",
     ]
+
+
+def test_load_gis_runtime_snapshot(tmp_path):
+    snapshot = tmp_path / "gis.json"
+    snapshot.write_text(
+        json.dumps(
+            {
+                "python": "C:/QGIS/bin/python.exe",
+                "ogr2ogr": "C:/QGIS/bin/ogr2ogr.exe",
+                "ogrinfo": "C:/QGIS/bin/ogrinfo.exe",
+                "environment": {"PATH": "C:/QGIS/bin"},
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    runtime = plateau.load_gis_runtime(snapshot)
+
+    assert runtime.python == "C:/QGIS/bin/python.exe"
+    assert runtime.ogr2ogr.endswith("ogr2ogr.exe")
+    assert runtime.environment == {"PATH": "C:/QGIS/bin"}
 
 
 def test_manifest_contains_provenance_counts_and_parameters(tmp_path):
