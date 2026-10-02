@@ -135,9 +135,13 @@ CityGML and OUEM. Direct GDAL/OGR conversion was evaluated, but tested feature
 geometry became `POLYHEDRALSURFACE Z EMPTY`. OUEM therefore ingests the
 Converter's 3D GeoPackage as converted input and produces Native Building,
 preserving `MULTIPOLYGON Z` geometry and source attributes without
-reprojection or clipping. Native-to-
-Standard transformation and canonical study-area selection follow in a later
-step; the ingest command does not claim to produce Standard Building.
+reprojection or clipping. The separate Native-to-Standard command now treats
+the accepted EPSG:4979 Native GeoPackage as its formal input, transforms its
+EPSG:4326 horizontal component to EPSG:6677, explicitly preserves the retained
+absolute T.P. Z, and selects buildings intersecting the canonical Komae extent
+without clipping their geometry. The ingest command still does
+not claim to produce Standard Building. Standard Building remains provisional
+until A1 end-to-end VoxCity validation.
 
 ## 6. Standard CHM and tree-height-platform
 
@@ -205,7 +209,7 @@ prohibiting intentional small fixtures or metadata.
 
 This design deliberately does **not** implement PLATEAU GIS Converter
 automation, direct CityGML parsing/conversion, Native-to-Standard Building,
-building clipping, Tokyo LiDAR or Meta CHM processing,
+model-domain building clipping, Tokyo LiDAR or Meta CHM processing,
 canopy-bottom estimation, Crown Ratio models, VoxCity installation/execution,
 voxelization, solar/shade analysis, or green-view analysis. Those operations
 require subsequent implementation and validation work after these boundaries

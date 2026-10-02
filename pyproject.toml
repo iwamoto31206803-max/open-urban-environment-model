@@ -11,6 +11,7 @@ requires-python = ">=3.10"
 
 [project.scripts]
 ouem-plateau-buildings = "ouem.native.building.plateau:main"
+ouem-standardize-buildings = "ouem.standardize.building:main"
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]

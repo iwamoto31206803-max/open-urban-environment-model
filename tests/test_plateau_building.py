@@ -30,7 +30,7 @@ def worker_result():
         "z_geometries": 2,
         "geometry_type": "3D Multi Polygon",
         "crs": "EPSG:6697",
-        "preserved_fields": ["gml_id", "measuredHeight", "usage"],
+        "preserved_fields": ["id", "measuredHeight", "usage"],
         "warnings": [],
         "errors": [],
     }
@@ -115,7 +115,7 @@ def test_ingest_writes_receipt_manifest_and_summary(tmp_path, monkeypatch):
     )
     assert manifest["manual_preprocessor"] == "PLATEAU GIS Converter GUI"
     assert manifest["validation"]["preserved_fields"] == [
-        "gml_id",
+        "id",
         "measuredHeight",
         "usage",
     ]
@@ -233,7 +233,7 @@ class FakeSRS:
 
 
 class FakeLayer:
-    def __init__(self, geometries, fields=("gml_id", "measuredHeight")):
+    def __init__(self, geometries, fields=("id", "measuredHeight")):
         self.features = [FakeFeature(item) for item in geometries]
         self.definition = FakeDefinition(list(fields))
 
@@ -279,7 +279,7 @@ def test_geometry_validation_rejects_empty_or_2d(geometry, message):
 def test_validation_requires_measured_height():
     with pytest.raises(RuntimeError, match="measuredHeight"):
         worker._validate_layer(
-            FakeLayer([FakeGeometry()], fields=("gml_id",)), ["measuredHeight"]
+            FakeLayer([FakeGeometry()], fields=("id",)), ["measuredHeight"]
         )
 
 
