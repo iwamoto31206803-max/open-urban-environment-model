@@ -5,9 +5,9 @@
 **Scope:** Provider-independent 3D building geometry
 
 This document provisionally defines the coordinate and geometry contract for
-OUEM Standard Building v0.1. Standardization from PLATEAU CityGML must produce
-data that conforms to this contract before model preparation or adapter code
-consumes it.
+OUEM Standard Building v0.1. Standardization from PLATEAU Native Building must
+produce data that conforms to this contract before model preparation or
+adapter code consumes it.
 
 ## 1. Coordinate reference
 
@@ -33,13 +33,18 @@ the geometry's X, Y, and Z coordinates and their meanings from Section 1.
 
 ## 3. PLATEAU source profile
 
-The source profile for the initial implementation is:
+The upstream source profile is:
 
 | Property | Value |
 | --- | --- |
 | Source | PLATEAU CityGML |
 | Source CRS | EPSG:6697 |
 | Source coordinate reference | JGD2011 geographic coordinates with T.P. elevation |
+
+For A1, CityGML reaches OUEM through a manual PLATEAU GIS Converter GUI step.
+OUEM first ingests the resulting 3D GeoPackage as Native Building. This
+provisional Standard contract applies only to the later Native-to-Standard
+step; the ingest command does not itself produce Standard Building.
 
 Standardization transforms the horizontal coordinates from the source CRS to
 the study-area projected CRS. It preserves the interpretation of source Z as

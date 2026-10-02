@@ -43,18 +43,27 @@ standardized buildings.
 
 ## PLATEAU Building Provider v0.1
 
-The provider command recursively discovers building GML below a downloaded
-PLATEAU package (for example, `udx/bldg/*.gml`). It also accepts conservatively
-named PLATEAU building files such as `*_bldg_*_op.gml` placed directly in the
-provider dataset directory. It converts each accepted file to a restartable
-Native GeoPackage and writes one Standard Building GeoPackage containing every
-complete building geometry that intersects the canonical study-area extent:
+A1 uses **PLATEAU GIS Converter GUI output as its technical ingestion
+boundary**. Direct GDAL/OGR conversion of the tested CityGML exposed the layer
+as `3D PolyhedralSurface`, but individual geometries became
+`POLYHEDRALSURFACE Z EMPTY`. Converter output retained real `MULTIPOLYGON Z`
+geometry, so direct CityGML conversion is not an OUEM A1 processing path.
+
+The manual and OUEM steps are:
+
+1. obtain PLATEAU CityGML;
+2. convert it with PLATEAU GIS Converter GUI to a GeoPackage using settings
+   that retain 3D geometry;
+3. pass that GeoPackage to OUEM building ingest;
+4. create and automatically validate OUEM Native Building; and
+5. inspect position, visible geometry, height, and form in QGIS 3D View.
+
+Run ingest from the separate OUEM runtime after completing the GIS runtime
+stage documented in [`scripts/work/README.md`](scripts/work/README.md):
 
 ```shell
-ouem-plateau-buildings /path/to/plateau-package \
-  --study-area config/study_areas/komae_09LD3451.yaml \
-  --native-dir data/native/building/komae \
-  --output data/standard/building/komae.gpkg \
+ouem-plateau-buildings /path/to/converter-output.gpkg \
+  --output data/native/building/komae.gpkg \
   --gis-runtime scripts/work/.runtime/plateau_komae_gis.json
 ```
 
@@ -66,18 +75,17 @@ OUEM Python never runs inside the GIS shell, and GIS Python is used only for the
 standalone child worker. OUEM is not installed into GIS Python, and the OUEM
 venv does not need `osgeo`. The confirmed local combination is QGIS 4.2.3,
 GDAL 3.13.3, and GIS Python 3.12.14 with OUEM Python 3.11.9; these are observed
-acceptance versions rather than package-wide requirements. Native outputs retain CityGML fields and XYZ
-geometry. A source fingerprint receipt beside each Native file enables reuse;
-`--force` rebuilds them. Standard output contains only the common OUEM fields,
-uses the study-area horizontal CRS, and retains source Z as absolute T.P.
-elevation in metres. Selection does not clip a boundary-crossing building.
+acceptance versions rather than package-wide requirements. Ingest copies the
+resolved building layer without clipping, reprojection, geometry repair, or
+dimensional reduction and preserves all source attributes. It rejects empty or
+2D geometry, undefined CRS, zero features, missing `measuredHeight`, feature
+loss, or field loss. A SHA-256 receipt enables reuse, and a manifest records
+source provenance and validation results. The concise run summary reports
+input/output counts, geometry type, CRS, Z and non-empty counts, and fields.
 
-The run prints discovery, feature, intersection, reuse, and geometry-failure
-counts. A `.manifest.json` file beside the Standard GeoPackage records source
-files and CRS, target CRS, study area and extent, vertical semantics,
-parameters, timestamp, counts, warnings, and errors. PLATEAU downloading,
-VoxCity execution, DEM, LiDAR/CHM, canopy, solar/shade, and GVI processing are
-outside this provider's scope.
+PLATEAU GIS Converter automation, direct CityGML parsing/conversion, Standard
+Building generation, study-area filtering, VoxCity, terrain, LiDAR/CHM,
+canopy, solar/shade, and GVI processing are outside this minimal A1 ingest.
 
 This environment boundary also applies to future Tokyo LiDAR and CHM work:
 PDAL/GDAL/OGR execution belongs to the GIS environment, while reusable OUEM

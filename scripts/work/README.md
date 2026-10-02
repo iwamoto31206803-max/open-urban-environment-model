@@ -27,7 +27,7 @@ OUEM revision, and run the OUEM stage:
 
 ```bat
 .venv\Scripts\python.exe -m pip install -e .
-scripts\work\plateau_komae_local_acceptance.cmd ouem
+scripts\work\plateau_komae_local_acceptance.cmd ouem D:\path\to\converted.gpkg
 ```
 
 If `.venv` does not exist, create it with the ordinary project Python selected
@@ -35,11 +35,11 @@ for OUEM (for example, through VS Code's **Python: Create Environment**), not
 with OSGeo4W Python. No package-wide Python micro-version is prescribed. The
 confirmed OUEM workstation currently uses Python 3.11.9.
 
-The default source is `data\raw\building\plateau_komae`. Pass a different
-dataset directory to the OUEM stage as its second argument:
+The second argument is the GeoPackage produced manually by PLATEAU GIS
+Converter. It is required; the script does not guess a local filename:
 
 ```bat
-scripts\work\plateau_komae_local_acceptance.cmd ouem D:\path\to\plateau-dataset
+scripts\work\plateau_komae_local_acceptance.cmd ouem D:\path\to\converted.gpkg
 ```
 
 The environment boundary is deliberate:
@@ -60,6 +60,12 @@ The snapshot also records the GIS runtime's preferred output encoding. OUEM
 captures GIS child-process streams as bytes and decodes them explicitly, so a
 Japanese Windows OUEM locale such as cp932 cannot raise `UnicodeDecodeError`
 when a GDAL or GIS Python child emits UTF-8 diagnostics.
+
+The OUEM stage prints input/output feature counts, resolved layer, geometry
+type, CRS, non-empty/Z geometry counts, reuse status, and preserved fields.
+After it passes, open `data\native\building\komae.gpkg` in QGIS. Confirm the
+buildings are correctly located and visible, then use QGIS 3D View to confirm
+their height and three-dimensional form.
 
 This same responsibility boundary should be retained when Tokyo LiDAR and CHM
 work is integrated: PDAL/GDAL/OGR operations belong to the GIS environment,

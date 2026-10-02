@@ -5,8 +5,7 @@ rem Two-stage local acceptance helper. Never mix GIS and OUEM Python runtimes.
 for %%I in ("%~dp0..\..") do set "REPO_ROOT=%%~fI"
 set "RUNTIME_FILE=%REPO_ROOT%\scripts\work\.runtime\plateau_komae_gis.json"
 set "OUEM_PYTHON=%REPO_ROOT%\.venv\Scripts\python.exe"
-set "DATASET_DIR=data\raw\building\plateau_komae"
-if not "%~2"=="" set "DATASET_DIR=%~2"
+set "CONVERTER_GPKG=%~2"
 
 if /I "%~1"=="gis" goto :gis
 if /I "%~1"=="ouem" goto :ouem
@@ -24,21 +23,20 @@ python "%REPO_ROOT%\scripts\work\capture_gis_runtime.py" "%RUNTIME_FILE%" || exi
 echo.
 echo GIS stage complete. Close this shell before running the OUEM stage.
 echo Next, open a normal Command Prompt or VS Code terminal and run:
-echo   scripts\work\plateau_komae_local_acceptance.cmd ouem
+echo   scripts\work\plateau_komae_local_acceptance.cmd ouem D:\path\to\converted.gpkg
 exit /b 0
 
 :ouem
 echo === Stage 2: repository-local OUEM runtime ===
 echo Do not run this stage in the QGIS/OSGeo4W command environment.
 pushd "%REPO_ROOT%" || exit /b 2
+if "%CONVERTER_GPKG%"=="" goto :input_missing
 if not exist "%RUNTIME_FILE%" goto :runtime_missing
 if not exist "%OUEM_PYTHON%" goto :venv_missing
 "%OUEM_PYTHON%" --version || goto :ouem_error
 "%OUEM_PYTHON%" -c "import ouem; print('OUEM package import OK')" || goto :ouem_missing
-"%OUEM_PYTHON%" -m ouem.native.building.plateau "%DATASET_DIR%" ^
-  --study-area config\study_areas\komae_09LD3451.yaml ^
-  --native-dir data\native\building\komae ^
-  --output data\standard\building\komae.gpkg ^
+"%OUEM_PYTHON%" -m ouem.native.building.plateau "%CONVERTER_GPKG%" ^
+  --output data\native\building\komae.gpkg ^
   --gis-runtime "%RUNTIME_FILE%"
 set "RUN_EXIT=%ERRORLEVEL%"
 popd
@@ -46,6 +44,12 @@ exit /b %RUN_EXIT%
 
 :runtime_missing
 echo ERROR: GIS runtime snapshot not found. Run the GIS stage first.
+popd
+exit /b 2
+
+:input_missing
+echo ERROR: Pass the PLATEAU GIS Converter GeoPackage to the OUEM stage.
+echo Example: plateau_komae_local_acceptance.cmd ouem D:\path\to\converted.gpkg
 popd
 exit /b 2
 
@@ -70,5 +74,5 @@ exit /b 2
 :usage
 echo Usage:
 echo   In QGIS/OSGeo4W shell: plateau_komae_local_acceptance.cmd gis
-echo   Then in normal shell: plateau_komae_local_acceptance.cmd ouem [dataset-dir]
+echo   Then in normal shell: plateau_komae_local_acceptance.cmd ouem converter.gpkg
 exit /b 2

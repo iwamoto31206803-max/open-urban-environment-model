@@ -55,7 +55,8 @@ Tokyo LiDAR     → Tokyo Native CHM   → Standard CHM
 Meta CHM        → Meta Native CHM    → Standard CHM
 Future GSI LiDAR → GSI Native CHM    → Standard CHM
 
-PLATEAU CityGML          → PLATEAU Native Building → Standard Building
+PLATEAU CityGML → GIS Converter 3D GeoPackage → PLATEAU Native Building
+                                                   → Standard Building
 Future GSI Building source → GSI Native Building   → Standard Building
 ```
 
@@ -129,6 +130,14 @@ Container and container-specific geometry encoding remain implementation
 choices. They must preserve the Standard Building coordinate and geometry
 contract and will be validated during the A1 end-to-end VoxCity test.
 
+For A1, PLATEAU GIS Converter GUI is the manual technical boundary between
+CityGML and OUEM. Direct GDAL/OGR conversion was evaluated, but tested feature
+geometry became `POLYHEDRALSURFACE Z EMPTY`. OUEM therefore ingests the
+Converter's 3D GeoPackage as Native Building, preserving `MULTIPOLYGON Z`
+geometry and source attributes without reprojection or clipping. Native-to-
+Standard transformation and canonical study-area selection follow in a later
+step; the ingest command does not claim to produce Standard Building.
+
 ## 6. Standard CHM and tree-height-platform
 
 OUEM intends to reuse the existing tree-height processing concept:
@@ -193,8 +202,9 @@ prohibiting intentional small fixtures or metadata.
 
 ## 10. Deferred implementation
 
-This design deliberately does **not** implement PLATEAU conversion or mesh
-discovery, building clipping, Tokyo LiDAR or Meta CHM processing,
+This design deliberately does **not** implement PLATEAU GIS Converter
+automation, direct CityGML parsing/conversion, Native-to-Standard Building,
+building clipping, Tokyo LiDAR or Meta CHM processing,
 canopy-bottom estimation, Crown Ratio models, VoxCity installation/execution,
 voxelization, solar/shade analysis, or green-view analysis. Those operations
 require subsequent implementation and validation work after these boundaries

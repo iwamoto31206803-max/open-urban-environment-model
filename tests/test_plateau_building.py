@@ -3,118 +3,49 @@ from pathlib import Path
 
 import pytest
 
+from ouem.native.building import _plateau_gdal_worker as worker
 from ouem.native.building import plateau
-from ouem.study_area import StudyArea
 
 
-def test_recursive_discovery_accepts_packaged_and_standalone_buildings(tmp_path):
-    accepted_upper = tmp_path / "download" / "UDX" / "BLDG" / "A.GML"
-    accepted_nested = tmp_path / "city" / "udx" / "bldg" / "nested" / "b.gml"
-    accepted_standalone = tmp_path / "53394525_bldg_6697_op.gml"
-    skipped = tmp_path / "city" / "udx" / "tran" / "road.gml"
-    skipped_arbitrary = tmp_path / "buildings.gml"
-    skipped_nested_standalone = tmp_path / "loose" / "53394526_bldg_6697_op.gml"
-    skipped_wrong_suffix = tmp_path / "53394527_bldg_6697.gml"
-    ignored = tmp_path / "city" / "udx" / "bldg" / "readme.txt"
-    for path in (
-        accepted_upper,
-        accepted_nested,
-        accepted_standalone,
-        skipped,
-        skipped_arbitrary,
-        skipped_nested_standalone,
-        skipped_wrong_suffix,
-        ignored,
-    ):
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text("fixture", encoding="utf-8")
-
-    result = plateau.discover_building_gml(tmp_path)
-
-    assert result.accepted == (accepted_standalone, accepted_nested, accepted_upper)
-    assert result.skipped == (
-        skipped_wrong_suffix,
-        skipped_arbitrary,
-        skipped,
-        skipped_nested_standalone,
+def runtime():
+    return plateau.GISRuntime(
+        "gis-python",
+        ogr2ogr="ogr2ogr",
+        ogrinfo="ogrinfo",
+        output_encoding="cp932",
+        environment={"PATH": "/gis"},
     )
-    assert result.discovered == 7
 
 
-def test_deterministic_ids_ignore_iteration_order_and_distinguish_sources():
-    one = plateau.deterministic_ouem_id("udx/bldg/a.gml", "building-4")
-    repeated = plateau.deterministic_ouem_id("udx/bldg/a.gml", "building-4")
-    other_file = plateau.deterministic_ouem_id("udx/bldg/b.gml", "building-4")
-
-    assert one == repeated
-    assert one != other_file
-
-
-@pytest.mark.parametrize(
-    ("envelope", "expected"),
-    [
-        ((0, 1, 0, 1), True),
-        ((10, 12, 10, 12), False),
-        ((2, 3, 0, 1), True),  # boundary touch is an intersection
-        ((-1, 4, -1, 4), True),  # crossing feature remains selected
-    ],
-)
-def test_extent_intersection(envelope, expected):
-    assert plateau.intersects_extent(envelope, (0, 0, 2, 2)) is expected
-
-
-def test_native_gdal_command_preserves_xyz_and_layer(tmp_path):
-    source = tmp_path / "udx/bldg/one.gml"
-    output = tmp_path / "native/one.gpkg"
-
-    command = plateau.build_native_command(source, output)
-
-    assert command[:4] == ["ogr2ogr", "-f", "GPKG", str(output)]
-    assert command[4:6] == [str(source), "Building"]
-    assert command[command.index("-dim") + 1] == "XYZ"
-    assert command[command.index("-nln") + 1] == "building"
-
-
-def test_missing_gdal_has_actionable_failure(monkeypatch):
-    monkeypatch.setattr(plateau.shutil, "which", lambda _name, **_kwargs: None)
-
-    with pytest.raises(plateau.PlateauBuildingError, match="ogr2ogr executable"):
-        plateau.require_gdal(plateau.GISRuntime("gis-python"))
-
-
-def test_gdal_check_uses_external_gis_python(monkeypatch):
-    calls = []
-    monkeypatch.setattr(plateau.shutil, "which", lambda name, **_kwargs: f"/gis/{name}")
-
-    def run(command, **kwargs):
-        calls.append((command, kwargs))
-        return plateau.subprocess.CompletedProcess(command, 0, "", "")
-
-    monkeypatch.setattr(plateau.subprocess, "run", run)
-
-    plateau.require_gdal(plateau.GISRuntime("gis-python"))
-
-    assert calls[0][0] == [
-        "/gis/gis-python",
-        "-c",
-        "from osgeo import ogr, osr",
-    ]
+def worker_result():
+    return {
+        "input_layer": "building",
+        "output_layer": "building",
+        "input_features": 2,
+        "output_features": 2,
+        "non_empty_geometries": 2,
+        "z_geometries": 2,
+        "geometry_type": "3D Multi Polygon",
+        "crs": "EPSG:6697",
+        "preserved_fields": ["gml_id", "measuredHeight", "usage"],
+        "warnings": [],
+        "errors": [],
+    }
 
 
 def test_gdal_subprocess_output_does_not_depend_on_cp932(monkeypatch):
-    monkeypatch.setattr(plateau.shutil, "which", lambda name, **_kwargs: f"/gis/{name}")
-    utf8_diagnostic = "GIS子プロセスの診断".encode("utf-8")
+    monkeypatch.setattr(plateau.shutil, "which", lambda name, **kwargs: f"/gis/{name}")
+    diagnostic = "GIS子プロセスの診断".encode("utf-8")
     monkeypatch.setattr(
         plateau.subprocess,
         "run",
         lambda command, **kwargs: plateau.subprocess.CompletedProcess(
-            command, 1, b"", utf8_diagnostic
+            command, 1, b"", diagnostic
         ),
     )
-    runtime = plateau.GISRuntime("gis-python", output_encoding="cp932")
 
     with pytest.raises(plateau.PlateauBuildingError, match="GIS子プロセスの診断"):
-        plateau.require_gdal(runtime)
+        plateau.require_gdal(runtime())
 
 
 def test_load_gis_runtime_snapshot(tmp_path):
@@ -132,65 +63,232 @@ def test_load_gis_runtime_snapshot(tmp_path):
         encoding="utf-8",
     )
 
-    runtime = plateau.load_gis_runtime(snapshot)
+    value = plateau.load_gis_runtime(snapshot)
 
-    assert runtime.python == "C:/QGIS/bin/python.exe"
-    assert runtime.ogr2ogr.endswith("ogr2ogr.exe")
-    assert runtime.output_encoding == "cp932"
-    assert runtime.environment == {"PATH": "C:/QGIS/bin"}
+    assert value.python == "C:/QGIS/bin/python.exe"
+    assert value.output_encoding == "cp932"
+    assert value.environment == {"PATH": "C:/QGIS/bin"}
 
 
-def test_manifest_contains_provenance_counts_and_parameters(tmp_path):
-    dataset = tmp_path / "plateau"
-    source = dataset / "udx/bldg/one.gml"
-    source.parent.mkdir(parents=True)
-    source.write_text("fixture", encoding="utf-8")
-    native = tmp_path / "native.gpkg"
-    standard = tmp_path / "standard.gpkg"
-    destination = tmp_path / "standard.gpkg.manifest.json"
-    area = StudyArea("test", "Test", 6677, 0, 1, 2, 3)
-    result = plateau.PlateauRunResult(
-        gml_discovered=1,
-        gml_accepted=1,
-        source_features=4,
-        native_features=4,
-        standard_features=2,
-        study_area_intersections=2,
-        native_created=1,
-        invalid_geometries=1,
-        warnings=["example warning"],
+def test_rejects_non_geopackage_input(tmp_path, monkeypatch):
+    source = tmp_path / "building.gml"
+    source.write_text("not used", encoding="utf-8")
+    monkeypatch.setattr(plateau, "require_gdal", lambda _runtime: None)
+
+    with pytest.raises(plateau.PlateauBuildingError, match="Converter GeoPackage"):
+        plateau.ingest_converter_geopackage(
+            source, tmp_path / "native.gpkg", runtime=runtime()
+        )
+
+
+def test_ingest_writes_receipt_manifest_and_summary(tmp_path, monkeypatch):
+    source = tmp_path / "converted.gpkg"
+    source.write_bytes(b"synthetic converter fixture")
+    output = tmp_path / "data/native/building/test.gpkg"
+    monkeypatch.setattr(plateau, "require_gdal", lambda _runtime: None)
+
+    def run_worker(_runtime, **kwargs):
+        assert kwargs["mode"] == "ingest"
+        assert kwargs["source"] == source.resolve()
+        kwargs["output"].write_bytes(b"native")
+        return worker_result()
+
+    monkeypatch.setattr(plateau, "_run_worker", run_worker)
+
+    result = plateau.ingest_converter_geopackage(
+        source, output, runtime=runtime(), source_layer="building"
     )
 
-    plateau.write_manifest(
-        destination,
-        dataset_dir=dataset,
-        sources=[source],
-        native_outputs=[native],
-        standard_output=standard,
-        area=area,
-        parameters={"selection": "intersects; complete geometry retained"},
-        result=result,
+    assert result.input_features == result.output_features == 2
+    assert result.non_empty_geometries == result.z_geometries == 2
+    assert result.geometry_type == "3D Multi Polygon"
+    assert not result.reused
+    receipt = json.loads(
+        output.with_suffix(".gpkg.receipt.json").read_text(encoding="utf-8")
     )
-    manifest = json.loads(destination.read_text(encoding="utf-8"))
+    assert receipt["source_sha256"] == plateau._source_fingerprint(source)
+    manifest = json.loads(
+        output.with_suffix(".gpkg.manifest.json").read_text(encoding="utf-8")
+    )
+    assert manifest["manual_preprocessor"] == "PLATEAU GIS Converter GUI"
+    assert manifest["validation"]["preserved_fields"] == [
+        "gml_id",
+        "measuredHeight",
+        "usage",
+    ]
+    assert "Non-empty/Z geometries: 2/2" in result.summary()
 
-    assert manifest["provider"] == "PLATEAU"
-    assert manifest["source"]["files"] == ["udx/bldg/one.gml"]
-    assert manifest["source"]["crs"] == "EPSG:6697"
-    assert manifest["target_crs"] == "EPSG:6677"
-    assert manifest["vertical"]["unit"] == "metre"
-    assert manifest["study_area"] == {"id": "test", "extent": [0, 1, 2, 3]}
-    assert manifest["counts"]["standard_features"] == 2
-    assert manifest["warnings"] == ["example warning"]
-    assert "processed_at" in manifest
+
+def test_matching_source_fingerprint_reuses_valid_native(tmp_path, monkeypatch):
+    source = tmp_path / "converted.gpkg"
+    source.write_bytes(b"converter")
+    output = tmp_path / "native.gpkg"
+    output.write_bytes(b"native")
+    output.with_suffix(".gpkg.receipt.json").write_text(
+        json.dumps(plateau._receipt_value(source.resolve(), None)),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(plateau, "require_gdal", lambda _runtime: None)
+    calls = []
+
+    def run_worker(_runtime, **kwargs):
+        calls.append(kwargs)
+        return worker_result()
+
+    monkeypatch.setattr(plateau, "_run_worker", run_worker)
+
+    result = plateau.ingest_converter_geopackage(
+        source, output, runtime=runtime()
+    )
+
+    assert result.reused
+    assert calls[0]["mode"] == "compare"
+    assert calls[0]["source"] == source.resolve()
+    assert calls[0]["output"] == output
 
 
-def test_run_summary_contains_required_operational_counts():
-    result = plateau.PlateauRunResult(3, 2, 1, 8, 8, 4, 4, 1, 1, 2, 1)
+class FakeGeometry:
+    def __init__(self, *, empty=False, has_z=True):
+        self.empty = empty
+        self.has_z = has_z
 
-    summary = result.summary()
+    def IsEmpty(self):
+        return self.empty
 
-    assert "GML discovered/accepted/skipped: 3/2/1" in summary
-    assert "Source/native/standard features: 8/8/4" in summary
-    assert "Study-area intersections: 4" in summary
-    assert "Native reused/new: 1/1" in summary
-    assert "Invalid/failed geometries: 2/1" in summary
+    def Is3D(self):
+        return self.has_z
+
+    def GetCoordinateDimension(self):
+        return 3 if self.has_z else 2
+
+    def GetPointCount(self):
+        return 1
+
+    def GetPoint(self, _index):
+        return (139.0, 35.0, 12.5) if self.has_z else (139.0, 35.0)
+
+    def GetGeometryCount(self):
+        return 0
+
+
+class FakeFeature:
+    def __init__(self, geometry):
+        self.geometry = geometry
+
+    def GetGeometryRef(self):
+        return self.geometry
+
+
+class FakeField:
+    def __init__(self, name):
+        self.name = name
+
+    def GetName(self):
+        return self.name
+
+
+class FakeDefinition:
+    def __init__(self, fields):
+        self.fields = fields
+
+    def GetFieldCount(self):
+        return len(self.fields)
+
+    def GetFieldDefn(self, index):
+        return FakeField(self.fields[index])
+
+
+class FakeSRS:
+    def GetAuthorityName(self, _target):
+        return "EPSG"
+
+    def GetAuthorityCode(self, _target):
+        return "6697"
+
+
+class FakeLayer:
+    def __init__(self, geometries, fields=("gml_id", "measuredHeight")):
+        self.features = [FakeFeature(item) for item in geometries]
+        self.definition = FakeDefinition(list(fields))
+
+    def GetFeatureCount(self):
+        return len(self.features)
+
+    def GetLayerDefn(self):
+        return self.definition
+
+    def ResetReading(self):
+        pass
+
+    def __iter__(self):
+        return iter(self.features)
+
+    def GetSpatialRef(self):
+        return FakeSRS()
+
+
+def test_3d_multipolygon_validation_requires_non_empty_z_geometry():
+    values = worker._validate_layer(
+        FakeLayer([FakeGeometry(), FakeGeometry()]), ["measuredHeight"]
+    )
+
+    assert values["features"] == 2
+    assert values["non_empty_geometries"] == 2
+    assert values["z_geometries"] == 2
+    assert values["crs"] == "EPSG:6697"
+
+
+@pytest.mark.parametrize(
+    ("geometry", "message"),
+    [
+        (FakeGeometry(empty=True), "empty building geometry"),
+        (FakeGeometry(has_z=False), "without Z"),
+    ],
+)
+def test_geometry_validation_rejects_empty_or_2d(geometry, message):
+    with pytest.raises(RuntimeError, match=message):
+        worker._validate_layer(FakeLayer([geometry]), ["measuredHeight"])
+
+
+def test_validation_requires_measured_height():
+    with pytest.raises(RuntimeError, match="measuredHeight"):
+        worker._validate_layer(
+            FakeLayer([FakeGeometry()], fields=("gml_id",)), ["measuredHeight"]
+        )
+
+
+def test_geometry_type_must_be_3d_multipolygon():
+    worker._require_3d_multipolygon("3D Multi Polygon")
+
+    with pytest.raises(RuntimeError, match="3D Multi Polygon"):
+        worker._require_3d_multipolygon("3D PolyhedralSurface")
+
+
+class FakeNamedLayer:
+    def __init__(self, name):
+        self.name = name
+
+    def GetName(self):
+        return self.name
+
+
+class FakeDataset:
+    def __init__(self, names):
+        self.layers = [FakeNamedLayer(name) for name in names]
+
+    def GetLayerCount(self):
+        return len(self.layers)
+
+    def GetLayer(self, index):
+        return self.layers[index]
+
+    def GetLayerByName(self, name):
+        return next((layer for layer in self.layers if layer.name == name), None)
+
+
+def test_building_layer_resolution_is_conservative():
+    selected = worker._resolve_layer(FakeDataset(["metadata", "building"]), None)
+    assert selected.GetName() == "building"
+
+    with pytest.raises(RuntimeError, match="--source-layer"):
+        worker._resolve_layer(FakeDataset(["building", "bldg"]), None)
