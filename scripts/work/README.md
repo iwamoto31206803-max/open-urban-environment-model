@@ -100,3 +100,22 @@ After ingest passes, open `data\native\building\komae.gpkg` in QGIS:
 
 The successful Komae PoC contained 3,637 Building features, 3D Multi Polygon
 geometry, EPSG:4979, and retained Z and source attributes.
+
+## Native to Standard Building acceptance
+
+After Native ingest has been accepted, run the following exact command from a
+new ordinary Windows cmd or VS Code terminal (not OSGeo4W Shell):
+
+```bat
+scripts\work\plateau_komae_local_acceptance.cmd standard
+```
+
+The optional second argument overrides the accepted Native input and supports
+repository-relative or absolute paths. The default input is
+`data\native\building\komae.gpkg`; output is always
+`data\standard\building\komae.gpkg` with an adjacent manifest. The command
+uses the previously captured GIS child runtime and the canonical
+`config\study_areas\komae_09LD3451.yaml` configuration. Its summary reports
+input/output paths and counts, input/output CRS, geometry type and 3D status,
+the extent, required metadata, Z preservation, deterministic IDs, and a final
+PASS/FAIL. Boundary-intersecting buildings retain complete geometry.

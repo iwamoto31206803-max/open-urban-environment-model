@@ -8,6 +8,7 @@ set "SOURCE_LAYER=%~3"
 if /I "%~1"=="manual" goto manual
 if /I "%~1"=="gis" goto gis
 if /I "%~1"=="ouem" goto ouem
+if /I "%~1"=="standard" goto standard
 goto usage
 
 :manual
@@ -63,6 +64,33 @@ set "RUN_EXIT=%ERRORLEVEL%"
 popd
 exit /b %RUN_EXIT%
 
+:standard
+if defined OSGEO4W_ROOT goto contaminated
+if defined QGIS_PREFIX_PATH goto contaminated
+if defined QGIS_PLUGINPATH goto contaminated
+if defined GDAL_DATA goto contaminated
+if defined PROJ_LIB goto contaminated
+if not exist "%RUNTIME_FILE%" goto runtime_missing
+if not exist "%OUEM_PYTHON%" goto venv_missing
+set "NATIVE_GPKG=%~2"
+if not defined NATIVE_GPKG set "NATIVE_GPKG=%REPO%\data\native\building\komae.gpkg"
+if not "%NATIVE_GPKG:~1,1%"==":" if not "%NATIVE_GPKG:~0,1%"=="\" set "NATIVE_GPKG=%REPO%\%NATIVE_GPKG%"
+for %%I in ("%NATIVE_GPKG%") do set "NATIVE_GPKG=%%~fI"
+if not exist "%NATIVE_GPKG%" (echo ERROR: accepted Native Building not found: %NATIVE_GPKG%& exit /b 2)
+pushd "%REPO%" || exit /b 2
+"%OUEM_PYTHON%" "%REPO%\scripts\work\ouem_runtime_check.py" --expected-python "%OUEM_PYTHON%" || goto standard_failed
+"%OUEM_PYTHON%" -m ouem.standardize.building "%NATIVE_GPKG%" ^
+  --output data\standard\building\komae.gpkg ^
+  --study-area config\study_areas\komae_09LD3451.yaml ^
+  --gis-runtime "%RUNTIME_FILE%"
+set "RUN_EXIT=%ERRORLEVEL%"
+popd
+exit /b %RUN_EXIT%
+
+:standard_failed
+popd
+exit /b 1
+
 :resolve_converter_gpkg
 set "CONVERTER_GPKG=%~1"
 if not defined CONVERTER_GPKG set "CONVERTER_GPKG=%REPO%\data\converted\building\plateau_komae\53393465_bldg_6697_op_convert.gpkg"
@@ -97,11 +125,13 @@ echo   .venv\Scripts\python.exe -m pip install -e .
 exit /b 1
 
 :usage
-echo Usage: %~nx0 ^<manual^|gis^|ouem^> [converter.gpkg] [source-layer]
+echo Usage: %~nx0 ^<manual^|gis^|ouem^|standard^> [input.gpkg] [source-layer]
 echo.
 echo   manual  Show manual PLATEAU GIS Converter preprocessing instructions.
 echo   gis     Run from OSGeo4W Shell. Uses only the QGIS/GIS runtime.
 echo   ouem    Run from a NEW ordinary cmd or VS Code terminal. Uses only .venv.
 echo           Defaults to data\converted\building\plateau_komae\53393465_bldg_6697_op_convert.gpkg.
 echo           Relative paths are resolved from the repository root; quote paths containing spaces.
+echo   standard Convert accepted Native Building to data\standard\building\komae.gpkg.
+echo            Optional input defaults to data\native\building\komae.gpkg.
 exit /b 2

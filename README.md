@@ -56,7 +56,7 @@ Sources that need no external conversion follow `raw → native → standard`.
 For PLATEAU, source CityGML belongs under
 `data/raw/building/plateau_komae/`, PLATEAU GIS Converter output under
 `data/converted/building/plateau_komae/`, OUEM's provider-aware ingest output
-under `data/native/building/`, and future Standard Building output under
+under `data/native/building/`, and Standard Building output under
 `data/standard/building/`. Converter output is **converted**, not OUEM Native
 Building. `data/work/` is only for temporary experiments, diagnostics, and
 acceptance artifacts; it is not a canonical home for reusable datasets.
@@ -125,9 +125,27 @@ Manual visual acceptance checks Building footprints and attributes in QGIS 2D
 View, then uses geometry Z in QGIS 3D View. The accepted data showed building
 height and form without artificial renderer extrusion.
 
-PLATEAU GIS Converter automation, direct CityGML parsing/conversion, Standard
-Building generation, study-area filtering, VoxCity, terrain, LiDAR/CHM,
+PLATEAU GIS Converter automation, direct CityGML parsing/conversion, VoxCity,
+terrain, LiDAR/CHM,
 canopy, solar/shade, and GVI processing are outside this minimal A1 ingest.
+
+## OUEM Standard Building v0.1 conversion
+
+The separate `ouem-standardize-buildings` command consumes accepted Native
+Building, selects complete buildings intersecting the configured study-area
+rectangle, transforms horizontal coordinates from EPSG:6697 to EPSG:6677, and
+preserves every Z as absolute T.P. elevation. Boundary-crossing buildings are
+not clipped. It writes only the five Standard metadata fields and a validation
+manifest; see the [provisional contract](docs/OUEM_Standard_Building_v0.1.md)
+for the exact nullable mappings and deterministic ID rule. This milestone does
+not include VoxCity or make the provisional contract final.
+
+```shell
+ouem-standardize-buildings data/native/building/komae.gpkg \
+  --output data/standard/building/komae.gpkg \
+  --study-area config/study_areas/komae_09LD3451.yaml \
+  --gis-runtime scripts/work/.runtime/plateau_komae_gis.json
+```
 
 This environment boundary also applies to future Tokyo LiDAR and CHM work:
 PDAL/GDAL/OGR execution belongs to the GIS environment, while reusable OUEM

@@ -65,3 +65,44 @@ coordinate reference and provenance metadata:
 | `measured_height` | Measured height in metres, nullable |
 
 Provider-specific attributes need not be copied into Standard Building.
+
+## 5. A1 Native-to-Standard implementation
+
+The implementation reads the already accepted PLATEAU Native Building
+GeoPackage; it does not operate PLATEAU GIS Converter or repeat Native ingest.
+It requires the Native `building` layer in EPSG:6697, transforms horizontal
+coordinates to the study-area EPSG:6677 CRS, and writes a 3D GeoPackage layer
+under `data/standard/building/`. Because a general CRS transformation may also
+operate on the vertical coordinate, the implementation records every input Z,
+performs the CRS transformation, and then explicitly restores every Z. The
+acceptance check requires a maximum Z difference no greater than `1e-9` metre.
+
+Buildings are selected when their horizontally transformed geometry intersects
+the closed rectangle in the study-area configuration. The complete transformed
+geometry is written: it is **not** clipped to the rectangle. Thus a building
+crossing the boundary remains a complete building. Domain clipping belongs to
+later model preparation, not Standardization.
+
+The PLATEAU mapping is deliberately narrow:
+
+| Standard field | Native source |
+| --- | --- |
+| `ouem_id` | Deterministic rule below |
+| `source_id` | `gml_id`; empty or duplicate values fail conversion |
+| `source_dataset` | Literal provenance value `PLATEAU CityGML` |
+| `source_lod` | First available of `source_lod`, `lod`, `lodType`, or `lod_type`; otherwise null |
+| `measured_height` | `measuredHeight` (or already-normalized `measured_height`); otherwise null |
+
+No other PLATEAU attribute is copied. Missing nullable LoD or measured-height
+values remain null rather than being inferred. The stable ID is `oub-` followed
+by UUIDv5 using the RFC 4122 URL namespace and this exact UTF-8 name:
+
+```text
+ouem-standard-building-v0.1|PLATEAU CityGML|<source_id>
+```
+
+It therefore does not depend on input feature order or a particular run. The
+adjacent manifest records the operation, study area, Z meaning, selection
+semantics, ID rule, and validation results. This implementation does not change
+this specification's provisional status; A1 end-to-end VoxCity validation is
+still pending.
