@@ -20,8 +20,10 @@ def _resolve_layer(dataset, requested):
 
     layers = [dataset.GetLayer(index) for index in range(dataset.GetLayerCount())]
     exact = [
-        layer for layer in layers
-        if layer.GetName().lower() in {"building", "buildings", "bldg"}
+        layer
+        for layer in layers
+        if layer.GetName().rsplit(":", 1)[-1].casefold()
+        in {"building", "buildings", "bldg"}
     ]
     if len(exact) == 1:
         return exact[0]

@@ -1,10 +1,8 @@
 @echo off
 setlocal
-set "REPO=%~dp0..\.."
+for %%I in ("%~dp0..\..") do set "REPO=%%~fI"
 set "RUNTIME_FILE=%REPO%\scripts\work\.runtime\plateau_komae_gis.json"
 set "OUEM_PYTHON=%REPO%\.venv\Scripts\python.exe"
-set "CONVERTER_GPKG=%~2"
-if "%CONVERTER_GPKG%"=="" set "CONVERTER_GPKG=%REPO%\data\converted\building\plateau_komae\53393465_bldg_6697_op_convert.gpkg"
 set "SOURCE_LAYER=%~3"
 
 if /I "%~1"=="manual" goto manual
@@ -38,6 +36,7 @@ if defined QGIS_PLUGINPATH goto contaminated
 if defined GDAL_DATA goto contaminated
 if defined PROJ_LIB goto contaminated
 echo %PYTHONHOME% %PYTHONPATH% | findstr /I "qgis osgeo4w" >nul && goto contaminated
+call :resolve_converter_gpkg "%~2"
 if not exist "%CONVERTER_GPKG%" goto input_missing
 if not exist "%RUNTIME_FILE%" goto runtime_missing
 if not exist "%OUEM_PYTHON%" goto venv_missing
@@ -64,6 +63,13 @@ set "RUN_EXIT=%ERRORLEVEL%"
 popd
 exit /b %RUN_EXIT%
 
+:resolve_converter_gpkg
+set "CONVERTER_GPKG=%~1"
+if not defined CONVERTER_GPKG set "CONVERTER_GPKG=%REPO%\data\converted\building\plateau_komae\53393465_bldg_6697_op_convert.gpkg"
+if not "%CONVERTER_GPKG:~1,1%"==":" if not "%CONVERTER_GPKG:~0,1%"=="\" set "CONVERTER_GPKG=%REPO%\%CONVERTER_GPKG%"
+for %%I in ("%CONVERTER_GPKG%") do set "CONVERTER_GPKG=%%~fI"
+exit /b 0
+
 :ouem_failed
 popd
 exit /b 1
@@ -81,6 +87,7 @@ exit /b 2
 echo ERROR: Pass the PLATEAU GIS Converter GeoPackage to the OUEM stage.
 echo Expected default: data\converted\building\plateau_komae\53393465_bldg_6697_op_convert.gpkg
 echo Or pass another path: %~nx0 ouem D:\path\to\converted.gpkg [source-layer]
+echo Repository-relative paths are resolved from: %REPO%
 exit /b 2
 
 :venv_missing
@@ -96,4 +103,5 @@ echo   manual  Show manual PLATEAU GIS Converter preprocessing instructions.
 echo   gis     Run from OSGeo4W Shell. Uses only the QGIS/GIS runtime.
 echo   ouem    Run from a NEW ordinary cmd or VS Code terminal. Uses only .venv.
 echo           Defaults to data\converted\building\plateau_komae\53393465_bldg_6697_op_convert.gpkg.
+echo           Relative paths are resolved from the repository root; quote paths containing spaces.
 exit /b 2
