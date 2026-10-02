@@ -10,11 +10,23 @@ findings and accepted project decisions belong under `docs`.
 
 ## Komae PLATEAU local acceptance
 
-`plateau_komae_local_acceptance.cmd` is a two-stage Windows walkthrough. The
-stages must run in separate shells; the script never starts OUEM's venv Python
-from an OSGeo4W/QGIS shell.
+`plateau_komae_local_acceptance.cmd` covers the manual preprocessing and OUEM
+ingest stages, plus a separate GIS-runtime setup. GIS setup and OUEM ingest
+must run in separate shells; the script never starts OUEM's venv Python from an
+OSGeo4W/QGIS shell.
 
-First, in the **QGIS/OSGeo4W command environment**, run only the GIS stage:
+First display and follow the manual preprocessing instructions:
+
+```bat
+scripts\work\plateau_komae_local_acceptance.cmd manual
+```
+
+Open the PLATEAU Building CityGML in PLATEAU GIS Converter GUI, select maximum
+LOD and settings that retain 3D/Z geometry, export a GeoPackage, and keep its
+path for OUEM ingest. The helper does not automate or launch the GUI.
+
+Separately, in the **QGIS/OSGeo4W command environment**, capture the GIS child
+runtime:
 
 ```bat
 scripts\work\plateau_komae_local_acceptance.cmd gis
@@ -42,10 +54,12 @@ Converter. It is required; the script does not guess a local filename:
 scripts\work\plateau_komae_local_acceptance.cmd ouem D:\path\to\converted.gpkg
 ```
 
-The Komae work helper passes `--source-layer "bldg:Building"`, matching the
-verified PLATEAU GIS Converter multi-layer output. This is pilot wiring only;
-the provider's general layer-resolution behavior and its optional
-`--source-layer` CLI remain unchanged.
+The provider resolves the unique Building layer. If the GeoPackage has zero or
+multiple Building candidates it fails with available layer names and requests
+an explicit layer. Pass that layer as the optional third argument, for example
+`... ouem converted.gpkg bldg:Building`. The helper also checks the locally
+verified Komae Building count of 3637; this is pilot acceptance metadata, not
+a general provider requirement.
 
 The environment boundary is deliberate:
 
@@ -69,8 +83,9 @@ when a GDAL or GIS Python child emits UTF-8 diagnostics.
 The OUEM stage prints input/output feature counts, resolved layer, geometry
 type, CRS, non-empty/Z geometry counts, reuse status, and preserved fields.
 After it passes, open `data\native\building\komae.gpkg` in QGIS. Confirm the
-buildings are correctly located and visible, then use QGIS 3D View to confirm
-their height and three-dimensional form.
+building footprints in 2D View and inspect the attribute table. Then open QGIS
+3D View using geometry Z and confirm height and form without adding artificial
+renderer extrusion.
 
 This same responsibility boundary should be retained when Tokyo LiDAR and CHM
 work is integrated: PDAL/GDAL/OGR operations belong to the GIS environment,

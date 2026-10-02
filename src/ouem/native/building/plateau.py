@@ -193,6 +193,7 @@ def write_manifest(
     source_layer_requested: str | None,
     runtime: GISRuntime,
     result: PlateauRunResult,
+    expected_count: int | None,
 ) -> None:
     manifest = {
         "schema": "ouem-plateau-native-ingest/v0.1",
@@ -211,6 +212,7 @@ def write_manifest(
         "parameters": {
             "geometry_operation": "copy without clipping or dimensional reduction",
             "output_layer": result.output_layer,
+            "expected_count": expected_count,
         },
         "warnings": result.warnings,
         "errors": result.errors,
@@ -228,6 +230,7 @@ def ingest_converter_geopackage(
     *,
     runtime: GISRuntime,
     source_layer: str | None = None,
+    expected_count: int | None = None,
     force: bool = False,
 ) -> PlateauRunResult:
     """Copy a validated Converter building layer into OUEM Native Building."""
@@ -271,15 +274,24 @@ def ingest_converter_geopackage(
             f"{result.input_features} input, {result.output_features} output"
         )
     fingerprint = _source_fingerprint(source_path)
+    manifest_path = output_path.with_suffix(output_path.suffix + ".manifest.json")
     write_manifest(
-        output_path.with_suffix(output_path.suffix + ".manifest.json"),
+        manifest_path,
         source=source_path,
         output=output_path,
         source_fingerprint=fingerprint,
         source_layer_requested=source_layer,
         runtime=runtime,
         result=result,
+        expected_count=expected_count,
     )
+    if not output_path.is_file() or not manifest_path.is_file():
+        raise PlateauBuildingError("Native output or manifest was not created")
+    if expected_count is not None and result.output_features != expected_count:
+        raise PlateauBuildingError(
+            "local acceptance feature count mismatch: "
+            f"expected {expected_count}, found {result.output_features}"
+        )
     return result
 
 
@@ -296,6 +308,11 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--source-layer",
         help="building layer name; omit for conservative automatic resolution",
+    )
+    parser.add_argument(
+        "--expected-count",
+        type=int,
+        help="optional pilot acceptance count; not a general provider requirement",
     )
     parser.add_argument("--force", action="store_true", help="rebuild output")
     parser.add_argument(
@@ -314,6 +331,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             args.output,
             runtime=load_gis_runtime(args.gis_runtime),
             source_layer=args.source_layer,
+            expected_count=args.expected_count,
             force=args.force,
         )
     except (PlateauBuildingError, OSError) as exc:

@@ -58,6 +58,12 @@ The manual and OUEM steps are:
 4. create and automatically validate OUEM Native Building; and
 5. inspect position, visible geometry, height, and form in QGIS 3D View.
 
+The successful Komae PoC produced `data/native/building/komae.gpkg` with layer
+`building`, 3,637 features, 3D Multi Polygon geometry, EPSG:4979, retained Z,
+and `measuredHeight` and other source attributes. Source and Native Building
+counts matched at 3,637. This count records this Komae acceptance dataset only;
+features in unrelated layers of the intermediate GeoPackage are not included.
+
 Run ingest from the separate OUEM runtime after completing the GIS runtime
 stage documented in [`scripts/work/README.md`](scripts/work/README.md):
 
@@ -82,6 +88,10 @@ dimensional reduction and preserves all source attributes. It rejects empty or
 loss, or field loss. A SHA-256 receipt enables reuse, and a manifest records
 source provenance and validation results. The concise run summary reports
 input/output counts, geometry type, CRS, Z and non-empty counts, and fields.
+
+Manual visual acceptance checks Building footprints and attributes in QGIS 2D
+View, then uses geometry Z in QGIS 3D View. The accepted data showed building
+height and form without artificial renderer extrusion.
 
 PLATEAU GIS Converter automation, direct CityGML parsing/conversion, Standard
 Building generation, study-area filtering, VoxCity, terrain, LiDAR/CHM,

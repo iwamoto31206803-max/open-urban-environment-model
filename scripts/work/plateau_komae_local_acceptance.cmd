@@ -6,13 +6,24 @@ for %%I in ("%~dp0..\..") do set "REPO_ROOT=%%~fI"
 set "RUNTIME_FILE=%REPO_ROOT%\scripts\work\.runtime\plateau_komae_gis.json"
 set "OUEM_PYTHON=%REPO_ROOT%\.venv\Scripts\python.exe"
 set "CONVERTER_GPKG=%~2"
+set "SOURCE_LAYER=%~3"
 
+if /I "%~1"=="manual" goto :manual
 if /I "%~1"=="gis" goto :gis
 if /I "%~1"=="ouem" goto :ouem
 goto :usage
 
+:manual
+echo === Stage 1: manual PLATEAU GIS Converter preprocessing ===
+echo 1. Open the Komae PLATEAU Building CityGML in PLATEAU GIS Converter GUI.
+echo 2. Export a GeoPackage using maximum LOD.
+echo 3. Enable settings that retain 3D / Z geometry.
+echo 4. Pass the resulting GeoPackage to the OUEM stage.
+echo The GUI conversion is manual and is not run by this script.
+exit /b 0
+
 :gis
-echo === Stage 1: OSGeo4W / QGIS GIS runtime ===
+echo === GIS runtime setup: OSGeo4W / QGIS ===
 echo Run this stage only in the QGIS/OSGeo4W command environment.
 where ogr2ogr || exit /b 2
 where ogrinfo || exit /b 2
@@ -35,11 +46,22 @@ if not exist "%RUNTIME_FILE%" goto :runtime_missing
 if not exist "%OUEM_PYTHON%" goto :venv_missing
 "%OUEM_PYTHON%" --version || goto :ouem_error
 "%OUEM_PYTHON%" -c "import ouem; print('OUEM package import OK')" || goto :ouem_missing
-echo Komae PLATEAU building source layer: bldg:Building
+if not "%SOURCE_LAYER%"=="" goto :ouem_explicit_layer
 "%OUEM_PYTHON%" -m ouem.native.building.plateau "%CONVERTER_GPKG%" ^
   --output data\native\building\komae.gpkg ^
-  --source-layer "bldg:Building" ^
+  --expected-count 3637 ^
   --gis-runtime "%RUNTIME_FILE%"
+goto :ouem_done
+
+:ouem_explicit_layer
+echo Explicit source layer: %SOURCE_LAYER%
+"%OUEM_PYTHON%" -m ouem.native.building.plateau "%CONVERTER_GPKG%" ^
+  --output data\native\building\komae.gpkg ^
+  --source-layer "%SOURCE_LAYER%" ^
+  --expected-count 3637 ^
+  --gis-runtime "%RUNTIME_FILE%"
+
+:ouem_done
 set "RUN_EXIT=%ERRORLEVEL%"
 popd
 exit /b %RUN_EXIT%
@@ -75,6 +97,7 @@ exit /b 2
 
 :usage
 echo Usage:
+echo   Read manual preprocessing steps: plateau_komae_local_acceptance.cmd manual
 echo   In QGIS/OSGeo4W shell: plateau_komae_local_acceptance.cmd gis
-echo   Then in normal shell: plateau_komae_local_acceptance.cmd ouem converter.gpkg
+echo   Then in normal shell: plateau_komae_local_acceptance.cmd ouem converter.gpkg [source-layer]
 exit /b 2

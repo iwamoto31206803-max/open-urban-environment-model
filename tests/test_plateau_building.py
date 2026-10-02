@@ -150,6 +150,29 @@ def test_matching_source_fingerprint_reuses_valid_native(tmp_path, monkeypatch):
     assert calls[0]["output"] == output
 
 
+def test_pilot_expected_count_is_checked_after_manifest(tmp_path, monkeypatch):
+    source = tmp_path / "converted.gpkg"
+    source.write_bytes(b"converter")
+    output = tmp_path / "native.gpkg"
+    monkeypatch.setattr(plateau, "require_gdal", lambda _runtime: None)
+
+    def run_worker(_runtime, **kwargs):
+        kwargs["output"].write_bytes(b"native")
+        return worker_result()
+
+    monkeypatch.setattr(plateau, "_run_worker", run_worker)
+
+    with pytest.raises(plateau.PlateauBuildingError, match="expected 3637"):
+        plateau.ingest_converter_geopackage(
+            source, output, runtime=runtime(), expected_count=3637
+        )
+
+    manifest = json.loads(
+        output.with_suffix(".gpkg.manifest.json").read_text(encoding="utf-8")
+    )
+    assert manifest["parameters"]["expected_count"] == 3637
+
+
 class FakeGeometry:
     def __init__(self, *, empty=False, has_z=True):
         self.empty = empty
@@ -301,10 +324,14 @@ def test_building_layer_resolution_is_conservative():
     with pytest.raises(RuntimeError, match="--source-layer"):
         worker._resolve_layer(FakeDataset(["building", "bldg"]), None)
 
+    with pytest.raises(RuntimeError, match="could not find a building layer"):
+        worker._resolve_layer(FakeDataset(["core:Address", "uro:DataQuality"]), None)
 
-def test_komae_acceptance_passes_verified_converter_layer():
+
+def test_komae_acceptance_records_verified_expected_count():
     script = (
         ROOT / "scripts/work/plateau_komae_local_acceptance.cmd"
     ).read_text(encoding="utf-8")
 
-    assert '--source-layer "bldg:Building" ^' in script
+    assert "--expected-count 3637 ^" in script
+    assert '--source-layer "%SOURCE_LAYER%" ^' in script

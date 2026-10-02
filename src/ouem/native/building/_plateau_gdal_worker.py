@@ -33,6 +33,11 @@ def _resolve_layer(dataset, requested):
     if len(named) == 1:
         return named[0]
     available = ", ".join(layer.GetName() for layer in layers)
+    if not named:
+        raise RuntimeError(
+            "could not find a building layer; "
+            f"use --source-layer (available: {available})"
+        )
     raise RuntimeError(
         "could not resolve exactly one building layer; "
         f"use --source-layer (available: {available})"
