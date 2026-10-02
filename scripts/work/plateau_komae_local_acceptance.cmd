@@ -4,6 +4,7 @@ set "REPO=%~dp0..\.."
 set "RUNTIME_FILE=%REPO%\scripts\work\.runtime\plateau_komae_gis.json"
 set "OUEM_PYTHON=%REPO%\.venv\Scripts\python.exe"
 set "CONVERTER_GPKG=%~2"
+if "%CONVERTER_GPKG%"=="" set "CONVERTER_GPKG=%REPO%\data\converted\building\plateau_komae\53393465_bldg_6697_op_convert.gpkg"
 set "SOURCE_LAYER=%~3"
 
 if /I "%~1"=="manual" goto manual
@@ -14,7 +15,8 @@ goto usage
 :manual
 echo === Stage 1: manual PLATEAU GIS Converter preprocessing ===
 echo 1. Open the Komae PLATEAU Building CityGML in PLATEAU GIS Converter GUI.
-echo 2. Export a GeoPackage using maximum LOD.
+echo 2. Export a GeoPackage using maximum LOD to:
+echo    data\converted\building\plateau_komae\53393465_bldg_6697_op_convert.gpkg
 echo 3. Enable settings that retain 3D / Z geometry.
 echo 4. Pass the resulting GeoPackage to the OUEM stage.
 echo The GUI conversion is manual and is not run by this script.
@@ -26,7 +28,7 @@ python "%REPO%\scripts\work\gis_runtime_check.py" || exit /b 1
 python "%REPO%\scripts\work\capture_gis_runtime.py" "%RUNTIME_FILE%" || exit /b 1
 echo.
 echo GIS runtime setup complete. Close this shell. Then open a new ordinary cmd and run:
-echo   scripts\work\plateau_komae_local_acceptance.cmd ouem D:\path\to\converted.gpkg
+echo   scripts\work\plateau_komae_local_acceptance.cmd ouem
 exit /b 0
 
 :ouem
@@ -36,7 +38,7 @@ if defined QGIS_PLUGINPATH goto contaminated
 if defined GDAL_DATA goto contaminated
 if defined PROJ_LIB goto contaminated
 echo %PYTHONHOME% %PYTHONPATH% | findstr /I "qgis osgeo4w" >nul && goto contaminated
-if "%CONVERTER_GPKG%"=="" goto input_missing
+if not exist "%CONVERTER_GPKG%" goto input_missing
 if not exist "%RUNTIME_FILE%" goto runtime_missing
 if not exist "%OUEM_PYTHON%" goto venv_missing
 pushd "%REPO%" || exit /b 2
@@ -77,7 +79,8 @@ exit /b 2
 
 :input_missing
 echo ERROR: Pass the PLATEAU GIS Converter GeoPackage to the OUEM stage.
-echo Example: %~nx0 ouem D:\path\to\converted.gpkg [source-layer]
+echo Expected default: data\converted\building\plateau_komae\53393465_bldg_6697_op_convert.gpkg
+echo Or pass another path: %~nx0 ouem D:\path\to\converted.gpkg [source-layer]
 exit /b 2
 
 :venv_missing
@@ -92,5 +95,5 @@ echo.
 echo   manual  Show manual PLATEAU GIS Converter preprocessing instructions.
 echo   gis     Run from OSGeo4W Shell. Uses only the QGIS/GIS runtime.
 echo   ouem    Run from a NEW ordinary cmd or VS Code terminal. Uses only .venv.
+echo           Defaults to data\converted\building\plateau_komae\53393465_bldg_6697_op_convert.gpkg.
 exit /b 2
-

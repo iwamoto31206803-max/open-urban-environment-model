@@ -27,8 +27,14 @@ scripts\work\plateau_komae_local_acceptance.cmd manual
 ```
 
 Open the PLATEAU Building CityGML in PLATEAU GIS Converter GUI, select maximum
-LOD and settings that retain 3D/Z geometry, export a GeoPackage, and keep its
-path for OUEM ingest. The helper does not automate or launch the GUI.
+LOD and settings that retain 3D/Z geometry, and export the GeoPackage to:
+
+```text
+data\converted\building\plateau_komae\53393465_bldg_6697_op_convert.gpkg
+```
+
+This is external/manual **converted** data, not OUEM Native Building. The
+helper does not automate or launch the GUI.
 
 ### 2. Capture the GIS child runtime
 
@@ -48,19 +54,24 @@ checkout and run:
 
 ```bat
 .venv\Scripts\python.exe -m pip install -e .
-scripts\work\plateau_komae_local_acceptance.cmd ouem D:\path\to\converted.gpkg
+scripts\work\plateau_komae_local_acceptance.cmd ouem
 ```
 
 The OUEM stage rejects inherited QGIS/OSGeo4W variables, verifies the exact
 repository `.venv` interpreter, runs the automated tests, and ingests the
-Converter GeoPackage.
+Converter GeoPackage. With no second argument it uses the canonical converted
+path shown above. An explicit GeoPackage path remains supported:
+
+```bat
+scripts\work\plateau_komae_local_acceptance.cmd ouem D:\another\converted.gpkg
+```
 
 The provider resolves a unique Building layer. If there are zero or multiple
 candidates, it fails with available layer names and asks for an explicit layer.
 Pass one as the optional third argument:
 
 ```bat
-scripts\work\plateau_komae_local_acceptance.cmd ouem D:\path\to\converted.gpkg bldg:Building
+scripts\work\plateau_komae_local_acceptance.cmd ouem data\converted\building\plateau_komae\53393465_bldg_6697_op_convert.gpkg bldg:Building
 ```
 
 The helper checks the locally verified Komae Building count of 3637. This is
@@ -86,4 +97,3 @@ After ingest passes, open `data\native\building\komae.gpkg` in QGIS:
 
 The successful Komae PoC contained 3,637 Building features, 3D Multi Polygon
 geometry, EPSG:4979, and retained Z and source attributes.
-
