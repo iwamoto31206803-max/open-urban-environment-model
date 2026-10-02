@@ -59,6 +59,7 @@ def test_conversion_uses_config_extent_crs_and_reports_acceptance(tmp_path, monk
     assert result.summary().endswith("Result: PASS")
     manifest = json.loads(output.with_suffix(".gpkg.manifest.json").read_text())
     assert manifest["selection"].endswith("complete selected geometry retained")
+    assert manifest["metadata_mapping"] == {"source_id": "Native Building id"}
     assert manifest["status"].startswith("PROVISIONAL")
 
 
@@ -174,6 +175,29 @@ def test_required_standard_metadata_is_exact_and_provider_fields_are_not_copied(
     assert worker.REQUIRED_FIELDS == (
         "ouem_id", "source_id", "source_dataset", "source_lod", "measured_height"
     )
+
+
+def test_actual_native_id_field_maps_to_standard_source_id():
+    actual_native_fields = {
+        "id": "id",
+        "description": "description",
+        "name": "name",
+        "creationdate": "creationDate",
+    }
+
+    assert worker.NATIVE_SOURCE_ID_FIELD == "id"
+    assert worker._field(
+        actual_native_fields, (worker.NATIVE_SOURCE_ID_FIELD,), required=True
+    ) == "id"
+
+
+def test_standardizer_does_not_require_plateau_specific_gml_id():
+    with pytest.raises(RuntimeError, match="expected field: id"):
+        worker._field(
+            {"gml_id": "gml_id", "measuredheight": "measuredHeight"},
+            (worker.NATIVE_SOURCE_ID_FIELD,),
+            required=True,
+        )
 
 
 @pytest.mark.parametrize("name", ["missing.gpkg", "native.txt"])

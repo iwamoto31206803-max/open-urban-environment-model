@@ -30,6 +30,9 @@ subsequent work.
 The completed Komae PoC produced `data/native/building/komae.gpkg` with layer
 `building`: source and output Building counts both 3,637, 3D Multi Polygon
 geometry in EPSG:4979 with Z retained, and preserved `measuredHeight` and
-related attributes. QGIS 2D and 3D display succeeded using geometry Z without
+related attributes. Its required source feature identifier is the non-null
+String field `id` inherited from the Converter `bldg:Building` layer; there is
+no `gml_id` field. Standardization copies `id` to Standard `source_id` without
+mutating the Native GeoPackage. QGIS 2D and 3D display succeeded using geometry Z without
 added extrusion. The 3,637 count applies only to this acceptance Building
 layer; other Converter GeoPackage layers are outside that comparison.

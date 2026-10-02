@@ -143,6 +143,7 @@ def standardize_native_buildings(
         "z_reference": "absolute T.P. elevation in metres",
         "selection": "2D intersection with study-area rectangle; complete selected geometry retained",
         "source_dataset": SOURCE_DATASET,
+        "metadata_mapping": {"source_id": "Native Building id"},
         "ouem_id_rule": ID_RULE,
         "validation": asdict(result),
     }

@@ -122,3 +122,6 @@ PASS/FAIL. The accepted EPSG:4979 Native layer is the formal input. Conversion
 uses its EPSG:4326 horizontal component for projection to EPSG:6677 and carries
 the application-defined absolute T.P. Z unchanged rather than interpreting it
 as ellipsoidal height. Boundary-intersecting buildings retain complete geometry.
+The accepted Native schema uses its non-null String `id` field as the source
+feature identifier. Standardization maps that value to Standard `source_id`;
+it neither requires `gml_id` nor changes the Native GeoPackage.

@@ -13,6 +13,7 @@ from pathlib import Path
 import uuid
 
 REQUIRED_FIELDS = ("ouem_id", "source_id", "source_dataset", "source_lod", "measured_height")
+NATIVE_SOURCE_ID_FIELD = "id"
 
 
 def _field_map(layer):
@@ -117,7 +118,7 @@ def _run(ogr, osr, job):
     if not _is_source_crs(osr, source_srs):
         raise RuntimeError(f"accepted Native Building CRS must be EPSG:4979, found {input_crs}")
     fields = _field_map(layer)
-    source_id_field = _field(fields, ("gml_id",), required=True)
+    source_id_field = _field(fields, (NATIVE_SOURCE_ID_FIELD,), required=True)
     lod_field = _field(fields, ("source_lod", "lod", "lodType", "lod_type"))
     height_field = _field(fields, ("measuredHeight", "measured_height"))
 
@@ -150,7 +151,9 @@ def _run(ogr, osr, job):
     for feature in layer:
         source_id = feature.GetFieldAsString(source_id_field).strip()
         if not source_id:
-            raise RuntimeError(f"Native Building feature {feature.GetFID()} has empty gml_id")
+            raise RuntimeError(
+                f"Native Building feature {feature.GetFID()} has empty {source_id_field}"
+            )
         ouem_id = _id(job["source_dataset"], source_id)
         if ouem_id in seen_ids:
             raise RuntimeError(f"duplicate Native Building source identifier: {source_id}")

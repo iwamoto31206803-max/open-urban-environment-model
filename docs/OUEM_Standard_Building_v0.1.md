@@ -98,13 +98,16 @@ The PLATEAU mapping is deliberately narrow:
 | Standard field | Native source |
 | --- | --- |
 | `ouem_id` | Deterministic rule below |
-| `source_id` | `gml_id`; empty or duplicate values fail conversion |
+| `source_id` | Accepted Native Building `id`; empty or duplicate values fail conversion |
 | `source_dataset` | Literal provenance value `PLATEAU CityGML` |
 | `source_lod` | First available of `source_lod`, `lod`, `lodType`, or `lod_type`; otherwise null |
 | `measured_height` | `measuredHeight` (or already-normalized `measured_height`); otherwise null |
 
 No other PLATEAU attribute is copied. Missing nullable LoD or measured-height
-values remain null rather than being inferred. The stable ID is `oub-` followed
+values remain null rather than being inferred. The Converter/Native field is
+not renamed or modified in its source GeoPackage; its value is copied into the
+existing Standard `source_id` field. The Standardizer does not require a
+PLATEAU-specific `gml_id` column. The stable ID is `oub-` followed
 by UUIDv5 using the RFC 4122 URL namespace and this exact UTF-8 name:
 
 ```text
