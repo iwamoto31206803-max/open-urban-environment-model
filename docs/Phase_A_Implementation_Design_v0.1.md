@@ -133,8 +133,9 @@ contract and will be validated during the A1 end-to-end VoxCity test.
 For A1, PLATEAU GIS Converter GUI is the manual technical boundary between
 CityGML and OUEM. Direct GDAL/OGR conversion was evaluated, but tested feature
 geometry became `POLYHEDRALSURFACE Z EMPTY`. OUEM therefore ingests the
-Converter's 3D GeoPackage as Native Building, preserving `MULTIPOLYGON Z`
-geometry and source attributes without reprojection or clipping. Native-to-
+Converter's 3D GeoPackage as converted input and produces Native Building,
+preserving `MULTIPOLYGON Z` geometry and source attributes without
+reprojection or clipping. Native-to-
 Standard transformation and canonical study-area selection follow in a later
 step; the ingest command does not claim to produce Standard Building.
 

@@ -42,7 +42,8 @@ The upstream source profile is:
 | Source coordinate reference | JGD2011 geographic coordinates with T.P. elevation |
 
 For A1, CityGML reaches OUEM through a manual PLATEAU GIS Converter GUI step.
-OUEM first ingests the resulting 3D GeoPackage as Native Building. This
+The resulting 3D GeoPackage is converted data; OUEM ingests it to produce
+Native Building. This
 provisional Standard contract applies only to the later Native-to-Standard
 step; the ingest command does not itself produce Standard Building.
 

@@ -21,17 +21,49 @@ currently provides the Phase A architecture and package scaffold only; data
 processing, model construction, VoxCity execution, and assessment capabilities
 have not been implemented.
 
-## Phase A data lifecycle
+## Local data layout and Phase A lifecycle
 
-Phase A separates provider data from reusable downstream processing:
+Local datasets are organized by processing stage:
 
 ```text
-RAW → NATIVE → STANDARD → MODEL → OUTPUT
+data/
+├─ raw/        # original provider data
+├─ converted/  # optional external/manual conversion output
+├─ native/     # provider-aware data produced by OUEM ingest
+├─ standard/   # provider-independent OUEM Standard data
+└─ work/       # disposable experiments and acceptance artifacts
 ```
 
-`RAW` preserves source inputs, `NATIVE` holds provider-specific processing,
-and `STANDARD` is OUEM's provider-independent boundary. Analysis-ready models
-and derived GIS products follow in `MODEL` and `OUTPUT`. The canonical Komae
+The canonical pipeline is:
+
+```text
+raw
+  ↓
+[optional external/manual conversion]
+  ↓
+converted
+  ↓
+OUEM ingest
+  ↓
+native
+  ↓
+OUEM standardization
+  ↓
+standard
+```
+
+Sources that need no external conversion follow `raw → native → standard`.
+For PLATEAU, source CityGML belongs under
+`data/raw/building/plateau_komae/`, PLATEAU GIS Converter output under
+`data/converted/building/plateau_komae/`, OUEM's provider-aware ingest output
+under `data/native/building/`, and future Standard Building output under
+`data/standard/building/`. Converter output is **converted**, not OUEM Native
+Building. `data/work/` is only for temporary experiments, diagnostics, and
+acceptance artifacts; it is not a canonical home for reusable datasets.
+
+Analysis-ready models and derived GIS products continue under `data/model/`
+and `data/output/`. All local dataset stages are ignored by Git except for
+directory markers; real datasets must not be committed. The canonical Komae
 extent is defined in [`config/study_areas/komae_09LD3451.yaml`](config/study_areas/komae_09LD3451.yaml).
 
 See the governing [Concept & Architecture v0.1](docs/OUEM_Concept_Architecture_v0.1.md)
@@ -68,7 +100,7 @@ Run ingest from the separate OUEM runtime after completing the GIS runtime
 stage documented in [`scripts/work/README.md`](scripts/work/README.md):
 
 ```shell
-ouem-plateau-buildings /path/to/converter-output.gpkg \
+ouem-plateau-buildings data/converted/building/plateau_komae/53393465_bldg_6697_op_convert.gpkg \
   --output data/native/building/komae.gpkg \
   --gis-runtime scripts/work/.runtime/plateau_komae_gis.json
 ```
