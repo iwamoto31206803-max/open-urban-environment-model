@@ -316,14 +316,38 @@ def test_building_layer_resolution_is_conservative():
     selected = worker._resolve_layer(FakeDataset(["metadata", "building"]), None)
     assert selected.GetName() == "building"
 
+
+def test_converter_building_layer_is_selected_among_plateau_attribute_layers():
+    dataset = FakeDataset(
+        [
+            "bldg:Building",
+            "core:Address",
+            "uro:DataQualityAttribute",
+            "uro:KeyValuePairAttribute",
+            "uro:RiverFloodingRiskAttribute",
+            "uro:BuildingIDAttribute",
+            "uro:BuildingDetailAttribute",
+        ]
+    )
+
+    selected = worker._resolve_layer(dataset, None)
+
+    assert selected.GetName() == "bldg:Building"
+
+
+def test_explicit_converter_building_layer_is_preserved():
     converter_layer = worker._resolve_layer(
-        FakeDataset(["bldg:Building", "core:Address"]), "bldg:Building"
+        FakeDataset(["building", "bldg:Building"]), "bldg:Building"
     )
     assert converter_layer.GetName() == "bldg:Building"
 
-    with pytest.raises(RuntimeError, match="--source-layer"):
-        worker._resolve_layer(FakeDataset(["building", "bldg"]), None)
 
+def test_ambiguous_building_layers_require_explicit_selection():
+    with pytest.raises(RuntimeError, match="--source-layer"):
+        worker._resolve_layer(FakeDataset(["building", "bldg:Building"]), None)
+
+
+def test_missing_building_layer_requires_explicit_selection():
     with pytest.raises(RuntimeError, match="could not find a building layer"):
         worker._resolve_layer(FakeDataset(["core:Address", "uro:DataQuality"]), None)
 
