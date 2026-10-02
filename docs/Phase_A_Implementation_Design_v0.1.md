@@ -55,7 +55,8 @@ Tokyo LiDAR     → Tokyo Native CHM   → Standard CHM
 Meta CHM        → Meta Native CHM    → Standard CHM
 Future GSI LiDAR → GSI Native CHM    → Standard CHM
 
-PLATEAU CityGML          → PLATEAU Native Building → Standard Building
+PLATEAU CityGML → GIS Converter 3D GeoPackage → PLATEAU Native Building
+                                                   → Standard Building
 Future GSI Building source → GSI Native Building   → Standard Building
 ```
 
@@ -77,6 +78,22 @@ Shell, BAT, CMD, and PowerShell files should preferably invoke package code,
 not contain core processing logic. Core processing should remain portable
 where practical.
 
+Native GIS runtimes and OUEM Python have a deliberate execution boundary.
+GDAL, OGR, PDAL, and similar native GIS operations run in the OSGeo4W/QGIS
+environment, while orchestration and reusable OUEM logic run from the
+repository-local Python virtual environment (`.venv`) in a separate shell. A
+narrowly scoped GIS worker may be launched only as a child process; it must not
+require the `ouem` package to be installed in GIS Python. OUEM's venv must not
+be launched from the OSGeo4W/QGIS shell. This keeps the same boundary usable
+for later building, Tokyo LiDAR, and CHM providers without coupling OUEM's
+Python dependencies to an OSGeo4W installation. The currently accepted local
+combination is QGIS 4.2.3, GDAL 3.13.3, and GIS Python 3.12.14 with OUEM Python
+3.11.9; these observations do not impose package-wide version requirements.
+External GIS stdout and stderr are captured as bytes and decoded at the
+boundary rather than implicitly with the OUEM process locale. This is required
+because GDAL/GIS Python output can be UTF-8 while Japanese Windows defaults to
+cp932.
+
 The Python namespaces mirror the processing boundaries: `acquire`, `native`,
 `standardize`, `model`, and `adapters`. Terrain, building, and canopy are kept
 as explicit domains where applicable. Empty namespaces intentionally contain
@@ -96,32 +113,30 @@ result to the canonical extent. This work is deferred from this scaffold.
 
 ## 5. Standard Building v0.1 — PROVISIONAL
 
-> **PROVISIONAL:** GeoPackage plus PolyhedralSurface is technically usable for
-> the current PLATEAU test, but it is not established as OUEM's permanent
-> internal building format. This contract may be revised after the A1
-> end-to-end VoxCity test.
+The provisional [OUEM Standard Building v0.1](OUEM_Standard_Building_v0.1.md)
+defines provider-independent 3D building geometry. Its coordinate contract is:
 
-| Property | Standard Building v0.1 candidate |
-| --- | --- |
-| Container | GeoPackage |
-| Geometry | 3D building geometry; PolyhedralSurface where supported |
-| Coordinates | Projected CRS appropriate to the study area |
-| Horizontal unit | metre |
-| Vertical unit | metre |
+- the study-area projected horizontal CRS, which is EPSG:6677 for Komae;
+- horizontal coordinates in metres;
+- Z coordinates expressed as absolute T.P. (Tokyo Peil) elevation in metres;
+  and
+- explicit CRS, Z interpretation, and source provenance.
 
-Minimum common metadata:
+The initial source profile is PLATEAU CityGML in EPSG:6697 (JGD2011 geographic
+coordinates with T.P. elevation). Standardization projects the horizontal
+coordinates while preserving the absolute T.P. interpretation of Z.
 
-| Field | Meaning |
-| --- | --- |
-| `ouem_id` | Stable OUEM feature identifier |
-| `source_id` | Identifier in the source data |
-| `source_dataset` | Source dataset/provenance reference |
-| `source_lod` | Source level of detail |
-| `measured_height` | Measured height in metres, nullable |
+Container and container-specific geometry encoding remain implementation
+choices. They must preserve the Standard Building coordinate and geometry
+contract and will be validated during the A1 end-to-end VoxCity test.
 
-Every dataset must have an explicit CRS, an explicit interpretation of Z,
-valid 3D building geometry, and retained source provenance. Provider-specific
-attributes need not be copied into Standard Building.
+For A1, PLATEAU GIS Converter GUI is the manual technical boundary between
+CityGML and OUEM. Direct GDAL/OGR conversion was evaluated, but tested feature
+geometry became `POLYHEDRALSURFACE Z EMPTY`. OUEM therefore ingests the
+Converter's 3D GeoPackage as Native Building, preserving `MULTIPOLYGON Z`
+geometry and source attributes without reprojection or clipping. Native-to-
+Standard transformation and canonical study-area selection follow in a later
+step; the ingest command does not claim to produce Standard Building.
 
 ## 6. Standard CHM and tree-height-platform
 
@@ -187,8 +202,9 @@ prohibiting intentional small fixtures or metadata.
 
 ## 10. Deferred implementation
 
-This design deliberately does **not** implement PLATEAU conversion or mesh
-discovery, building clipping, Tokyo LiDAR or Meta CHM processing,
+This design deliberately does **not** implement PLATEAU GIS Converter
+automation, direct CityGML parsing/conversion, Native-to-Standard Building,
+building clipping, Tokyo LiDAR or Meta CHM processing,
 canopy-bottom estimation, Crown Ratio models, VoxCity installation/execution,
 voxelization, solar/shade analysis, or green-view analysis. Those operations
 require subsequent implementation and validation work after these boundaries
