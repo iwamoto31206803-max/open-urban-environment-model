@@ -42,6 +42,11 @@ Converter. It is required; the script does not guess a local filename:
 scripts\work\plateau_komae_local_acceptance.cmd ouem D:\path\to\converted.gpkg
 ```
 
+The Komae work helper passes `--source-layer "bldg:Building"`, matching the
+verified PLATEAU GIS Converter multi-layer output. This is pilot wiring only;
+the provider's general layer-resolution behavior and its optional
+`--source-layer` CLI remain unchanged.
+
 The environment boundary is deliberate:
 
 - the active **OSGeo4W/QGIS GIS environment** owns GDAL, OGR, PDAL, and other

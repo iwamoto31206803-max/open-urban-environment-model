@@ -35,8 +35,10 @@ if not exist "%RUNTIME_FILE%" goto :runtime_missing
 if not exist "%OUEM_PYTHON%" goto :venv_missing
 "%OUEM_PYTHON%" --version || goto :ouem_error
 "%OUEM_PYTHON%" -c "import ouem; print('OUEM package import OK')" || goto :ouem_missing
+echo Komae PLATEAU building source layer: bldg:Building
 "%OUEM_PYTHON%" -m ouem.native.building.plateau "%CONVERTER_GPKG%" ^
   --output data\native\building\komae.gpkg ^
+  --source-layer "bldg:Building" ^
   --gis-runtime "%RUNTIME_FILE%"
 set "RUN_EXIT=%ERRORLEVEL%"
 popd

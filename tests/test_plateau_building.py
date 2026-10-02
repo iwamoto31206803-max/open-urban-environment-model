@@ -7,6 +7,9 @@ from ouem.native.building import _plateau_gdal_worker as worker
 from ouem.native.building import plateau
 
 
+ROOT = Path(__file__).parents[1]
+
+
 def runtime():
     return plateau.GISRuntime(
         "gis-python",
@@ -290,5 +293,18 @@ def test_building_layer_resolution_is_conservative():
     selected = worker._resolve_layer(FakeDataset(["metadata", "building"]), None)
     assert selected.GetName() == "building"
 
+    converter_layer = worker._resolve_layer(
+        FakeDataset(["bldg:Building", "core:Address"]), "bldg:Building"
+    )
+    assert converter_layer.GetName() == "bldg:Building"
+
     with pytest.raises(RuntimeError, match="--source-layer"):
         worker._resolve_layer(FakeDataset(["building", "bldg"]), None)
+
+
+def test_komae_acceptance_passes_verified_converter_layer():
+    script = (
+        ROOT / "scripts/work/plateau_komae_local_acceptance.cmd"
+    ).read_text(encoding="utf-8")
+
+    assert '--source-layer "bldg:Building" ^' in script
