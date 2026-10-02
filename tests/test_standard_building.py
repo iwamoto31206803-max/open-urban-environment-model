@@ -32,6 +32,7 @@ def test_conversion_uses_config_extent_crs_and_reports_acceptance(tmp_path, monk
     source = tmp_path / "native.gpkg"
     source.write_bytes(b"native")
     output = tmp_path / "data/standard/building/komae.gpkg"
+    manifest_path = output.with_suffix(".gpkg.manifest.json")
     monkeypatch.setattr(building, "require_gdal", lambda _runtime: None)
 
     def run_worker(_runtime, job):
@@ -40,8 +41,7 @@ def test_conversion_uses_config_extent_crs_and_reports_acceptance(tmp_path, monk
         assert job["extent"] == [-23600.0, -40800.0, -23200.0, -40500.0]
         assert job["z_tolerance"] == 1e-9
         assert job["source_dataset"] == "PLATEAU CityGML"
-        output.parent.mkdir(parents=True, exist_ok=True)
-        output.write_bytes(b"standard")
+        assert not manifest_path.exists()
         return successful_result(source.resolve(), output)
 
     monkeypatch.setattr(building, "_run_worker", run_worker)
@@ -57,7 +57,11 @@ def test_conversion_uses_config_extent_crs_and_reports_acceptance(tmp_path, monk
     assert "Selected/output features: 2" in result.summary()
     assert "Z preservation (max delta 0 m): PASS" in result.summary()
     assert result.summary().endswith("Result: PASS")
-    manifest = json.loads(output.with_suffix(".gpkg.manifest.json").read_text())
+    # The worker is mocked, so it must return only its result contract.  It must
+    # not manufacture output or manifest content; the orchestration under test
+    # owns the adjacent manifest and writes the single JSON document asserted
+    # below.
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     assert manifest["selection"].endswith("complete selected geometry retained")
     assert manifest["metadata_mapping"] == {"source_id": "Native Building id"}
     assert manifest["status"].startswith("PROVISIONAL")
