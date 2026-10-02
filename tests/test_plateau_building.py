@@ -335,3 +335,22 @@ def test_komae_acceptance_records_verified_expected_count():
 
     assert "--expected-count 3637 ^" in script
     assert '--source-layer "%SOURCE_LAYER%" ^' in script
+
+
+def test_komae_acceptance_resolves_converter_paths_from_repository_root():
+    script = (
+        ROOT / "scripts/work/plateau_komae_local_acceptance.cmd"
+    ).read_text(encoding="utf-8")
+
+    assert 'for %%I in ("%~dp0..\\..") do set "REPO=%%~fI"' in script
+    assert 'call :resolve_converter_gpkg "%~2"' in script
+    assert (
+        'set "CONVERTER_GPKG=%REPO%\\data\\converted\\building\\plateau_komae\\'
+        '53393465_bldg_6697_op_convert.gpkg"'
+    ) in script
+    assert (
+        'if not "%CONVERTER_GPKG:~1,1%"==":" '
+        'if not "%CONVERTER_GPKG:~0,1%"=="\\" '
+        'set "CONVERTER_GPKG=%REPO%\\%CONVERTER_GPKG%"'
+    ) in script
+    assert 'for %%I in ("%CONVERTER_GPKG%") do set "CONVERTER_GPKG=%%~fI"' in script

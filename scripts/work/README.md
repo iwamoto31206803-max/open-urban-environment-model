@@ -60,10 +60,13 @@ scripts\work\plateau_komae_local_acceptance.cmd ouem
 The OUEM stage rejects inherited QGIS/OSGeo4W variables, verifies the exact
 repository `.venv` interpreter, runs the automated tests, and ingests the
 Converter GeoPackage. With no second argument it uses the canonical converted
-path shown above. An explicit GeoPackage path remains supported:
+path shown above. Explicit repository-relative paths are always resolved from
+the repository root, regardless of the current working directory. Absolute
+paths are also supported; quote any path that contains spaces:
 
 ```bat
 scripts\work\plateau_komae_local_acceptance.cmd ouem D:\another\converted.gpkg
+scripts\work\plateau_komae_local_acceptance.cmd ouem "D:\PLATEAU data\converted.gpkg"
 ```
 
 The provider resolves a unique Building layer. If there are zero or multiple
