@@ -135,10 +135,11 @@ CityGML and OUEM. Direct GDAL/OGR conversion was evaluated, but tested feature
 geometry became `POLYHEDRALSURFACE Z EMPTY`. OUEM therefore ingests the
 Converter's 3D GeoPackage as converted input and produces Native Building,
 preserving `MULTIPOLYGON Z` geometry and source attributes without
-reprojection or clipping. The separate Native-to-Standard command now
-transforms accepted Native Building XY from EPSG:6697 to EPSG:6677, explicitly
-preserves absolute T.P. Z, and selects buildings intersecting the canonical
-Komae extent without clipping their geometry. The ingest command still does
+reprojection or clipping. The separate Native-to-Standard command now treats
+the accepted EPSG:4979 Native GeoPackage as its formal input, transforms its
+EPSG:4326 horizontal component to EPSG:6677, explicitly preserves the retained
+absolute T.P. Z, and selects buildings intersecting the canonical Komae extent
+without clipping their geometry. The ingest command still does
 not claim to produce Standard Building. Standard Building remains provisional
 until A1 end-to-end VoxCity validation.
 

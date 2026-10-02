@@ -51,6 +51,13 @@ Standardization transforms the horizontal coordinates from the source CRS to
 the study-area projected CRS. It preserves the interpretation of source Z as
 absolute T.P. elevation in metres.
 
+The accepted OUEM Native Building GeoPackage is the formal input to
+standardization. The accepted Komae dataset records its 3D layer as EPSG:4979,
+as verified by Native ingest/acceptance, while its retained PLATEAU Z ordinate
+continues to mean absolute T.P. elevation rather than WGS 84 ellipsoidal
+height. The EPSG:6697 row above describes the upstream PLATEAU source profile,
+not the CRS label of the accepted Native GeoPackage.
+
 ## 4. Minimum metadata
 
 The following common feature metadata is retained in addition to dataset-level
@@ -70,12 +77,15 @@ Provider-specific attributes need not be copied into Standard Building.
 
 The implementation reads the already accepted PLATEAU Native Building
 GeoPackage; it does not operate PLATEAU GIS Converter or repeat Native ingest.
-It requires the Native `building` layer in EPSG:6697, transforms horizontal
-coordinates to the study-area EPSG:6677 CRS, and writes a 3D GeoPackage layer
-under `data/standard/building/`. Because a general CRS transformation may also
-operate on the vertical coordinate, the implementation records every input Z,
-performs the CRS transformation, and then explicitly restores every Z. The
-acceptance check requires a maximum Z difference no greater than `1e-9` metre.
+It requires the accepted Native `building` layer in EPSG:4979 and transforms
+its horizontal EPSG:4326 component to the study-area EPSG:6677 CRS. It does not
+ask PROJ to interpret the Native Z as EPSG:4979 ellipsoidal height. Instead, it
+records every absolute T.P. input Z, performs the horizontal-only operation,
+then explicitly restores and compares every Z before writing a 3D GeoPackage
+layer under `data/standard/building/`. The acceptance check requires a maximum
+Z difference no greater than `1e-9` metre. It reopens the written GeoPackage
+and repeats the 3D, coordinate-count, Z-value, and deterministic-ID checks so
+the validation includes OGR serialization rather than only in-memory geometry.
 
 Buildings are selected when their horizontally transformed geometry intersects
 the closed rectangle in the study-area configuration. The complete transformed

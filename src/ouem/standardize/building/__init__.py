@@ -135,7 +135,11 @@ def standardize_native_buildings(
         "native_input": str(source_path),
         "standard_output": str(output_path.resolve()),
         "study_area": {"id": area.id, "epsg": area.epsg, "extent": list(area.extent)},
-        "coordinate_operation": "horizontal EPSG:6697 to EPSG:6677; restore every source Z unchanged",
+        "coordinate_operation": (
+            "accepted Native EPSG:4979 XY (EPSG:4326 horizontal component) "
+            "to EPSG:6677; do not interpret Z as ellipsoidal height and restore "
+            "every absolute T.P. source Z unchanged"
+        ),
         "z_reference": "absolute T.P. elevation in metres",
         "selection": "2D intersection with study-area rectangle; complete selected geometry retained",
         "source_dataset": SOURCE_DATASET,

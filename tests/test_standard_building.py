@@ -20,7 +20,7 @@ def successful_result(source, output):
         "input_path": str(source), "output_path": str(output),
         "input_layer": "building", "output_layer": "building",
         "input_features": 3, "output_features": 2,
-        "input_crs": "EPSG:6697", "output_crs": "EPSG:6677",
+        "input_crs": "EPSG:4979", "output_crs": "EPSG:6677",
         "geometry_type": "3D Multi Polygon", "z_geometries": 2,
         "study_area_extent": [-23600.0, -40800.0, -23200.0, -40500.0],
         "required_metadata": True, "z_preserved": True, "max_z_delta": 0.0,
@@ -103,10 +103,70 @@ def test_horizontal_reprojection_restores_every_nested_z_value():
     ]
 
 
+class FakeSRS:
+    def __init__(self, epsg=None):
+        self.epsg = epsg
+        self.axis_strategy = None
+
+    def ImportFromEPSG(self, epsg):
+        self.epsg = epsg
+
+    def SetAxisMappingStrategy(self, strategy):
+        self.axis_strategy = strategy
+
+    def IsSame(self, other):
+        return self.epsg == other.epsg
+
+    def GetAuthorityName(self, _target):
+        return "EPSG"
+
+    def GetAuthorityCode(self, _target):
+        return str(self.epsg)
+
+
+class FakeOSR:
+    OAMS_TRADITIONAL_GIS_ORDER = "traditional"
+
+    def __init__(self):
+        self.created = []
+        self.transformation = None
+
+    def SpatialReference(self):
+        value = FakeSRS()
+        self.created.append(value)
+        return value
+
+    def CoordinateTransformation(self, source, target):
+        self.transformation = (source, target)
+        return self.transformation
+
+
+def test_epsg4979_conversion_uses_only_epsg4326_horizontal_component():
+    osr = FakeOSR()
+    target = FakeSRS()
+    target.ImportFromEPSG(6677)
+
+    transform = worker._horizontal_transform(osr, target)
+
+    source, transformed_target = transform
+    assert source.epsg == 4326
+    assert transformed_target.epsg == 6677
+    assert source.axis_strategy == target.axis_strategy == "traditional"
+
+
+def test_only_accepted_native_epsg4979_is_validated_as_formal_input():
+    osr = FakeOSR()
+
+    assert worker._is_source_crs(osr, FakeSRS(4979))
+    assert not worker._is_source_crs(osr, FakeSRS(6697))
+
+
 def test_worker_selects_by_intersection_without_clipping_source_geometry():
     source = Path(worker.__file__).read_text(encoding="utf-8")
     assert 'if not transformed.Intersects(boundary):' in source
     assert "record.SetGeometry(transformed)" in source
+    assert 'checked_layer = check.GetLayerByName(job["output_layer"])' in source
+    assert "written Z preservation failed" in source
     assert ".Clip(" not in source and ".Intersection(" not in source
 
 

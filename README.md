@@ -133,8 +133,9 @@ canopy, solar/shade, and GVI processing are outside this minimal A1 ingest.
 
 The separate `ouem-standardize-buildings` command consumes accepted Native
 Building, selects complete buildings intersecting the configured study-area
-rectangle, transforms horizontal coordinates from EPSG:6697 to EPSG:6677, and
-preserves every Z as absolute T.P. elevation. Boundary-crossing buildings are
+rectangle, transforms the accepted EPSG:4979 Native coordinates' EPSG:4326
+horizontal component to EPSG:6677, and preserves every Z as absolute T.P.
+elevation without treating it as ellipsoidal height. Boundary-crossing buildings are
 not clipped. It writes only the five Standard metadata fields and a validation
 manifest; see the [provisional contract](docs/OUEM_Standard_Building_v0.1.md)
 for the exact nullable mappings and deterministic ID rule. This milestone does

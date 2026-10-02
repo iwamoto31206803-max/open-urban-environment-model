@@ -118,4 +118,7 @@ uses the previously captured GIS child runtime and the canonical
 `config\study_areas\komae_09LD3451.yaml` configuration. Its summary reports
 input/output paths and counts, input/output CRS, geometry type and 3D status,
 the extent, required metadata, Z preservation, deterministic IDs, and a final
-PASS/FAIL. Boundary-intersecting buildings retain complete geometry.
+PASS/FAIL. The accepted EPSG:4979 Native layer is the formal input. Conversion
+uses its EPSG:4326 horizontal component for projection to EPSG:6677 and carries
+the application-defined absolute T.P. Z unchanged rather than interpreting it
+as ellipsoidal height. Boundary-intersecting buildings retain complete geometry.

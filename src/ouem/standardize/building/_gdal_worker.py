@@ -42,12 +42,25 @@ def _crs_label(srs):
 
 def _is_source_crs(osr, srs):
     expected = osr.SpatialReference()
-    expected.ImportFromEPSG(6697)
+    expected.ImportFromEPSG(4979)
     if srs.IsSame(expected):
         return True
-    # Some drivers expose the horizontal component's authority rather than the
-    # compound CRS authority. Only accept a component that is actually 6697.
-    return srs.GetAuthorityCode(None) == "6697"
+    return srs.GetAuthorityName(None) == "EPSG" and srs.GetAuthorityCode(None) == "4979"
+
+
+def _horizontal_transform(osr, target_srs):
+    """Build the XY-only operation for accepted EPSG:4979 Native coordinates.
+
+    Native Z is absolute T.P., not the ellipsoidal height normally implied by
+    EPSG:4979.  Using its EPSG:4326 horizontal component prevents PROJ from
+    interpreting or transforming that application-defined vertical ordinate.
+    Z is additionally restored and compared after the operation.
+    """
+    horizontal_source = osr.SpatialReference()
+    horizontal_source.ImportFromEPSG(4326)
+    horizontal_source.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
+    target_srs.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
+    return osr.CoordinateTransformation(horizontal_source, target_srs)
 
 
 def _points(geometry):
@@ -102,7 +115,7 @@ def _run(ogr, osr, job):
     source_srs = layer.GetSpatialRef()
     input_crs = _crs_label(source_srs)
     if not _is_source_crs(osr, source_srs):
-        raise RuntimeError(f"Native Building CRS must be EPSG:6697, found {input_crs}")
+        raise RuntimeError(f"accepted Native Building CRS must be EPSG:4979, found {input_crs}")
     fields = _field_map(layer)
     source_id_field = _field(fields, ("gml_id",), required=True)
     lod_field = _field(fields, ("source_lod", "lod", "lodType", "lod_type"))
@@ -110,10 +123,7 @@ def _run(ogr, osr, job):
 
     target_srs = osr.SpatialReference()
     target_srs.ImportFromEPSG(job["target_epsg"])
-    # Traditional GIS order avoids authority-axis surprises in GDAL 3.
-    source_srs.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
-    target_srs.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
-    transform = osr.CoordinateTransformation(source_srs, target_srs)
+    transform = _horizontal_transform(osr, target_srs)
     boundary = _rectangle(ogr, job["extent"])
 
     driver = ogr.GetDriverByName("GPKG")
@@ -133,7 +143,8 @@ def _run(ogr, osr, job):
         if output.CreateField(definition) != 0:
             raise RuntimeError(f"cannot create required Standard Building field: {name}")
 
-    seen_ids, selected, z_count, max_delta = set(), 0, 0, 0.0
+    seen_ids, selected, max_delta = set(), 0, 0.0
+    expected_output_z = {}
     output.StartTransaction()
     layer.ResetReading()
     for feature in layer:
@@ -172,8 +183,8 @@ def _run(ogr, osr, job):
             output.RollbackTransaction()
             raise RuntimeError(f"failed to write Standard Building feature {source_id}")
         seen_ids.add(ouem_id)
+        expected_output_z[ouem_id] = [point[2] for point in original_points]
         selected += 1
-        z_count += 1
     if output.CommitTransaction() != 0:
         raise RuntimeError("failed to commit Standard Building output")
     target = None
@@ -186,6 +197,29 @@ def _run(ogr, osr, job):
     output_crs = _crs_label(checked_layer.GetSpatialRef())
     if output_crs != f"EPSG:{job['target_epsg']}":
         raise RuntimeError(f"Standard Building CRS validation failed: {output_crs}")
+    z_count = 0
+    checked_ids = set()
+    checked_layer.ResetReading()
+    for feature in checked_layer:
+        ouem_id = feature.GetFieldAsString("ouem_id")
+        source_id = feature.GetFieldAsString("source_id")
+        if ouem_id != _id(job["source_dataset"], source_id):
+            raise RuntimeError(f"deterministic ID validation failed for feature {source_id}")
+        geometry = feature.GetGeometryRef()
+        if geometry is None or geometry.IsEmpty() or not geometry.Is3D():
+            raise RuntimeError(f"Standard Building feature {source_id} is empty or not 3D")
+        output_z = [point[2] for point in _points(geometry)]
+        original_z = expected_output_z.get(ouem_id)
+        if original_z is None or len(output_z) != len(original_z):
+            raise RuntimeError(f"Standard Building coordinate structure changed for feature {source_id}")
+        delta = max((abs(a - b) for a, b in zip(original_z, output_z)), default=0.0)
+        max_delta = max(max_delta, delta)
+        if delta > job["z_tolerance"]:
+            raise RuntimeError(f"written Z preservation failed for feature {source_id}: delta {delta} m")
+        checked_ids.add(ouem_id)
+        z_count += 1
+    if z_count != selected:
+        raise RuntimeError(f"Standard Building feature count changed after write: {selected} -> {z_count}")
     return {
         "input_path": str(source_path), "output_path": str(output_path),
         "input_layer": job["source_layer"], "output_layer": job["output_layer"],
@@ -194,7 +228,7 @@ def _run(ogr, osr, job):
         "geometry_type": ogr.GeometryTypeToName(geometry_type), "z_geometries": z_count,
         "study_area_extent": job["extent"], "required_metadata": metadata_ok,
         "z_preserved": max_delta <= job["z_tolerance"], "max_z_delta": max_delta,
-        "deterministic_ids": len(seen_ids) == selected,
+        "deterministic_ids": checked_ids == seen_ids and len(seen_ids) == selected,
     }
 
 
