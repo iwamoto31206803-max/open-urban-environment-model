@@ -1,21 +1,26 @@
-# Local work files
+# Windows local acceptance helpers
 
 Files in this directory are temporary, user-facing operational helpers for
-local experiments and acceptance runs. They are not core processing logic,
-normative specifications, or formal processing records.
+local experiments and acceptance runs. Stable reusable logic belongs under
+`src/ouem`, and accepted conclusions belong under `docs`.
 
-Stable reusable processing logic belongs under `src/ouem`; generally useful,
-maintained launchers belong in the formal `scripts` structure. Important
-findings and accepted project decisions belong under `docs`.
+## Runtime boundary
 
-## Komae PLATEAU local acceptance
+The Komae workflow keeps two independently managed runtimes:
 
-`plateau_komae_local_acceptance.cmd` covers the manual preprocessing and OUEM
-ingest stages, plus a separate GIS-runtime setup. GIS setup and OUEM ingest
-must run in separate shells; the script never starts OUEM's venv Python from an
-OSGeo4W/QGIS shell.
+- **QGIS/OSGeo4W** owns GDAL/OGR, `osgeo`, and future native tools such as
+  PDAL.
+- Repository-local **`.venv`** owns OUEM orchestration and portable Python.
 
-First display and follow the manual preprocessing instructions:
+OUEM is not installed into QGIS Python, and `osgeo` is not installed into the
+OUEM venv. Never start `.venv\Scripts\python.exe` from OSGeo4W Shell. GIS
+Python is used only as a child-process worker through a file/argument contract.
+
+## Komae PLATEAU acceptance workflow
+
+### 1. Manual preprocessing
+
+Display the instructions with:
 
 ```bat
 scripts\work\plateau_komae_local_acceptance.cmd manual
@@ -25,68 +30,60 @@ Open the PLATEAU Building CityGML in PLATEAU GIS Converter GUI, select maximum
 LOD and settings that retain 3D/Z geometry, export a GeoPackage, and keep its
 path for OUEM ingest. The helper does not automate or launch the GUI.
 
-Separately, in the **QGIS/OSGeo4W command environment**, capture the GIS child
-runtime:
+### 2. Capture the GIS child runtime
+
+In **OSGeo4W Shell**, run:
 
 ```bat
 scripts\work\plateau_komae_local_acceptance.cmd gis
 ```
 
-This verifies GDAL/OGR and `osgeo`, then writes an ignored local runtime snapshot
-for GIS child processes. Close that shell. In a **normal Command Prompt or VS
-Code terminal**, use the existing repository-local `.venv`, install the pulled
-OUEM revision, and run the OUEM stage:
+This runs the main-branch GIS runtime check and writes the ignored runtime
+snapshot used by the ingest child process. Close OSGeo4W Shell afterward.
+
+### 3. Run OUEM ingest
+
+In a **new ordinary Windows cmd or VS Code terminal**, install the current
+checkout and run:
 
 ```bat
 .venv\Scripts\python.exe -m pip install -e .
 scripts\work\plateau_komae_local_acceptance.cmd ouem D:\path\to\converted.gpkg
 ```
 
-If `.venv` does not exist, create it with the ordinary project Python selected
-for OUEM (for example, through VS Code's **Python: Create Environment**), not
-with OSGeo4W Python. No package-wide Python micro-version is prescribed. The
-confirmed OUEM workstation currently uses Python 3.11.9.
+The OUEM stage rejects inherited QGIS/OSGeo4W variables, verifies the exact
+repository `.venv` interpreter, runs the automated tests, and ingests the
+Converter GeoPackage.
 
-The second argument is the GeoPackage produced manually by PLATEAU GIS
-Converter. It is required; the script does not guess a local filename:
+The provider resolves a unique Building layer. If there are zero or multiple
+candidates, it fails with available layer names and asks for an explicit layer.
+Pass one as the optional third argument:
 
 ```bat
-scripts\work\plateau_komae_local_acceptance.cmd ouem D:\path\to\converted.gpkg
+scripts\work\plateau_komae_local_acceptance.cmd ouem D:\path\to\converted.gpkg bldg:Building
 ```
 
-The provider resolves the unique Building layer. If the GeoPackage has zero or
-multiple Building candidates it fails with available layer names and requests
-an explicit layer. Pass that layer as the optional third argument, for example
-`... ouem converted.gpkg bldg:Building`. The helper also checks the locally
-verified Komae Building count of 3637; this is pilot acceptance metadata, not
-a general provider requirement.
+The helper checks the locally verified Komae Building count of 3637. This is
+pilot acceptance metadata, not a general provider requirement. It does not
+compare that count with unrelated layers in the intermediate GeoPackage.
 
-The environment boundary is deliberate:
+Python 3.11.9 is the accepted local OUEM runtime but not a package-wide
+minor-version lock; `pyproject.toml` remains authoritative. The confirmed GIS
+runtime is QGIS 4.2.3, GDAL 3.13.3, and GIS Python 3.12.14.
 
-- the active **OSGeo4W/QGIS GIS environment** owns GDAL, OGR, PDAL, and other
-  native GIS tools; and
-- `.venv\Scripts\python.exe` is the **OUEM Python environment** and owns the
-  installed `ouem` package and Python orchestration code.
+The runtime snapshot records the GIS output encoding. OUEM captures GIS child
+streams as bytes and decodes them explicitly, avoiding cp932/UTF-8 reader-thread
+failures on Japanese Windows.
 
-The GIS stage captures the external executables, GIS Python, and the child
-environment needed by the small standalone OGR worker. The later OUEM stage
-launches `.venv\Scripts\python.exe` only from a normal shell. It does not install
-OUEM into GIS Python or require `osgeo` in `.venv`. The current confirmed GIS
-runtime is QGIS 4.2.3, GDAL 3.13.3, and Python 3.12.14. These versions document
-the acceptance result; they are not package-wide minimum requirements.
+## Manual QGIS acceptance
 
-The snapshot also records the GIS runtime's preferred output encoding. OUEM
-captures GIS child-process streams as bytes and decodes them explicitly, so a
-Japanese Windows OUEM locale such as cp932 cannot raise `UnicodeDecodeError`
-when a GDAL or GIS Python child emits UTF-8 diagnostics.
+After ingest passes, open `data\native\building\komae.gpkg` in QGIS:
 
-The OUEM stage prints input/output feature counts, resolved layer, geometry
-type, CRS, non-empty/Z geometry counts, reuse status, and preserved fields.
-After it passes, open `data\native\building\komae.gpkg` in QGIS. Confirm the
-building footprints in 2D View and inspect the attribute table. Then open QGIS
-3D View using geometry Z and confirm height and form without adding artificial
-renderer extrusion.
+1. confirm Building footprints in 2D View;
+2. inspect `measuredHeight` and related attributes;
+3. open QGIS 3D View using geometry Z; and
+4. confirm height and three-dimensional form without artificial extrusion.
 
-This same responsibility boundary should be retained when Tokyo LiDAR and CHM
-work is integrated: PDAL/GDAL/OGR operations belong to the GIS environment,
-while orchestration and OUEM package logic belong to the project-local venv.
+The successful Komae PoC contained 3,637 Building features, 3D Multi Polygon
+geometry, EPSG:4979, and retained Z and source attributes.
+

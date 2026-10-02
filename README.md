@@ -126,5 +126,10 @@ python -m pip install -e .
 python -m pytest
 ```
 
+On Windows, do not run the repository virtual environment from OSGeo4W Shell.
+Native GIS tools and OUEM use separate processes and Python installations; see
+the [runtime architecture](docs/architecture.md) and the reproducible
+[local acceptance procedure](scripts/work/README.md).
+
 No OUEM repository license has yet been selected. See [`LICENSE`](LICENSE) for
 the current licensing notice.
