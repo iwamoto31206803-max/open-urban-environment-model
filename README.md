@@ -141,6 +141,14 @@ manifest; see the [provisional contract](docs/OUEM_Standard_Building_v0.1.md)
 for the exact nullable mappings and deterministic ID rule. This milestone does
 not include VoxCity or make the provisional contract final.
 
+The Komae real-data local acceptance passed with 3,637 Native input buildings
+and 111 study-area-selected Standard output buildings. The output was EPSG:6677
+3D Multi Polygon, with required metadata, zero Z delta, and deterministic IDs
+all passing. This is acceptance of the current conversion for the Komae dataset,
+not general PLATEAU coverage or finalization of the provisional specification.
+The detailed record is in
+[`experiments/a1_e2e_pilot/README.md`](experiments/a1_e2e_pilot/README.md).
+
 ```shell
 ouem-standardize-buildings data/native/building/komae.gpkg \
   --output data/standard/building/komae.gpkg \

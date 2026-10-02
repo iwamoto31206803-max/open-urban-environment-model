@@ -125,3 +125,9 @@ as ellipsoidal height. Boundary-intersecting buildings retain complete geometry.
 The accepted Native schema uses its non-null String `id` field as the source
 feature identifier. Standardization maps that value to Standard `source_id`;
 it neither requires `gml_id` nor changes the Native GeoPackage.
+
+The Komae real-data run completed with `PASS`: 3,637 input features produced
+111 study-area-selected output features in EPSG:6677, with 3D Multi Polygon
+geometry, required metadata, maximum Z delta 0 m, and deterministic IDs all
+passing. The formal result and its scope limitations are recorded in
+`experiments\a1_e2e_pilot\README.md`.

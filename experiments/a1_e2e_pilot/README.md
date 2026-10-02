@@ -9,6 +9,7 @@ PLATEAU CityGML
 → Converter 3D GeoPackage
 → OUEM Native Building ingest and validation
 → QGIS 3D visual acceptance
+→ OUEM Standard Building conversion and local acceptance
 ```
 
 The local files for these stages belong under
@@ -36,3 +37,32 @@ no `gml_id` field. Standardization copies `id` to Standard `source_id` without
 mutating the Native GeoPackage. QGIS 2D and 3D display succeeded using geometry Z without
 added extrusion. The 3,637 count applies only to this acceptance Building
 layer; other Converter GeoPackage layers are outside that comparison.
+
+## Standard Building v0.1 local acceptance record
+
+The Windows/QGIS-OSGeo local acceptance command
+`scripts\work\plateau_komae_local_acceptance.cmd standard` was run against the
+accepted Komae PLATEAU Native Building. It completed with the following result:
+
+| Check | Result |
+| --- | --- |
+| Input features | 3,637 |
+| Selected/output features | 111 |
+| Input CRS | EPSG:4979 |
+| Output CRS | EPSG:6677 |
+| Geometry type / 3D | 3D Multi Polygon / True |
+| Native source identifier | `id` |
+| Required Standard metadata | PASS |
+| Z preservation | PASS (maximum delta 0 m) |
+| Deterministic IDs | PASS |
+| Overall result | **PASS** |
+
+The 111 output features are the buildings intersecting the configured Komae
+study-area extent; 3,637 is the Native input count and is **not** the Standard
+output count. Selected boundary buildings retain their complete geometry.
+
+This result accepts the implemented Native-to-Standard conversion against the
+current Standard Building v0.1 conditions for this Komae PLATEAU dataset. It
+does not demonstrate compatibility with every PLATEAU municipality or dataset,
+does not validate downstream VoxCity processing, and does not make the
+provisional Standard Building v0.1 specification final.
