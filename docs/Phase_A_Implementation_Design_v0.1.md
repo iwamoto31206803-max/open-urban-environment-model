@@ -174,7 +174,8 @@ defines the Komae bare-earth Float32 GeoTIFF contract. A lightweight Native
 acceptance manifest validates and pins the unchanged RAW raster;
 Standardization preserves its EPSG:6677 grid and valid elevations while
 normalizing NoData. Horizontal EPSG:6677 is independent of vertical reference,
-which remains explicitly unresolved for the Tokyo reference DEM. Model
+which is source-declared as T.P. for the Tokyo reference DEM based on Tokyo
+Metropolitan Government metadata. Model
 preparation and any VoxCity adapter remain deferred.
 
 ## 7. Incremental and restartable processing

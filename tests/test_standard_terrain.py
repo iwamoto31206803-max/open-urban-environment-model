@@ -14,6 +14,13 @@ from ouem.standardize.terrain import StandardTerrainError, standardize_native_te
 
 ROOT = Path(__file__).parents[1]
 STUDY_AREA = ROOT / "config/study_areas/komae_09LD3451.yaml"
+TOKYO_VERTICAL_REFERENCE = "T.P. (Tokyo Peil / Tokyo Bay mean sea level)"
+TOKYO_VERTICAL_SOURCE = (
+    "Tokyo Metropolitan Government; Tokyo Bay mean sea level; "
+    "https://portal.data.metro.tokyo.lg.jp/; "
+    "https://www.metro.tokyo.lg.jp/information/press/2024/10/2024103126; "
+    "https://www.kensetsu.metro.tokyo.lg.jp/jimusho/tech/04-kijyun/kijyunsetu"
+)
 
 
 def read_json(path):
@@ -92,6 +99,52 @@ def test_same_native_input_produces_deterministic_geotiff(tmp_path):
     assert first.read_bytes() == second.read_bytes()
 
 
+def test_tokyo_source_declared_vertical_provenance_survives_standardization(tmp_path):
+    source = tmp_path / "09LD3451.tif"
+    original = dem(source)
+    native_path = tmp_path / "native.json"
+    native = accept_native_terrain(
+        source,
+        native_path,
+        provider="Tokyo Metropolitan Government",
+        source_dataset="Tokyo 0.50 m bare-earth DEM tile 09LD3451",
+        vertical_reference_status="source-declared",
+        vertical_reference=TOKYO_VERTICAL_REFERENCE,
+        vertical_reference_source=TOKYO_VERTICAL_SOURCE,
+    )
+    output = tmp_path / "standard.tif"
+
+    result = standardize_native_terrain(native_path, output, study_area_config=STUDY_AREA)
+
+    assert native.vertical_reference_status == "source-declared"
+    assert native.vertical_reference == TOKYO_VERTICAL_REFERENCE
+    assert native.vertical_reference_source == TOKYO_VERTICAL_SOURCE
+    manifest = read_json(output.with_suffix(".tif.manifest.json"))
+    assert manifest["vertical_reference"] == {
+        "name": TOKYO_VERTICAL_REFERENCE,
+        "source": TOKYO_VERTICAL_SOURCE,
+        "status": "source-declared",
+    }
+    assert result.grid_preserved and result.elevations_preserved
+    with rasterio.open(output) as dst:
+        written = dst.read(1)
+        assert dst.tags()["VERTICAL_REFERENCE_STATUS"] == "source-declared"
+        assert dst.tags()["VERTICAL_REFERENCE"] == TOKYO_VERTICAL_REFERENCE
+        assert np.array_equal(written[original != -32767], original[original != -32767])
+
+
+def test_komae_acceptance_declares_tokyo_profile_and_official_evidence():
+    workflow = (ROOT / "scripts/work/terrain_komae_local_acceptance.cmd").read_text(
+        encoding="utf-8"
+    )
+    assert "--vertical-reference-status source-declared" in workflow
+    assert f'--vertical-reference "{TOKYO_VERTICAL_REFERENCE}"' in workflow
+    assert "Tokyo Metropolitan Government" in workflow
+    assert "https://portal.data.metro.tokyo.lg.jp/" in workflow
+    assert "https://www.metro.tokyo.lg.jp/information/press/2024/10/2024103126" in workflow
+    assert "https://www.kensetsu.metro.tokyo.lg.jp/jimusho/tech/04-kijyun/kijyunsetu" in workflow
+
+
 @pytest.mark.parametrize("crs", [None, "EPSG:4326"])
 def test_missing_or_unsupported_horizontal_crs_fails(tmp_path, crs):
     source = tmp_path / "source.tif"
@@ -117,3 +170,23 @@ def test_native_manifest_detects_changed_source_and_vertical_semantics_are_expli
     with pytest.raises(NativeTerrainError, match="requires a name and evidence"):
         accept_native_terrain(source, native, provider="x", source_dataset="x",
                               vertical_reference_status="verified")
+
+
+@pytest.mark.parametrize("missing", ["name", "source"])
+def test_source_declared_requires_name_and_evidence(tmp_path, missing):
+    source = tmp_path / "source.tif"
+    dem(source)
+    arguments = {
+        "vertical_reference": TOKYO_VERTICAL_REFERENCE,
+        "vertical_reference_source": TOKYO_VERTICAL_SOURCE,
+    }
+    arguments["vertical_reference_source" if missing == "source" else "vertical_reference"] = None
+    with pytest.raises(NativeTerrainError, match="requires a name and evidence"):
+        accept_native_terrain(
+            source,
+            tmp_path / "native.json",
+            provider="x",
+            source_dataset="x",
+            vertical_reference_status="source-declared",
+            **arguments,
+        )

@@ -13,7 +13,9 @@ pushd "%REPO%" || exit /b 2
   --output data\native\terrain\komae_09LD3451.json ^
   --provider "Tokyo Metropolitan Government" ^
   --source-dataset "Tokyo 0.50 m bare-earth DEM tile 09LD3451" ^
-  --vertical-reference-status unresolved || goto failed
+  --vertical-reference-status source-declared ^
+  --vertical-reference "T.P. (Tokyo Peil / Tokyo Bay mean sea level)" ^
+  --vertical-reference-source "Tokyo Metropolitan Government; Tokyo 23-ku point-cloud metadata: JGD2011, Plane Rectangular CS IX, elevation = Tokyo Bay mean sea level (https://portal.data.metro.tokyo.lg.jp/); 23-ku point-cloud and 0.5 m grid DEM release (https://www.metro.tokyo.lg.jp/information/press/2024/10/2024103126); Tokyo public control points and benchmarks, Tokyo Bay mean sea level as T.P. (https://www.kensetsu.metro.tokyo.lg.jp/jimusho/tech/04-kijyun/kijyunsetu)" || goto failed
 "%PYTHON%" -m ouem.standardize.terrain data\native\terrain\komae_09LD3451.json ^
   --output data\standard\terrain\komae_09LD3451.tif ^
   --study-area config\study_areas\komae_09LD3451.yaml || goto failed
