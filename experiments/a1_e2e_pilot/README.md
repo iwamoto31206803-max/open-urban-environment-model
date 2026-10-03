@@ -14,9 +14,11 @@ PLATEAU CityGML
 
 The local files for these stages belong under
 `data/raw/building/plateau_komae/`,
-`data/converted/building/plateau_komae/`, and `data/native/building/`
-respectively. Converter output is converted input to OUEM, not the OUEM Native
-Building dataset.
+`data/work/building/plateau_komae/`, and `data/native/building/` respectively
+under the current lifecycle convention. The accepted historical result below
+predates retirement of the former converted-stage directory; changing the
+intermediate's local path does not change that result. Converter output is a
+non-authoritative input to OUEM ingest, not the OUEM Native Building dataset.
 
 Direct GDAL/OGR conversion is not used because tested CityGML features became
 `POLYHEDRALSURFACE Z EMPTY`; Converter output retained `MULTIPOLYGON Z` data.

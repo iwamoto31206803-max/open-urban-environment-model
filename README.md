@@ -27,21 +27,18 @@ Local datasets are organized by processing stage:
 
 ```text
 data/
-├─ raw/        # original provider data
-├─ converted/  # optional external/manual conversion output
-├─ native/     # provider-aware data produced by OUEM ingest
-├─ standard/   # provider-independent OUEM Standard data
-└─ work/       # disposable experiments and acceptance artifacts
+├─ raw/        # provider/source data as acquired
+├─ native/     # accepted OUEM Native contract artifacts
+├─ standard/   # accepted OUEM Standard contract artifacts
+├─ model/      # model/engine-ready representations
+├─ output/     # model and analysis outputs
+└─ work/       # non-authoritative, reproducible processing intermediates
 ```
 
 The canonical pipeline is:
 
 ```text
 raw
-  ↓
-[optional external/manual conversion]
-  ↓
-converted
   ↓
 OUEM ingest
   ↓
@@ -50,19 +47,45 @@ native
 OUEM standardization
   ↓
 standard
+  ↓
+model
+  ↓
+output
 ```
 
-Sources that need no external conversion follow `raw → native → standard`.
-For PLATEAU, source CityGML belongs under
-`data/raw/building/plateau_komae/`, PLATEAU GIS Converter output under
-`data/converted/building/plateau_komae/`, OUEM's provider-aware ingest output
-under `data/native/building/`, and Standard Building output under
-`data/standard/building/`. Converter output is **converted**, not OUEM Native
-Building. `data/work/` is only for temporary experiments, diagnostics, and
-acceptance artifacts; it is not a canonical home for reusable datasets.
+The formal lifecycle is `raw → native → standard → model → output`. `work` is
+not a formal lifecycle stage: it is a side workspace for non-authoritative,
+reproducible technical intermediates needed to produce formal artifacts.
+
+The current PLATEAU Building branch uses that side workspace as follows:
+
+```text
+raw
+  │ external/manual processing
+  ▼
+work
+  │ OUEM ingest
+  ▼
+native
+  │ OUEM standardization
+  ▼
+standard
+```
+
+For PLATEAU, source CityGML belongs under `data/raw/building/plateau_komae/`,
+while PLATEAU GIS Converter output belongs under
+`data/work/building/plateau_komae/`. OUEM's accepted Native Building is under
+`data/native/building/`, and Standard Building is under
+`data/standard/building/`. The Converter output is an external/manual
+processing intermediate, **not** OUEM Native Building.
+
+The Tokyo 23-ku 0.5 m DEM source convention is
+`data/raw/terrain/tokyo_23ku_dem_050m/komae/09LD3451.tif`. This path only
+establishes RAW provider/product, study-area, and source-tile provenance;
+Terrain processing and contracts are not yet implemented.
 
 Analysis-ready models and derived GIS products continue under `data/model/`
-and `data/output/`. All local dataset stages are ignored by Git except for
+and `data/output/`. All local data locations are ignored by Git except for
 directory markers; real datasets must not be committed. The canonical Komae
 extent is defined in [`config/study_areas/komae_09LD3451.yaml`](config/study_areas/komae_09LD3451.yaml).
 
@@ -100,7 +123,7 @@ Run ingest from the separate OUEM runtime after completing the GIS runtime
 stage documented in [`scripts/work/README.md`](scripts/work/README.md):
 
 ```shell
-ouem-plateau-buildings data/converted/building/plateau_komae/53393465_bldg_6697_op_convert.gpkg \
+ouem-plateau-buildings data/work/building/plateau_komae/53393465_bldg_6697_op_convert.gpkg \
   --output data/native/building/komae.gpkg \
   --gis-runtime scripts/work/.runtime/plateau_komae_gis.json
 ```

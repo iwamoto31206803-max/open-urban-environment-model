@@ -369,7 +369,7 @@ def test_komae_acceptance_resolves_converter_paths_from_repository_root():
     assert 'for %%I in ("%~dp0..\\..") do set "REPO=%%~fI"' in script
     assert 'call :resolve_converter_gpkg "%~2"' in script
     assert (
-        'set "CONVERTER_GPKG=%REPO%\\data\\converted\\building\\plateau_komae\\'
+        'set "CONVERTER_GPKG=%REPO%\\data\\work\\building\\plateau_komae\\'
         '53393465_bldg_6697_op_convert.gpkg"'
     ) in script
     assert (

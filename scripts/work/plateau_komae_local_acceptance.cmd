@@ -15,7 +15,7 @@ goto usage
 echo === Stage 1: manual PLATEAU GIS Converter preprocessing ===
 echo 1. Open the Komae PLATEAU Building CityGML in PLATEAU GIS Converter GUI.
 echo 2. Export a GeoPackage using maximum LOD to:
-echo    data\converted\building\plateau_komae\53393465_bldg_6697_op_convert.gpkg
+echo    data\work\building\plateau_komae\53393465_bldg_6697_op_convert.gpkg
 echo 3. Enable settings that retain 3D / Z geometry.
 echo 4. Pass the resulting GeoPackage to the OUEM stage.
 echo The GUI conversion is manual and is not run by this script.
@@ -93,7 +93,7 @@ exit /b 1
 
 :resolve_converter_gpkg
 set "CONVERTER_GPKG=%~1"
-if not defined CONVERTER_GPKG set "CONVERTER_GPKG=%REPO%\data\converted\building\plateau_komae\53393465_bldg_6697_op_convert.gpkg"
+if not defined CONVERTER_GPKG set "CONVERTER_GPKG=%REPO%\data\work\building\plateau_komae\53393465_bldg_6697_op_convert.gpkg"
 if not "%CONVERTER_GPKG:~1,1%"==":" if not "%CONVERTER_GPKG:~0,1%"=="\" set "CONVERTER_GPKG=%REPO%\%CONVERTER_GPKG%"
 for %%I in ("%CONVERTER_GPKG%") do set "CONVERTER_GPKG=%%~fI"
 exit /b 0
@@ -113,7 +113,7 @@ exit /b 2
 
 :input_missing
 echo ERROR: Pass the PLATEAU GIS Converter GeoPackage to the OUEM stage.
-echo Expected default: data\converted\building\plateau_komae\53393465_bldg_6697_op_convert.gpkg
+echo Expected default: data\work\building\plateau_komae\53393465_bldg_6697_op_convert.gpkg
 echo Or pass another path: %~nx0 ouem D:\path\to\converted.gpkg [source-layer]
 echo Repository-relative paths are resolved from: %REPO%
 exit /b 2
@@ -130,7 +130,7 @@ echo.
 echo   manual  Show manual PLATEAU GIS Converter preprocessing instructions.
 echo   gis     Run from OSGeo4W Shell. Uses only the QGIS/GIS runtime.
 echo   ouem    Run from a NEW ordinary cmd or VS Code terminal. Uses only .venv.
-echo           Defaults to data\converted\building\plateau_komae\53393465_bldg_6697_op_convert.gpkg.
+echo           Defaults to data\work\building\plateau_komae\53393465_bldg_6697_op_convert.gpkg.
 echo           Relative paths are resolved from the repository root; quote paths containing spaces.
 echo   standard Convert accepted Native Building to data\standard\building\komae.gpkg.
 echo            Optional input defaults to data\native\building\komae.gpkg.
