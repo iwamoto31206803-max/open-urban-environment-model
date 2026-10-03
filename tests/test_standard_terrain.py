@@ -56,7 +56,7 @@ def test_native_to_standard_preserves_grid_values_and_records_provenance(tmp_pat
         assert np.array_equal(written[original != -32767], original[original != -32767])
         assert written[0, 1] == -9999.0
         assert dst.tags()["VERTICAL_REFERENCE_STATUS"] == "unresolved"
-        assert dst.tags()["VERTICAL_REFERENCE"] == ""
+        assert dst.tags()["VERTICAL_REFERENCE"] == "unresolved"
     manifest = json.loads(output.with_suffix(".tif.manifest.json").read_text())
     assert manifest["source"]["sha256"] == hashlib.sha256(source.read_bytes()).hexdigest()
     assert manifest["standard"]["sha256"] == hashlib.sha256(output.read_bytes()).hexdigest()

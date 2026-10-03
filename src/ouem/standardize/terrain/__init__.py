@@ -100,7 +100,9 @@ def standardize_native_terrain(
                 dst.update_tags(
                     OUEM_SCHEMA="standard-terrain/v0.1",
                     VERTICAL_REFERENCE_STATUS=native.vertical_reference_status,
-                    VERTICAL_REFERENCE=native.vertical_reference or "",
+                    VERTICAL_REFERENCE=(
+                        native.vertical_reference or native.vertical_reference_status
+                    ),
                 )
         with rasterio.open(output_path) as dst:
             written = dst.read(1, masked=True)
