@@ -167,6 +167,16 @@ The current Standard CHM concept is:
 - source CRS and resolution retained unless a downstream operation explicitly
   requires transformation.
 
+## 6a. Standard Terrain v0.1 — PROVISIONAL
+
+The provisional [OUEM Standard Terrain v0.1](OUEM_Standard_Terrain_v0.1.md)
+defines the Komae bare-earth Float32 GeoTIFF contract. A lightweight Native
+acceptance manifest validates and pins the unchanged RAW raster;
+Standardization preserves its EPSG:6677 grid and valid elevations while
+normalizing NoData. Horizontal EPSG:6677 is independent of vertical reference,
+which remains explicitly unresolved for the Tokyo reference DEM. Model
+preparation and any VoxCity adapter remain deferred.
+
 ## 7. Incremental and restartable processing
 
 Expensive geospatial processing should be incremental and restartable where
