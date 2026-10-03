@@ -16,10 +16,10 @@ human-scale environmental functions.
   - B1 — Solar & Shade Assessment
   - B2 — Green View Assessment
 
-The current target is the **A1 Komae end-to-end pilot**. This repository
-currently provides the Phase A architecture and package scaffold only; data
-processing, model construction, VoxCity execution, and assessment capabilities
-have not been implemented.
+The current target is the **A1 Komae end-to-end pilot**. This repository now
+implements provisional Standard Building and Standard Terrain preparation;
+model construction, VoxCity execution, and assessment capabilities have not
+been implemented.
 
 ## Local data layout and Phase A lifecycle
 
@@ -79,10 +79,26 @@ while PLATEAU GIS Converter output belongs under
 `data/standard/building/`. The Converter output is an external/manual
 processing intermediate, **not** OUEM Native Building.
 
-The Tokyo 23-ku 0.5 m DEM source convention is
-`data/raw/terrain/tokyo_23ku_dem_050m/komae/09LD3451.tif`. This path only
-establishes RAW provider/product, study-area, and source-tile provenance;
-Terrain processing and contracts are not yet implemented.
+The Komae Tokyo 0.5 m DEM source convention is
+`data/raw/terrain/tokyo_23ku_dem_050m/komae/09LD3451.tif`. Terrain uses a validated Native manifest
+rather than duplicating unchanged raster bytes, followed by Standard GeoTIFF
+creation under `data/standard/terrain/`:
+
+```shell
+ouem-accept-terrain data/raw/terrain/tokyo_23ku_dem_050m/komae/09LD3451.tif \
+  --output data/native/terrain/komae_09LD3451.json \
+  --provider "Tokyo Metropolitan Government" \
+  --source-dataset "Tokyo 0.50 m bare-earth DEM" \
+  --vertical-reference-status unresolved
+ouem-standardize-terrain data/native/terrain/komae_09LD3451.json \
+  --output data/standard/terrain/komae_09LD3451.tif \
+  --study-area config/study_areas/komae_09LD3451.yaml
+```
+
+See the [provisional Terrain contract](docs/OUEM_Standard_Terrain_v0.1.md).
+EPSG:6677 is horizontal only; the Tokyo source's vertical reference remains
+explicitly unresolved. Standard Terrain is not yet an engine-specific MODEL
+artifact or validated VoxCity input.
 
 Analysis-ready models and derived GIS products continue under `data/model/`
 and `data/output/`. All local data locations are ignored by Git except for
@@ -149,7 +165,7 @@ View, then uses geometry Z in QGIS 3D View. The accepted data showed building
 height and form without artificial renderer extrusion.
 
 PLATEAU GIS Converter automation, direct CityGML parsing/conversion, VoxCity,
-terrain, LiDAR/CHM,
+LiDAR/CHM,
 canopy, solar/shade, and GVI processing are outside this minimal A1 ingest.
 
 ## OUEM Standard Building v0.1 conversion

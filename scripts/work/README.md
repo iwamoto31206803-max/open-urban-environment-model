@@ -133,3 +133,22 @@ The Komae real-data run completed with `PASS`: 3,637 input features produced
 geometry, required metadata, maximum Z delta 0 m, and deterministic IDs all
 passing. The formal result and its scope limitations are recorded in
 `experiments\a1_e2e_pilot\README.md`.
+
+## Komae Terrain local acceptance
+
+Install the package (including Rasterio) in the repository venv, place the
+developer-local DEM at `data\raw\terrain\tokyo_23ku_dem_050m\komae\09LD3451.tif`, and run from an
+ordinary Windows terminal:
+
+```bat
+scripts\work\terrain_komae_local_acceptance.cmd
+```
+
+An optional first argument overrides the input path. The helper runs synthetic
+automated tests, creates the Native registration manifest, and creates and
+validates Standard Terrain. Its Standard summary reports paths, dimensions,
+CRSs, pixel sizes, extents, type, both NoData values, valid/NoData counts and
+proportion, elevation range, grid/elevation preservation, unresolved vertical
+status, and overall PASS/FAIL. The adjacent manifests contain deterministic
+source/output SHA-256 checks. This repository does not record a real-data PASS;
+the command must be run locally against the actual tile.
