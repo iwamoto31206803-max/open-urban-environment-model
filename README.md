@@ -212,7 +212,10 @@ consumer field `id` with equal positive values. Effective ground is computed
 from the raw pinned-VoxCity DEM cells selected by its `building_id_grid`, and
 the acceptance runner reaches `Voxelizer.generate_combined`. All A3 VoxCity and
 GeoPandas execution occurs in the OUEM virtual environment; VoxCity is not
-installed in or invoked through the captured QGIS/OSGeo4W runtime.
+installed in or invoked through the captured QGIS/OSGeo4W runtime. The adapter
+constructs each engine footprint by topology-safe union of every positive-area
+XY projection in the canonical 3D surface geometry; collapsed wall projections
+are discarded without changing the Standard artifact.
 See the [adapter contract and acceptance procedure](docs/OUEM_VoxCity_Adapter_v0.1.md).
 
 OUEM will focus on Japanese geospatial-data preparation, input adapters,

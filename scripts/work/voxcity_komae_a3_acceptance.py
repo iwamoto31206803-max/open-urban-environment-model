@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 
 PIN = "fa212656305328a9a657973bae26f352bfe813bc"
+REGRESSION_OUEM_ID = "oub-589ee7e2-c016-5b74-b199-af2e052e0ff1"
 
 
 def digest(array):
@@ -77,6 +78,10 @@ def main():
     dem2, heights2, ids2, voxels2 = once()
     present = {int(value) for value in ids.flat if int(value) > 0}
     expected = set(map(int, gdf.voxcity_id))
+    regression_rows = gdf[gdf.ouem_id == REGRESSION_OUEM_ID]
+    if len(regression_rows) != 1:
+        raise RuntimeError(f"Komae regression building missing: {REGRESSION_OUEM_ID}")
+    regression_id = int(regression_rows.iloc[0].voxcity_id)
     flattened = process_grid(ids, dem.copy())
     dem_min = float(np.min(dem))
     building_code = -3
@@ -102,6 +107,9 @@ def main():
         "building_voxels_produced": bool(np.any(voxels == building_code)),
         "ids_present": sorted(present), "ids_expected": sorted(expected),
         "no_unexplained_loss": present == expected,
+        "regression_building": {"ouem_id": REGRESSION_OUEM_ID,
+                                "voxcity_id": regression_id,
+                                "present_in_building_id_grid": regression_id in present},
         "max_absolute_roof_error_m": max(vertical_errors),
         "vertical_tolerance_m": tolerance,
         "vertical_geometry_consistent": max(vertical_errors) <= tolerance,
@@ -111,6 +119,7 @@ def main():
             digest(ids) == digest(ids2), digest(voxels) == digest(voxels2))),
     }
     required = (report["building_voxels_produced"], report["no_unexplained_loss"],
+                report["regression_building"]["present_in_building_id_grid"],
                 report["vertical_geometry_consistent"],
                 report["adapter_serialization_deterministic"],
                 report["grid_and_voxel_deterministic"])

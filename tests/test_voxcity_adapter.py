@@ -7,7 +7,7 @@ import pytest
 from ouem.adapters.voxcity import (
     VOXCITY_COMMIT, VOXCITY_VERSION, VoxCityAdapterError, canonical_json,
     check_vertical_compatibility, derive_attributes, grid_ground_samples,
-    interface_id_properties, numeric_id_mapping,
+    interface_id_properties, numeric_id_mapping, build_normalized_footprint,
 )
 import ouem.adapters.voxcity as adapter
 
@@ -76,3 +76,38 @@ def test_canonical_serialization_is_deterministic():
     second = canonical_json(json.loads(first))
     assert first == second
     assert first.endswith(b"\n")
+
+
+def test_shell_surfaces_form_valid_footprint_and_discard_vertical_walls():
+    shapely = pytest.importorskip("shapely", minversion="2.0")
+    from shapely.geometry import MultiPolygon, Polygon
+    roof = Polygon([(0, 0, 10), (10, 0, 10), (10, 10, 10), (0, 10, 10)])
+    floor = Polygon([(0, 0, 0), (10, 0, 0), (10, 10, 0), (0, 10, 0)])
+    wall = Polygon([(0, 0, 0), (10, 0, 0), (10, 0, 10), (0, 0, 10)])
+    footprint, diagnostic = build_normalized_footprint(
+        MultiPolygon([roof, floor, wall]), "oub-shell"
+    )
+    assert footprint.is_valid and footprint.geom_type == "Polygon"
+    assert footprint.area == pytest.approx(100.0)
+    assert diagnostic["source_surface_part_count"] == 3
+    assert diagnostic["projected_discarded_zero_area_part_count"] == 1
+
+
+def test_all_positive_projected_parts_are_unioned_and_order_independent():
+    pytest.importorskip("shapely", minversion="2.0")
+    from shapely.geometry import MultiPolygon, Polygon
+    left = Polygon([(0, 0, 5), (2, 0, 5), (2, 2, 5), (0, 2, 5)])
+    right = Polygon([(4, 0, 6), (7, 0, 6), (7, 2, 6), (4, 2, 6)])
+    first, diagnostic = build_normalized_footprint(MultiPolygon([left, right]), "oub-parts")
+    second, _ = build_normalized_footprint(MultiPolygon([right, left]), "oub-parts")
+    assert first.area == pytest.approx(10.0)
+    assert diagnostic["projected_positive_area_part_count"] == 2
+    assert first.wkb == second.wkb
+
+
+def test_only_degenerate_projected_surfaces_fail_fast():
+    pytest.importorskip("shapely", minversion="2.0")
+    from shapely.geometry import MultiPolygon, Polygon
+    wall = Polygon([(0, 0, 0), (2, 0, 0), (2, 0, 3), (0, 0, 3)])
+    with pytest.raises(VoxCityAdapterError, match="oub-degenerate"):
+        build_normalized_footprint(MultiPolygon([wall]), "oub-degenerate")

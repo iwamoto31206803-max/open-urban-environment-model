@@ -53,6 +53,15 @@ sample count/range, geometry bottom, top, mean
 ground and derived height so slope-induced roof error can be audited. Neither
 `maxZ-minZ`, `measuredHeight`, nor one arbitrary DEM point is canonical.
 
+Before rasterization, the adapter preserves all source Z values and projects
+every polygonal 3D surface independently to XY. Empty and zero-area projections
+(notably vertical walls) are discarded. Every remaining positive-area polygon
+is topology-repaired when necessary, normalized and deterministically unioned;
+the final valid positive-area Polygon/MultiPolygon is the VoxCity footprint.
+No first/largest-part, envelope, or convex-hull fallback is used. Per-building
+surface counts, discarded counts, union area, output type, and validity are
+recorded in the manifest.
+
 For ordinary Komae buildings `min_height` is exactly `0.0`. Geometry bottom is
 diagnostic only. No elevated-building semantics are inferred.
 
@@ -81,6 +90,8 @@ unique canonical and numeric IDs; a bijection; positive heights; all normal
 manifest fields; and byte-identical reruns. The pinned-engine runner checks that
 VoxCity produces nonempty height/ID grids, calls `Voxelizer.generate_combined`,
 finds building voxels for every mapped ID, and reruns are array-identical. It
+explicitly checks the prior Komae regression building
+`oub-589ee7e2-c016-5b74-b199-af2e052e0ff1` in `building_id_grid`. It
 checks `processed ground + relative height ≈ absolute Standard roof`; normalized
 voxel Z is shifted back by the raw DEM minimum and must agree within twice the
 mesh size (rounding at ground and roof). The runner intentionally fails on another

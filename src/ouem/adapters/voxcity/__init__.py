@@ -127,13 +127,82 @@ def _z_values(geometry: Any) -> list[float]:
     return [coordinate[2] for coordinate in geometry.coords if len(coordinate) >= 3]
 
 
+def build_normalized_footprint(geometry: Any, ouem_id: str) -> tuple[Any, dict[str, Any]]:
+    """Union all positive-area XY projections of a Standard 3D surface set."""
+    try:
+        from shapely import force_2d, make_valid, normalize
+        from shapely.geometry import MultiPolygon, Polygon
+        from shapely.ops import unary_union
+    except ImportError as exc:  # pragma: no cover - deployment dependency
+        raise VoxCityAdapterError("A3 footprint construction requires Shapely 2") from exc
+
+    def source_polygons(value: Any) -> list[Any]:
+        if isinstance(value, Polygon):
+            return [value]
+        if hasattr(value, "geoms"):
+            return [part for child in value.geoms for part in source_polygons(child)]
+        return []
+
+    def polygonal_parts(value: Any) -> list[Any]:
+        if isinstance(value, Polygon):
+            return [value]
+        if isinstance(value, MultiPolygon) or hasattr(value, "geoms"):
+            return [part for child in value.geoms for part in polygonal_parts(child)]
+        return []
+
+    surfaces = source_polygons(geometry)
+    retained: list[Any] = []
+    discarded = 0
+    for surface in surfaces:
+        projected = force_2d(surface)
+        if projected.is_empty or not math.isfinite(projected.area) or projected.area <= 0:
+            discarded += 1
+            continue
+        repaired = make_valid(projected) if not projected.is_valid else projected
+        parts = [part for part in polygonal_parts(repaired)
+                 if not part.is_empty and math.isfinite(part.area) and part.area > 0]
+        if not parts:
+            discarded += 1
+            continue
+        retained.extend(parts)
+    if not retained:
+        raise VoxCityAdapterError(
+            f"building {ouem_id} has no positive-area XY footprint after projection"
+        )
+    # Normalization and WKB sorting make union input independent of source
+    # surface ordering while retaining every plan-view support component.
+    retained = sorted((normalize(part) for part in retained), key=lambda part: part.wkb)
+    footprint = unary_union(retained)
+    if not footprint.is_valid:
+        footprint = make_valid(footprint)
+    final_parts = [part for part in polygonal_parts(footprint)
+                   if not part.is_empty and math.isfinite(part.area) and part.area > 0]
+    if not final_parts:
+        raise VoxCityAdapterError(f"building {ouem_id} footprint union is empty or degenerate")
+    final_parts = sorted((normalize(part) for part in final_parts), key=lambda part: part.wkb)
+    footprint = normalize(unary_union(final_parts))
+    if (footprint.is_empty or footprint.geom_type not in {"Polygon", "MultiPolygon"}
+            or not math.isfinite(footprint.area) or footprint.area <= 0
+            or not footprint.is_valid):
+        raise VoxCityAdapterError(f"building {ouem_id} has no valid normalized 2D footprint")
+    diagnostics = {
+        "source_geometry_type": geometry.geom_type,
+        "source_surface_part_count": len(surfaces),
+        "projected_positive_area_part_count": len(retained),
+        "projected_discarded_zero_area_part_count": discarded,
+        "projected_union_area": float(footprint.area),
+        "footprint_geometry_type": footprint.geom_type,
+        "footprint_valid": bool(footprint.is_valid),
+    }
+    return footprint, diagnostics
+
+
 def _run_voxcity_grids(building_path: Path, terrain_path: Path, meshsize: float) -> dict[str, Any]:
     """Run every VoxCity operation in the current OUEM Python environment."""
     try:
         import geopandas as gpd
         import numpy as np
         import voxcity
-        from shapely.ops import transform
         from voxcity.geoprocessor.raster import (
             create_building_height_grid_from_gdf_polygon,
             create_dem_grid_from_geotiff_polygon,
@@ -156,8 +225,12 @@ def _run_voxcity_grids(building_path: Path, terrain_path: Path, meshsize: float)
     if any(not values or not all(math.isfinite(z) for z in values)
            for values in z_by_ouem.values()):
         raise VoxCityAdapterError("Standard Building contains missing or non-finite Z")
-    buildings.geometry = buildings.geometry.map(
-        lambda geometry: transform(lambda x, y, z=None: (x, y), geometry)
+    footprints = {
+        row.ouem_id: build_normalized_footprint(row.geometry, row.ouem_id)
+        for row in buildings.itertuples()
+    }
+    buildings.geometry = buildings.ouem_id.map(
+        {ouem_id: value[0] for ouem_id, value in footprints.items()}
     )
     buildings["voxcity_id"] = buildings.ouem_id.map(mapping)
     buildings["id"] = buildings.voxcity_id
@@ -179,7 +252,8 @@ def _run_voxcity_grids(building_path: Path, terrain_path: Path, meshsize: float)
         for row in buildings.itertuples():
             samples = grid_ground_samples(building_ids, dem, row.id)
             derived = derive_attributes(z_by_ouem[row.ouem_id], samples)
-            records.append({"ouem_id": row.ouem_id, "voxcity_id": row.id, **derived})
+            records.append({"ouem_id": row.ouem_id, "voxcity_id": row.id, **derived,
+                            "footprint": footprints[row.ouem_id][1]})
         buildings["height"] = buildings.ouem_id.map(
             {record["ouem_id"]: record["height"] for record in records}
         )
@@ -250,7 +324,9 @@ def adapt_standard_to_voxcity(
     ordered = []
     for record in records:
         feature = features_by_id[record["ouem_id"]]
-        feature["properties"].update(record)
+        feature["properties"].update(
+            {key: value for key, value in record.items() if key != "footprint"}
+        )
         feature["properties"].update(interface_id_properties(record["ouem_id"], mapping))
         ordered.append(feature)
     collection["features"] = ordered
