@@ -43,12 +43,26 @@ CRS. `vertical_reference_status` is exactly one of `verified`,
 both a reference name and evidence/source. Unresolved requires both fields to
 be null.
 
-The Tokyo DEM is currently recorded as **unresolved**. OUEM does not infer
-T.P., orthometric height, ellipsoidal height, or a vertical EPSG identifier
-from EPSG:6677. Unresolved status does not prevent terrain standardization.
-Future numerical combination with Building Z or other vertical data must
-first establish compatible verified or source-declared semantics; that check
-is outside this version.
+The Tokyo 23-ku 0.5 m DEM source profile used for Komae is recorded as
+**source-declared T.P. (Tokyo Peil / Tokyo Bay mean sea level)**. This is a
+provider declaration, not an OUEM independent survey or benchmark comparison,
+so its status is not `verified`. The evidence is Tokyo Metropolitan Government
+official source metadata declaring JGD2011, Plane Rectangular CS IX, and
+elevation relative to Tokyo Bay mean sea level; the official release relating
+the 23-ku point cloud, ground data, and 0.5 m grid DEM; and the Bureau of
+Construction documentation identifying Tokyo Bay mean sea level as T.P.:
+
+- [Tokyo Metropolitan Government Open Data Portal](https://portal.data.metro.tokyo.lg.jp/)
+- [Release: 区部の3次元点群データを公開](https://www.metro.tokyo.lg.jp/information/press/2024/10/2024103126)
+- [東京都公共基準点・水準基標について](https://www.kensetsu.metro.tokyo.lg.jp/jimusho/tech/04-kijyun/kijyunsetu)
+
+This source-specific declaration does not make T.P. a default for Standard
+Terrain or other DEM providers. OUEM does not infer T.P., orthometric height,
+ellipsoidal height, or a vertical EPSG identifier from EPSG:6677. Unresolved
+status remains valid and does not prevent terrain standardization. Numerical
+combination of unresolved Terrain with Building Z or other vertical data is
+prohibited until compatible verified or source-declared semantics have been
+established; that compatibility check and any fusion are outside this version.
 
 ## 4. Native acceptance decision
 

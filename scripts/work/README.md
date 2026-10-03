@@ -148,7 +148,8 @@ An optional first argument overrides the input path. The helper runs synthetic
 automated tests, creates the Native registration manifest, and creates and
 validates Standard Terrain. Its Standard summary reports paths, dimensions,
 CRSs, pixel sizes, extents, type, both NoData values, valid/NoData counts and
-proportion, elevation range, grid/elevation preservation, unresolved vertical
-status, and overall PASS/FAIL. The adjacent manifests contain deterministic
-source/output SHA-256 checks. This repository does not record a real-data PASS;
-the command must be run locally against the actual tile.
+proportion, elevation range, grid/elevation preservation, source-declared T.P.
+vertical status, and overall PASS/FAIL. The Native and adjacent Standard
+manifests record the Tokyo Metropolitan Government evidence for that declaration
+as well as deterministic source/output SHA-256 checks. This repository does not
+record a real-data PASS; the command must be run locally against the actual tile.
