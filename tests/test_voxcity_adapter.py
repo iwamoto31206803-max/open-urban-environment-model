@@ -1,4 +1,6 @@
 import json
+import inspect
+from pathlib import Path
 
 import pytest
 
@@ -7,11 +9,22 @@ from ouem.adapters.voxcity import (
     check_vertical_compatibility, derive_attributes, grid_ground_samples,
     interface_id_properties, numeric_id_mapping,
 )
+import ouem.adapters.voxcity as adapter
 
 
 def test_version_is_exactly_pinned():
     assert VOXCITY_VERSION == "1.7.0"
     assert VOXCITY_COMMIT == "fa212656305328a9a657973bae26f352bfe813bc"
+
+
+def test_a3_has_no_external_gis_worker_runtime_boundary():
+    signature = inspect.signature(adapter.adapt_standard_to_voxcity)
+    assert "runtime" not in signature.parameters
+    package = Path(adapter.__file__).parent
+    assert not (package / "_gdal_worker.py").exists()
+    source = Path(adapter.__file__).read_text(encoding="utf-8")
+    assert "subprocess.run" not in source
+    assert "load_gis_runtime" not in source
 
 
 def test_id_mapping_is_positive_bijective_and_order_independent():

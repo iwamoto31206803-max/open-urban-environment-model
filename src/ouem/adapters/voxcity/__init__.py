@@ -1,8 +1,7 @@
 """Accepted OUEM Standard artifacts to VoxCity 1.7.0 adapter.
 
-The dependency-light functions in this module define and test the deterministic
-contract.  File IO is delegated to ``_gdal_worker.py`` because OUEM deliberately
-uses the separately captured QGIS/GDAL runtime for GeoPackage processing.
+All GeoPandas and VoxCity work runs in the OUEM Python environment. Captured
+QGIS/OSGeo4W runtimes remain confined to the upstream A1/A2 preparation stages.
 """
 
 from __future__ import annotations
@@ -11,14 +10,10 @@ import argparse
 import hashlib
 import json
 import math
-import subprocess
 import sys
-import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable, Sequence
-
-from ouem.native.building.plateau import GISRuntime, _decode_output, load_gis_runtime, require_gdal
 
 ADAPTER_VERSION = "0.1.0"
 VOXCITY_VERSION = "1.7.0"
@@ -122,6 +117,98 @@ def canonical_json(value: Any) -> bytes:
     return (json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n").encode()
 
 
+def _z_values(geometry: Any) -> list[float]:
+    if hasattr(geometry, "geoms"):
+        return [z for part in geometry.geoms for z in _z_values(part)]
+    if hasattr(geometry, "exterior"):
+        rings = [geometry.exterior, *geometry.interiors]
+        return [coordinate[2] for ring in rings for coordinate in ring.coords
+                if len(coordinate) >= 3]
+    return [coordinate[2] for coordinate in geometry.coords if len(coordinate) >= 3]
+
+
+def _run_voxcity_grids(building_path: Path, terrain_path: Path, meshsize: float) -> dict[str, Any]:
+    """Run every VoxCity operation in the current OUEM Python environment."""
+    try:
+        import geopandas as gpd
+        import numpy as np
+        import voxcity
+        from shapely.ops import transform
+        from voxcity.geoprocessor.raster import (
+            create_building_height_grid_from_gdf_polygon,
+            create_dem_grid_from_geotiff_polygon,
+            process_grid,
+        )
+    except ImportError as exc:  # pragma: no cover - exercised in deployment environment
+        raise VoxCityAdapterError(
+            "A3 requires GeoPandas, Shapely, NumPy and pinned VoxCity in the OUEM environment"
+        ) from exc
+    if getattr(voxcity, "__version__", None) != VOXCITY_VERSION:
+        raise VoxCityAdapterError(f"VoxCity {VOXCITY_VERSION} is required")
+    buildings = gpd.read_file(building_path, layer="building")
+    if buildings.crs is None or buildings.crs.to_epsg() != 6677:
+        raise VoxCityAdapterError("Standard Building must be EPSG:6677")
+    if buildings.empty or "ouem_id" not in buildings or buildings.ouem_id.isna().any():
+        raise VoxCityAdapterError("Standard Building requires non-empty ouem_id")
+    mapping = numeric_id_mapping(buildings.ouem_id.tolist())
+    buildings = buildings[["ouem_id", "geometry"]].copy()
+    z_by_ouem = {row.ouem_id: _z_values(row.geometry) for row in buildings.itertuples()}
+    if any(not values or not all(math.isfinite(z) for z in values)
+           for values in z_by_ouem.values()):
+        raise VoxCityAdapterError("Standard Building contains missing or non-finite Z")
+    buildings.geometry = buildings.geometry.map(
+        lambda geometry: transform(lambda x, y, z=None: (x, y), geometry)
+    )
+    buildings["voxcity_id"] = buildings.ouem_id.map(mapping)
+    buildings["id"] = buildings.voxcity_id
+    buildings["min_height"] = 0.0
+    buildings["height"] = 1.0  # bootstrap only; replaced from grid-derived ground
+    xmin, ymin, xmax, ymax = buildings.to_crs(4326).total_bounds
+    rectangle = [(xmin, ymin), (xmin, ymax), (xmax, ymax), (xmax, ymin)]
+    dem = create_dem_grid_from_geotiff_polygon(
+        str(terrain_path), meshsize, rectangle, dem_interpolation=False
+    )
+    if not np.isfinite(dem).all():
+        raise VoxCityAdapterError("VoxCity DEM grid contains non-finite values")
+    previous_ids = None
+    for _ in range(8):
+        _, _, building_ids = create_building_height_grid_from_gdf_polygon(
+            buildings, meshsize, rectangle, overlapping_footprint=False
+        )[:3]
+        records = []
+        for row in buildings.itertuples():
+            samples = grid_ground_samples(building_ids, dem, row.id)
+            derived = derive_attributes(z_by_ouem[row.ouem_id], samples)
+            records.append({"ouem_id": row.ouem_id, "voxcity_id": row.id, **derived})
+        buildings["height"] = buildings.ouem_id.map(
+            {record["ouem_id"]: record["height"] for record in records}
+        )
+        if previous_ids is not None and np.array_equal(previous_ids, building_ids):
+            break
+        previous_ids = building_ids.copy()
+    else:
+        raise VoxCityAdapterError("VoxCity building-grid assignment did not converge")
+    flattened = process_grid(building_ids, dem.copy())
+    shift = float(np.min(dem))
+    for record in records:
+        actual = flattened[building_ids == record["voxcity_id"]]
+        absolute_match = actual.size and np.allclose(
+            actual, record["ground_eff_abs"], atol=1e-9
+        )
+        normalized_match = actual.size and np.allclose(
+            actual + shift, record["ground_eff_abs"], atol=1e-9
+        )
+        if not absolute_match and not normalized_match:
+            raise VoxCityAdapterError("A3 ground disagrees with VoxCity process_grid")
+    geojson = json.loads(buildings.to_json(drop_id=True))
+    geojson["name"] = "voxcity_buildings"
+    geojson["crs"] = {"type": "name", "properties": {"name": "urn:ogc:def:crs:EPSG::6677"}}
+    return {"records": records, "geojson": geojson,
+            "aoi": list(map(float, buildings.total_bounds)),
+            "rectangle_vertices_lonlat": [[float(x), float(y)] for x, y in rectangle],
+            "grid_shape": list(dem.shape), "warnings": []}
+
+
 @dataclass(frozen=True)
 class AdapterResult:
     buildings: int
@@ -131,10 +218,9 @@ class AdapterResult:
 
 def adapt_standard_to_voxcity(
     buildings: str | Path, terrain: str | Path, output: str | Path, *,
-    meshsize: float, runtime: GISRuntime, aoi: Sequence[float] | None = None,
+    meshsize: float, aoi: Sequence[float] | None = None,
 ) -> AdapterResult:
     """Create deterministic GeoJSON plus an audit manifest from accepted artifacts."""
-    require_gdal(runtime)
     building_path, terrain_path, output_path = Path(buildings).resolve(), Path(terrain).resolve(), Path(output)
     if meshsize <= 0 or not math.isfinite(meshsize):
         raise VoxCityAdapterError("meshsize must be a positive finite number")
@@ -152,17 +238,7 @@ def adapt_standard_to_voxcity(
         raise VoxCityAdapterError("inputs must be Standard Building v0.1 and Standard Terrain v0.1")
     check_vertical_compatibility(bm.get("z_reference", ""), tm.get("vertical_reference", {}))
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    with tempfile.TemporaryDirectory(prefix="ouem-voxcity-") as temporary:
-        job_path, result_path = Path(temporary) / "job.json", Path(temporary) / "result.json"
-        job_path.write_text(json.dumps({"buildings": str(building_path), "terrain": str(terrain_path),
-            "output": str(output_path.resolve()), "meshsize": meshsize, "aoi": list(aoi) if aoi else None}), encoding="utf-8")
-        worker = Path(__file__).with_name("_gdal_worker.py")
-        completed = subprocess.run([runtime.python, str(worker), str(job_path), str(result_path)],
-            capture_output=True, env=runtime.environment)
-        if completed.returncode:
-            diagnostic = _decode_output(completed.stderr, runtime).strip() or _decode_output(completed.stdout, runtime).strip()
-            raise VoxCityAdapterError(f"external GIS adapter worker failed: {diagnostic}")
-        worker_result = json.loads(result_path.read_text(encoding="utf-8"))
+    worker_result = _run_voxcity_grids(building_path, terrain_path, meshsize)
     records = worker_result["records"]
     mapping = numeric_id_mapping(record["ouem_id"] for record in records)
     for record in records:
@@ -181,6 +257,7 @@ def adapt_standard_to_voxcity(
     output_path.write_bytes(canonical_json(collection))
     manifest = {"schema": SCHEMA, "adapter_version": ADAPTER_VERSION,
         "voxcity": {"version": VOXCITY_VERSION, "commit": VOXCITY_COMMIT},
+        "runtime": {"voxcity": "ouem-python-environment", "gis_runtime_role": "none"},
         "inputs": {"standard_building": {"path": str(building_path), "sha256": sha256_file(building_path)},
                    "standard_terrain": {"path": str(terrain_path), "sha256": sha256_file(terrain_path)}},
         "aoi": list(aoi) if aoi else worker_result["aoi"], "meshsize": meshsize,
@@ -202,7 +279,7 @@ def adapt_standard_to_voxcity(
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Adapt accepted OUEM Standard Building + Terrain to VoxCity 1.7.0")
     parser.add_argument("buildings"); parser.add_argument("terrain"); parser.add_argument("--output", required=True)
-    parser.add_argument("--meshsize", required=True, type=float); parser.add_argument("--gis-runtime", required=True)
+    parser.add_argument("--meshsize", required=True, type=float)
     parser.add_argument("--aoi", nargs=4, type=float, metavar=("XMIN", "YMIN", "XMAX", "YMAX"))
     return parser
 
@@ -211,7 +288,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = _parser().parse_args(argv)
     try:
         result = adapt_standard_to_voxcity(args.buildings, args.terrain, args.output,
-            meshsize=args.meshsize, runtime=load_gis_runtime(args.gis_runtime), aoi=args.aoi)
+            meshsize=args.meshsize, aoi=args.aoi)
     except (VoxCityAdapterError, OSError, ValueError) as exc:
         print(f"error: {exc}", file=sys.stderr); return 2
     print(f"Adapter buildings: {result.buildings}\nOutput: {result.output}\nManifest: {result.manifest}\nResult: PASS")

@@ -8,7 +8,15 @@ version = "0.0.0"
 description = "Open Urban Environment Model"
 readme = "README.md"
 requires-python = ">=3.10"
-dependencies = ["numpy>=1.24", "rasterio>=1.3"]
+dependencies = [
+  "numpy>=1.24",
+  "rasterio>=1.3",
+  "geopandas>=1.0",
+  "shapely>=2.0",
+  "pyproj>=3.6",
+  "scipy>=1.10",
+  "voxcity @ git+https://github.com/kunifujiwara/VoxCity.git@fa212656305328a9a657973bae26f352bfe813bc",
+]
 
 [project.scripts]
 ouem-plateau-buildings = "ouem.native.building.plateau:main"

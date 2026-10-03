@@ -31,6 +31,13 @@ unique `ouem_id` values, then numbering from 1. This produces an explicit,
 positive, unique, reproducible bijection independent of feature/ filesystem
 order.
 
+All A3 GeoPackage access, footprint preparation, VoxCity grid construction,
+and serialization run in the OUEM Python environment. That environment owns
+GeoPandas, Shapely, Rasterio, PyProj, SciPy, NumPy, and pinned VoxCity 1.7.0.
+The captured QGIS/OSGeo4W runtime is not invoked by A3 and does not install or
+import VoxCity; it remains an A1/A2 preparation concern only. The manifest
+records this runtime boundary explicitly.
+
 ## Height, ground, and `min_height`
 
 For building *b* the adapter uses
@@ -59,13 +66,12 @@ before geometry processing. No datum is inferred from EPSG:6677.
 
 ```console
 ouem-adapt-voxcity standard-building.gpkg standard-terrain.tif \
-  --output work/voxcity-buildings.geojson --meshsize 1 \
-  --gis-runtime work/gis-runtime.json
+  --output work/voxcity-buildings.geojson --meshsize 1
 pytest -q
 python scripts/work/voxcity_komae_a3_acceptance.py \
   standard-building.gpkg standard-terrain.tif \
   --adapter-output work/voxcity-buildings.geojson \
-  --gis-runtime work/gis-runtime.json --meshsize 1 \
+  --meshsize 1 \
   --expected 111 --report work/voxcity-e2e.json
 ```
 
@@ -101,5 +107,5 @@ Buildings assigned no VoxCity building-grid cell fail rather than silently
 using a nearest point. A feature-level
 relative height necessarily yields roof variation over slopes in VoxCity; the
 recorded terrain range makes that limitation measurable. Real-data and pinned
-engine execution require the local frozen artifacts and external GIS/VoxCity
-environments and cannot be substituted by unit fixtures.
+engine execution require the local frozen artifacts and the pinned OUEM
+VoxCity environment and cannot be substituted by unit fixtures.

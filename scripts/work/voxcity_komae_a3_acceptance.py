@@ -18,7 +18,6 @@ def main():
     parser.add_argument("standard_building")
     parser.add_argument("standard_terrain")
     parser.add_argument("--adapter-output", required=True)
-    parser.add_argument("--gis-runtime", required=True)
     parser.add_argument("--meshsize", type=float, required=True)
     parser.add_argument("--expected", type=int, default=111)
     parser.add_argument("--report", required=True)
@@ -28,7 +27,6 @@ def main():
     import numpy as np
     import voxcity
     from ouem.adapters.voxcity import adapt_standard_to_voxcity
-    from ouem.native.building.plateau import load_gis_runtime
     from voxcity.generator import Voxelizer
     from voxcity.geoprocessor.raster import (
         create_building_height_grid_from_gdf_polygon,
@@ -40,7 +38,17 @@ def main():
         raise RuntimeError("VoxCity 1.7.0 is required")
     result = adapt_standard_to_voxcity(
         args.standard_building, args.standard_terrain, args.adapter_output,
-        meshsize=args.meshsize, runtime=load_gis_runtime(args.gis_runtime),
+        meshsize=args.meshsize,
+    )
+    first_geojson_hash = hashlib.sha256(Path(result.output).read_bytes()).hexdigest()
+    first_manifest_hash = hashlib.sha256(Path(result.manifest).read_bytes()).hexdigest()
+    rerun = adapt_standard_to_voxcity(
+        args.standard_building, args.standard_terrain, args.adapter_output,
+        meshsize=args.meshsize,
+    )
+    adapter_deterministic = (
+        first_geojson_hash == hashlib.sha256(Path(rerun.output).read_bytes()).hexdigest()
+        and first_manifest_hash == hashlib.sha256(Path(rerun.manifest).read_bytes()).hexdigest()
     )
     gdf = gpd.read_file(result.output)
     manifest = json.loads(Path(result.manifest).read_text(encoding="utf-8"))
@@ -97,11 +105,15 @@ def main():
         "max_absolute_roof_error_m": max(vertical_errors),
         "vertical_tolerance_m": tolerance,
         "vertical_geometry_consistent": max(vertical_errors) <= tolerance,
-        "deterministic": all((digest(dem) == digest(dem2), digest(heights) == digest(heights2),
-                              digest(ids) == digest(ids2), digest(voxels) == digest(voxels2))),
+        "adapter_serialization_deterministic": adapter_deterministic,
+        "grid_and_voxel_deterministic": all((
+            digest(dem) == digest(dem2), digest(heights) == digest(heights2),
+            digest(ids) == digest(ids2), digest(voxels) == digest(voxels2))),
     }
     required = (report["building_voxels_produced"], report["no_unexplained_loss"],
-                report["vertical_geometry_consistent"], report["deterministic"])
+                report["vertical_geometry_consistent"],
+                report["adapter_serialization_deterministic"],
+                report["grid_and_voxel_deterministic"])
     if not all(required):
         raise RuntimeError("VoxCity acceptance failed: " + json.dumps(report))
     Path(args.report).write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
