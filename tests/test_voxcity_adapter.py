@@ -8,6 +8,7 @@ from ouem.adapters.voxcity import (
     VOXCITY_COMMIT, VOXCITY_VERSION, VoxCityAdapterError, canonical_json,
     check_vertical_compatibility, derive_attributes, grid_ground_samples,
     interface_id_properties, numeric_id_mapping, build_normalized_footprint,
+    _set_normalized_footprints,
 )
 import ouem.adapters.voxcity as adapter
 
@@ -111,3 +112,22 @@ def test_only_degenerate_projected_surfaces_fail_fast():
     wall = Polygon([(0, 0, 0), (2, 0, 0), (2, 0, 3), (0, 0, 3)])
     with pytest.raises(VoxCityAdapterError, match="oub-degenerate"):
         build_normalized_footprint(MultiPolygon([wall]), "oub-degenerate")
+
+
+def test_normalized_footprint_assignment_preserves_source_crs():
+    gpd = pytest.importorskip("geopandas", minversion="1.0")
+    pytest.importorskip("shapely", minversion="2.0")
+    from shapely.geometry import Polygon
+    source = gpd.GeoDataFrame(
+        {"ouem_id": ["oub-a"]},
+        geometry=gpd.GeoSeries(
+            [Polygon([(0, 0, 1), (2, 0, 1), (2, 2, 1), (0, 2, 1)])],
+            crs="EPSG:6677",
+        ),
+    )
+    footprint = build_normalized_footprint(source.geometry.iloc[0], "oub-a")
+    result = _set_normalized_footprints(source, {"oub-a": footprint})
+    assert result.crs == source.crs
+    assert result.geometry.crs == source.geometry.crs
+    transformed = result.to_crs(4326)
+    assert transformed.crs.to_epsg() == 4326

@@ -197,6 +197,28 @@ def build_normalized_footprint(geometry: Any, ouem_id: str) -> tuple[Any, dict[s
     return footprint, diagnostics
 
 
+def _set_normalized_footprints(buildings: Any, footprints: dict[str, tuple[Any, dict[str, Any]]]) -> Any:
+    """Replace active geometry while explicitly preserving its declared source CRS."""
+    try:
+        import geopandas as gpd
+    except ImportError as exc:  # pragma: no cover - deployment dependency
+        raise VoxCityAdapterError("A3 footprint assignment requires GeoPandas") from exc
+    source_crs = buildings.crs
+    if source_crs is None:
+        raise VoxCityAdapterError("Standard Building CRS is undefined")
+    geometry_name = buildings.geometry.name
+    normalized = gpd.GeoSeries(
+        [footprints[ouem_id][0] for ouem_id in buildings.ouem_id],
+        index=buildings.index,
+        crs=source_crs,
+        name=geometry_name,
+    )
+    result = buildings.set_geometry(normalized)
+    if result.crs != source_crs:
+        raise VoxCityAdapterError("normalized footprint did not preserve Standard Building CRS")
+    return result
+
+
 def _run_voxcity_grids(building_path: Path, terrain_path: Path, meshsize: float) -> dict[str, Any]:
     """Run every VoxCity operation in the current OUEM Python environment."""
     try:
@@ -229,9 +251,7 @@ def _run_voxcity_grids(building_path: Path, terrain_path: Path, meshsize: float)
         row.ouem_id: build_normalized_footprint(row.geometry, row.ouem_id)
         for row in buildings.itertuples()
     }
-    buildings.geometry = buildings.ouem_id.map(
-        {ouem_id: value[0] for ouem_id, value in footprints.items()}
-    )
+    buildings = _set_normalized_footprints(buildings, footprints)
     buildings["voxcity_id"] = buildings.ouem_id.map(mapping)
     buildings["id"] = buildings.voxcity_id
     buildings["min_height"] = 0.0

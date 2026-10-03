@@ -58,6 +58,9 @@ every polygonal 3D surface independently to XY. Empty and zero-area projections
 (notably vertical walls) are discarded. Every remaining positive-area polygon
 is topology-repaired when necessary, normalized and deterministically unioned;
 the final valid positive-area Polygon/MultiPolygon is the VoxCity footprint.
+The replacement footprint is installed as an explicit GeoSeries inheriting the
+declared Standard Building source CRS; CRS is neither inferred nor hard-coded
+after geometry replacement.
 No first/largest-part, envelope, or convex-hull fallback is used. Per-building
 surface counts, discarded counts, union area, output type, and validity are
 recorded in the manifest.
