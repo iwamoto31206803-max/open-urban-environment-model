@@ -207,6 +207,10 @@ and acceptance commands.
 engine; its source is not vendored. The A3 adapter targets exactly VoxCity
 1.7.0 commit `fa212656305328a9a657973bae26f352bfe813bc`, combines both accepted
 Standard inputs, and retains a deterministic `ouem_id`↔numeric-ID manifest.
+The output exposes both the OUEM audit field `voxcity_id` and VoxCity's actual
+consumer field `id` with equal positive values. Effective ground is computed
+from the raw pinned-VoxCity DEM cells selected by its `building_id_grid`, and
+the acceptance runner reaches `Voxelizer.generate_combined`.
 See the [adapter contract and acceptance procedure](docs/OUEM_VoxCity_Adapter_v0.1.md).
 
 OUEM will focus on Japanese geospatial-data preparation, input adapters,

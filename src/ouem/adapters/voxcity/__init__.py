@@ -48,6 +48,41 @@ def numeric_id_mapping(ouem_ids: Iterable[str]) -> dict[str, int]:
     return {value: index for index, value in enumerate(sorted(values), 1)}
 
 
+def interface_id_properties(ouem_id: str, mapping: dict[str, int]) -> dict[str, Any]:
+    """Return both the audit ID and the field actually consumed by VoxCity."""
+    voxcity_id = mapping[ouem_id]
+    if voxcity_id <= 0:
+        raise VoxCityAdapterError("VoxCity building IDs must be positive; zero is background")
+    return {"ouem_id": ouem_id, "voxcity_id": voxcity_id, "id": voxcity_id}
+
+
+def grid_ground_samples(building_id_grid: Any, dem_grid: Any, building_id: int) -> list[float]:
+    """Select raw VoxCity DEM cells assigned to one positive building ID."""
+    if building_id <= 0:
+        raise VoxCityAdapterError("building_id must be positive")
+    try:
+        values = dem_grid[building_id_grid == building_id]
+        samples = [float(value) for value in values.flat]
+    except (AttributeError, IndexError, TypeError, ValueError):
+        try:
+            if len(building_id_grid) != len(dem_grid):
+                raise ValueError
+            samples = [float(dem_value)
+                       for id_row, dem_row in zip(building_id_grid, dem_grid)
+                       for id_value, dem_value in zip(id_row, dem_row)
+                       if id_value == building_id]
+            if any(len(id_row) != len(dem_row)
+                   for id_row, dem_row in zip(building_id_grid, dem_grid)):
+                raise ValueError
+        except (TypeError, ValueError) as exc:
+            raise VoxCityAdapterError("building and DEM grids must be aligned arrays") from exc
+    if not samples:
+        raise VoxCityAdapterError(f"no VoxCity grid cell assigned to building ID {building_id}")
+    if not all(math.isfinite(value) for value in samples):
+        raise VoxCityAdapterError(f"non-finite VoxCity DEM cell for building ID {building_id}")
+    return samples
+
+
 def check_vertical_compatibility(building_reference: str, terrain: dict[str, Any]) -> None:
     """Reject unresolved or non-T.P. vertical semantics before numerical fusion."""
     status = terrain.get("status")
@@ -62,12 +97,10 @@ def check_vertical_compatibility(building_reference: str, terrain: dict[str, Any
 
 
 def derive_attributes(z_values: Iterable[float], ground_samples: Iterable[float]) -> dict[str, float]:
-    """Derive canonical adapter height from absolute top and effective ground.
+    """Derive height from absolute top and already grid-derived effective ground.
 
-    VoxCity 1.7.0 places a relative-height building on its per-cell DEM.  Its
-    footprint therefore sees all finite terrain cells.  The adapter uses their
-    arithmetic mean as the single effective ground (the least-squares constant
-    approximation); min/max and bottom are retained as placement diagnostics.
+    ``ground_samples`` must be the raw VoxCity DEM cells selected by the actual
+    ``building_id_grid``, not samples selected from the source raster directly.
     """
     zs, grounds = list(z_values), list(ground_samples)
     if not zs or not grounds or not all(math.isfinite(v) for v in zs + grounds):
@@ -141,7 +174,8 @@ def adapt_standard_to_voxcity(
     ordered = []
     for record in records:
         feature = features_by_id[record["ouem_id"]]
-        feature["properties"].update({k: record[k] for k in ("voxcity_id", "height", "min_height")})
+        feature["properties"].update(record)
+        feature["properties"].update(interface_id_properties(record["ouem_id"], mapping))
         ordered.append(feature)
     collection["features"] = ordered
     output_path.write_bytes(canonical_json(collection))
@@ -152,10 +186,12 @@ def adapt_standard_to_voxcity(
         "aoi": list(aoi) if aoi else worker_result["aoi"], "meshsize": meshsize,
         "crs": {"source": "EPSG:6677", "target": "EPSG:6677", "transform": "none"},
         "vertical_compatibility": {"status": "PASS", "building": bm["z_reference"], "terrain": tm["vertical_reference"]},
-        "height_derivation": "z_top_abs - arithmetic mean of finite Standard Terrain pixel centres covered by footprint",
-        "ground_derivation": "mean footprint-covered DEM cells; VoxCity uses per-cell DEM, mean is the least-squares single-height reference",
+        "height_derivation": "z_top_abs - ground_eff_abs from pinned VoxCity grids",
+        "ground_derivation": "mean of raw VoxCity DEM grid cells where building_id_grid == voxcity_id",
         "min_height_derivation": "constant 0.0; no inference from geometry bottom",
         "id_derivation": "lexicographic ouem_id sort, consecutive positive integers starting at 1",
+        "voxcity_grid": {"shape": worker_result["grid_shape"],
+                         "rectangle_vertices_lonlat": worker_result["rectangle_vertices_lonlat"]},
         "buildings": records, "warnings": worker_result.get("warnings", []),
         "output": {"path": str(output_path.resolve()), "sha256": sha256_file(output_path), "format": "GeoJSON"}}
     manifest_path = output_path.with_suffix(output_path.suffix + ".manifest.json")

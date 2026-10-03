@@ -17,7 +17,9 @@ not mutate either Standard input or redesign either schema.
 Both adjacent accepted manifests are mandatory: Standard Building v0.1 and
 Standard Terrain v0.1. Both data layers must be EPSG:6677. The deterministic
 output is EPSG:6677 GeoJSON with 2D geometry and properties `ouem_id`,
-`voxcity_id`, `height`, and `min_height`. GeoJSON is directly readable as the
+`voxcity_id`, `id`, `height`, and `min_height`. `voxcity_id` is the explicit
+OUEM mapping field; `id` is the field consumed by VoxCity and has the identical
+positive value. GeoJSON is directly readable as the
 GeoDataFrame accepted by VoxCity's
 `create_building_height_grid_from_gdf_polygon`. The adjacent JSON manifest pins
 both inputs by SHA-256 and records AOI, mesh size, CRS handling, methods,
@@ -33,14 +35,14 @@ order.
 
 For building *b* the adapter uses
 
-`height(b) = max(absolute geometry Z) - mean(valid Terrain pixel-centre values inside footprint)`.
+`height(b) = max(absolute geometry Z) - G_eff_abs(b)`, where
+`G_eff_abs(b) = mean(raw VoxCity DEM grid cells where building_id_grid == id(b))`.
 
-VoxCity 1.7.0 represents building height relative to the DEM at each rasterized
-cell; it does not consume absolute roof Z. Therefore every covered terrain cell
-contributes to placement. A single feature-level height cannot preserve a flat
-absolute roof over sloping terrain. The arithmetic mean is explicitly chosen as
-`G_eff_abs`: it is the least-squares constant reference for VoxCity's per-cell
-grounds. The manifest records sample count/range, geometry bottom, top, mean
+The adapter calls the pinned VoxCity local-GeoTIFF DEM rasterizer and building
+rasterizer at the requested mesh size. It does not select arbitrary source DEM
+pixels from the vector footprint. VoxCity's `process_grid` assigns that same
+mean to all cells of an ID before voxelization. The manifest records grid shape,
+sample count/range, geometry bottom, top, mean
 ground and derived height so slope-induced roof error can be audited. Neither
 `maxZ-minZ`, `measuredHeight`, nor one arbitrary DEM point is canonical.
 
@@ -61,7 +63,9 @@ ouem-adapt-voxcity standard-building.gpkg standard-terrain.tif \
   --gis-runtime work/gis-runtime.json
 pytest -q
 python scripts/work/voxcity_komae_a3_acceptance.py \
-  work/voxcity-buildings.geojson standard-terrain.tif --meshsize 1 \
+  standard-building.gpkg standard-terrain.tif \
+  --adapter-output work/voxcity-buildings.geojson \
+  --gis-runtime work/gis-runtime.json --meshsize 1 \
   --expected 111 --report work/voxcity-e2e.json
 ```
 
@@ -69,8 +73,11 @@ Standard→Adapter acceptance requires 111 output features; valid 2D footprints;
 unique canonical and numeric IDs; a bijection; positive heights; all normal
 `min_height == 0`; complete Terrain coverage; EPSG:6677; vertical PASS; complete
 manifest fields; and byte-identical reruns. The pinned-engine runner checks that
-VoxCity produces nonempty height/ID grids, every mapped ID occurs (no unexplained
-loss), and reruns are array-identical. The runner intentionally fails on another
+VoxCity produces nonempty height/ID grids, calls `Voxelizer.generate_combined`,
+finds building voxels for every mapped ID, and reruns are array-identical. It
+checks `processed ground + relative height ≈ absolute Standard roof`; normalized
+voxel Z is shifted back by the raw DEM minimum and must agree within twice the
+mesh size (rounding at ground and roof). The runner intentionally fails on another
 reported VoxCity version. Commit verification must be performed by the
 acceptance environment (`git rev-parse HEAD`) because installed Python packages
 do not reliably expose a commit.
@@ -90,8 +97,8 @@ floating/sunken placement.
 This narrow adapter supports Komae, north-up EPSG:6677 Terrain and ordinary
 grounded buildings only. It does not transform CRS, clip or repair geometry,
 infer elevated structures, or provide vegetation/solar/thermal integration.
-Pixel-centre coverage may fail for footprints narrower than the 0.5 m DEM; such
-features fail rather than silently using a nearest point. A feature-level
+Buildings assigned no VoxCity building-grid cell fail rather than silently
+using a nearest point. A feature-level
 relative height necessarily yields roof variation over slopes in VoxCity; the
 recorded terrain range makes that limitation measurable. Real-data and pinned
 engine execution require the local frozen artifacts and external GIS/VoxCity

@@ -1,50 +1,127 @@
-"""Standalone OSGeo worker for the VoxCity adapter (runs in captured GIS runtime)."""
-import json, math, sys
-from pathlib import Path
-from osgeo import gdal, ogr
+"""Pinned-VoxCity worker run by the captured geospatial Python runtime.
 
-def points(geom):
-    out=[]
-    for i in range(geom.GetPointCount()): out.append(geom.GetPoint(i))
-    for i in range(geom.GetGeometryCount()): out.extend(points(geom.GetGeometryRef(i)))
-    return out
+Despite the historical filename this worker deliberately calls VoxCity's own
+rasterizers.  This avoids maintaining an OUEM approximation of its grid rules.
+"""
+import json
+import math
+import sys
+from pathlib import Path
+
+import geopandas as gpd
+import numpy as np
+import voxcity
+from shapely.ops import transform
+from voxcity.geoprocessor.raster import (
+    create_building_height_grid_from_gdf_polygon,
+    create_dem_grid_from_geotiff_polygon,
+    process_grid,
+)
+
+PINNED_VERSION = "1.7.0"
+
+
+def _z_values(geometry):
+    if hasattr(geometry, "geoms"):
+        return [z for part in geometry.geoms for z in _z_values(part)]
+    if hasattr(geometry, "exterior"):
+        rings = [geometry.exterior, *geometry.interiors]
+        return [coordinate[2] for ring in rings for coordinate in ring.coords if len(coordinate) >= 3]
+    return [coordinate[2] for coordinate in geometry.coords if len(coordinate) >= 3]
+
+
+def _footprint(geometry):
+    return transform(lambda x, y, z=None: (x, y), geometry)
+
+
+def _rectangle_lonlat(gdf):
+    xmin, ymin, xmax, ymax = gdf.to_crs(4326).total_bounds
+    return [(xmin, ymin), (xmin, ymax), (xmax, ymax), (xmax, ymin)]
+
+
+def _rasterize(gdf, meshsize, rectangle):
+    return create_building_height_grid_from_gdf_polygon(
+        gdf, meshsize, rectangle, overlapping_footprint=False
+    )[:3]
+
 
 def run(job):
-    source=ogr.Open(job["buildings"]); layer=source.GetLayerByName("building")
-    if layer is None: raise RuntimeError("Standard Building layer 'building' not found")
-    srs=layer.GetSpatialRef()
-    if not srs or srs.GetAuthorityCode(None)!="6677": raise RuntimeError("Standard Building must be EPSG:6677")
-    raster=gdal.Open(job["terrain"]); projection=raster.GetProjection()
-    if "6677" not in projection: raise RuntimeError("Standard Terrain must be EPSG:6677")
-    band=raster.GetRasterBand(1); nodata=band.GetNoDataValue(); gt=raster.GetGeoTransform()
-    if gt[2] or gt[4]: raise RuntimeError("rotated Terrain grids are unsupported")
-    records=[]; features=[]; warnings=[]
-    extent=[float("inf"),float("inf"),float("-inf"),float("-inf")]
-    for feature in layer:
-        oid=feature.GetFieldAsString("ouem_id"); geom=feature.GetGeometryRef()
-        if not oid or geom is None or geom.IsEmpty(): raise RuntimeError("invalid Standard Building ouem_id or geometry")
-        envelope=geom.GetEnvelope(); extent=[min(extent[0],envelope[0]),min(extent[1],envelope[2]),max(extent[2],envelope[1]),max(extent[3],envelope[3])]
-        x0=max(0,int(math.floor((envelope[0]-gt[0])/gt[1]))); x1=min(raster.RasterXSize-1,int(math.floor((envelope[1]-gt[0])/gt[1])))
-        y0=max(0,int(math.floor((envelope[3]-gt[3])/gt[5]))); y1=min(raster.RasterYSize-1,int(math.floor((envelope[2]-gt[3])/gt[5])))
-        samples=[]
-        for y in range(min(y0,y1),max(y0,y1)+1):
-            for x in range(x0,x1+1):
-                px=gt[0]+(x+.5)*gt[1]; py=gt[3]+(y+.5)*gt[5]
-                p=ogr.Geometry(ogr.wkbPoint); p.AddPoint_2D(px,py)
-                if geom.Contains(p) or geom.Touches(p):
-                    value=float(band.ReadAsArray(x,y,1,1)[0,0])
-                    if math.isfinite(value) and (nodata is None or value!=nodata): samples.append(value)
-        if not samples: raise RuntimeError("Terrain coverage missing for building "+oid)
-        zs=[float(p[2]) for p in points(geom) if len(p)>=3 and math.isfinite(p[2])]
-        top=max(zs); bottom=min(zs); ground=math.fsum(samples)/len(samples); height=top-ground
-        if height<=0: raise RuntimeError("non-positive height for building "+oid)
-        footprint=geom.Clone(); footprint.FlattenTo2D()
-        record={"ouem_id":oid,"z_top_abs":top,"z_bottom_geom_abs":bottom,"ground_eff_abs":ground,"height":height,"min_height":0.0,
-          "ground_sample_count":len(samples),"ground_sample_min_abs":min(samples),"ground_sample_max_abs":max(samples)}
-        records.append(record); features.append({"type":"Feature","properties":{"ouem_id":oid},"geometry":json.loads(footprint.ExportToJson())})
-    return {"records":records,"geojson":{"type":"FeatureCollection","name":"voxcity_buildings","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG::6677"}},"features":features},"aoi":job.get("aoi") or extent,"warnings":warnings}
+    if getattr(voxcity, "__version__", None) != PINNED_VERSION:
+        raise RuntimeError(f"VoxCity {PINNED_VERSION} is required")
+    buildings = gpd.read_file(job["buildings"], layer="building")
+    if buildings.crs is None or buildings.crs.to_epsg() != 6677:
+        raise RuntimeError("Standard Building must be EPSG:6677")
+    if buildings.empty or buildings.ouem_id.isna().any() or not buildings.ouem_id.is_unique:
+        raise RuntimeError("Standard Building requires non-empty, unique ouem_id")
+    buildings = buildings[["ouem_id", "geometry"]].copy()
+    z_by_ouem = {row.ouem_id: _z_values(row.geometry) for row in buildings.itertuples()}
+    if any(not values or not all(math.isfinite(z) for z in values) for values in z_by_ouem.values()):
+        raise RuntimeError("Standard Building contains missing or non-finite Z")
+    buildings.geometry = buildings.geometry.map(_footprint)
+    mapping = {value: index for index, value in enumerate(sorted(buildings.ouem_id), 1)}
+    buildings["voxcity_id"] = buildings.ouem_id.map(mapping)
+    buildings["id"] = buildings.voxcity_id
+    buildings["min_height"] = 0.0
+    buildings["height"] = 1.0  # bootstrap only; replaced from the grid-derived ground
+    rectangle = _rectangle_lonlat(buildings)
+    dem = create_dem_grid_from_geotiff_polygon(
+        job["terrain"], job["meshsize"], rectangle, dem_interpolation=False
+    )
+    if not np.isfinite(dem).all():
+        raise RuntimeError("VoxCity DEM grid contains non-finite values")
+
+    previous_ids = None
+    for _ in range(8):
+        _, _, building_ids = _rasterize(buildings, job["meshsize"], rectangle)
+        records = []
+        for row in buildings.itertuples():
+            samples = dem[building_ids == row.id]
+            if not samples.size:
+                raise RuntimeError(f"no VoxCity grid cell assigned to building {row.ouem_id}")
+            ground = float(np.mean(samples, dtype=np.float64))
+            top, bottom = max(z_by_ouem[row.ouem_id]), min(z_by_ouem[row.ouem_id])
+            height = top - ground
+            if not math.isfinite(height) or height <= 0:
+                raise RuntimeError(f"non-positive derived height for building {row.ouem_id}")
+            records.append({"ouem_id": row.ouem_id, "voxcity_id": row.id,
+                "z_top_abs": top, "z_bottom_geom_abs": bottom,
+                "ground_eff_abs": ground, "height": height, "min_height": 0.0,
+                "ground_sample_count": int(samples.size),
+                "ground_sample_min_abs": float(samples.min()),
+                "ground_sample_max_abs": float(samples.max())})
+        heights = {record["ouem_id"]: record["height"] for record in records}
+        buildings["height"] = buildings.ouem_id.map(heights)
+        if previous_ids is not None and np.array_equal(previous_ids, building_ids):
+            break
+        previous_ids = building_ids.copy()
+    else:
+        raise RuntimeError("VoxCity building-grid assignment did not converge")
+
+    # Regression guard for the reviewed process_grid contract.  Its global
+    # normalization is removed before comparing its per-building flattened DEM.
+    flattened = process_grid(building_ids, dem.copy())
+    shift = float(np.min(dem))
+    for record in records:
+        actual = flattened[building_ids == record["voxcity_id"]]
+        if actual.size and np.allclose(actual + shift, record["ground_eff_abs"], atol=1e-9):
+            continue
+        # Some pinned builds return absolute rather than normalized values.
+        if not actual.size or not np.allclose(actual, record["ground_eff_abs"], atol=1e-9):
+            raise RuntimeError("A3 ground disagrees with VoxCity process_grid")
+
+    features = json.loads(buildings.to_json(drop_id=True))["features"]
+    extent = list(map(float, buildings.total_bounds))
+    return {"records": records,
+        "geojson": {"type": "FeatureCollection", "name": "voxcity_buildings",
+                    "crs": {"type": "name", "properties": {"name": "urn:ogc:def:crs:EPSG::6677"}},
+                    "features": features},
+        "aoi": job.get("aoi") or extent, "rectangle_vertices_lonlat": rectangle,
+        "grid_shape": list(dem.shape), "warnings": []}
+
 
 try:
-    job=json.loads(Path(sys.argv[1]).read_text()); result=run(job); Path(sys.argv[2]).write_text(json.dumps(result))
+    job = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+    Path(sys.argv[2]).write_text(json.dumps(run(job)), encoding="utf-8")
 except Exception as exc:
-    print(str(exc),file=sys.stderr); raise SystemExit(1)
+    print(str(exc), file=sys.stderr)
+    raise SystemExit(1)

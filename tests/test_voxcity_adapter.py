@@ -4,7 +4,8 @@ import pytest
 
 from ouem.adapters.voxcity import (
     VOXCITY_COMMIT, VOXCITY_VERSION, VoxCityAdapterError, canonical_json,
-    check_vertical_compatibility, derive_attributes, numeric_id_mapping,
+    check_vertical_compatibility, derive_attributes, grid_ground_samples,
+    interface_id_properties, numeric_id_mapping,
 )
 
 
@@ -22,13 +23,30 @@ def test_id_mapping_is_positive_bijective_and_order_independent():
         numeric_id_mapping(["oub-a", "oub-a"])
 
 
+def test_interface_id_is_the_positive_voxcity_consumed_id():
+    mapping = numeric_id_mapping(["oub-z", "oub-a"])
+    assert interface_id_properties("oub-z", mapping) == {
+        "ouem_id": "oub-z", "voxcity_id": 2, "id": 2,
+    }
+    with pytest.raises(VoxCityAdapterError, match="zero is background"):
+        interface_id_properties("oub-a", {"oub-a": 0})
+
+
 def test_height_uses_absolute_top_and_effective_ground_not_bottom():
-    values = derive_attributes([12.0, 31.0, 15.0], [10.0, 11.0, 12.0])
+    ids = [[0, 7, 7], [3, 7, 0]]
+    dem = [[99.0, 10.0, 11.0], [2.0, 12.0, 99.0]]
+    samples = grid_ground_samples(ids, dem, 7)
+    values = derive_attributes([12.0, 31.0, 15.0], samples)
     assert values["z_top_abs"] == 31.0
     assert values["z_bottom_geom_abs"] == 12.0
     assert values["ground_eff_abs"] == 11.0
     assert values["height"] == 20.0
     assert values["min_height"] == 0.0
+
+
+def test_grid_ground_rejects_building_without_assigned_cell():
+    with pytest.raises(VoxCityAdapterError, match="no VoxCity grid cell"):
+        grid_ground_samples([[0, 0], [0, 0]], [[1.0, 1.0], [1.0, 1.0]], 4)
 
 
 def test_vertical_gate_accepts_declared_tp_and_rejects_unresolved():
