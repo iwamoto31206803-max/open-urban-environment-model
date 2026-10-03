@@ -15,6 +15,7 @@ ouem-plateau-buildings = "ouem.native.building.plateau:main"
 ouem-standardize-buildings = "ouem.standardize.building:main"
 ouem-accept-terrain = "ouem.native.terrain:main"
 ouem-standardize-terrain = "ouem.standardize.terrain:main"
+ouem-adapt-voxcity = "ouem.adapters.voxcity:main"
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]

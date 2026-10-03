@@ -16,10 +16,10 @@ human-scale environmental functions.
   - B1 — Solar & Shade Assessment
   - B2 — Green View Assessment
 
-The current target is the **A1 Komae end-to-end pilot**. This repository now
-implements provisional Standard Building and Standard Terrain preparation;
-model construction, VoxCity execution, and assessment capabilities have not
-been implemented.
+The current target is the **Komae Phase A pilot**. This repository implements
+Standard Building and Terrain preparation plus the versioned A3
+Standard-to-VoxCity Building adapter; engine execution remains an explicit
+external acceptance stage.
 
 ## Local data layout and Phase A lifecycle
 
@@ -89,16 +89,17 @@ ouem-accept-terrain data/raw/terrain/tokyo_23ku_dem_050m/komae/09LD3451.tif \
   --output data/native/terrain/komae_09LD3451.json \
   --provider "Tokyo Metropolitan Government" \
   --source-dataset "Tokyo 0.50 m bare-earth DEM" \
-  --vertical-reference-status unresolved
+  --vertical-reference-status source-declared \
+  --vertical-reference "T.P." \
+  --vertical-reference-source "Tokyo Metropolitan Government source metadata"
 ouem-standardize-terrain data/native/terrain/komae_09LD3451.json \
   --output data/standard/terrain/komae_09LD3451.tif \
   --study-area config/study_areas/komae_09LD3451.yaml
 ```
 
 See the [provisional Terrain contract](docs/OUEM_Standard_Terrain_v0.1.md).
-EPSG:6677 is horizontal only; the Tokyo source's vertical reference remains
-explicitly unresolved. Standard Terrain is not yet an engine-specific MODEL
-artifact or validated VoxCity input.
+EPSG:6677 is horizontal only; the Tokyo source declares T.P. separately.
+Standard Terrain remains canonical rather than an engine-specific artifact.
 
 Analysis-ready models and derived GIS products continue under `data/model/`
 and `data/output/`. All local data locations are ignored by Git except for
@@ -164,8 +165,7 @@ Manual visual acceptance checks Building footprints and attributes in QGIS 2D
 View, then uses geometry Z in QGIS 3D View. The accepted data showed building
 height and form without artificial renderer extrusion.
 
-PLATEAU GIS Converter automation, direct CityGML parsing/conversion, VoxCity,
-LiDAR/CHM,
+PLATEAU GIS Converter automation, direct CityGML parsing/conversion, LiDAR/CHM,
 canopy, solar/shade, and GVI processing are outside this minimal A1 ingest.
 
 ## OUEM Standard Building v0.1 conversion
@@ -201,12 +201,13 @@ orchestration and domain logic belong to the project-local Python venv. See
 [`scripts/work/README.md`](scripts/work/README.md) for the complete local setup
 and acceptance commands.
 
-## Relationship to VoxCity
+## Standard-to-VoxCity adapter
 
-[VoxCity](https://github.com/kunifujiwara/VoxCity) is intended to remain an
-external upstream dependency and analysis engine. Its source is not vendored
-or reproduced in OUEM. Future dependency selection and integration will follow
-inspection of the upstream installation and API.
+[VoxCity](https://github.com/kunifujiwara/VoxCity) remains an external upstream
+engine; its source is not vendored. The A3 adapter targets exactly VoxCity
+1.7.0 commit `fa212656305328a9a657973bae26f352bfe813bc`, combines both accepted
+Standard inputs, and retains a deterministic `ouem_id`↔numeric-ID manifest.
+See the [adapter contract and acceptance procedure](docs/OUEM_VoxCity_Adapter_v0.1.md).
 
 OUEM will focus on Japanese geospatial-data preparation, input adapters,
 scenario configuration, orchestration, OUEM metrics, comparative scenarios,
