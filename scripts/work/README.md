@@ -30,11 +30,13 @@ Open the PLATEAU Building CityGML in PLATEAU GIS Converter GUI, select maximum
 LOD and settings that retain 3D/Z geometry, and export the GeoPackage to:
 
 ```text
-data\converted\building\plateau_komae\53393465_bldg_6697_op_convert.gpkg
+data\work\building\plateau_komae\53393465_bldg_6697_op_convert.gpkg
 ```
 
-This is external/manual **converted** data, not OUEM Native Building. The
-helper does not automate or launch the GUI.
+This is an external/manual, non-authoritative processing intermediate, not
+OUEM Native Building. `data\work` is a side workspace outside the formal
+RAW-to-Native-to-Standard lifecycle. The helper does not automate or launch
+the GUI.
 
 ### 2. Capture the GIS child runtime
 
@@ -59,14 +61,14 @@ scripts\work\plateau_komae_local_acceptance.cmd ouem
 
 The OUEM stage rejects inherited QGIS/OSGeo4W variables, verifies the exact
 repository `.venv` interpreter, runs the automated tests, and ingests the
-Converter GeoPackage. With no second argument it uses the canonical converted
+Converter GeoPackage. With no second argument it uses the canonical work
 path shown above. Explicit repository-relative paths are always resolved from
 the repository root, regardless of the current working directory. Absolute
 paths are also supported; quote any path that contains spaces:
 
 ```bat
 scripts\work\plateau_komae_local_acceptance.cmd ouem D:\another\converted.gpkg
-scripts\work\plateau_komae_local_acceptance.cmd ouem "D:\PLATEAU data\converted.gpkg"
+scripts\work\plateau_komae_local_acceptance.cmd ouem "D:\PLATEAU data\converter-output.gpkg"
 ```
 
 The provider resolves a unique Building layer. If there are zero or multiple
@@ -74,7 +76,7 @@ candidates, it fails with available layer names and asks for an explicit layer.
 Pass one as the optional third argument:
 
 ```bat
-scripts\work\plateau_komae_local_acceptance.cmd ouem data\converted\building\plateau_komae\53393465_bldg_6697_op_convert.gpkg bldg:Building
+scripts\work\plateau_komae_local_acceptance.cmd ouem data\work\building\plateau_komae\53393465_bldg_6697_op_convert.gpkg bldg:Building
 ```
 
 The helper checks the locally verified Komae Building count of 3637. This is
