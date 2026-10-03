@@ -16,6 +16,19 @@ ROOT = Path(__file__).parents[1]
 STUDY_AREA = ROOT / "config/study_areas/komae_09LD3451.yaml"
 
 
+def read_json(path):
+    """Read a JSON fixture without making path or platform assumptions."""
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def write_json(path, document):
+    """Serialize fixtures exactly as the production manifest writers do."""
+    path.write_text(
+        json.dumps(document, indent=2, ensure_ascii=False, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+
+
 def dem(path, *, crs="EPSG:6677", nodata=-32767.0):
     values = np.array([[10.25, nodata, 12.5], [13.0, 14.75, 15.0]], dtype="float32")
     with rasterio.open(path, "w", driver="GTiff", width=3, height=2, count=1,
@@ -33,15 +46,13 @@ def accept(source, manifest, **kwargs):
 
 
 def test_native_to_standard_preserves_grid_values_and_records_provenance(tmp_path):
-    source = tmp_path / "source.tif"
+    source = tmp_path / "地形データ" / "source.tif"
+    source.parent.mkdir()
     original = dem(source)
     native_path = tmp_path / "native.json"
     native = accept(source, native_path)
-    native_document = json.loads(native_path.read_text(encoding="utf-8"))
-    native_path.write_text(
-        json.dumps(native_document, indent=2, ensure_ascii=False, sort_keys=True) + "\n",
-        encoding="utf-8",
-    )
+    native_document = read_json(native_path)
+    write_json(native_path, native_document)
     assert native_document["terrain"]["source_path"] == str(source.resolve())
     output = tmp_path / "standard.tif"
 
@@ -63,7 +74,7 @@ def test_native_to_standard_preserves_grid_values_and_records_provenance(tmp_pat
         assert written[0, 1] == -9999.0
         assert dst.tags()["VERTICAL_REFERENCE_STATUS"] == "unresolved"
         assert dst.tags()["VERTICAL_REFERENCE"] == "unresolved"
-    manifest = json.loads(output.with_suffix(".tif.manifest.json").read_text())
+    manifest = read_json(output.with_suffix(".tif.manifest.json"))
     assert manifest["source"]["sha256"] == hashlib.sha256(source.read_bytes()).hexdigest()
     assert manifest["standard"]["sha256"] == hashlib.sha256(output.read_bytes()).hexdigest()
     assert manifest["vertical_reference"] == {"name": None, "source": None, "status": "unresolved"}
