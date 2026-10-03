@@ -37,6 +37,12 @@ def test_native_to_standard_preserves_grid_values_and_records_provenance(tmp_pat
     original = dem(source)
     native_path = tmp_path / "native.json"
     native = accept(source, native_path)
+    native_document = json.loads(native_path.read_text(encoding="utf-8"))
+    native_path.write_text(
+        json.dumps(native_document, indent=2, ensure_ascii=False, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    assert native_document["terrain"]["source_path"] == str(source.resolve())
     output = tmp_path / "standard.tif"
 
     result = standardize_native_terrain(native_path, output, study_area_config=STUDY_AREA)
