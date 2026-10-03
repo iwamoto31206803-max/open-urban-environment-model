@@ -137,7 +137,7 @@ passing. The formal result and its scope limitations are recorded in
 ## Komae Terrain local acceptance
 
 Install the package (including Rasterio) in the repository venv, place the
-developer-local DEM at `data\raw\terrain\komae\09LD3451.tif`, and run from an
+developer-local DEM at `data\raw\terrain\tokyo_23ku_dem_050m\komae\09LD3451.tif`, and run from an
 ordinary Windows terminal:
 
 ```bat

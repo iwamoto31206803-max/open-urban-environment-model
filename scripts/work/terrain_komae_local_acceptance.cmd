@@ -2,7 +2,7 @@
 setlocal
 for %%I in ("%~dp0..\..") do set "REPO=%%~fI"
 set "PYTHON=%REPO%\.venv\Scripts\python.exe"
-set "SOURCE=%REPO%\data\raw\terrain\komae\09LD3451.tif"
+set "SOURCE=%REPO%\data\raw\terrain\tokyo_23ku_dem_050m\komae\09LD3451.tif"
 if not "%~1"=="" set "SOURCE=%~f1"
 
 if not exist "%PYTHON%" (echo ERROR: repository venv not found: %PYTHON%& exit /b 2)

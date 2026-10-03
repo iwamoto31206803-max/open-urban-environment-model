@@ -80,12 +80,12 @@ while PLATEAU GIS Converter output belongs under
 processing intermediate, **not** OUEM Native Building.
 
 The Komae Tokyo 0.5 m DEM source convention is
-`data/raw/terrain/komae/09LD3451.tif`. Terrain uses a validated Native manifest
+`data/raw/terrain/tokyo_23ku_dem_050m/komae/09LD3451.tif`. Terrain uses a validated Native manifest
 rather than duplicating unchanged raster bytes, followed by Standard GeoTIFF
 creation under `data/standard/terrain/`:
 
 ```shell
-ouem-accept-terrain data/raw/terrain/komae/09LD3451.tif \
+ouem-accept-terrain data/raw/terrain/tokyo_23ku_dem_050m/komae/09LD3451.tif \
   --output data/native/terrain/komae_09LD3451.json \
   --provider "Tokyo Metropolitan Government" \
   --source-dataset "Tokyo 0.50 m bare-earth DEM" \
