@@ -18,8 +18,9 @@ human-scale environmental functions.
 
 The current target is the **Komae Phase A pilot**. This repository implements
 Standard Building and Terrain preparation plus the versioned A3
-Standard-to-VoxCity Building adapter; engine execution remains an explicit
-external acceptance stage.
+Standard-to-VoxCity Building adapter. Komae-specific A3 execution through
+VoxCity voxel generation is **ACCEPTED**; nationwide applicability and Phase B
+environmental simulations are not accepted.
 
 Recorded Komae results are documented in the formal
 [A2 Standard Terrain acceptance](docs/acceptance/OUEM_A2_Standard_Terrain_Komae_Acceptance_20261006.md)
