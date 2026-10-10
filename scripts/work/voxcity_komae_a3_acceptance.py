@@ -26,6 +26,8 @@ def json_safe(value):
 
 
 def digest(array):
+    if array.dtype.hasobject:
+        raise TypeError("object arrays require semantic segment serialization")
     return hashlib.sha256(array.tobytes(order="C")).hexdigest()
 
 
@@ -65,7 +67,22 @@ def _segment_grid_digest(min_heights, heights):
         _cell_segments(min_heights[i, j], heights[i, j])
         for i in range(heights.shape[0]) for j in range(heights.shape[1])
     ]
-    return hashlib.sha256(json.dumps(serializable, separators=(",", ":")).encode()).hexdigest()
+    return hashlib.sha256(json.dumps(serializable, separators=(",", ":"), allow_nan=False).encode()).hexdigest()
+
+
+def array_evidence(dem, heights, min_heights, ids, voxels):
+    """Portable comparison metadata; never hash object-array memory addresses."""
+    evidence = {
+        name: {"dtype": array.dtype.str, "shape": list(array.shape),
+               "encoding": "C-order bytes", "sha256": digest(array)}
+        for name, array in (("dem", dem), ("heights", heights),
+                            ("ids", ids), ("voxels", voxels))
+    }
+    evidence["segments"] = {
+        "dtype": min_heights.dtype.str, "shape": list(min_heights.shape),
+        "encoding": "row-major cell segment JSON", "sha256": _segment_grid_digest(min_heights, heights),
+    }
+    return evidence
 
 
 def main():
@@ -76,6 +93,7 @@ def main():
     parser.add_argument("--meshsize", type=float, required=True)
     parser.add_argument("--expected", type=int, default=111)
     parser.add_argument("--report", required=True)
+    parser.add_argument("--array-evidence", help="optional separate JSON with both executions' array fingerprints")
     args = parser.parse_args()
 
     import geopandas as gpd
@@ -134,6 +152,14 @@ def main():
 
     dem, heights, min_heights, ids, voxels = once()
     dem2, heights2, min_heights2, ids2, voxels2 = once()
+    if args.array_evidence:
+        evidence_path = Path(args.array_evidence)
+        evidence_path.parent.mkdir(parents=True, exist_ok=True)
+        evidence_path.write_text(json.dumps({
+            "schema": "ouem-voxcity-array-evidence/v0.1",
+            "first": array_evidence(dem, heights, min_heights, ids, voxels),
+            "second": array_evidence(dem2, heights2, min_heights2, ids2, voxels2),
+        }, indent=2, sort_keys=True, allow_nan=False) + "\n", encoding="utf-8")
     present = {int(value) for value in ids.flat if int(value) > 0}
     expected = set(map(int, gdf.voxcity_id))
     flattened = process_grid(ids, dem.copy())
