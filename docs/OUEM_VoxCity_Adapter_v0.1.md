@@ -100,7 +100,8 @@ python scripts/work/voxcity_komae_a3_acceptance.py \
 
 Standard→Adapter acceptance requires 111 output features; valid 2D footprints;
 unique canonical and numeric IDs; a bijection; positive heights; all normal
-`min_height == 0`; complete Terrain coverage; EPSG:6677; vertical PASS; complete
+`min_height == 0`; complete Terrain coverage; EPSG:6677 Standard inputs and
+EPSG:4326 VoxCity-facing adapter output; vertical PASS; complete
 manifest fields; and byte-identical reruns. The pinned-engine runner checks that
 VoxCity produces nonempty height/ID grids, calls `Voxelizer.generate_combined`,
 and reruns are array-identical. It checks each building's `processed ground +
@@ -127,8 +128,11 @@ floating/sunken placement.
 ## Known limitations
 
 This narrow adapter supports Komae, north-up EPSG:6677 Terrain and ordinary
-grounded buildings only. It does not transform CRS, clip or repair geometry,
-infer elevated structures, or provide vegetation/solar/thermal integration.
+grounded buildings only. It repairs and unions projected XY surfaces as needed
+to form valid engine footprints, then transforms those footprints from
+EPSG:6677 to EPSG:4326. These adapter operations leave the canonical Standard
+inputs unchanged. It does not support arbitrary input CRSs, clip Standard
+geometry, infer elevated structures, or provide vegetation/solar/thermal integration.
 Buildings assigned no VoxCity building-grid cell fail rather than silently
 using a nearest point. A feature-level
 relative height necessarily yields roof variation over slopes in VoxCity; the

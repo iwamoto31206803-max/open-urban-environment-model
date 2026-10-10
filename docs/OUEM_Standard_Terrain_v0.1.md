@@ -1,9 +1,18 @@
 # OUEM Standard Terrain v0.1
 
-**Status:** PROVISIONAL pending Komae real-data acceptance and downstream adapter validation
+**Status:** PROVISIONAL contract; Komae-specific implementation accepted
 
 **Scope:** The Phase A Komae bare-earth terrain elevation surface. This is not
 a nationwide provider-normalization or model-engine contract.
+
+The [formal A2 acceptance record](acceptance/OUEM_A2_Standard_Terrain_Komae_Acceptance_20261006.md)
+records PASS and ACCEPTED for the standalone Komae run on 2026-10-06. The
+[formal A3 acceptance record](acceptance/OUEM_A3_VoxCity_Komae_Acceptance_20261005.md)
+separately accepts the frozen Komae downstream VoxCity integration. These
+results do not make the contract FINAL or establish nationwide applicability.
+The exact Terrain bytes from the A2 rerun are not established to be identical
+to the earlier A3 input. Generated manifests retain a historical pending-status
+string, explained in the A2 record; it is not the current acceptance decision.
 
 ## 1. Representation and quantity
 
@@ -85,6 +94,8 @@ version, cell statistics, and grid/elevation preservation checks. Processing
 timestamps are audit metadata and are not part of the deterministic raster
 fingerprint.
 
-MODEL remains a later engine-specific representation. Standard Terrain v0.1
-is not claimed to be VoxCity-ready, and this contract implements no VoxCity
-adapter, vertical transformation, data fusion, or model-grid resampling.
+MODEL remains an engine-specific representation separate from Standard.
+This contract implements no VoxCity adapter, vertical transformation, data
+fusion, or model-grid resampling. The separate
+[VoxCity adapter](OUEM_VoxCity_Adapter_v0.1.md) prepares the engine inputs;
+its accepted Komae integration is documented in the A3 record linked above.

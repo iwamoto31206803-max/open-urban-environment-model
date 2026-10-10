@@ -6,6 +6,19 @@
 
 **Conceptual baseline:** [OUEM Concept & Architecture v0.1](OUEM_Concept_Architecture_v0.1.md)
 
+> **Current-status note (2026-10-10):** This initial scaffold design is retained
+> as historical context. Its pending/deferred statements, including Sections 5,
+> 6a, and 10, do not describe all current implementation status. Native-to-Standard
+> Building is implemented with [Komae local acceptance](../experiments/a1_e2e_pilot/README.md).
+> Standard Terrain and the VoxCity adapter through voxel generation have
+> [formal A2](acceptance/OUEM_A2_Standard_Terrain_Komae_Acceptance_20261006.md) and
+> [formal A3](acceptance/OUEM_A3_VoxCity_Komae_Acceptance_20261005.md)
+> Komae acceptance records. Follow the current linked contracts for behavior;
+> Standard Building and Terrain remain PROVISIONAL. These implementation
+> milestones use A2 for Terrain and A3 for the adapter, distinct from the
+> conceptual variants below. Acceptance does not establish nationwide operation
+> or downstream environmental simulations.
+
 This document translates the existing conceptual baseline into repository and
 data-boundary decisions. It does not replace or revise that baseline, and it
 does not specify Phase B implementation.
