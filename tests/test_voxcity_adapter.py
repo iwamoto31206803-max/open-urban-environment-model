@@ -214,3 +214,35 @@ def test_voxcity_boundary_transforms_footprints_and_preserves_attributes():
         {"ouem_id": "oub-a", "voxcity_id": 1, "id": 1,
          "height": 12.5, "min_height": 0.0}
     ]
+
+
+def test_array_evidence_hashes_segment_content_and_records_shape_dtype():
+    import numpy as np
+    namespace = runpy.run_path("scripts/work/voxcity_komae_a3_acceptance.py")
+    numeric = np.ones((2, 2), dtype=np.float64)
+    segments = np.empty((2, 2), dtype=object)
+    for index in np.ndindex(segments.shape):
+        segments[index] = [(0.0, 4.0), (0.0, 8.0)]
+    copied = np.empty_like(segments)
+    for index in np.ndindex(segments.shape):
+        copied[index] = list(segments[index])
+    voxels = np.ones((2, 2, 3), dtype=np.int8)
+    first = namespace['array_evidence'](numeric, numeric, segments, numeric.astype('int32'), voxels)
+    second = namespace['array_evidence'](numeric, numeric, copied, numeric.astype('int32'), voxels)
+    assert first == second
+    assert first['voxels']['shape'] == [2, 2, 3]
+    assert first['voxels']['dtype'] == '|i1'
+    copied[0, 0] = [(0.0, 9.0)]
+    third = namespace['array_evidence'](numeric, numeric, copied, numeric.astype('int32'), voxels)
+    assert third['segments']['sha256'] != first['segments']['sha256']
+    with pytest.raises(TypeError, match='object arrays'):
+        namespace['digest'](segments)
+
+
+def test_segment_evidence_rejects_nonfinite_values():
+    import numpy as np
+    namespace = runpy.run_path("scripts/work/voxcity_komae_a3_acceptance.py")
+    segments = np.empty((1, 1), dtype=object)
+    segments[0, 0] = [(0.0, float('nan'))]
+    with pytest.raises(ValueError):
+        namespace['_segment_grid_digest'](segments, np.ones((1, 1)))
