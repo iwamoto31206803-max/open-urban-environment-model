@@ -1,6 +1,6 @@
 # OUEM Standard Building v0.1
 
-**Status:** PROVISIONAL contract pending A1 end-to-end VoxCity validation
+**Status:** PROVISIONAL contract; Komae-specific implementation accepted
 
 **Scope:** Provider-independent 3D building geometry
 
@@ -8,6 +8,14 @@ This document provisionally defines the coordinate and geometry contract for
 OUEM Standard Building v0.1. Standardization from PLATEAU Native Building must
 produce data that conforms to this contract before model preparation or
 adapter code consumes it.
+
+Contract maturity is separate from dataset-specific acceptance. The
+[Building local acceptance record](../experiments/a1_e2e_pilot/README.md)
+records the Komae Native-to-Standard conversion result. The subsequent
+[formal A3 acceptance record](acceptance/OUEM_A3_VoxCity_Komae_Acceptance_20261005.md)
+accepts the frozen Komae Standard Building + Terrain integration through
+VoxCity voxel generation. Neither result makes this contract FINAL or
+establishes applicability to other municipalities or datasets.
 
 ## 1. Coordinate reference
 
@@ -117,5 +125,5 @@ ouem-standard-building-v0.1|PLATEAU CityGML|<source_id>
 It therefore does not depend on input feature order or a particular run. The
 adjacent manifest records the operation, study area, Z meaning, selection
 semantics, ID rule, and validation results. This implementation does not change
-this specification's provisional status; A1 end-to-end VoxCity validation is
-still pending.
+this specification's provisional status. Komae conversion and downstream
+adapter acceptance are recorded separately in the evidence linked above.

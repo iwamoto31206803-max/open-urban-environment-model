@@ -151,5 +151,8 @@ CRSs, pixel sizes, extents, type, both NoData values, valid/NoData counts and
 proportion, elevation range, grid/elevation preservation, source-declared T.P.
 vertical status, and overall PASS/FAIL. The Native and adjacent Standard
 manifests record the Tokyo Metropolitan Government evidence for that declaration
-as well as deterministic source/output SHA-256 checks. This repository does not
-record a real-data PASS; the command must be run locally against the actual tile.
+as well as deterministic source/output SHA-256 checks. The standalone A2 Komae
+real-data run on 2026-10-06 recorded **PASS** and is **ACCEPTED** for the baseline
+identified in the [formal A2 acceptance record](../../docs/acceptance/OUEM_A2_Standard_Terrain_Komae_Acceptance_20261006.md).
+That result is specific to the recorded local tile and conditions; a new run
+requires the actual local input and is not replaced by synthetic tests.
