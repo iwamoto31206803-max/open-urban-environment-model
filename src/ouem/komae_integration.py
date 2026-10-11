@@ -15,6 +15,8 @@ import signal
 import stat
 import subprocess
 import sys
+import tempfile
+import time
 from datetime import datetime, timezone
 
 from ouem.adapters.voxcity import VOXCITY_COMMIT, VOXCITY_VERSION
@@ -99,11 +101,30 @@ def guard_tree(root, identity):
 
 
 def checkpoint(root, identity, report):
+    # Serialize first: invalid JSON must not create an empty, blocking temp file.
+    payload = json.dumps(report, indent=2, ensure_ascii=False, allow_nan=False) + "\n"
     guard_tree(root, identity)
-    temporary = root / "integration-report.json.tmp"
-    with temporary.open("x", encoding="utf-8") as stream:
-        stream.write(json.dumps(report, indent=2, ensure_ascii=False, allow_nan=False) + "\n")
-    temporary.replace(root / "integration-report.json")
+    descriptor, name = tempfile.mkstemp(prefix="integration-report-", suffix=".json.tmp", dir=root)
+    temporary = Path(name)
+    # Close the Windows handle before replacement; retain this candidate on failure.
+    with os.fdopen(descriptor, "w", encoding="utf-8") as stream:
+        created = os.fstat(stream.fileno())
+        stream.write(payload)
+    for attempt in range(5):
+        guard_tree(root, identity)
+        current = temporary.lstat()
+        if (not stat.S_ISREG(current.st_mode)
+                or (current.st_dev, current.st_ino) != (created.st_dev, created.st_ino)):
+            raise Blocked("report temporary file identity changed")
+        try:
+            temporary.replace(root / "integration-report.json")
+            return
+        except OSError as exc:
+            # Windows access/sharing/lock violations can be transient (e.g. a reader).
+            # Other errors and exhausted retries remain failures, never a successful save.
+            if getattr(exc, "winerror", None) not in (5, 32, 33) or attempt == 4:
+                raise
+            time.sleep(0.05 * 2 ** attempt)
 
 
 def voxcity_provenance():
@@ -534,16 +555,18 @@ def run(args):
             f"repeat-{number}-{step} execution" for number in (1, 2) for step in ("a1", "a2", "a3")
             if f"repeat-{number}-{step}" not in attempted)
         report["finished_at"] = now()
+        finalized = False
         try:
             guard_tree(root, identity)
             report["artifacts"] = {p.relative_to(root).as_posix(): fingerprint(p) for p in sorted(root.rglob("*"))
                                    if p.is_file() and p.name != "integration-report.json"}
             save()
+            finalized = True
         except (OSError, Blocked) as exc:
             # Never follow a substituted output link just to finish a report.
             print(f"Cannot safely finalize report; last checkpoint retained: {exc}", file=sys.stderr)
             exit_code = 1
-    print(f"{report['status']}: {root / 'integration-report.json'}")
+    print(f"{report['status'] if finalized else 'REPORT_SAVE_FAILED'}: {root / 'integration-report.json'}")
     return exit_code
 
 

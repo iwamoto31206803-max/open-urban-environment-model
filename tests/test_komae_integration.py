@@ -265,7 +265,18 @@ def test_quality_and_reproducibility_are_independent(setup,monkeypatch):
     assert report['quality']=='PASS' and report['reproducibility']=='FAIL'
 
 
-def test_reproducible_bad_roof_is_not_quality_pass(setup,monkeypatch):
+@pytest.mark.parametrize('winerror', [None, 5, 32, 33])
+def test_reproducible_bad_roof_is_not_quality_pass(setup,monkeypatch,winerror):
+    original_replace = Path.replace
+    denied = []
+    def transient_lock(path, target):
+        if winerror is not None and Path(target) == setup.report and setup.report.exists() and not denied:
+            denied.append(path)
+            error = PermissionError('simulated Windows report replacement lock')
+            error.winerror = winerror
+            raise error
+        return original_replace(path, target)
+    monkeypatch.setattr(Path, 'replace', transient_lock)
     def bad(command,log,**kwargs):
         rc=setup.execute(command,log,**kwargs)
         if '--report' in command:
@@ -278,6 +289,8 @@ def test_reproducible_bad_roof_is_not_quality_pass(setup,monkeypatch):
     assert runner.run(setup.args)==1
     report=runner.read_json(setup.report)
     assert report['quality']=='FAIL' and report['reproducibility']=='PASS'
+    assert bool(denied) == (winerror is not None)
+    assert not list(setup.report.parent.glob('*.tmp'))
 
 
 def test_standard_manifest_mutation_by_a3_fails(setup,monkeypatch):
@@ -516,3 +529,169 @@ def test_building_semantics_detect_attribute_difference(tmp_path):
     changed['measured_height'] = 10.000000000000002
     changed.to_file(second, layer='building', driver='GPKG')
     assert runner.building_semantics(first) != runner.building_semantics(second)
+
+
+@pytest.fixture
+def checkpoint_state(setup):
+    root = runner.safe_run_path(setup.args.run_dir)
+    info = root.stat()
+    identity = (info.st_dev, info.st_ino)
+    runner.checkpoint(root, identity, {'status': 'RUNNING'})
+    return SimpleNamespace(root=root, identity=identity, report=setup.report)
+
+
+@pytest.mark.parametrize('winerror', [None, 17, 5, 32, 33])
+def test_checkpoint_failed_replace_retains_candidate_and_allows_later_save(checkpoint_state, monkeypatch, winerror):
+    state = checkpoint_state
+    previous = state.report.read_bytes()
+    legacy = state.root / 'integration-report.json.tmp'
+    legacy.write_bytes(b'existing evidence must not be removed')
+    error = PermissionError('simulated persistent replacement failure')
+    if winerror is not None:
+        error.winerror = winerror
+    attempts, sleeps = [], []
+    def denied(path, target):
+        attempts.append(path)
+        raise error
+    with monkeypatch.context() as patch:
+        patch.setattr(Path, 'replace', denied)
+        patch.setattr(runner.time, 'sleep', sleeps.append)
+        with pytest.raises(PermissionError) as caught:
+            runner.checkpoint(state.root, state.identity, {'quality': 'FAIL', 'reproducibility': 'PASS'})
+    assert caught.value is error
+    assert len(attempts) == (5 if winerror in (5, 32, 33) else 1)
+    assert sleeps == ([0.05, 0.1, 0.2, 0.4] if winerror in (5, 32, 33) else [])
+    assert state.report.read_bytes() == previous
+    candidates = list(state.root.glob('integration-report-*.json.tmp'))
+    assert len(candidates) == 1 and set(attempts) == set(candidates)
+    candidate = candidates[0].read_bytes()
+    assert json.loads(candidate) == {'quality': 'FAIL', 'reproducibility': 'PASS'}
+    runner.checkpoint(state.root, state.identity, {'status': 'FAILED', 'error': str(error)})
+    assert runner.read_json(state.report)['status'] == 'FAILED'
+    assert candidates[0].read_bytes() == candidate
+    assert legacy.read_bytes() == b'existing evidence must not be removed'
+
+
+def test_checkpoint_serialization_failure_creates_no_candidate(checkpoint_state):
+    state = checkpoint_state
+    previous = state.report.read_bytes()
+    with pytest.raises(ValueError):
+        runner.checkpoint(state.root, state.identity, {'invalid': float('nan')})
+    assert state.report.read_bytes() == previous
+    assert not list(state.root.glob('*.tmp'))
+
+
+def test_checkpoint_write_failure_closes_handle_and_retains_partial_evidence(checkpoint_state, monkeypatch):
+    from contextlib import contextmanager
+    state = checkpoint_state
+    previous = state.report.read_bytes()
+    original_fdopen = os.fdopen
+    streams = []
+    @contextmanager
+    def partial_write(*args, **kwargs):
+        with original_fdopen(*args, **kwargs) as stream:
+            streams.append(stream)
+            def write(payload):
+                stream.write(payload[:10])
+                raise OSError('simulated disk write failure')
+            yield SimpleNamespace(fileno=stream.fileno, write=write)
+    with monkeypatch.context() as patch:
+        patch.setattr(os, 'fdopen', partial_write)
+        with pytest.raises(OSError, match='disk write failure'):
+            runner.checkpoint(state.root, state.identity, {'status': 'FAILED'})
+    assert streams[0].closed
+    assert state.report.read_bytes() == previous
+    candidate, = state.root.glob('integration-report-*.json.tmp')
+    partial = candidate.read_bytes()
+    assert len(partial) == 10
+    runner.checkpoint(state.root, state.identity, {'status': 'FAILED'})
+    assert runner.read_json(state.report)['status'] == 'FAILED'
+    assert candidate.read_bytes() == partial
+
+
+@pytest.mark.parametrize('victim', ['candidate', 'report'])
+@pytest.mark.parametrize('kind', ['hardlink', 'reparse'])
+def test_checkpoint_rechecks_links_before_retry(setup, checkpoint_state, monkeypatch, victim, kind):
+    state = checkpoint_state
+    accepted = Path(setup.args.native_building)
+    before = accepted.read_bytes()
+    original_lstat = Path.lstat
+    attempts, substituted = [], []
+    def attributes(path, *args, **kwargs):
+        info = original_lstat(path, *args, **kwargs)
+        if kind == 'reparse' and path in substituted:
+            return SimpleNamespace(st_mode=info.st_mode, st_nlink=info.st_nlink,
+                                   st_file_attributes=0x400)
+        return info
+    def denied(path, target):
+        attempts.append(path)
+        attacked = path if victim == 'candidate' else Path(target)
+        substituted.append(attacked)
+        if kind == 'hardlink':
+            attacked.unlink()
+            os.link(accepted, attacked)
+        error = PermissionError('simulated sharing violation during substitution')
+        error.winerror = 32
+        raise error
+    monkeypatch.setattr(Path, 'replace', denied)
+    monkeypatch.setattr(Path, 'lstat', attributes)
+    monkeypatch.setattr(runner.time, 'sleep', lambda delay: None)
+    with pytest.raises(runner.Blocked, match='linked output'):
+        runner.checkpoint(state.root, state.identity, {'status': 'FAILED'})
+    assert len(attempts) == 1
+    assert accepted.read_bytes() == before
+    assert attempts[0].exists()  # No unconditional cleanup of a substituted candidate.
+
+
+def test_checkpoint_rejects_replaced_regular_candidate(checkpoint_state, monkeypatch):
+    state = checkpoint_state
+    previous = state.report.read_bytes()
+    original_replace = Path.replace
+    def substituted(path, target):
+        other = state.root / 'other-file'
+        other.write_bytes(path.read_bytes())
+        original_replace(other, path)
+        error = PermissionError('simulated sharing violation')
+        error.winerror = 32
+        raise error
+    monkeypatch.setattr(Path, 'replace', substituted)
+    monkeypatch.setattr(runner.time, 'sleep', lambda delay: None)
+    with pytest.raises(runner.Blocked, match='temporary file identity changed'):
+        runner.checkpoint(state.root, state.identity, {'status': 'FAILED'})
+    assert state.report.read_bytes() == previous
+
+
+def test_checkpoint_interrupted_replace_retains_candidate(checkpoint_state, monkeypatch):
+    state = checkpoint_state
+    previous = state.report.read_bytes()
+    def interrupted(path, target):
+        raise KeyboardInterrupt()
+    monkeypatch.setattr(Path, 'replace', interrupted)
+    with pytest.raises(KeyboardInterrupt):
+        runner.checkpoint(state.root, state.identity, {'status': 'INTERRUPTED'})
+    assert state.report.read_bytes() == previous
+    candidate, = state.root.glob('integration-report-*.json.tmp')
+    assert runner.read_json(candidate)['status'] == 'INTERRUPTED'
+
+
+def test_persistent_final_report_lock_never_announces_success(setup, monkeypatch, capsys):
+    original_replace = Path.replace
+    attempts = []
+    def locked(path, target):
+        if Path(target) == setup.report and runner.read_json(path)['status'] == 'AUTOMATED_PASS':
+            attempts.append(path)
+            error = PermissionError('simulated persistent final report lock')
+            error.winerror = 32
+            raise error
+        return original_replace(path, target)
+    monkeypatch.setattr(Path, 'replace', locked)
+    monkeypatch.setattr(runner.time, 'sleep', lambda delay: None)
+    assert runner.run(setup.args) == 1
+    output = capsys.readouterr()
+    assert 'REPORT_SAVE_FAILED:' in output.out and 'AUTOMATED_PASS:' not in output.out
+    assert 'persistent final report lock' in output.err and 'File exists' not in output.err
+    assert len(attempts) == 5
+    assert runner.read_json(setup.report)['status'] == 'RUNNING'
+    candidate, = setup.report.parent.glob('integration-report-*.json.tmp')
+    result = runner.read_json(candidate)
+    assert result['quality'] == result['reproducibility'] == 'PASS'

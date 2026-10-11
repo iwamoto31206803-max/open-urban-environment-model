@@ -297,6 +297,18 @@ stopped. Power loss, SIGKILL, or unsafe filesystem substitution can leave the
 last checkpoint marked RUNNING. Such a run is incomplete, never a PASS, and
 must not be reused. If output safety cannot be established, the runner refuses
 to follow links merely to write a final report.
+Report JSON is serialized before creating an exclusive, uniquely named
+`integration-report-*.json.tmp` file in the run directory. The writer is closed
+before replacement. Windows replacement errors 5/32/33 allow five total attempts
+(four retries, 0.75 seconds total backoff), with output-tree and candidate-identity
+checks before every attempt. Persistent or other errors remain failures.
+Failed/partial candidates and older temporary files are retained as evidence;
+they are never unconditionally removed or reused. A later safe save uses a new
+candidate. Only `integration-report.json` is the committed checkpoint; retained
+candidates do not establish acceptance. Persistent locking can leave that
+checkpoint stale even when a newer candidate contains completed verdicts.
+If finalization fails, the process exits nonzero and prints `REPORT_SAVE_FAILED`,
+never an automated success for the stale checkpoint.
 If link creation fails before substitution (for example, Windows WinError 1314),
 the output tree remains safe and the ordinary failure is finalized as FAILED.
 Synthetic symlink tests probe privileges before execution and skip only for
