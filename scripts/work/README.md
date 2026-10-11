@@ -302,6 +302,11 @@ the output tree remains safe and the ordinary failure is finalized as FAILED.
 Synthetic symlink tests probe privileges before execution and skip only for
 WinError 1314. Hardlink, traversal and simulated reparse-point checks still run;
 Linux symlink protection tests remain enabled.
+The output-substitution test prepares its actual file link before starting the
+runner, so a directory-symlink probe cannot conceal a file-symlink permission
+failure. Only symlink creation with WinError 1314 is skipped; hardlink creation
+errors remain test failures. Once the link is prepared, replacement and output
+protection failures are never converted to skips.
 
 ### Equality versus quality
 

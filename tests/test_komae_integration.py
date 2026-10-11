@@ -414,23 +414,60 @@ def test_environment_change_stops_before_next_stage(setup, monkeypatch):
     assert len(report['stages']) == 1
 
 
-@pytest.mark.parametrize('kind', ['symlink', 'hardlink'])
-def test_output_link_substitution_does_not_touch_accepted_data(setup, monkeypatch, request, kind):
+def prepare_substitution_link(link, target, kind):
+    # Create the actual file link outside runner.run(), not just a directory probe.
     if kind == 'symlink':
-        request.getfixturevalue('require_symlinks')
+        try:
+            link.symlink_to(target)
+        except OSError as exc:
+            if getattr(exc, 'winerror', None) == 1314:
+                pytest.skip('Windows file symlink creation lacks privilege (WinError 1314)')
+            raise
+    else:
+        # Hardlink failures are not evidence of missing symlink privilege.
+        os.link(target, link)
+
+
+@pytest.mark.parametrize('kind', ['symlink', 'hardlink'])
+@pytest.mark.parametrize('winerror', [1314, 5])
+def test_substitution_link_setup_classifies_errors(setup, monkeypatch, kind, winerror):
+    target = Path(setup.args.native_building)
+    before = target.read_bytes()
+    link = setup.repo / 'prepared-link.gpkg'
+    error = OSError('simulated link creation failure')
+    error.winerror = winerror
+    def denied(*args, **kwargs):
+        raise error
+    if kind == 'symlink':
+        monkeypatch.setattr(Path, 'symlink_to', denied)
+    else:
+        monkeypatch.setattr(os, 'link', denied)
+    expected = pytest.skip.Exception if kind == 'symlink' and winerror == 1314 else OSError
+    with pytest.raises(expected):
+        prepare_substitution_link(link, target, kind)
+    assert target.read_bytes() == before
+    assert not os.path.lexists(link)
+    assert not setup.report.parent.exists()
+
+
+@pytest.mark.parametrize('kind', ['symlink', 'hardlink'])
+def test_output_link_substitution_does_not_touch_accepted_data(setup, monkeypatch, kind):
     before = Path(setup.args.native_building).read_bytes()
+    prepared = setup.repo / 'prepared-link.gpkg'
+    prepare_substitution_link(prepared, setup.args.native_building, kind)
+    injected = []
     def substituted(command, log, **kwargs):
         rc = setup.execute(command, log, **kwargs)
         if '-m' in command and command[2] == 'ouem.standardize.building':
             output = Path(command[command.index('--output') + 1])
-            output.unlink()
-            if kind == 'symlink':
-                output.symlink_to(setup.args.native_building)
-            else:
-                os.link(setup.args.native_building, output)
+            prepared.replace(output)
+            injected.append(output)
         return rc
     monkeypatch.setattr(runner, 'execute', substituted)
     assert runner.run(setup.args) != 0
+    assert len(injected) == 1
+    with pytest.raises(runner.Blocked, match='linked output'):
+        runner.check_links(injected[0])
     assert Path(setup.args.native_building).read_bytes() == before
     # An unsafe output tree must not be followed to finalize evidence.
     report = runner.read_json(setup.report)
