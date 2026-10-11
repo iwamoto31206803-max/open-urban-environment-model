@@ -536,7 +536,7 @@ def run(args):
         report["finished_at"] = now()
         try:
             guard_tree(root, identity)
-            report["artifacts"] = {str(p.relative_to(root)): fingerprint(p) for p in sorted(root.rglob("*"))
+            report["artifacts"] = {p.relative_to(root).as_posix(): fingerprint(p) for p in sorted(root.rglob("*"))
                                    if p.is_file() and p.name != "integration-report.json"}
             save()
         except (OSError, Blocked) as exc:

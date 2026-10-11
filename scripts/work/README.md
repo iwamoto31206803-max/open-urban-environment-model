@@ -287,7 +287,7 @@ The integration report schema is `ouem-komae-integration/v0.1`:
 | `comparisons` | Independent-repeat content equality by artifact type |
 | `input_integrity` | Input/configuration/manifest before/after checks, including Standards consumed by A3 |
 | `environment_integrity` | Python, platform, OUEM commit, dependency versions and VoxCity source/provenance equality checked between stages and at completion |
-| `artifacts` | Paths, sizes, SHA-256 for outputs, manifests, logs and partial files; excludes the report itself to avoid self-hashing |
+| `artifacts` | Run-relative keys use `/` on every OS; values record paths, sizes, SHA-256 for outputs, manifests, logs and partial files; excludes the report itself to avoid self-hashing |
 | `quality`, `reproducibility` | Separate `PASS`, `FAIL`, or `NOT_COMPLETED` decisions |
 | `acceptance`, `not_performed` | Local visual/formal acceptance remains pending; nationwide/Phase B validation is not performed |
 
@@ -297,6 +297,11 @@ stopped. Power loss, SIGKILL, or unsafe filesystem substitution can leave the
 last checkpoint marked RUNNING. Such a run is incomplete, never a PASS, and
 must not be reused. If output safety cannot be established, the runner refuses
 to follow links merely to write a final report.
+If link creation fails before substitution (for example, Windows WinError 1314),
+the output tree remains safe and the ordinary failure is finalized as FAILED.
+Synthetic symlink tests probe privileges before execution and skip only for
+WinError 1314. Hardlink, traversal and simulated reparse-point checks still run;
+Linux symlink protection tests remain enabled.
 
 ### Equality versus quality
 

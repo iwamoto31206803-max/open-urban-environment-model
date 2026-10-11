@@ -20,6 +20,31 @@ from ouem.standardize.terrain import standardize_native_terrain
 REAL_ROOT = Path(__file__).resolve().parents[1]
 
 
+@pytest.fixture
+def require_symlinks(tmp_path):
+    # Probe before entering runner.run(), which catches ordinary OSError failures.
+    probe = tmp_path / 'symlink-probe'
+    try:
+        probe.symlink_to(tmp_path, target_is_directory=True)
+    except OSError as exc:
+        if getattr(exc, 'winerror', None) == 1314:
+            pytest.skip('Windows symlink creation requires Developer Mode or privilege (WinError 1314)')
+        raise
+    probe.unlink()
+
+
+@pytest.mark.parametrize('winerror', [1314, 5])
+def test_symlink_probe_skips_only_missing_windows_privilege(tmp_path, monkeypatch, request, winerror):
+    error = OSError('simulated Windows symlink failure')
+    error.winerror = winerror
+    def denied(*args, **kwargs):
+        raise error
+    monkeypatch.setattr(Path, 'symlink_to', denied)
+    expected = pytest.skip.Exception if winerror == 1314 else OSError
+    with pytest.raises(expected):
+        request.getfixturevalue('require_symlinks')
+
+
 def write_json(path, value):
     Path(path).write_text(json.dumps(value), encoding="utf-8")
 
@@ -140,28 +165,33 @@ def test_two_complete_repeats_link_evidence_without_changing_inputs(setup):
     assert all(report['comparisons'].values())
     assert all(report['input_integrity'].values())
     assert before=={p:runner.sha256_file(p) for p in setup.inputs.iterdir()}
-    assert 'repeat-1/arrays.json' in report['artifacts']
+    for repeat in (1, 2):
+        key = f'repeat-{repeat}/arrays.json'
+        evidence = setup.report.parent / key
+        assert evidence.is_file()
+        assert report['artifacts'][key]['sha256'] == runner.sha256_file(evidence)
+    assert all('\\' not in key for key in report['artifacts'])
     with pytest.raises(runner.Blocked, match='already exists'):
         runner.run(setup.args)
 
 
 @pytest.mark.parametrize('kind', ['symlink','hardlink','junction'])
-def test_linked_output_cannot_be_used(setup, kind):
+def test_linked_output_cannot_be_used(setup, kind, request):
+    if kind == 'symlink':
+        request.getfixturevalue('require_symlinks')
     root=runner.safe_run_path(setup.args.run_dir)
     identity=(root.stat().st_dev,root.stat().st_ino)
     target=setup.inputs/'native.gpkg'
     link=root/'injected.gpkg'
     if kind=='junction':
-        if os.name!='nt':
-            # Windows reparse-point branch is exercised using an lstat result.
-            from unittest.mock import patch
-            info=SimpleNamespace(st_mode=stat_mode_dir(),st_file_attributes=0x400)
-            link.mkdir()
-            with patch.object(Path,'lstat',return_value=info):
-                with pytest.raises(runner.Blocked,match='linked output'):
-                    runner.check_links(link)
-            return
-        pytest.skip('real Windows junction creation is outside Linux synthetic CI')
+        # Exercise the Windows reparse-point check on every platform, without privileges.
+        from unittest.mock import patch
+        info=SimpleNamespace(st_mode=stat_mode_dir(),st_file_attributes=0x400)
+        link.mkdir()
+        with patch.object(Path,'lstat',return_value=info):
+            with pytest.raises(runner.Blocked,match='linked output'):
+                runner.check_links(link)
+        return
     if kind=='symlink':
         link.symlink_to(target)
     else:
@@ -176,13 +206,17 @@ def stat_mode_dir():
     return stat.S_IFDIR | 0o700
 
 
-def test_symlink_ancestor_and_traversal_rejected(setup, tmp_path):
+def test_symlink_ancestor_rejected(setup, require_symlinks):
     (setup.repo/'data').symlink_to(setup.inputs, target_is_directory=True)
     with pytest.raises(runner.Blocked):
         runner.safe_run_path(setup.args.run_dir)
+    assert not (setup.inputs/'work').exists()
+
+
+def test_traversal_rejected(setup):
     with pytest.raises(runner.Blocked):
         runner.safe_run_path(setup.repo/'data/work/integration/../escape')
-    assert not (setup.inputs/'work').exists()
+    assert not (setup.repo/'data').exists()
 
 
 @pytest.mark.parametrize('failure', ['exit','interrupt','hash','missing','quality'])
@@ -380,14 +414,20 @@ def test_environment_change_stops_before_next_stage(setup, monkeypatch):
     assert len(report['stages']) == 1
 
 
-def test_output_link_substitution_does_not_touch_accepted_data(setup, monkeypatch):
+@pytest.mark.parametrize('kind', ['symlink', 'hardlink'])
+def test_output_link_substitution_does_not_touch_accepted_data(setup, monkeypatch, request, kind):
+    if kind == 'symlink':
+        request.getfixturevalue('require_symlinks')
     before = Path(setup.args.native_building).read_bytes()
     def substituted(command, log, **kwargs):
         rc = setup.execute(command, log, **kwargs)
         if '-m' in command and command[2] == 'ouem.standardize.building':
             output = Path(command[command.index('--output') + 1])
             output.unlink()
-            output.symlink_to(setup.args.native_building)
+            if kind == 'symlink':
+                output.symlink_to(setup.args.native_building)
+            else:
+                os.link(setup.args.native_building, output)
         return rc
     monkeypatch.setattr(runner, 'execute', substituted)
     assert runner.run(setup.args) != 0
@@ -398,7 +438,29 @@ def test_output_link_substitution_does_not_touch_accepted_data(setup, monkeypatc
     assert len(report['stages']) == 2
 
 
-def test_symlink_input_retarget_is_detected(setup):
+def test_link_creation_failure_retains_failed_report(setup, monkeypatch):
+    before = Path(setup.args.native_building).read_bytes()
+    def denied(command, log, **kwargs):
+        rc = setup.execute(command, log, **kwargs)
+        if '-m' in command and command[2] == 'ouem.standardize.building':
+            Path(command[command.index('--output') + 1]).unlink()
+            error = PermissionError('simulated symlink creation denied: WinError 1314')
+            error.winerror = 1314
+            raise error
+        return rc
+    monkeypatch.setattr(runner, 'execute', denied)
+    assert runner.run(setup.args) == 1
+    assert Path(setup.args.native_building).read_bytes() == before
+    report = runner.read_json(setup.report)
+    assert report['status'] == 'FAILED'
+    assert 'WinError 1314' in report['error']
+    assert report['stages'][-1]['status'] == 'INTERRUPTED_OR_ERROR'
+    assert len(report['stages']) == 2
+    assert 'logs/repeat-1-a1.log' in report['artifacts']
+    assert all(report['input_integrity'].values())
+
+
+def test_symlink_input_retarget_is_detected(setup, require_symlinks):
     original = Path(setup.args.native_building)
     link = setup.inputs / 'input-alias'
     other = setup.inputs / 'other'
