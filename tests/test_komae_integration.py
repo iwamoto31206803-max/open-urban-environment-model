@@ -1,5 +1,6 @@
 """Synthetic rasters/geometries and mocked external stages; no local real data."""
 import base64
+from contextlib import closing
 import hashlib
 import json
 import os
@@ -20,16 +21,20 @@ from ouem.standardize.terrain import standardize_native_terrain
 REAL_ROOT = Path(__file__).resolve().parents[1]
 
 
-@pytest.fixture
-def require_symlinks(tmp_path):
-    # Probe before entering runner.run(), which catches ordinary OSError failures.
-    probe = tmp_path / 'symlink-probe'
+def create_symlink_or_skip(link, target, *, target_is_directory=False):
     try:
-        probe.symlink_to(tmp_path, target_is_directory=True)
+        link.symlink_to(target, target_is_directory=target_is_directory)
     except OSError as exc:
         if getattr(exc, 'winerror', None) == 1314:
             pytest.skip('Windows symlink creation requires Developer Mode or privilege (WinError 1314)')
         raise
+
+
+@pytest.fixture
+def require_symlinks(tmp_path):
+    # Probe before entering runner.run(), which catches ordinary OSError failures.
+    probe = tmp_path / 'symlink-probe'
+    create_symlink_or_skip(probe, tmp_path, target_is_directory=True)
     probe.unlink()
 
 
@@ -72,16 +77,17 @@ def synthetic_a3(report_path, arrays_path, count=1):
 
 
 @pytest.fixture
-def setup(tmp_path, monkeypatch):
-    repo = tmp_path / "repo"
+def setup(tmp_path, monkeypatch, request):
+    suffix = getattr(request, 'param', '')
+    repo = tmp_path / f"repo{suffix}"
     repo.mkdir()
     monkeypatch.setattr(runner, "REPOSITORY", repo)
     monkeypatch.setattr(runner, "validate_ouem_runtime", lambda path: None)
     monkeypatch.setattr(runner, "environment", lambda: {"voxcity": {"verified": True}, "python": "synthetic"})
     (repo / 'scripts/work').mkdir(parents=True)
-    (repo / runner.A3_SCRIPT).write_text((REAL_ROOT / runner.A3_SCRIPT).read_text())
-    (repo / 'pyproject.toml').write_text('[project]\nname="synthetic"\n')
-    inputs = tmp_path / "accepted"
+    (repo / runner.A3_SCRIPT).write_bytes((REAL_ROOT / runner.A3_SCRIPT).read_bytes())
+    (repo / 'pyproject.toml').write_text('[project]\nname="synthetic"\n', encoding='utf-8')
+    inputs = tmp_path / f"accepted{suffix}"
     inputs.mkdir()
     raw = inputs / "raw.tif"
     with rasterio.open(raw, 'w', driver='GTiff', width=40, height=40, count=1,
@@ -99,7 +105,7 @@ def setup(tmp_path, monkeypatch):
     write_json(runner.adjacent(reference), {"schema":"ouem-standard-building-manifest/v0.1",
                                          "z_reference":"absolute T.P. elevation in metres"})
     area = inputs / 'area.yaml'
-    area.write_text('study_area:\n  id: synthetic\ncrs:\n  epsg: 6677\nextent:\n  xmin: -23600\n  ymin: -40800\n  xmax: -23560\n  ymax: -40760\n')
+    area.write_text('study_area:\n  id: synthetic\ncrs:\n  epsg: 6677\nextent:\n  xmin: -23600\n  ymin: -40800\n  xmax: -23560\n  ymax: -40760\n', encoding='utf-8')
     gis = inputs / 'gis.json'
     write_json(gis, {"python":"synthetic-gis", "ogr2ogr":"ogr2ogr", "ogrinfo":"ogrinfo"})
     args = SimpleNamespace(native_building=str(native_b), native_terrain=str(native_t),
@@ -110,7 +116,7 @@ def setup(tmp_path, monkeypatch):
 
     def execute(command, log, **kwargs):
         commands.append(command)
-        Path(log).write_text('synthetic stage log\n')
+        Path(log).write_text('synthetic stage log\n', encoding='utf-8')
         if command[0]=='synthetic-gis':
             return 0
         def option(name):
@@ -193,7 +199,7 @@ def test_linked_output_cannot_be_used(setup, kind, request):
                 runner.check_links(link)
         return
     if kind=='symlink':
-        link.symlink_to(target)
+        create_symlink_or_skip(link, target)
     else:
         os.link(target,link)
     with pytest.raises(runner.Blocked):
@@ -207,7 +213,7 @@ def stat_mode_dir():
 
 
 def test_symlink_ancestor_rejected(setup, require_symlinks):
-    (setup.repo/'data').symlink_to(setup.inputs, target_is_directory=True)
+    create_symlink_or_skip(setup.repo/'data', setup.inputs, target_is_directory=True)
     with pytest.raises(runner.Blocked):
         runner.safe_run_path(setup.args.run_dir)
     assert not (setup.inputs/'work').exists()
@@ -296,7 +302,7 @@ def test_reproducible_bad_roof_is_not_quality_pass(setup,monkeypatch,winerror):
 def test_standard_manifest_mutation_by_a3_fails(setup,monkeypatch):
     def mutate(command,log,**kwargs):
         rc=setup.execute(command,log,**kwargs)
-        if '--report' in command: runner.adjacent(command[2]).write_text('{}')
+        if '--report' in command: runner.adjacent(command[2]).write_text('{}', encoding='utf-8')
         return rc
     monkeypatch.setattr(runner,'execute',mutate)
     assert runner.run(setup.args)!=0
@@ -332,8 +338,10 @@ def test_building_semantics_ignore_container_bytes_but_detect_xyz_and_attributes
     frame().to_file(first,layer='building',driver='GPKG')
     frame().to_file(second,layer='building',driver='GPKG')
     import sqlite3
-    with sqlite3.connect(second) as db:
-        db.execute("UPDATE gpkg_contents SET last_change='2000-01-01T00:00:00.000Z'")
+    # The connection context commits/rolls back but does not close the file handle.
+    with closing(sqlite3.connect(second)) as db:
+        with db:
+            db.execute("UPDATE gpkg_contents SET last_change='2000-01-01T00:00:00.000Z'")
     assert runner.sha256_file(first)!=runner.sha256_file(second)
     assert runner.building_semantics(first)==runner.building_semantics(second)
     frame(21).to_file(second,layer='building',driver='GPKG')
@@ -343,7 +351,7 @@ def test_building_semantics_ignore_container_bytes_but_detect_xyz_and_attributes
 @pytest.mark.parametrize('problem',['none','wrong','modified','shadowed','ok'])
 def test_pin_provenance_requires_origin_and_installed_integrity(tmp_path,monkeypatch,problem):
     package=tmp_path/'voxcity'; package.mkdir()
-    source=package/'__init__.py'; source.write_text('VERSION="1.7.0"')
+    source=package/'__init__.py'; source.write_text('VERSION="1.7.0"', encoding='utf-8')
     checksum=base64.urlsafe_b64encode(hashlib.sha256(source.read_bytes()).digest()).decode().rstrip('=')
     record=SimpleNamespace(hash=SimpleNamespace(mode='sha256',value=checksum))
     class Entry:
@@ -351,7 +359,7 @@ def test_pin_provenance_requires_origin_and_installed_integrity(tmp_path,monkeyp
         def __str__(self): return 'voxcity/__init__.py'
     origin={'url':'https://github.com/kunifujiwara/VoxCity.git','vcs_info':{'vcs':'git','commit_id':runner.VOXCITY_COMMIT}}
     if problem=='wrong': origin['vcs_info']['commit_id']='0'*40
-    if problem=='modified': source.write_text('modified')
+    if problem=='modified': source.write_text('modified', encoding='utf-8')
     dist=SimpleNamespace(version='1.7.0',files=[Entry()],locate_file=lambda p:tmp_path/p,
                          read_text=lambda name: None if problem=='none' else json.dumps(origin))
     monkeypatch.setattr(runner.metadata,'distribution',lambda name:dist)
@@ -363,9 +371,10 @@ def test_execute_preserves_log_on_nonzero_exit(tmp_path):
     import sys
     log=tmp_path/'failure.log'
     assert runner.execute([sys.executable,'-c','print("diagnostic"); raise SystemExit(7)'],log,cwd=tmp_path)==7
-    assert 'diagnostic' in log.read_text()
+    assert b'diagnostic' in log.read_bytes()
 
 
+@pytest.mark.parametrize('setup', ['', ' space 狛江'], indirect=True, ids=['plain-paths', 'unicode-spaces'])
 def test_actual_synthetic_a2_and_a3_with_only_gis_mocked(setup,monkeypatch):
     # Only external GIS execution is mocked; A2 and pinned A3 run on synthetic data.
     def mixed(command,log,**kwargs):
@@ -373,7 +382,7 @@ def test_actual_synthetic_a2_and_a3_with_only_gis_mocked(setup,monkeypatch):
             return ORIGINAL_EXECUTE(command,log,**kwargs)
         return setup.execute(command,log,**kwargs)
     monkeypatch.setattr(runner,'execute',mixed)
-    assert runner.run(setup.args)==0, setup.report.read_text()
+    assert runner.run(setup.args)==0, setup.report.read_text(encoding='utf-8')
     report=runner.read_json(setup.report)
     assert report['quality']==report['reproducibility']=='PASS'
     assert report['repeats'][0]['comparison_evidence']['arrays']['voxels']['shape'][2]>0
@@ -382,7 +391,8 @@ def test_actual_synthetic_a2_and_a3_with_only_gis_mocked(setup,monkeypatch):
 ORIGINAL_EXECUTE = runner.execute
 
 
-def test_execute_stops_child_group_on_interrupt(tmp_path,monkeypatch):
+@pytest.mark.parametrize('platform', ['posix', 'nt'])
+def test_execute_stops_child_group_on_interrupt(tmp_path,monkeypatch,platform):
     calls=[]
     class Child:
         pid=12345
@@ -390,14 +400,27 @@ def test_execute_stops_child_group_on_interrupt(tmp_path,monkeypatch):
             calls.append('wait')
             if calls.count('wait')==1: raise KeyboardInterrupt()
             return -9
-    monkeypatch.setattr(runner.subprocess,'Popen',lambda *a,**k:Child())
-    if os.name=='nt':
+    options = []
+    def popen(*args, **kwargs):
+        options.append(kwargs)
+        return Child()
+    monkeypatch.setattr(runner.subprocess,'Popen',popen)
+    # Replace only the runner's os reference, not global os.name used by pathlib.
+    monkeypatch.setattr(runner, 'os', SimpleNamespace(name=platform,
+                        killpg=lambda pid,sig:calls.append((pid,sig))))
+    monkeypatch.setattr(runner, 'signal', SimpleNamespace(SIGKILL=9))
+    if platform=='nt':
+        monkeypatch.setattr(runner.subprocess, 'CREATE_NEW_PROCESS_GROUP', 0x200, raising=False)
         monkeypatch.setattr(runner.subprocess,'run',lambda command,**kwargs:calls.append(command))
-    else:
-        monkeypatch.setattr(runner.os,'killpg',lambda pid,sig:calls.append((pid,sig)))
     with pytest.raises(KeyboardInterrupt):
         ORIGINAL_EXECUTE(['fake'],tmp_path/'interrupt.log',cwd=tmp_path)
     assert calls.count('wait')==2 and len(calls)==3
+    if platform == 'nt':
+        assert options[0]['creationflags'] == 0x200
+        assert calls[1] == ['taskkill', '/PID', '12345', '/T', '/F']
+    else:
+        assert options[0]['start_new_session'] is True
+        assert calls[1] == (12345, runner.signal.SIGKILL)
 
 
 def test_broken_manifest_lineage_fails_even_when_quality_numbers_pass(setup,monkeypatch):
@@ -430,12 +453,7 @@ def test_environment_change_stops_before_next_stage(setup, monkeypatch):
 def prepare_substitution_link(link, target, kind):
     # Create the actual file link outside runner.run(), not just a directory probe.
     if kind == 'symlink':
-        try:
-            link.symlink_to(target)
-        except OSError as exc:
-            if getattr(exc, 'winerror', None) == 1314:
-                pytest.skip('Windows file symlink creation lacks privilege (WinError 1314)')
-            raise
+        create_symlink_or_skip(link, target)
     else:
         # Hardlink failures are not evidence of missing symlink privilege.
         os.link(target, link)
@@ -515,10 +533,10 @@ def test_symlink_input_retarget_is_detected(setup, require_symlinks):
     link = setup.inputs / 'input-alias'
     other = setup.inputs / 'other'
     other.write_bytes(original.read_bytes())
-    link.symlink_to(original)
+    create_symlink_or_skip(link, original)
     recorded = {'alias': runner.fingerprint(link)}
     link.unlink()
-    link.symlink_to(other)
+    create_symlink_or_skip(link, other)
     assert runner.verify_inputs(recorded) == {'alias': False}
 
 
@@ -581,31 +599,39 @@ def test_checkpoint_serialization_failure_creates_no_candidate(checkpoint_state)
     assert not list(state.root.glob('*.tmp'))
 
 
-def test_checkpoint_write_failure_closes_handle_and_retains_partial_evidence(checkpoint_state, monkeypatch):
+@pytest.mark.parametrize('newline', [None, '\n', '\r\n'], ids=['native', 'lf', 'crlf'])
+def test_checkpoint_write_failure_closes_handle_and_retains_partial_evidence(checkpoint_state, monkeypatch, newline):
     from contextlib import contextmanager
     state = checkpoint_state
     previous = state.report.read_bytes()
     original_fdopen = os.fdopen
     streams = []
+    fragments = []
+    failed_report = {'説明': '書き込み失敗', 'status': 'FAILED'}
     @contextmanager
     def partial_write(*args, **kwargs):
+        kwargs['newline'] = newline
         with original_fdopen(*args, **kwargs) as stream:
             streams.append(stream)
             def write(payload):
-                stream.write(payload[:10])
+                fragments.append(payload[:10])
+                stream.write(fragments[-1])
                 raise OSError('simulated disk write failure')
             yield SimpleNamespace(fileno=stream.fileno, write=write)
     with monkeypatch.context() as patch:
         patch.setattr(os, 'fdopen', partial_write)
         with pytest.raises(OSError, match='disk write failure'):
-            runner.checkpoint(state.root, state.identity, {'status': 'FAILED'})
+            runner.checkpoint(state.root, state.identity, failed_report)
     assert streams[0].closed
     assert state.report.read_bytes() == previous
     candidate, = state.root.glob('integration-report-*.json.tmp')
     partial = candidate.read_bytes()
-    assert len(partial) == 10
-    runner.checkpoint(state.root, state.identity, {'status': 'FAILED'})
-    assert runner.read_json(state.report)['status'] == 'FAILED'
+    fragment, = fragments
+    assert len(fragment) == 10  # Characters, not UTF-8 bytes or translated line endings.
+    line_ending = os.linesep if newline is None else newline
+    assert partial == fragment.replace('\n', line_ending).encode('utf-8')
+    runner.checkpoint(state.root, state.identity, failed_report)
+    assert runner.read_json(state.report) == failed_report
     assert candidate.read_bytes() == partial
 
 
