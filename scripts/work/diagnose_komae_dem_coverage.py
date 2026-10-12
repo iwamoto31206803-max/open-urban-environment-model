@@ -7,6 +7,7 @@ from pathlib import Path
 
 import geopandas as gpd
 import rasterio
+from shapely.geometry import box
 from rasterio.warp import transform_bounds
 from rasterio.windows import from_bounds
 from ouem.adapters.voxcity import (
@@ -40,6 +41,51 @@ def study_extent(path):
     return [result[k] for k in ("xmin", "ymin", "xmax", "ymax")]
 
 
+def classify_study_intersections(frame, study_bounds):
+    """Classify full normalized 2D building footprints without clipping them."""
+    study = box(*study_bounds)
+    groups = {"fully_within": [], "boundary_crossing": [], "touch_only": [], "outside": []}
+    extremes = {direction: {"distance_m": 0.0, "ouem_ids": []}
+                for direction in ("west", "south", "east", "north")}
+    for row in frame.itertuples():
+        geometry = row.geometry
+        if geometry is None or geometry.is_empty:
+            raise ValueError(f"Missing normalized footprint for {row.ouem_id}")
+        if study.covers(geometry):
+            category = "fully_within"
+        elif not study.intersects(geometry):
+            category = "outside"
+        elif study.touches(geometry):
+            category = "touch_only"
+        else:
+            category = "boundary_crossing"
+        groups[category].append(str(row.ouem_id))
+        x0, y0, x1, y1 = geometry.bounds
+        distances = {"west": max(0.0, study_bounds[0] - x0),
+                     "south": max(0.0, study_bounds[1] - y0),
+                     "east": max(0.0, x1 - study_bounds[2]),
+                     "north": max(0.0, y1 - study_bounds[3])}
+        for direction, distance in distances.items():
+            record = extremes[direction]
+            if distance > record["distance_m"] + 1e-8:
+                record["distance_m"] = float(distance)
+                record["ouem_ids"] = [str(row.ouem_id)]
+            elif distance > 0 and abs(distance - record["distance_m"]) <= 1e-8:
+                record["ouem_ids"].append(str(row.ouem_id))
+    for ids in groups.values():
+        ids.sort()
+    for record in extremes.values():
+        record["ouem_ids"].sort()
+    return {
+        "classification_rule": "study.covers(full normalized 2D footprint); else disjoint, touches-only, or positive-area crossing",
+        "counts": {key: len(value) for key, value in groups.items()},
+        "ouem_ids_by_class": groups,
+        "maximum_boundary_excursion_m": extremes,
+        "selected_buildings_without_study_intersection": len(groups["outside"]),
+        "note": "Intersection classification is spatial only; source selection provenance and shade contribution are not established.",
+    }
+
+
 def main():
     frame = gpd.read_file(BUILDING, layer="building")
     shapes = {r.ouem_id: build_normalized_footprint(r.geometry, r.ouem_id) for r in frame.itertuples()}
@@ -47,6 +93,9 @@ def main():
     lonlat = _to_voxcity_building_crs(normalized)
     building_bounds = list(map(float, normalized.total_bounds))
     study_bounds = study_extent(STUDY)
+    if normalized.crs is None or normalized.crs.to_epsg() != 6677:
+        raise ValueError(f"Expected normalized EPSG:6677 building CRS, got {normalized.crs}")
+    boundary_diagnostic = classify_study_intersections(normalized, study_bounds)
     def outside(bounds, container):
         return {"west": max(0.0, container[0] - bounds[0]),
                 "south": max(0.0, container[1] - bounds[1]),
@@ -74,6 +123,7 @@ def main():
         report = {
             "scope": "READ_ONLY_DIAGNOSTIC_NOT_ACCEPTANCE",
             "building_count": len(frame),
+            "study_boundary_building_classification": boundary_diagnostic,
             "terrain_manifest": str(TERRAIN_MANIFEST),
             "raw_dem_source_path": str(source_path),
             "study_area_epsg6677": study_bounds,
