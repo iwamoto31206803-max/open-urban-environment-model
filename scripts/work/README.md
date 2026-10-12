@@ -301,6 +301,84 @@ Do not commit local data or diagnostic reports. Codex/CI exercise synthetic
 fixtures only. The actual `komae-contained-001` diagnosis remains a company-PC
 task after review/merge; any repair requires a separately reviewed change.
 
+### Read-only Adapter intermediate geometry diagnosis
+
+After review/merge, from ordinary Windows cmd using OUEM `.venv`:
+
+```bat
+scripts\work\diagnose_komae_adapter_geometry_steps.cmd komae-contained-001
+```
+
+An optional second argument selects another OUEM ID; the default is
+`oub-21a29be1-9794-593f-b22c-e3639a7d9d45`. Full JSON metrics go to stdout:
+
+```bat
+.venv\Scripts\python.exe -B -m ouem.komae_adapter_geometry_steps komae-contained-001 --json
+```
+
+This complements saved-geometry provenance diagnosis by replaying **only the
+target's Adapter geometry operations in memory** for both repeats. It discovers
+the Standard input and saved Adapter through recorded A3 commands, the report
+inventory and adjacent manifests. It verifies their linkage/hashes and reads the
+exact `building` layer used by `_run_voxcity_grids`. Recorded commands are never
+executed. DEM, grids, VoxCity voxels, A1/A2/A3 and all file writers are excluded.
+
+The inspected production sequence is:
+
+1. `build_normalized_footprint`: per-surface `shapely.force_2d`; discard empty,
+   nonfinite-area or zero-area projections; conditional existing `make_valid`;
+   retain positive polygonal parts; `normalize` and WKB sort; `unary_union`;
+   conditional existing `make_valid`; retain/sort polygonal parts; final
+   `normalize(unary_union(...))` and validity guard.
+2. `_set_normalized_footprints`: preserve source CRS when assigning geometry.
+3. `_to_voxcity_building_crs`: GeoPandas `to_crs(4326)`.
+4. GeoPandas `iterfeatures` (observed separately) and `to_json(drop_id=True)`,
+   `json.loads`, then the Adapter's `canonical_json` and a diagnostic decode.
+
+The Adapter source and public API are unchanged. A temporary, thread-local
+Python call/return profiler observes the actual footprint function's Shapely
+operands/results. It never substitutes implementations. Metrics are calculated
+after profiling stops; an independent unprofiled call must give identical WKB
+and footprint statistics. An existing profiler is not replaced. Unsupported or
+incomplete capture yields INCONCLUSIVE. Existing conditional repair calls run
+**only as part of the original function**, under the original conditions; no new
+repair, `buffer(0)` or rounding operation is introduced.
+
+The inspected path has **no explicit coordinate rounding**: JSON uses its normal
+numeric encoding, and canonicalization changes key ordering/formatting only.
+Each actual operation records input/output validity and reason, type, CRS,
+empty/Z flags, bounds, area in EPSG:6677 m², polygon/ring/vertex counts, GEOS
+self-intersection location, WKB hash, precision grid and shape differences.
+Union operands are inspected individually, not assembled into an artificial
+invalid MultiPolygon. Raw 3D surface XY validity remains distinct from footprint
+validity; discarded projections are identified explicitly.
+
+Before classifying an observed valid→invalid transition, the replay must match
+**every recorded footprint statistic exactly** (including area) and the saved
+final Geometry WKB exactly. Ring/coordinate-order differences and floating-point
+area discrepancies do not silently pass. Mismatches, missing evidence or capture
+failures produce INCONCLUSIVE with details. Multiple implicated operation types
+are reported separately from a single operation. The report includes runtime
+library versions and Adapter source hash; current-runtime reproduction is not
+proof that historical library versions were identical.
+
+Grid-derived scalar properties are taken from the saved manifest; they are not
+recomputed. The pinned grid function filters/copies the GeoDataFrame before its
+own processing, and the Adapter serializes its original GeoDataFrame. The tool
+checks **geometry** reproduction, not whole-feature/file equality or voxel
+quality. Repeat equality is reported independently of the original E2E verdict.
+
+The existing diagnostic safety checks apply: reject unsafe links/paths, changed
+hashes and active GeoPackage sidecars; verify SHA-256 before/after every opened
+artifact/manifest/report. Nothing is written. Close concurrent writers first.
+If retaining stdout, choose a new review file outside runs/accepted inputs;
+shell redirection can overwrite files and is not protected by this CLI.
+Exit **0** means faithful replay with no valid→invalid transition, **1** means a
+faithfully reproduced transition, and **2** means INCONCLUSIVE or BLOCKED.
+Neither a replay nor a CI PASS changes quality criteria or establishes acceptance.
+Codex/CI use synthetic data; company-PC diagnosis and any later repair remain
+separate user-reviewed tasks. Keep real data and diagnosis outputs out of Git.
+
 ### Opt-in 92-building contained E2E PoC
 
 After review/merge, run from an **ordinary Windows cmd**, with the existing
