@@ -15,7 +15,7 @@ from ouem.adapters.voxcity import (
 
 ROOT = Path(__file__).resolve().parents[2]
 BUILDING = ROOT / "data/standard/building/komae.gpkg"
-DEM = ROOT / "data/raw/terrain/tokyo_23ku_dem_05m/komae/09LD3451.tif"
+TERRAIN_MANIFEST = ROOT / "data/native/terrain/komae_09LD3451.json"
 STUDY = ROOT / "config/study_areas/komae_09LD3451.yaml"
 
 
@@ -47,7 +47,12 @@ def main():
     lonlat = _to_voxcity_building_crs(normalized)
     xmin, ymin, xmax, ymax = map(float, lonlat.total_bounds)
     needed = transform_bounds("EPSG:4326", "EPSG:6677", xmin, ymin, xmax, ymax, densify_pts=101)
-    with rasterio.open(DEM) as src:
+    # Match the integration runner: resolve the actual RAW DEM from Native Terrain provenance.
+    from ouem.komae_integration import read_json
+    source_path = Path(read_json(TERRAIN_MANIFEST)["terrain"]["source_path"])
+    if not source_path.is_absolute():
+        raise ValueError(f"Native Terrain source_path must be absolute: {source_path}")
+    with rasterio.open(source_path) as src:
         if src.crs is None or src.crs.to_epsg() != 6677 or src.count != 1:
             raise ValueError("expected single-band EPSG:6677 DEM")
         actual = [src.bounds.left, src.bounds.bottom, src.bounds.right, src.bounds.top]
@@ -62,6 +67,8 @@ def main():
         report = {
             "scope": "READ_ONLY_DIAGNOSTIC_NOT_ACCEPTANCE",
             "building_count": len(frame),
+            "terrain_manifest": str(TERRAIN_MANIFEST),
+            "raw_dem_source_path": str(source_path),
             "study_area_epsg6677": study_extent(STUDY),
             "reference_building_lonlat_rectangle": [xmin, ymin, xmax, ymax],
             "required_dem_envelope_epsg6677_m": list(needed),
