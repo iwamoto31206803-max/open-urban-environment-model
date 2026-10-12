@@ -166,6 +166,65 @@ conversion/Native Building ingest, change Standard contracts, or promote any
 output to the accepted baseline. Here A1/A2/A3 are implementation milestones,
 not the conceptual national model variants.
 
+### Read-only preflight (before authorizing a real-data run)
+
+From an ordinary Windows cmd at the repository root, using a **trusted existing**
+GIS runtime snapshot and the actual accepted input paths:
+
+```bat
+.venv\Scripts\python.exe -B -m ouem.komae_integration preflight ^
+  --native-building data\native\building\komae.gpkg ^
+  --native-terrain data\native\terrain\komae_09LD3451.json ^
+  --reference-standard-building data\standard\building\komae.gpkg ^
+  --study-area config\study_areas\komae_09LD3451.yaml ^
+  --gis-runtime scripts\work\.runtime\plateau_komae_gis.json ^
+  --run-dir data\work\integration\preflight-example-new-run ^
+  --meshsize 1 --expected-buildings 111 --expected-native-buildings 3637
+```
+
+On Linux use `.venv/bin/python -B` with the same arguments and local paths.
+Preflight neither creates/reserves the proposed run directory nor starts `run`.
+It does not transform/write GIS datasets or generate voxels. Read-only geometry
+inspection and in-memory coordinate calculations establish preliminary DEM
+coverage. A separate GIS child runs only Python identity and `osgeo` import/GDAL
+version checks, using `-B`, the snapshot environment, and a 30-second timeout.
+The snapshot is executable configuration: use only a trusted local snapshot.
+OUEM remains separate from GIS Python; snapshot environment values and child
+stderr are not copied to the report. Do not modify an accepted snapshot to make
+preflight pass; investigate discrepancies and capture a new snapshot separately
+if necessary. Preflight does not install or change dependencies.
+
+Output is JSON (`ouem-komae-preflight/v0.1`) on stdout; no report file is created.
+It includes settings, observed environment, selected GIS identity/version,
+SHA-256/size/resolved paths of inputs, manifests, snapshot and repository code,
+pre/post input integrity, and individual checks. `PASS` (exit 0) means the
+read-only prerequisite checks succeeded. `BLOCKED` (exit 2) includes a cause
+and required action. Dependent checks and processing-only checks are explicitly
+`NOT_CHECKED`. Missing/unverifiable VoxCity provenance blocks the preflight;
+the provenance method has the same limitations described below. Python package
+imports and `pip check` verify dependencies without invoking the engine.
+
+Checks cover manifest schemas, registered RAW hash/metadata, Native Building
+count/IDs/XYZ/EPSG:4979, reference Standard Building semantics/count/EPSG:6677,
+Study Area finite EPSG:6677 extent, Terrain Float32 and vertical compatibility,
+and the existing conservative DEM coverage check applied to the **reference**
+Building. An active GeoPackage WAL/journal blocks inspection; close writers and
+review recovery rather than deleting sidecars. Input files are hashed again at
+the end. Existing runner output-path/link rules are checked without creating or
+probing output files; the real runner still rechecks them on execution.
+
+**PASS is not integrated acceptance or a guarantee that processing will succeed.**
+Historical Building manifests do not certify GPKG byte hashes. Output ACLs,
+space, locks, future changes/races, GIS conversion, newly generated A1/A2/A3
+quality, actual generated VoxCity bounds, voxel arrays and two-repeat
+reproducibility remain unchecked. The configured Study Area and preliminary
+reference footprint bounds are not interchangeable. QGIS review and formal
+local integrated acceptance remain separate. Close concurrent input writers;
+these checks do not guarantee safety against hostile concurrent replacement.
+If retaining stdout, save it only to a new explicitly chosen local review file
+outside inputs, accepted artifacts and the proposed run directory; shell `>`
+can overwrite files and is not an output-protection feature of preflight.
+
 ### Windows preparation and execution (explicitly authorized real-data runs only)
 
 1. Use a checked-out repository installed into its local OUEM `.venv` (editable

@@ -74,7 +74,7 @@ def check_links(path):
         raise Blocked(f"hardlinked output file is forbidden: {path}")
 
 
-def safe_run_path(run_dir):
+def validate_run_path(run_dir):
     """Only a new direct child of repository data/work/integration is allowed."""
     base = REPOSITORY / "data" / "work" / "integration"
     supplied = Path(run_dir).absolute()
@@ -84,7 +84,15 @@ def safe_run_path(run_dir):
         check_links(path)
     if base.resolve() != base or os.path.lexists(supplied):
         raise Blocked(f"run directory already exists or has a linked ancestor: {supplied}")
-    base.mkdir(parents=True, exist_ok=True)
+    for path in (REPOSITORY, REPOSITORY / "data", REPOSITORY / "data/work", base):
+        if path.exists() and not path.is_dir():
+            raise Blocked(f"output ancestor is not a directory: {path}")
+    return supplied
+
+
+def safe_run_path(run_dir):
+    supplied = validate_run_path(run_dir)
+    supplied.parent.mkdir(parents=True, exist_ok=True)
     supplied.mkdir(exist_ok=False)
     return supplied
 
@@ -351,6 +359,28 @@ def adapter_quality(path, expected_ids):
     ))
 
 
+def validate_settings(args):
+    if not math.isfinite(args.meshsize) or args.meshsize <= 0 or args.expected_buildings <= 0 or args.expected_native_buildings <= 0:
+        raise Blocked("meshsize and expected counts must be positive")
+
+
+def native_building_manifest(path):
+    manifest = read_json(path)
+    if manifest.get("schema") != "ouem-plateau-native-ingest/v0.1" or manifest.get("errors"):
+        raise Blocked("Native Building acceptance manifest is missing/invalid")
+    return manifest
+
+
+def reference_building(path, manifest_path, expected):
+    reference = building_semantics(path)
+    manifest = read_json(manifest_path)
+    if manifest.get("schema") != "ouem-standard-building-manifest/v0.1":
+        raise Blocked("reference Standard Building manifest has an invalid schema")
+    if len(reference["ids"]) != expected:
+        raise Blocked("reference Standard Building count differs from the expected baseline")
+    return reference, manifest
+
+
 def run(args):
     root = safe_run_path(args.run_dir)
     info = root.stat()
@@ -404,8 +434,7 @@ def run(args):
 
     try:
         (root / "logs").mkdir()
-        if not math.isfinite(args.meshsize) or args.meshsize <= 0 or args.expected_buildings <= 0 or args.expected_native_buildings <= 0:
-            raise Blocked("meshsize and expected counts must be positive")
+        validate_settings(args)
         paths = input_paths(args)
         for key, path in paths.items():
             before[key] = fingerprint(path)
@@ -423,18 +452,12 @@ def run(args):
         native = load_native_manifest(paths["native_terrain"])
         area = load_study_area(paths["study_area"])
         report["settings"]["study_area"] = {"id": area.id, "epsg": area.epsg, "extent": list(area.extent)}
-        bm = read_json(paths["native_building_manifest"])
-        if bm.get("schema") != "ouem-plateau-native-ingest/v0.1" or bm.get("errors"):
-            raise Blocked("Native Building acceptance manifest is missing/invalid")
-        reference = building_semantics(paths["reference_standard_building"])
-        reference_manifest = read_json(paths["reference_building_manifest"])
-        if reference_manifest.get("schema") != "ouem-standard-building-manifest/v0.1":
-            raise Blocked("reference Standard Building manifest has an invalid schema")
+        native_building_manifest(paths["native_building_manifest"])
+        reference, reference_manifest = reference_building(
+            paths["reference_standard_building"], paths["reference_building_manifest"], args.expected_buildings)
         from ouem.adapters.voxcity import check_vertical_compatibility
         check_vertical_compatibility(reference_manifest.get("z_reference", ""), {
             "status": native.vertical_reference_status, "name": native.vertical_reference})
-        if len(reference["ids"]) != args.expected_buildings:
-            raise Blocked("reference Standard Building count differs from the expected baseline")
         from ouem.native.building.plateau import load_gis_runtime
         runtime = load_gis_runtime(paths["gis_runtime"])
         report["environment"]["gis"] = {"python": runtime.python, "ogr2ogr": runtime.ogr2ogr,
@@ -572,7 +595,7 @@ def run(args):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=["run"])
+    parser.add_argument("action", choices=["run", "preflight"])
     for option in ("native-building", "native-terrain", "reference-standard-building", "study-area", "gis-runtime", "run-dir"):
         parser.add_argument("--" + option, required=True)
     parser.add_argument("--meshsize", type=float, default=1.0)
@@ -583,6 +606,11 @@ def main(argv=None):
         raise InterruptedError(f"signal {signum}")
     previous = signal.signal(signal.SIGTERM, interrupted)
     try:
+        if args.action == "preflight":
+            from ouem.komae_preflight import preflight
+            report = preflight(args)
+            print(json.dumps(report, indent=2, ensure_ascii=True, allow_nan=False))
+            return 2 if report["status"] == "BLOCKED" else 0
         return run(args)
     except (OSError, Blocked) as exc:
         print(f"BLOCKED before execution: {exc}", file=sys.stderr)
