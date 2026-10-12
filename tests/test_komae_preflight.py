@@ -16,6 +16,7 @@ from test_komae_integration import setup, frame, write_json  # shared synthetic 
 
 @pytest.fixture
 def ready(setup, monkeypatch):
+    monkeypatch.setattr(preflight, "validate_interpreter", lambda: None)
     native = Path(setup.args.native_building)
     native.unlink()  # replace only this test's synthetic placeholder
     data = frame().to_crs(4979)
@@ -226,3 +227,15 @@ def test_dependency_failure_is_blocked_and_not_dumped(ready, monkeypatch):
     result = preflight.preflight(ready.args)
     assert result['checks']['ouem_environment']['status'] == 'BLOCKED'
     assert 'secret' not in json.dumps(result)
+
+
+@pytest.mark.parametrize('correct_prefix', [True, False])
+def test_interpreter_prefix_distinguishes_venv_from_shared_base(tmp_path, monkeypatch, correct_prefix):
+    monkeypatch.setattr(runner, 'REPOSITORY', tmp_path)
+    monkeypatch.setattr(runner, 'validate_ouem_runtime', lambda path: None)
+    monkeypatch.setattr(sys, 'prefix', str(tmp_path / ('.venv' if correct_prefix else 'base-python')))
+    if correct_prefix:
+        preflight.validate_interpreter()
+    else:
+        with pytest.raises(runner.Blocked, match='prefix'):
+            preflight.validate_interpreter()

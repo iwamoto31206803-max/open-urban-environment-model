@@ -13,6 +13,16 @@ import sys
 from ouem import komae_integration as runner
 
 
+def validate_interpreter():
+    venv = runner.REPOSITORY / ".venv"
+    expected = venv / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
+    runner.validate_ouem_runtime(expected)
+    # Resolving the executable alone cannot distinguish POSIX venv symlinks
+    # from the base interpreter or another venv sharing the same binary.
+    if Path(sys.prefix).resolve() != venv.resolve():
+        raise runner.Blocked("active Python prefix is not the repository .venv")
+
+
 def gis_probe(path):
     """Inspect a snapshot and launch only an import/version probe in its runtime.
 
@@ -105,8 +115,7 @@ def preflight(args):
           "Choose a new direct child of repository data/work/integration; remove no existing evidence.")
 
     def dependencies():
-        expected = runner.REPOSITORY / ".venv" / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
-        runner.validate_ouem_runtime(expected)
+        validate_interpreter()
         for module in ("numpy", "rasterio", "geopandas", "shapely", "pyproj", "scipy"):
             importlib.import_module(module)
         dependency_check = subprocess.run(
@@ -115,6 +124,7 @@ def preflight(args):
         if dependency_check.returncode:
             raise runner.Blocked("dependency consistency check failed; run OUEM Python -m pip check for details")
         info = runner.environment()
+        info["python_prefix"] = sys.prefix
         report["environment"] = info
         if not info["voxcity"]["verified"]:
             raise runner.Blocked("VoxCity version/commit/installed RECORD integrity is unverified")
