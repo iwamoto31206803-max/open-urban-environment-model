@@ -63,6 +63,18 @@ class StandardTerrainResult:
         ))
 
 
+def validate_terrain_input(native, area):
+    """Shared read-only contract prerequisites; no output creation."""
+    if area.epsg != 6677:
+        raise StandardTerrainError(f"Terrain v0.1 requires EPSG:6677, config has EPSG:{area.epsg}")
+    if native.horizontal_crs != "EPSG:6677":
+        raise StandardTerrainError(
+            f"Terrain v0.1 does not reproject; expected EPSG:6677, found {native.horizontal_crs}"
+        )
+    if native.dtype != "float32":
+        raise StandardTerrainError(f"Terrain v0.1 requires Float32 input, found {native.dtype}")
+
+
 def standardize_native_terrain(
     native_manifest: str | Path, output: str | Path, *, study_area_config: str | Path
 ) -> StandardTerrainResult:
@@ -75,14 +87,7 @@ def standardize_native_terrain(
 
     native = load_native_manifest(native_manifest)
     area = load_study_area(study_area_config)
-    if area.epsg != 6677:
-        raise StandardTerrainError(f"Terrain v0.1 requires EPSG:6677, config has EPSG:{area.epsg}")
-    if native.horizontal_crs != "EPSG:6677":
-        raise StandardTerrainError(
-            f"Terrain v0.1 does not reproject; expected EPSG:6677, found {native.horizontal_crs}"
-        )
-    if native.dtype != "float32":
-        raise StandardTerrainError(f"Terrain v0.1 requires Float32 input, found {native.dtype}")
+    validate_terrain_input(native, area)
     source_path = Path(native.source_path)
     output_path = Path(output)
     output_path.parent.mkdir(parents=True, exist_ok=True)
