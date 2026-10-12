@@ -45,6 +45,13 @@ def main():
     shapes = {r.ouem_id: build_normalized_footprint(r.geometry, r.ouem_id) for r in frame.itertuples()}
     normalized = _set_normalized_footprints(frame, shapes)
     lonlat = _to_voxcity_building_crs(normalized)
+    building_bounds = list(map(float, normalized.total_bounds))
+    study_bounds = study_extent(STUDY)
+    def outside(bounds, container):
+        return {"west": max(0.0, container[0] - bounds[0]),
+                "south": max(0.0, container[1] - bounds[1]),
+                "east": max(0.0, bounds[2] - container[2]),
+                "north": max(0.0, bounds[3] - container[3])}
     xmin, ymin, xmax, ymax = map(float, lonlat.total_bounds)
     needed = transform_bounds("EPSG:4326", "EPSG:6677", xmin, ymin, xmax, ymax, densify_pts=101)
     # Match the integration runner: resolve the actual RAW DEM from Native Terrain provenance.
@@ -69,7 +76,13 @@ def main():
             "building_count": len(frame),
             "terrain_manifest": str(TERRAIN_MANIFEST),
             "raw_dem_source_path": str(source_path),
-            "study_area_epsg6677": study_extent(STUDY),
+            "study_area_epsg6677": study_bounds,
+            "normalized_building_bounds_epsg6677_m": building_bounds,
+            "normalized_buildings_outside_study_m": outside(building_bounds, study_bounds),
+            "normalized_buildings_within_study": all(v == 0 for v in outside(building_bounds, study_bounds).values()),
+            "conservative_rectangle_expansion_beyond_buildings_m": outside(needed, building_bounds),
+            "required_rectangle_outside_study_m": outside(needed, study_bounds),
+            "normalized_buildings_within_current_dem": all(v == 0 for v in outside(building_bounds, actual).values()),
             "reference_building_lonlat_rectangle": [xmin, ymin, xmax, ymax],
             "required_dem_envelope_epsg6677_m": list(needed),
             "actual_dem_bounds_epsg6677_m": actual,
@@ -79,7 +92,7 @@ def main():
             "required_pixel_window_left_top_right_bottom": pixel_window,
             "raster_pixel_extent": [0, 0, src.width, src.height],
             "coverage_within_raster_bounds": all(v == 0 for v in deficits.values()),
-            "note": "This diagnoses raster extent only; NoData, actual engine output and formal acceptance remain unchecked.",
+            "note": "Compares building bounds, densified VoxCity rectangle, Study Area and DEM extent; does not determine whether engine rectangle policy should change. NoData, actual engine output and formal acceptance remain unchecked.",
         }
     print(json.dumps(report, ensure_ascii=False, indent=2))
 
