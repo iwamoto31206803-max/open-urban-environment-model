@@ -232,6 +232,75 @@ Adapter generation, any correction, and formal acceptance require separate
 review after inspecting those results. Do not commit diagnostic artifacts or
 real-data inputs to GitHub.
 
+### Read-only geometry provenance diagnosis
+
+After reviewing/merging this diagnostic, use an ordinary Windows cmd and the
+OUEM `.venv` (not OSGeo4W Shell):
+
+```bat
+scripts\work\diagnose_komae_geometry_provenance.cmd komae-contained-001
+```
+
+The default target is `oub-21a29be1-9794-593f-b22c-e3639a7d9d45`. Supply an
+optional second argument to inspect another OUEM ID. Python equivalent:
+
+```bat
+.venv\Scripts\python.exe -B -m ouem.komae_geometry_provenance komae-contained-001
+```
+
+This inspects saved Native → full A1 Standard → contained Standard → Adapter
+geometry for **both repeats**. Recorded A1/A3 commands, the artifact inventory,
+adjacent manifests and subset parent fingerprints identify files. Commands are
+never executed. Native is located through the report's original input path and
+hash, not a guessed filename. Its manifest identifies the layer; A1's recorded
+`source_id` mapping and deterministic OUEM ID rule identify the Native `id`.
+There is no row-number or nearest-geometry fallback. A relocated run still needs
+its Native inputs at their recorded paths; missing inputs/lineage are reported
+as INCONCLUSIVE. Do not edit records to redirect them.
+
+Each saved shape reports type, declared CRS, XY validity/reason, empty/Z flags,
+bounds, area, polygon/ring/vertex counts (including ring closure vertices), WKB
+hash and any self-intersection coordinate reported by GEOS. Areas and shape
+differences are compared in **EPSG:6677 metres**, not geographic degrees.
+Reprojection is horizontal-only and in memory, preserving Z without interpreting
+Native EPSG:4979 Z as ellipsoidal height. Symmetric-difference area is only
+calculated for valid, nonempty polygonal inputs; otherwise it is NOT_CHECKED.
+
+The first invalid **saved representation** and its interval (Native already
+invalid, Native→Standard, or Standard→Adapter) are distinct from a proven cause
+of the Adapter's self-intersection. Native/Standard can contain 3D surface
+assemblies whose XY projections overlap; GEOS ignores Z, and their raw area is
+not the dissolved footprint area. Adapter manifest footprint diagnostics are
+shown as recorded observations, not independently reconstructed geometry.
+An XY-only projection probe shows whether projecting the raw Standard reproduces
+the invalid Adapter exactly; it does **not** repeat footprint generation.
+Missing normalized/pre-reprojection and rounding snapshots leave the causal
+mechanism INCONCLUSIVE. No repair, union, `make_valid`, `buffer(0)`, rounding,
+GIS conversion, standardization, voxel generation or E2E rerun is performed.
+
+Saved hashes/sizes are checked before opening artifacts and Native inputs;
+all opened evidence (including manifests/report) is fingerprinted and checked
+again afterwards. Links, unsafe inventory paths, hash mismatches and active
+GeoPackage sidecars block diagnosis. Close other writers first; do not remove
+sidecars or alter evidence to make checks pass. Existing report/acceptance status
+and all input/output files remain unchanged. Only this building's lineage is
+inspected; this is not a revalidation of every run artifact.
+
+Exit codes: **0** complete lineage with all saved geometries valid; **1** complete
+lineage with an observed invalid geometry; **2** INCONCLUSIVE lineage, blocked
+safety/integrity check, or an unreadable diagnostic. A complete observed interval
+can still have an INCONCLUSIVE causal mechanism. Repeat comparison reports
+geometry hashes, classification and diagnostic equality separately; it does not
+replace the runner's reproducibility/quality checks or establish acceptance.
+
+Add `--json` to the Python command for full metrics/evidence on stdout. No output
+file option is provided, so the diagnostic itself cannot overwrite an existing
+file. If retaining stdout, choose a **new external review file**, outside runs
+and accepted inputs; shell redirection is not protected by the diagnostic.
+Do not commit local data or diagnostic reports. Codex/CI exercise synthetic
+fixtures only. The actual `komae-contained-001` diagnosis remains a company-PC
+task after review/merge; any repair requires a separately reviewed change.
+
 ### Opt-in 92-building contained E2E PoC
 
 After review/merge, run from an **ordinary Windows cmd**, with the existing
