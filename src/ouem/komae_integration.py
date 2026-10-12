@@ -21,6 +21,7 @@ from datetime import datetime, timezone
 
 from ouem.adapters.voxcity import VOXCITY_COMMIT, VOXCITY_VERSION
 from ouem.native.terrain import load_native_manifest, sha256_file
+from ouem.komae_contained import PocBlocked
 from ouem.runtime import validate_ouem_runtime
 from ouem.study_area import load_study_area
 
@@ -234,10 +235,13 @@ def execute(command, log, *, cwd, env=None):
 
 def building_semantics(path):
     import geopandas as gpd
+    return building_frame_semantics(gpd.read_file(path, layer="building"))
+
+
+def building_frame_semantics(frame):
     import pandas as pd
     import numpy as np
     from shapely import get_coordinates, normalize, to_wkb
-    frame = gpd.read_file(path, layer="building")
     fields = ["ouem_id", "source_id", "source_dataset", "source_lod", "measured_height"]
     if frame.crs is None or frame.crs.to_epsg() != 6677 or frame.empty:
         raise Blocked("Standard Building must be nonempty EPSG:6677")
@@ -435,6 +439,15 @@ def run(args):
     try:
         (root / "logs").mkdir()
         validate_settings(args)
+        poc = getattr(args, "contained_poc", False)
+        baseline_count = args.expected_buildings
+        if poc:
+            from ouem import komae_contained as contained
+            if args.expected_buildings != contained.SELECTED:
+                raise Blocked(f"contained PoC requires --expected-buildings {contained.SELECTED}")
+            baseline_count = contained.SELECTED + contained.EXCLUDED
+            report["settings"]["selection_policy"] = "contained-building-poc"
+            report["settings"]["a1_baseline_count"] = baseline_count
         paths = input_paths(args)
         for key, path in paths.items():
             before[key] = fingerprint(path)
@@ -454,10 +467,31 @@ def run(args):
         report["settings"]["study_area"] = {"id": area.id, "epsg": area.epsg, "extent": list(area.extent)}
         native_building_manifest(paths["native_building_manifest"])
         reference, reference_manifest = reference_building(
-            paths["reference_standard_building"], paths["reference_building_manifest"], args.expected_buildings)
+            paths["reference_standard_building"], paths["reference_building_manifest"], baseline_count)
         from ouem.adapters.voxcity import check_vertical_compatibility
         check_vertical_compatibility(reference_manifest.get("z_reference", ""), {
             "status": native.vertical_reference_status, "name": native.vertical_reference})
+        full_reference = reference
+        if poc:
+            import geopandas as gpd
+            subset, selection = contained.select(gpd.read_file(paths["reference_standard_building"], layer="building"), area)
+            report["poc_selection"] = selection
+            save()
+            contained.validate_selection(selection)
+            guard = lambda: guard_tree(root, identity)
+            poc_reference = root / "poc-reference.gpkg"
+            reference = contained.write_subset(subset, poc_reference, paths["reference_standard_building"], selection, guard=guard)
+            report["poc_coverage"] = {"status": "NOT_CHECKED"}
+            save()
+            try:
+                report["poc_coverage"] = {"status": "PASS", **coverage(poc_reference, Path(native.source_path))}
+            except Blocked as exc:
+                report["poc_coverage"] = {"status": "BLOCKED", "reason": str(exc)}
+                raise
+            before["poc_reference"] = fingerprint(poc_reference)
+            before["poc_reference_manifest"] = fingerprint(adjacent(poc_reference))
+            report["inputs"] = before.copy()
+            save()
         from ouem.native.building.plateau import load_gis_runtime
         runtime = load_gis_runtime(paths["gis_runtime"])
         report["environment"]["gis"] = {"python": runtime.python, "ogr2ogr": runtime.ogr2ogr,
@@ -481,12 +515,28 @@ def run(args):
             bv = b["validation"]
             sem_b = building_semantics(building)
             result["quality"]["a1"] = all((bv["input_features"] == args.expected_native_buildings,
-                bv["output_features"] == args.expected_buildings, bv["z_geometries"] == args.expected_buildings,
+                bv["output_features"] == baseline_count, bv["z_geometries"] == baseline_count,
                 bv["output_crs"] == "EPSG:6677", bv["required_metadata"] is True,
                 bv["z_preserved"] is True, 0 <= bv["max_z_delta"] <= 1e-9,
-                bv["deterministic_ids"] is True, sem_b["ids"] == reference["ids"]))
+                bv["deterministic_ids"] is True, sem_b["ids"] == full_reference["ids"]))
             if not result["quality"]["a1"]:
                 raise RuntimeError("A1 quality criteria failed")
+            full_sem_b = sem_b
+            full_a1 = {str(p): fingerprint(p) for p in (building, adjacent(building))}
+            if poc:
+                subset, selected = contained.select(gpd.read_file(building, layer="building"), area)
+                result["poc_selection"] = selected
+                save()
+                contained.validate_selection(selected)
+                if selected != selection:
+                    raise Blocked("A1 PoC selection differs from the reference selection")
+                selected_building = folder / "building-contained.gpkg"
+                sem_b = contained.write_subset(subset, selected_building, building, selected, guard=guard)
+                building = selected_building
+                b = read_json(adjacent(building))
+                if sem_b["ids"] != reference["ids"]:
+                    raise Blocked("A1 PoC selected IDs differ from reference")
+                result["full_a1_fingerprints"] = full_a1
             if stage(prefix + "-a2", [sys.executable, "-m", "ouem.standardize.terrain",
                      str(paths["native_terrain"]), "--output", str(terrain), "--study-area", str(paths["study_area"])]):
                 raise RuntimeError("A2 process failed")
@@ -503,6 +553,8 @@ def run(args):
             if coverage(building, terrain) != result["coverage"]:
                 raise Blocked("RAW and Standard coverage differ")
             protected = {str(p): fingerprint(p) for p in (building, adjacent(building), terrain, adjacent(terrain))}
+            if poc:
+                protected.update(full_a1)
             result["a3_input_fingerprints"] = protected
             a3_exit = stage(prefix + "-a3", [sys.executable, str(REPOSITORY / A3_SCRIPT), str(building), str(terrain),
                          "--adapter-output", str(adapter), "--meshsize", str(args.meshsize),
@@ -538,6 +590,9 @@ def run(args):
             result["comparison_evidence"] = {"building": sem_b, "terrain": raster_semantics(terrain),
                 "terrain_sha256": sha256_file(terrain), "adapter_sha256": sha256_file(adapter),
                 "adapter_semantics_sha256": content_hash(semantic_a), "arrays": evidence["first"]}
+            if poc:
+                result["comparison_evidence"]["full_a1_building"] = full_sem_b
+                result["comparison_evidence"]["poc_selection_sha256"] = content_hash(selected)
             save()
         left, right = (r["comparison_evidence"] for r in report["repeats"])
         report["comparisons"] = {key: left[key] == right[key] for key in left}
@@ -551,9 +606,9 @@ def run(args):
         report.update(status="INTERRUPTED", error=type(exc).__name__)
         exit_code = 130
     except Exception as exc:
-        report.update(status="BLOCKED" if isinstance(exc, Blocked) else "FAILED",
+        report.update(status="BLOCKED" if isinstance(exc, (Blocked, PocBlocked)) else "FAILED",
                       error=f"{type(exc).__name__}: {exc}")
-        exit_code = 2 if isinstance(exc, Blocked) else 1
+        exit_code = 2 if isinstance(exc, (Blocked, PocBlocked)) else 1
         if any(False in r["quality"].values() for r in report["repeats"]):
             report["quality"] = "FAIL"
     finally:
@@ -598,10 +653,13 @@ def main(argv=None):
     parser.add_argument("action", choices=["run", "preflight"])
     for option in ("native-building", "native-terrain", "reference-standard-building", "study-area", "gis-runtime", "run-dir"):
         parser.add_argument("--" + option, required=True)
+    parser.add_argument("--contained-poc", action="store_true", help="Run-only 92/19 contained-building PoC; preserves full A1 validation")
     parser.add_argument("--meshsize", type=float, default=1.0)
     parser.add_argument("--expected-buildings", type=int, default=111)
     parser.add_argument("--expected-native-buildings", type=int, default=3637)
     args = parser.parse_args(argv)
+    if args.contained_poc and args.action != "run":
+        parser.error("--contained-poc applies only to run; ordinary preflight checks the full reference")
     def interrupted(signum, frame):
         raise InterruptedError(f"signal {signum}")
     previous = signal.signal(signal.SIGTERM, interrupted)

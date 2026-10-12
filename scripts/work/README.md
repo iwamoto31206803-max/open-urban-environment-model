@@ -166,6 +166,77 @@ conversion/Native Building ingest, change Standard contracts, or promote any
 output to the accepted baseline. Here A1/A2/A3 are implementation milestones,
 not the conceptual national model variants.
 
+### Opt-in 92-building contained E2E PoC
+
+After review/merge, run from an **ordinary Windows cmd**, with the existing
+OUEM `.venv`, trusted GIS snapshot, accepted Native/Standard inputs and RAW DEM
+prepared as described below:
+
+```bat
+scripts\work\run_komae_contained_poc.cmd komae-contained-001
+```
+
+Choose a new run ID every time. This command **executes real processing**; it is
+not the read-only preflight. The launcher uses the same Komae input paths as
+`preflight_komae.cmd`, a 1 m voxel mesh, 3637 Native features and 92 PoC features.
+For different local paths use the existing Python `run` CLI with all its usual
+arguments, adding `--contained-poc --expected-buildings 92`. Ordinary `run` and
+read-only `preflight` retain the full-reference behavior; `preflight` does not
+accept this run-only flag. No existing run can be reused or overwritten.
+
+The user-reported Komae baseline is 111 Standard buildings, with 92 fully
+contained and 19 crossing the EPSG:6677 400 m × 300 m Study Area, and an existing
+0.5 m DEM (800 × 600). These are **local observations, not CI acceptance results**.
+The PoC checks 92 selected / 19 crossing / 0 outside or touch-only at runtime;
+any discrepancy blocks execution. The exact diagnostic rule is
+`study.covers(normalized_2d_footprint)`, using the existing VoxCity footprint
+normalizer. A footprint touching the boundary from inside is included. Entire
+original XYZ features and Standard attributes are copied; crossing buildings
+are excluded, never clipped. The canonical 111-building input stays unchanged.
+
+Execution and evidence in `data/work/integration/<new-run-id>/`:
+
+1. Hash original inputs/configuration/manifests, select from the accepted
+   reference Standard and record selected/excluded IDs and counts in
+   `integration-report.json` (`poc_selection`). Save a new `poc-reference.gpkg`
+   and a derived, explicitly **not accepted** adjacent manifest with parent
+   hashes. Verify that serialization preserves selected XYZ/metadata.
+2. Before the GIS probe or any A1/A2/A3 stage, apply the runner's existing
+   conservative VoxCity-rectangle DEM coverage check to that subset and RAW DEM.
+   Record `poc_coverage` PASS or BLOCKED with the reason. Containment in Study
+   Area alone does not prove rectangle coverage. If bounds, finite values or
+   NoData coverage fail, stop and retain evidence; no shrinking, filling,
+   extrapolation or DEM modification is attempted.
+3. Run the existing A1 and its **full 111-building** count/ID/Z/metadata checks in
+   each of two independent repeats. Retain `repeat-N/building.gpkg` and its
+   original generated manifest. Reapply the same PoC selection, require identical
+   reference selected/excluded IDs, and write `building-contained.gpkg` plus a
+   derived manifest. This step is selection after A1, not a changed A1 contract.
+4. Run unchanged A2 on the registered RAW DEM. Its Standard output still must
+   preserve grid/mask/elevations. Recheck RAW and Standard DEM coverage against
+   each newly selected building subset, then run existing A3 on the 92 buildings.
+   Retain the roof, vertical, overlap, building-retention and array checks.
+5. The integration report retains separate `quality` and `reproducibility`
+   verdicts, stage logs, SHA-256 evidence and array dtype/shape/content evidence.
+   Compare both selected and full A1 building semantics across repeats, as well
+   as selection, Terrain, adapter and voxel results. Full A1 artifacts, selected
+   inputs and original accepted inputs remain protected by hash checks.
+
+The subset manifests describe PoC selection and parent provenance; they do not
+rewrite the original A1 validation or certify a new formal acceptance. Failed
+runs and partial artifacts are retained. This workspace is temporary in purpose
+but is **not automatically deleted**. Current output isolation/link rejection,
+no-overwrite and concurrent-writer limitations still apply.
+
+An `AUTOMATED_PASS` establishes only this 92-building PoC's automated result.
+It excludes the 19 crossing buildings and is not a full 111-building evaluation,
+formal integrated acceptance, nationwide validation or Phase B simulation.
+Standard contracts remain PROVISIONAL. This opt-in policy does not redefine the
+Study Area or implement/constrain a future Computation Domain extension.
+Codex/CI use synthetic inputs and mocked GIS stages; actual selection evidence,
+coverage and E2E reports must be generated and reviewed on the company PC after
+merge. Never commit those local artifacts or runtime snapshots.
+
 ### Read-only preflight (before authorizing a real-data run)
 
 From an ordinary Windows cmd at the repository root, using a **trusted existing**
