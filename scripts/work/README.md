@@ -166,6 +166,72 @@ conversion/Native Building ingest, change Standard contracts, or promote any
 output to the accepted baseline. Here A1/A2/A3 are implementation milestones,
 not the conceptual national model variants.
 
+### Read-only Adapter content failure diagnosis
+
+After review/merge, from an ordinary Windows cmd at the repository root:
+
+```bat
+scripts\work\diagnose_komae_adapter_content.cmd komae-contained-001
+```
+
+This reads an **existing contained-PoC run** only. It does not start the runner,
+A1/A2/A3, GIS Python, VoxCity, standardization, or a repair. Nothing in the run
+is overwritten, deleted or regenerated. Use OUEM `.venv`, separately from GIS.
+The launcher accepts exactly one run ID, not a path; no `--force` or output-file
+option exists. Python equivalent (Linux uses `.venv/bin/python`):
+
+```bat
+.venv\Scripts\python.exe -B -m ouem.komae_adapter_diagnostics komae-contained-001
+```
+
+The diagnostic reads `integration-report.json`, discovers each A3 input and
+Adapter from its recorded `repeat-N-a3` command and artifact inventory, and
+reads the inventoried PoC reference. It **never executes a recorded command**.
+It does not guess Adapter/Standard filenames. The reference supplies the exact
+sorted ID list used by the runner; each repeat's Standard Building IDs are also
+checked against it. Artifact SHA-256/size must match the saved inventory and
+input hashes must remain unchanged during inspection. Missing/ambiguous stages,
+changed artifacts, unsafe paths/links or active GeoPackage sidecars block the
+diagnostic. Close concurrent writers; do not delete sidecars or edit evidence to
+make it pass. A relocated byte-identical run can be read through its relative
+inventory keys even when the saved command paths refer to the original location.
+
+Each repeat shows these unchanged `adapter_quality()` clauses separately:
+
+- Exact CRS string `urn:ogc:def:crs:EPSG::4326`, including the observed value.
+- Exact ordered `ouem_id` list equality, with missing/extra occurrences,
+  order-only mismatch, and differing positions. Set equality alone is not PASS.
+- `id == voxcity_id ==` the 1-based feature position, with offending building,
+  expected sequence value and both actual values. No new integer-type rule.
+- Finite positive `height` and `min_height == 0`, with offending ID and values.
+- Valid, nonempty, 2D geometry of positive area, with invalid/empty/Z/nonpositive
+  area classifications, geometry type, area and Shapely validity explanation.
+
+The production function and all generation/quality code remain unchanged.
+Diagnostics call that existing function and check aggregate parity, then compare
+with saved `quality.adapter_content`. Exceptions in the existing predicate are
+reported as ERROR/NOT_CHECKED, never claimed as a verified boolean result.
+Repeat comparison covers conditions and their observations; it is a diagnosis
+comparison, **not a new voxel reproducibility or acceptance verdict**.
+
+Exit codes: **0** both repeats PASS with consistent evidence; **1** one or more
+adapter conditions FAIL, with matching existing/saved predicates; **2** blocked,
+incomplete, exception, or inconsistent evidence. Exit 1 is an explained quality
+failure, not a request to rerun the pipeline. The tool does not change the saved
+`status`, `quality`, `reproducibility` or `acceptance` fields.
+
+For complete per-building observations, add `--json` to the Python command;
+JSON goes to stdout and nonfinite numeric values are represented as strings.
+No files are created by the tool. If retaining terminal output, choose a new
+local review file **outside existing runs and accepted inputs**; shell redirection
+can overwrite files and is not protected by this tool.
+
+Codex and CI use synthetic fixtures only. Run this command on the company PC to
+identify the actual failing conditions/IDs in `komae-contained-001`. A cause in
+Adapter generation, any correction, and formal acceptance require separate
+review after inspecting those results. Do not commit diagnostic artifacts or
+real-data inputs to GitHub.
+
 ### Opt-in 92-building contained E2E PoC
 
 After review/merge, run from an **ordinary Windows cmd**, with the existing
