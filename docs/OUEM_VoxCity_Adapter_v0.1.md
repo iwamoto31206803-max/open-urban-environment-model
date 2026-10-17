@@ -72,6 +72,18 @@ declared Standard Building source CRS; CRS is neither inferred nor hard-coded
 after geometry replacement. Only after normalization does the adapter create a
 separate EPSG:4326 VoxCity-facing GeoDataFrame; the EPSG:6677 Standard artifact
 is not modified.
+Adapter implementation 0.1.1 applies the following behavior immediately after
+that CRS transformation: it leaves every
+valid footprint unchanged. If a transformed footprint is invalid, it applies
+Shapely `make_valid()` with the same default call as the PR #42 Candidate A
+experiment. Only a valid, nonempty, positive-area 2D Polygon/MultiPolygon is
+accepted; GeometryCollections and nonpolygonal components cause an explicit
+failure rather than being dropped. No coordinate rounding or shape fallback is
+used. The manifest lists affected `ouem_id` values and records each repair's
+before/after type, validity, polygon/ring/vertex counts, and area/shape
+differences measured in EPSG:6677 against the valid source footprint. The
+invalid pre-repair projected area is recorded as nominal only. These metrics
+do not establish a safe deformation tolerance or real-data acceptance.
 No first/largest-part, envelope, or convex-hull fallback is used. Per-building
 surface counts, discarded counts, union area, output type, and validity are
 recorded in the manifest.

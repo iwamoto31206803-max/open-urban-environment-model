@@ -15,7 +15,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable, Sequence
 
-ADAPTER_VERSION = "0.1.0"
+ADAPTER_VERSION = "0.1.1"
 VOXCITY_VERSION = "1.7.0"
 VOXCITY_COMMIT = "fa212656305328a9a657973bae26f352bfe813bc"
 VOXCITY_PRECISE_RASTERIZATION = True
@@ -230,6 +230,110 @@ def _to_voxcity_building_crs(buildings: Any) -> Any:
     return transformed
 
 
+def _geometry_counts(geometry: Any) -> dict[str, int]:
+    """Count polygon components and rings, including ring closure vertices."""
+    if geometry.geom_type == "Polygon":
+        rings = [geometry.exterior, *geometry.interiors]
+        return {"polygons": 1, "rings": len(rings),
+                "vertices": sum(len(ring.coords) for ring in rings)}
+    if hasattr(geometry, "geoms"):
+        children = [_geometry_counts(part) for part in geometry.geoms]
+        return {key: sum(child[key] for child in children)
+                for key in ("polygons", "rings", "vertices")}
+    return {"polygons": 0, "rings": 0, "vertices": 0}
+
+
+def _repair_post_crs(buildings: Any, footprints: dict[str, tuple[Any, dict[str, Any]]]) -> tuple[Any, dict[str, dict[str, Any]]]:
+    """Apply PR #42 Candidate A only to invalid EPSG:4326 footprints."""
+    import geopandas as gpd
+    import numpy as np
+    from shapely import get_coordinates, make_valid
+    from shapely.geometry import shape
+    from shapely.validation import explain_validity
+
+    if buildings.crs is None or buildings.crs.to_epsg() != 4326:
+        raise VoxCityAdapterError("post-CRS repair requires EPSG:4326 Adapter geometry")
+    if buildings.ouem_id.isna().any() or buildings.ouem_id.duplicated().any():
+        raise VoxCityAdapterError("post-CRS repair requires unique nonempty ouem_id")
+    geometry, diagnostics = [], {}
+    for row in buildings.itertuples():
+        before = row.geometry
+        if before.is_valid:
+            candidate = before  # WKB and coordinates must be identical.
+        else:
+            # PR #42 evaluated the GeoPandas JSON representation as its input.
+            # A changed serialization must not silently produce a different repair.
+            serialized = json.loads(buildings.loc[[row.Index]].to_json(drop_id=True))["features"][0]["geometry"]
+            if shape(serialized).wkb != before.wkb:
+                raise VoxCityAdapterError(
+                    f"building {row.ouem_id} post-CRS baseline differs after GeoPandas serialization"
+                )
+            candidate = make_valid(before)  # PR #42 Candidate A, default Shapely method.
+        if (candidate.geom_type not in {"Polygon", "MultiPolygon"} or candidate.is_empty
+                or not candidate.is_valid or candidate.has_z
+                or not math.isfinite(candidate.area) or candidate.area <= 0
+                or not np.isfinite(get_coordinates(candidate)).all()):
+            raise VoxCityAdapterError(
+                f"building {row.ouem_id} post-CRS geometry is unsupported: "
+                f"{candidate.geom_type}, {explain_validity(candidate)}; "
+                "GeometryCollection/nonpolygonal components are never discarded"
+            )
+        geometry.append(candidate)
+        if before.is_valid:
+            continue
+        reference = footprints[row.ouem_id][0]  # valid EPSG:6677 normalized footprint
+        before_m, after_m = gpd.GeoSeries([before, candidate], crs=4326).to_crs(6677)
+        if (not reference.is_valid or reference.is_empty or not after_m.is_valid
+                or not np.isfinite(get_coordinates(after_m)).all()
+                or not all(math.isfinite(value) for value in
+                           (reference.area, before_m.area, after_m.area))
+                or after_m.area <= 0):
+            raise VoxCityAdapterError(
+                f"building {row.ouem_id} post-CRS projected comparison is invalid or unavailable"
+            )
+        try:
+            symmetric_difference = reference.symmetric_difference(after_m).area
+            hausdorff = reference.hausdorff_distance(after_m)
+        except Exception as exc:
+            raise VoxCityAdapterError(
+                f"building {row.ouem_id} post-CRS projected comparison failed: {exc}"
+            ) from exc
+        if not all(math.isfinite(value) for value in (symmetric_difference, hausdorff)):
+            raise VoxCityAdapterError(
+                f"building {row.ouem_id} post-CRS projected comparison is non-finite"
+            )
+        diagnostics[row.ouem_id] = {
+            "method": "conditional shapely.make_valid after EPSG:4326 transformation",
+            "before": {"geometry_type": before.geom_type, "valid": False,
+                       "validity_reason": explain_validity(before), **_geometry_counts(before)},
+            "after": {"geometry_type": candidate.geom_type, "valid": True,
+                      "validity_reason": explain_validity(candidate), **_geometry_counts(candidate)},
+            "projected_comparison": {
+                "crs": "EPSG:6677", "source_footprint_area_m2": float(reference.area),
+                "before_nominal_area_m2": float(before_m.area),
+                "before_projected_valid": bool(before_m.is_valid),
+                "after_area_m2": float(after_m.area), "after_projected_valid": True,
+                "area_change_before_to_after_nominal_m2": float(after_m.area - before_m.area),
+                "area_difference_vs_source_m2": float(after_m.area - reference.area),
+                "area_difference_vs_source_percent": float(
+                    (after_m.area - reference.area) / reference.area * 100),
+                "symmetric_difference_vs_source_m2": float(symmetric_difference),
+                "hausdorff_vs_source_m": float(hausdorff),
+                "note": "Before area is nominal because the unrepaired footprint is invalid; "
+                        "shape differences use the valid source footprint. No acceptance tolerance is inferred.",
+            },
+        }
+    if not diagnostics:
+        return buildings, diagnostics
+    repaired = buildings.set_geometry(gpd.GeoSeries(
+        geometry, index=buildings.index, crs=buildings.crs, name=buildings.geometry.name
+    ))
+    if any(row.geometry.wkb != repaired.geometry.loc[row.Index].wkb
+           for row in buildings.itertuples() if row.ouem_id not in diagnostics):
+        raise VoxCityAdapterError("valid post-CRS geometry changed during repair assignment")
+    return repaired, diagnostics
+
+
 def _run_voxcity_grids(building_path: Path, terrain_path: Path, meshsize: float) -> dict[str, Any]:
     """Run every VoxCity operation in the current OUEM Python environment."""
     try:
@@ -269,6 +373,7 @@ def _run_voxcity_grids(building_path: Path, terrain_path: Path, meshsize: float)
     buildings["height"] = 1.0  # bootstrap only; replaced from grid-derived ground
     source_aoi = list(map(float, buildings.total_bounds))
     buildings = _to_voxcity_building_crs(buildings)
+    buildings, repair_diagnostics = _repair_post_crs(buildings, footprints)
     xmin, ymin, xmax, ymax = buildings.total_bounds
     rectangle = [(xmin, ymin), (xmin, ymax), (xmax, ymax), (xmax, ymin)]
     dem = create_dem_grid_from_geotiff_polygon(
@@ -287,7 +392,9 @@ def _run_voxcity_grids(building_path: Path, terrain_path: Path, meshsize: float)
             samples = grid_ground_samples(building_ids, dem, row.id)
             derived = derive_attributes(z_by_ouem[row.ouem_id], samples)
             records.append({"ouem_id": row.ouem_id, "voxcity_id": row.id, **derived,
-                            "footprint": footprints[row.ouem_id][1]})
+                            "footprint": footprints[row.ouem_id][1],
+                            **({"post_crs_repair": repair_diagnostics[row.ouem_id]}
+                               if row.ouem_id in repair_diagnostics else {})})
         buildings["height"] = buildings.ouem_id.map(
             {record["ouem_id"]: record["height"] for record in records}
         )
@@ -309,12 +416,21 @@ def _run_voxcity_grids(building_path: Path, terrain_path: Path, meshsize: float)
         if not absolute_match and not normalized_match:
             raise VoxCityAdapterError("A3 ground disagrees with VoxCity process_grid")
     geojson = json.loads(buildings.to_json(drop_id=True))
+    from shapely.geometry import shape
+    if any((geometry := shape(feature["geometry"])).geom_type not in {"Polygon", "MultiPolygon"}
+           or geometry.is_empty or not geometry.is_valid or geometry.area <= 0
+           for feature in geojson["features"]):
+        raise VoxCityAdapterError("serialized VoxCity Adapter geometry is invalid or degenerate")
     geojson["name"] = "voxcity_buildings"
     geojson["crs"] = {"type": "name", "properties": {"name": "urn:ogc:def:crs:EPSG::4326"}}
     return {"records": records, "geojson": geojson,
             "aoi": source_aoi,
             "rectangle_vertices_lonlat": [[float(x), float(y)] for x, y in rectangle],
-            "grid_shape": list(dem.shape), "warnings": []}
+            "grid_shape": list(dem.shape), "warnings": [],
+            "post_crs_repair": {
+                "method": "conditional shapely.make_valid after EPSG:4326 transformation",
+                "affected_ouem_ids": sorted(repair_diagnostics),
+                "repaired_count": len(repair_diagnostics)}}
 
 
 @dataclass(frozen=True)
@@ -359,7 +475,8 @@ def adapt_standard_to_voxcity(
     for record in records:
         feature = features_by_id[record["ouem_id"]]
         feature["properties"].update(
-            {key: value for key, value in record.items() if key != "footprint"}
+            {key: value for key, value in record.items()
+             if key not in {"footprint", "post_crs_repair"}}
         )
         feature["properties"].update(interface_id_properties(record["ouem_id"], mapping))
         ordered.append(feature)
@@ -378,6 +495,7 @@ def adapt_standard_to_voxcity(
         "ground_derivation": "mean of raw VoxCity DEM grid cells where building_id_grid == voxcity_id",
         "min_height_derivation": "constant 0.0; no inference from geometry bottom",
         "id_derivation": "lexicographic ouem_id sort, consecutive positive integers starting at 1",
+        "post_crs_repair": worker_result["post_crs_repair"],
         "voxcity_grid": {"shape": worker_result["grid_shape"],
                          "rectangle_vertices_lonlat": worker_result["rectangle_vertices_lonlat"],
                          "building_rasterization": "precise geometry intersection"},
