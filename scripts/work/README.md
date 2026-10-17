@@ -517,6 +517,22 @@ on the company PC and out of Git.
 
 ### Opt-in 92-building contained E2E PoC
 
+For the post-CRS repair rerun **after review and merge**, use a fresh ID on the
+company Windows PC (the command works from any working directory):
+
+```bat
+scripts\work\run_komae_contained_e2e.cmd komae-contained-repair-001
+```
+
+The launcher uses the repository `.venv` and canonical Komae inputs, refuses
+existing or unsafe run IDs, and displays
+`data\work\integration\<new-run-id>\integration-report.json` when written.
+Do not reuse `komae-contained-001`. The report now checks that exactly the known
+OUEM building was repaired, retains projected-area, symmetric-difference and
+Hausdorff diagnostics for review, and compares repair evidence across both
+repeats. Automated checks do not constitute local real-data acceptance; inspect
+the report, logs and repaired geometry before any acceptance decision.
+
 After review/merge, run from an **ordinary Windows cmd**, with the existing
 OUEM `.venv`, trusted GIS snapshot, accepted Native/Standard inputs and RAW DEM
 prepared as described below:
