@@ -478,6 +478,43 @@ coverage, 92-ID retention, attribute/ground/roof/overlap consistency, voxel cont
 and independent E2E repeatability under explicit authorization. Do not commit
 local datasets/reports or declare formal acceptance from this experiment.
 
+### Export Candidate A for QGIS inspection
+
+After review/merge, use an ordinary Windows cmd in the repository with the OUEM
+`.venv` and the existing 92-building E2E run:
+
+```bat
+scripts\work\export_komae_adapter_repair_qgis.cmd komae-contained-001
+```
+
+An optional second argument selects another OUEM ID. The default is
+`oub-21a29be1-9794-593f-b22c-e3639a7d9d45`. The command prints a new
+GeoPackage path and each constituent Polygon's EPSG:6677 area. Open that path
+in QGIS; use the `adapter_before`, `candidate_a`, `candidate_a_parts`, and
+`self_intersection` layers. The point uses the approximate coordinates in
+GEOS's validity message and is omitted when that location is unavailable.
+
+Candidate A calls the **same** conditional Shapely `make_valid` function on the
+saved EPSG:4326 Adapter geometry and applies the same canonical JSON numeric
+roundtrip as the PR #42 evaluator. It verifies the PR #42 current-runtime
+candidate geometry hash, both saved repeats' complete baseline replay, their
+Candidate A geometry and attributes, and SHA-256 of all source evidence before
+and after export. A changed source or nonpolygonal Candidate A blocks export;
+no component is dropped. `inspection.json` records provenance, input hashes,
+parts, areas, percentage shares, vertex counts, and distances from the reported
+intersection point. Original properties, including nested attributes, are
+preserved verbatim in `properties_json`; ID and height fields are also available
+as QGIS columns. `part_index` starts at 1 and does not renumber building IDs.
+
+Each invocation creates a fresh directory under
+`data/work/diagnostics/adapter-repair/`, separate from the existing E2E run.
+Inspect the two Polygon areas and their position in QGIS before deciding on a
+production change. This export does not rerun A1/A2/A3, apply a production fix,
+recheck voxel quality, or establish formal acceptance. Historical PR #42 JSON
+is not an input to this command; parity here is against the current PR #42
+evaluator. Keep diagnostic GeoPackages and reports
+on the company PC and out of Git.
+
 ### Opt-in 92-building contained E2E PoC
 
 After review/merge, run from an **ordinary Windows cmd**, with the existing
