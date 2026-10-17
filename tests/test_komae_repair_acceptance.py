@@ -148,10 +148,12 @@ def test_windows_launcher_preserves_runner_exit_and_displays_report(tmp_path, wi
 
 
 def invoke_windows_batch(tmp_path, launcher, argument):
-    """Pass one string from PowerShell without a caller-side cmd expansion."""
-    env = {**os.environ, "OUEM_TEST_ARG": argument, "OUEM_LAUNCHER": str(launcher)}
-    command = "& $env:OUEM_LAUNCHER $env:OUEM_TEST_ARG; exit $LASTEXITCODE"
-    return subprocess.run(["powershell.exe", "-NoProfile", "-NonInteractive", "-Command", command],
+    """Deliver literal metacharacters via delayed expansion in a trusted caller."""
+    invocation = tmp_path / "invoke.cmd"
+    invocation.write_text(f'@echo off\nsetlocal EnableDelayedExpansion\n"{launcher}" "!OUEM_TEST_ARG!"\n',
+                          encoding="utf-8")
+    env = {**os.environ, "OUEM_TEST_ARG": argument}
+    return subprocess.run(["cmd", "/d", "/c", str(invocation)],
                           cwd=tmp_path, env=env, capture_output=True, text=True, timeout=30)
 
 
