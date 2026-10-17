@@ -148,11 +148,13 @@ def test_windows_launcher_preserves_runner_exit_and_displays_report(tmp_path, wi
 
 
 def invoke_windows_batch(tmp_path, launcher, argument):
-    """Quote the caller's argument so cmd does not consume it before the launcher."""
+    """Deliver literal metacharacters via delayed expansion in a trusted caller."""
     invocation = tmp_path / "invoke.cmd"
-    invocation.write_text(f'@echo off\n"{launcher}" "{argument}"\n', encoding="utf-8")
+    invocation.write_text(f'@echo off\nsetlocal EnableDelayedExpansion\n"{launcher}" "!OUEM_TEST_ARG!"\n',
+                          encoding="utf-8")
+    env = {**os.environ, "OUEM_TEST_ARG": argument}
     return subprocess.run(["cmd", "/d", "/c", str(invocation)],
-                          cwd=tmp_path, capture_output=True, text=True, timeout=30)
+                          cwd=tmp_path, env=env, capture_output=True, text=True, timeout=30)
 
 
 @pytest.mark.parametrize("unsafe", ["bad&name", "bad|name", "bad>name", "bad<name",
@@ -162,7 +164,7 @@ def test_windows_launcher_rejects_unsafe_run_id_without_side_effects(tmp_path, w
     repo, launcher = windows_launcher
     runs = repo / "data/work/integration"
     before = set(runs.iterdir()) if runs.exists() else set()
-    result = invoke_windows_batch(tmp_path, launcher, unsafe.replace('"', '^"'))
+    result = invoke_windows_batch(tmp_path, launcher, unsafe)
     assert result.returncode == 2, (unsafe, result.stdout, result.stderr)
     assert (set(runs.iterdir()) if runs.exists() else set()) == before
 
@@ -172,7 +174,7 @@ def test_windows_launcher_rejects_embedded_quote_injection(tmp_path, windows_lau
     runs = repo / "data/work/integration"
     before = set(runs.iterdir()) if runs.exists() else set()
     marker = tmp_path / "injected.txt"
-    payload = 'bad^"^&echo^ INJECTED^>injected.txt^&rem^"'
+    payload = 'bad" & echo INJECTED>injected.txt & rem "'
     result = invoke_windows_batch(tmp_path, launcher, payload)
     assert result.returncode == 2, (result.stdout, result.stderr)
     assert not marker.exists()
