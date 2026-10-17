@@ -147,15 +147,22 @@ def test_windows_launcher_preserves_runner_exit_and_displays_report(tmp_path, wi
     assert again.returncode == 2
 
 
+def invoke_windows_batch(tmp_path, launcher, argument):
+    """Quote the caller's argument so cmd does not consume it before the launcher."""
+    invocation = tmp_path / "invoke.cmd"
+    invocation.write_text(f'@echo off\n"{launcher}" "{argument}"\n', encoding="utf-8")
+    return subprocess.run(["cmd", "/d", "/c", str(invocation)],
+                          cwd=tmp_path, capture_output=True, text=True, timeout=30)
+
+
 @pytest.mark.parametrize("unsafe", ["bad&name", "bad|name", "bad>name", "bad<name",
-                                    "bad^name", "bad%name", "bad!name", "bad.name",
+                                    "bad%name", "bad!name", "bad.name",
                                     "bad name", 'bad"name', "CON", "a" * 65])
 def test_windows_launcher_rejects_unsafe_run_id_without_side_effects(tmp_path, windows_launcher, unsafe):
     repo, launcher = windows_launcher
     runs = repo / "data/work/integration"
     before = set(runs.iterdir()) if runs.exists() else set()
-    result = subprocess.run(["cmd", "/d", "/c", str(launcher), unsafe],
-                            cwd=tmp_path, capture_output=True, text=True, timeout=30)
+    result = invoke_windows_batch(tmp_path, launcher, unsafe.replace('"', '^"'))
     assert result.returncode == 2, (unsafe, result.stdout, result.stderr)
     assert (set(runs.iterdir()) if runs.exists() else set()) == before
 
@@ -165,10 +172,20 @@ def test_windows_launcher_rejects_embedded_quote_injection(tmp_path, windows_lau
     runs = repo / "data/work/integration"
     before = set(runs.iterdir()) if runs.exists() else set()
     marker = tmp_path / "injected.txt"
-    payload = f'bad" & echo INJECTED>"{marker}" & rem "'
-    result = subprocess.run(["cmd", "/d", "/c", str(launcher), payload],
-                            cwd=tmp_path, capture_output=True, text=True, timeout=30)
+    payload = 'bad^"^&echo^ INJECTED^>injected.txt^&rem^"'
+    result = invoke_windows_batch(tmp_path, launcher, payload)
     assert result.returncode == 2, (result.stdout, result.stderr)
     assert not marker.exists()
     assert not (repo / "injected.txt").exists()
     assert (set(runs.iterdir()) if runs.exists() else set()) == before
+
+
+def test_windows_launcher_rejects_missing_and_extra_arguments(tmp_path, windows_launcher):
+    repo, launcher = windows_launcher
+    runs = repo / "data/work/integration"
+    before = set(runs.iterdir()) if runs.exists() else set()
+    for args in ([], ["new-run", "extra"]):
+        result = subprocess.run(["cmd", "/d", "/c", str(launcher), *args],
+                                cwd=tmp_path, capture_output=True, text=True, timeout=30)
+        assert result.returncode == 2
+        assert (set(runs.iterdir()) if runs.exists() else set()) == before
