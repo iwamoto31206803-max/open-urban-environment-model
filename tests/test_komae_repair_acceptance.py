@@ -105,12 +105,17 @@ def test_windows_launcher_has_canonical_inputs_and_runner_guards():
                   "data\\standard\\building\\komae.gpkg",
                   "config\\study_areas\\komae_09LD3451.yaml",
                   "scripts\\work\\.runtime\\plateau_komae_gis.json",
-                  "data\\work\\integration\\%~1", "integration-report.json", "exit /b %RUN_EXIT%"):
+                  "data\\work\\integration\\!OUEM_RUN_ID!", "integration-report.json", "exit /b %RUN_EXIT%"):
         assert value in source
+    assert "data\\work\\integration\\%~1" not in source
+    assert source.index("sys.exit(0 if re.fullmatch") < source.index("if exist \"data\\work\\integration\\!OUEM_RUN_ID!\"")
 
 
-@pytest.mark.skipif(os.name != "nt", reason="cmd.exe launcher executes only on Windows")
-def test_windows_launcher_preserves_runner_exit_and_displays_report(tmp_path):
+@pytest.fixture(scope="module")
+def windows_launcher(tmp_path_factory):
+    if os.name != "nt":
+        pytest.skip("cmd.exe launcher executes only on Windows")
+    tmp_path = tmp_path_factory.mktemp("launcher")
     repo = tmp_path / "synthetic-repo"
     scripts = repo / "scripts/work"
     scripts.mkdir(parents=True)
@@ -127,7 +132,11 @@ def test_windows_launcher_preserves_runner_exit_and_displays_report(tmp_path):
         "out.mkdir(parents=True)\n"
         "(out/'integration-report.json').write_text('{}')\n"
         "sys.exit(7)\n", encoding="utf-8")
-    launcher = scripts / "run_komae_contained_e2e.cmd"
+    return repo, scripts / "run_komae_contained_e2e.cmd"
+
+
+def test_windows_launcher_preserves_runner_exit_and_displays_report(tmp_path, windows_launcher):
+    repo, launcher = windows_launcher
     result = subprocess.run(["cmd", "/d", "/c", str(launcher), "fresh-run"],
                             cwd=tmp_path, capture_output=True, text=True, timeout=30)
     assert result.returncode == 7
@@ -136,3 +145,30 @@ def test_windows_launcher_preserves_runner_exit_and_displays_report(tmp_path):
     again = subprocess.run(["cmd", "/d", "/c", str(launcher), "fresh-run"],
                            cwd=tmp_path, capture_output=True, text=True, timeout=30)
     assert again.returncode == 2
+
+
+@pytest.mark.parametrize("unsafe", ["bad&name", "bad|name", "bad>name", "bad<name",
+                                    "bad^name", "bad%name", "bad!name", "bad.name",
+                                    "bad name", 'bad"name', "CON", "a" * 65])
+def test_windows_launcher_rejects_unsafe_run_id_without_side_effects(tmp_path, windows_launcher, unsafe):
+    repo, launcher = windows_launcher
+    runs = repo / "data/work/integration"
+    before = set(runs.iterdir()) if runs.exists() else set()
+    result = subprocess.run(["cmd", "/d", "/c", str(launcher), unsafe],
+                            cwd=tmp_path, capture_output=True, text=True, timeout=30)
+    assert result.returncode == 2, (unsafe, result.stdout, result.stderr)
+    assert (set(runs.iterdir()) if runs.exists() else set()) == before
+
+
+def test_windows_launcher_rejects_embedded_quote_injection(tmp_path, windows_launcher):
+    repo, launcher = windows_launcher
+    runs = repo / "data/work/integration"
+    before = set(runs.iterdir()) if runs.exists() else set()
+    marker = tmp_path / "injected.txt"
+    payload = f'bad" & echo INJECTED>"{marker}" & rem "'
+    result = subprocess.run(["cmd", "/d", "/c", str(launcher), payload],
+                            cwd=tmp_path, capture_output=True, text=True, timeout=30)
+    assert result.returncode == 2, (result.stdout, result.stderr)
+    assert not marker.exists()
+    assert not (repo / "injected.txt").exists()
+    assert (set(runs.iterdir()) if runs.exists() else set()) == before
