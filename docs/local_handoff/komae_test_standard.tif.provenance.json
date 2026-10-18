@@ -1,0 +1,10 @@
+{
+  "schema": "ouem-meta-chm-provenance/v0.1",
+  "raster_sha256": "cbfd7ad7da9c9027283dff97ca435b111071f4423cdba39669725285470f315",
+  "height_semantics": "height_above_ground_m",
+  "evidence": {
+    "source": "Meta and World Resources Institute (2026), Version 2 High Resolution Canopy Height Maps (CHMv2), DINOv3 global CHM v2 ml3",
+    "citation": "https://allenai.github.io/rslearn/reference/data_sources/meta_canopy_height/",
+    "height_statement": "Canopy height in metres above local ground."
+  }
+}
