@@ -154,10 +154,10 @@ def main():
             heights, min_heights, ids, land_cover, dem, trees,
             canopy_bottom_height_grid_ori=trees,
         )
-        return dem, heights, min_heights, ids, voxels
+        return dem, heights, min_heights, ids, land_cover, voxels
 
-    dem, heights, min_heights, ids, voxels = once()
-    dem2, heights2, min_heights2, ids2, voxels2 = once()
+    dem, heights, min_heights, ids, land_cover, voxels = once()
+    dem2, heights2, min_heights2, ids2, land_cover2, voxels2 = once()
     if args.array_evidence:
         evidence_path = Path(args.array_evidence)
         evidence_path.parent.mkdir(parents=True, exist_ok=True)
@@ -328,7 +328,7 @@ def main():
             current, bare = scenario_arrays(dem, heights, min_heights, ids, land_cover,
                                             voxels, top, bottom, args.meshsize, rectangle)
             current2, bare2 = scenario_arrays(dem2, heights2, min_heights2, ids2,
-                                              land_cover, voxels2, top2, bottom2, args.meshsize, rectangle)
+                                              land_cover2, voxels2, top2, bottom2, args.meshsize, rectangle)
             deterministic = np.array_equal(current, current2) and np.array_equal(bare, bare2)
             tree_count = int(np.count_nonzero(current == -2))
             height = max(current.shape[2], bare.shape[2])

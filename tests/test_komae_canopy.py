@@ -1,13 +1,17 @@
 """Synthetic Komae canopy tests; no local Meta CHM or accepted artifacts."""
 import hashlib
 import json
+import runpy
+import sys
 from pathlib import Path
+from types import SimpleNamespace
 
 import numpy as np
 import pytest
 import rasterio
 from pyproj import Transformer
 from rasterio.transform import from_origin
+from shapely.geometry import Polygon, mapping
 
 from ouem.komae_canopy import CanopyBlocked, convert_chm, scenario_arrays
 
@@ -158,3 +162,70 @@ def test_windows_launcher_uses_isolated_existing_komae_workflow():
                   '--meta-chm', '--chm-provenance',
                   'data\\work\\integration\\!OUEM_RUN_ID!'):
         assert token in launcher
+
+
+def test_a3_acceptance_calls_real_voxcity_canopy_path(tmp_path, monkeypatch):
+    """Enter through A3 main; stub only upstream fixtures, never the voxel engine."""
+    import ouem.adapters.voxcity as adapter
+    import voxcity
+    import voxcity.geoprocessor.raster as raster
+    from ouem.komae_integration import voxcity_provenance
+
+    assert voxcity.__version__ == "1.7.0"
+    assert voxcity_provenance()["verified"]
+    chm, provenance, rectangle = fixture_chm(tmp_path, [[0, 0], [0, 5]])
+    standard_building = tmp_path / "standard-building.gpkg"
+    standard_terrain = tmp_path / "standard-terrain.tif"
+    adapter_output = tmp_path / "adapter.geojson"
+    a3_report = tmp_path / "a3-report.json"
+    canopy_report = tmp_path / "canopy-report.json"
+    standard_building.touch()
+    standard_terrain.touch()
+
+    def synthetic_adapter(_building, _terrain, output, *, meshsize):
+        assert meshsize == 1
+        output = Path(output)
+        feature = {"type": "Feature", "geometry": mapping(Polygon(rectangle)),
+                   "properties": {"id": 1, "voxcity_id": 1, "ouem_id": "oub-synthetic",
+                                  "height": 4., "min_height": 0., "z_top_abs": 14.}}
+        output.write_text(json.dumps({"type": "FeatureCollection", "features": [feature]}))
+        manifest = Path(str(output) + ".manifest.json")
+        manifest.write_text(json.dumps({"voxcity_grid": {"rectangle_vertices_lonlat": rectangle}}))
+        return SimpleNamespace(output=output, manifest=manifest)
+
+    calls = []
+
+    def building_grid(_gdf, _meshsize, _rectangle, *, overlapping_footprint):
+        assert overlapping_footprint is True
+        calls.append("building grid")
+        heights = np.zeros((2, 2)); heights[0, 0] = 4
+        segments = np.empty((2, 2), dtype=object)
+        for index in np.ndindex(segments.shape):
+            segments[index] = []
+        segments[0, 0] = [[0., 4.]]
+        ids = np.zeros((2, 2), dtype=int); ids[0, 0] = 1
+        return heights, segments, ids, None
+
+    monkeypatch.setattr(adapter, "adapt_standard_to_voxcity", synthetic_adapter)
+    monkeypatch.setattr(raster, "create_dem_grid_from_geotiff_polygon",
+                        lambda *_args, **_kwargs: np.full((2, 2), 10.))
+    monkeypatch.setattr(raster, "create_building_height_grid_from_gdf_polygon", building_grid)
+    monkeypatch.setattr(sys, "argv", ["voxcity_komae_a3_acceptance.py", str(standard_building),
+                                  str(standard_terrain), "--adapter-output", str(adapter_output),
+                                  "--meshsize", "1", "--expected", "1", "--report", str(a3_report),
+                                  "--meta-chm", str(chm), "--chm-provenance", str(provenance),
+                                  "--canopy-report", str(canopy_report)])
+    acceptance = runpy.run_path("scripts/work/voxcity_komae_a3_acceptance.py")
+    acceptance["main"]()
+
+    assert calls == ["building grid", "building grid"]  # existing A3 repeats only
+    assert json.loads(a3_report.read_text())["grid_and_voxel_deterministic"] is True
+    result = json.loads(canopy_report.read_text())
+    assert result["status"] == "AUTOMATED_PASS"
+    assert result["acceptance"] == "PENDING_LOCAL_REVIEW"
+    assert result["current"]["tree_voxels"] > 0
+    assert result["no_canopy"]["tree_voxels"] == 0
+    assert result["repeat_deterministic"] is True
+    current = np.load(tmp_path / "current-voxels.npy", allow_pickle=False)
+    bare = np.load(tmp_path / "no-canopy-voxels.npy", allow_pickle=False)
+    assert np.any(current == -2) and not np.any(bare == -2)
