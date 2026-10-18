@@ -11,6 +11,7 @@ import math
 import os
 from pathlib import Path
 import platform
+import re
 import signal
 import stat
 import subprocess
@@ -27,6 +28,7 @@ from ouem.study_area import load_study_area
 
 REPOSITORY = Path(__file__).resolve().parents[2]
 A3_SCRIPT = "scripts/work/voxcity_komae_a3_acceptance.py"
+KOMAE_REPAIR_OUEM_ID = "oub-21a29be1-9794-593f-b22c-e3639a7d9d45"
 
 
 class Blocked(RuntimeError):
@@ -89,6 +91,16 @@ def validate_run_path(run_dir):
         if path.exists() and not path.is_dir():
             raise Blocked(f"output ancestor is not a directory: {path}")
     return supplied
+
+
+def validate_contained_run_id(run_dir):
+    """Keep Windows PoC run IDs as one portable, unambiguous path component."""
+    name = Path(run_dir).name
+    reserved = {"CON", "PRN", "AUX", "NUL", *(f"COM{i}" for i in range(1, 10)),
+                *(f"LPT{i}" for i in range(1, 10))}
+    if (not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]{0,63}", name)
+            or name.upper() in reserved):
+        raise Blocked("contained PoC run ID must be a portable, new single name (1-64 letters/digits/_/-)")
 
 
 def safe_run_path(run_dir):
@@ -363,6 +375,60 @@ def adapter_quality(path, expected_ids):
     ))
 
 
+def contained_repair_quality(manifest, adapter_path, expected_ids):
+    """Check the known Komae 92-building repair without changing Adapter rules."""
+    from shapely.geometry import shape
+
+    summary = manifest.get("post_crs_repair")
+    buildings = manifest.get("buildings")
+    expected = KOMAE_REPAIR_OUEM_ID
+    entries = buildings if isinstance(buildings, list) else []
+    repaired = [row for row in entries if isinstance(row, dict) and "post_crs_repair" in row]
+    diagnostics = [{"ouem_id": row.get("ouem_id"), "post_crs_repair": row["post_crs_repair"]}
+                   for row in repaired]
+    evidence = {"summary": summary, "buildings": sorted(diagnostics, key=lambda row: str(row["ouem_id"]))}
+    checks = {
+        "summary": isinstance(summary, dict) and type(summary.get("repaired_count")) is int
+                   and summary["repaired_count"] == 1
+                   and summary.get("affected_ouem_ids") == [expected],
+        "diagnostics": len(entries) == len(expected_ids)
+                       and [row.get("ouem_id") for row in entries if isinstance(row, dict)] == expected_ids
+                       and len(repaired) == 1 and repaired[0].get("ouem_id") == expected,
+        "geometry": False,
+        "projected_metrics": False,
+    }
+    if checks["diagnostics"]:
+        diagnostic = repaired[0]["post_crs_repair"]
+        if isinstance(diagnostic, dict):
+            before, after = diagnostic.get("before"), diagnostic.get("after")
+            metrics = diagnostic.get("projected_comparison")
+            fields = ("source_footprint_area_m2", "before_nominal_area_m2", "after_area_m2",
+                      "area_change_before_to_after_nominal_m2", "area_difference_vs_source_m2",
+                      "area_difference_vs_source_percent", "symmetric_difference_vs_source_m2",
+                      "hausdorff_vs_source_m")
+            checks["projected_metrics"] = (isinstance(metrics, dict)
+                and metrics.get("crs") == "EPSG:6677" and metrics.get("after_projected_valid") is True
+                and all(type(metrics.get(key)) in (int, float) and math.isfinite(metrics[key]) for key in fields)
+                and all(metrics[key] > 0 for key in ("source_footprint_area_m2", "after_area_m2"))
+                and all(metrics[key] >= 0 for key in ("symmetric_difference_vs_source_m2", "hausdorff_vs_source_m")))
+            features = [feature for feature in read_json(adapter_path).get("features", [])
+                        if feature.get("properties", {}).get("ouem_id") == expected]
+            if len(features) == 1:
+                geometry = shape(features[0]["geometry"])
+                counts_present = all(isinstance(part, dict) and all(
+                    type(part.get(key)) is int and part[key] >= 0
+                    for key in ("polygons", "rings", "vertices"))
+                    for part in (before, after))
+                checks["geometry"] = (isinstance(before, dict) and before.get("valid") is False
+                    and isinstance(after, dict) and after.get("valid") is True
+                    and counts_present and after["polygons"] > 0 and after["rings"] > 0
+                    and after["vertices"] > 0
+                    and geometry.geom_type in {"Polygon", "MultiPolygon"}
+                    and after.get("geometry_type") == geometry.geom_type
+                    and geometry.is_valid and not geometry.is_empty and not geometry.has_z and geometry.area > 0)
+    return checks, evidence
+
+
 def validate_settings(args):
     if not math.isfinite(args.meshsize) or args.meshsize <= 0 or args.expected_buildings <= 0 or args.expected_native_buildings <= 0:
         raise Blocked("meshsize and expected counts must be positive")
@@ -386,6 +452,8 @@ def reference_building(path, manifest_path, expected):
 
 
 def run(args):
+    if getattr(args, "contained_poc", False):
+        validate_contained_run_id(args.run_dir)
     root = safe_run_path(args.run_dir)
     info = root.stat()
     identity = (info.st_dev, info.st_ino)
@@ -567,6 +635,10 @@ def run(args):
             quality, determinism = a3_checks(ar, args.expected_buildings, args.meshsize)
             result["quality"].update(quality)
             result["quality"]["adapter_content"] = adapter_quality(adapter, reference["ids"])
+            if poc and args.expected_buildings == 92:
+                repair_checks, repair_evidence = contained_repair_quality(a, adapter, reference["ids"])
+                result["quality"].update({"komae_repair_" + key: value for key, value in repair_checks.items()})
+                result["post_crs_repair"] = repair_evidence
             result["determinism"].update(determinism)
             result["quality"]["lineage"] = all(
                 a["inputs"][key]["sha256"] == protected[str(path)]["sha256"]
@@ -587,12 +659,15 @@ def run(args):
             semantic_a = {key: a[key] for key in ("schema", "adapter_version", "voxcity", "runtime", "aoi", "meshsize", "crs",
                 "vertical_compatibility", "height_derivation", "ground_derivation", "min_height_derivation",
                 "id_derivation", "voxcity_grid", "buildings", "warnings")}
+            semantic_a["post_crs_repair"] = a.get("post_crs_repair")
             result["comparison_evidence"] = {"building": sem_b, "terrain": raster_semantics(terrain),
                 "terrain_sha256": sha256_file(terrain), "adapter_sha256": sha256_file(adapter),
                 "adapter_semantics_sha256": content_hash(semantic_a), "arrays": evidence["first"]}
             if poc:
                 result["comparison_evidence"]["full_a1_building"] = full_sem_b
                 result["comparison_evidence"]["poc_selection_sha256"] = content_hash(selected)
+                if args.expected_buildings == 92:
+                    result["comparison_evidence"]["post_crs_repair_sha256"] = content_hash(repair_evidence)
             save()
         left, right = (r["comparison_evidence"] for r in report["repeats"])
         report["comparisons"] = {key: left[key] == right[key] for key in left}
