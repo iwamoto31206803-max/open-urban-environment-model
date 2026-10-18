@@ -214,6 +214,57 @@ No CHM accuracy, crown-base estimate, shade/solar/green-view performance or
 nationwide applicability is established. Those, and a future treatment of
 source NoData, remain separate work.
 
+### QGIS review of a saved canopy run
+
+From the repository root in an ordinary Windows cmd terminal after the local
+E2E has finished:
+
+```cmd
+scripts\work\export_komae_canopy_qgis.cmd komae-canopy-002
+```
+
+The launcher also works from another working directory when invoked by its
+full path.
+
+The launcher uses repository `.venv\Scripts\python.exe`. It reads the two
+saved Current and No-Canopy voxel arrays, their SHA-256 evidence, the Adapter
+grid rectangle, and the Standard DEM. It reconstructs **only** the A3 DEM
+sampling grid to verify its saved hash and minimum elevation; it does not run
+A1/A2/A3 or CHM conversion. The output is a new, independent
+`data/work/canopy-qgis/<run-id>-<unique-id>/` directory. Existing runs and
+acceptance evidence remain untouched. Any mismatch blocks export.
+
+Open `canopy-qgis.gpkg` in QGIS and add its `canopy_occupancy`,
+`canopy_3d_spans`, and `adapter_buildings` layers (EPSG:6677). Add the saved
+`data/work/integration/<run-id>/repeat-1/terrain.tif` as terrain. In 2D,
+check that tree cells align with the terrain/study area and that building
+footprints occupy the expected locations. The occupancy layer is an exact
+union of occupied grid cells, including cells overlapping buildings; visible
+tree voxels may be absent where building voxels took priority.
+
+For QGIS 3D View, set the saved `terrain.tif` as project terrain. Render
+`canopy_3d_spans` from its PolygonZ **absolute** elevation (`base_m`) and
+extrude by `height_m`; do not add terrain elevation to its geometry Z again.
+Render `adapter_buildings` as a separate layer placed relative to the terrain
+surface and extruded by `height_m`. Its 2D footprints and heights are
+comparison context, not an exact per-voxel reconstruction of building roofs.
+The span features merge adjacent cells sharing the same consecutive voxel-level
+interval, without deleting occupied cells. `base_m` and `top_m`
+are voxel lower/upper faces: saved A3 DEM minimum + `k_start`/`k_end` times
+the mesh size. These are VoxCity grid levels, not original CHM heights. The
+display in QGIS 4.2 has not yet been verified on the company PC.
+
+Review `export-report.json` first. Export PASS requires saved hash integrity,
+matching repeat arrays, correct uv_m orientation/cell centres, DEM hash,
+tree cell/voxel counts, unchanged building occupancy, and Current/No-Canopy
+differences confined to tree voxels. For local acceptance, additionally check
+2D placement and 3D ground/canopy/building relationships in QGIS. Record
+PASS or FAIL, date, run ID, output report SHA-256, QGIS observations and any
+screenshots in a **new** local review record. A discrepancy is FAIL or needs
+further investigation; do not change the saved integration report. Export
+does not update `acceptance=PENDING_LOCAL_REVIEW` or establish CHM accuracy,
+shade/solar/green-view performance or nationwide applicability.
+
 `python -m ouem.komae_integration run` connects the existing Native Building
 standardizer, Native Terrain standardizer, and A3 acceptance runner. It runs
 all three stages twice in independent folders. It does not rerun CityGML
