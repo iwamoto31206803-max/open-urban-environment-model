@@ -208,6 +208,9 @@ def input_paths(args):
         paths["native_building_receipt"] = receipt
     paths["pyproject"] = REPOSITORY / "pyproject.toml"
     paths["a3_runner"] = REPOSITORY / A3_SCRIPT
+    if getattr(args, "meta_chm", None):
+        paths["meta_chm"] = Path(args.meta_chm).absolute()
+        paths["chm_provenance"] = Path(args.chm_provenance).absolute()
     for source in sorted((REPOSITORY / "src/ouem").rglob("*.py")):
         paths["code:" + str(source.relative_to(REPOSITORY))] = source
     return paths
@@ -454,6 +457,10 @@ def reference_building(path, manifest_path, expected):
 def run(args):
     if getattr(args, "contained_poc", False):
         validate_contained_run_id(args.run_dir)
+    if bool(getattr(args, "meta_chm", None)) != bool(getattr(args, "chm_provenance", None)):
+        raise Blocked("--meta-chm and --chm-provenance are required together")
+    if getattr(args, "meta_chm", None) and not getattr(args, "contained_poc", False):
+        raise Blocked("Meta CHM experiment is limited to the contained Komae PoC")
     root = safe_run_path(args.run_dir)
     info = root.stat()
     identity = (info.st_dev, info.st_ino)
@@ -516,6 +523,11 @@ def run(args):
             baseline_count = contained.SELECTED + contained.EXCLUDED
             report["settings"]["selection_policy"] = "contained-building-poc"
             report["settings"]["a1_baseline_count"] = baseline_count
+        if getattr(args, "meta_chm", None):
+            report["settings"]["canopy"] = {
+                "source": "developer-local Meta CHM", "threshold_m": 3.0,
+                "bottom_ratio": 0.4, "nodata_policy": "BLOCK",
+                "resampling": "nearest at VoxCity uv_m cell centres"}
         paths = input_paths(args)
         for key, path in paths.items():
             before[key] = fingerprint(path)
@@ -624,10 +636,15 @@ def run(args):
             if poc:
                 protected.update(full_a1)
             result["a3_input_fingerprints"] = protected
-            a3_exit = stage(prefix + "-a3", [sys.executable, str(REPOSITORY / A3_SCRIPT), str(building), str(terrain),
+            a3_command = [sys.executable, str(REPOSITORY / A3_SCRIPT), str(building), str(terrain),
                          "--adapter-output", str(adapter), "--meshsize", str(args.meshsize),
                          "--expected", str(args.expected_buildings), "--report", str(a3_report),
-                         "--array-evidence", str(arrays)])
+                         "--array-evidence", str(arrays)]
+            if getattr(args, "meta_chm", None):
+                a3_command.extend(("--meta-chm", str(paths["meta_chm"]),
+                                   "--chm-provenance", str(paths["chm_provenance"]),
+                                   "--canopy-report", str(folder / "canopy-report.json")))
+            a3_exit = stage(prefix + "-a3", a3_command)
             if not all(verify_inputs(protected).values()):
                 raise RuntimeError("A3 changed a Standard input or manifest")
             a = read_json(adjacent(adapter))
@@ -635,6 +652,11 @@ def run(args):
             quality, determinism = a3_checks(ar, args.expected_buildings, args.meshsize)
             result["quality"].update(quality)
             result["quality"]["adapter_content"] = adapter_quality(adapter, reference["ids"])
+            if getattr(args, "meta_chm", None):
+                canopy = read_json(folder / "canopy-report.json")
+                result["canopy"] = canopy
+                result["quality"]["canopy_scenarios"] = canopy["status"] == "AUTOMATED_PASS"
+                result["determinism"]["canopy_scenarios"] = canopy.get("repeat_deterministic") is True
             if poc and args.expected_buildings == 92:
                 repair_checks, repair_evidence = contained_repair_quality(a, adapter, reference["ids"])
                 result["quality"].update({"komae_repair_" + key: value for key, value in repair_checks.items()})
@@ -668,6 +690,8 @@ def run(args):
                 result["comparison_evidence"]["poc_selection_sha256"] = content_hash(selected)
                 if args.expected_buildings == 92:
                     result["comparison_evidence"]["post_crs_repair_sha256"] = content_hash(repair_evidence)
+            if getattr(args, "meta_chm", None):
+                result["comparison_evidence"]["canopy_sha256"] = content_hash(canopy)
             save()
         left, right = (r["comparison_evidence"] for r in report["repeats"])
         report["comparisons"] = {key: left[key] == right[key] for key in left}
@@ -732,6 +756,8 @@ def main(argv=None):
     parser.add_argument("--meshsize", type=float, default=1.0)
     parser.add_argument("--expected-buildings", type=int, default=111)
     parser.add_argument("--expected-native-buildings", type=int, default=3637)
+    parser.add_argument("--meta-chm", help="developer-local Meta CHM GeoTIFF (contained run only)")
+    parser.add_argument("--chm-provenance", help="hash-bound ground-relative height evidence JSON")
     args = parser.parse_args(argv)
     if args.contained_poc and args.action != "run":
         parser.error("--contained-poc applies only to run; ordinary preflight checks the full reference")

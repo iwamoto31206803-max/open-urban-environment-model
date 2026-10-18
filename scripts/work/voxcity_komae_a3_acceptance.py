@@ -94,7 +94,13 @@ def main():
     parser.add_argument("--expected", type=int, default=111)
     parser.add_argument("--report", required=True)
     parser.add_argument("--array-evidence", help="optional separate JSON with both executions' array fingerprints")
+    parser.add_argument("--meta-chm", help="opt-in local Meta CHM GeoTIFF; requires --chm-provenance")
+    parser.add_argument("--chm-provenance", help="hash-bound ground-relative height evidence JSON")
+    parser.add_argument("--canopy-report", help="isolated Current/No-Canopy report path")
     args = parser.parse_args()
+    if any((args.meta_chm, args.chm_provenance, args.canopy_report)) and not all(
+            (args.meta_chm, args.chm_provenance, args.canopy_report)):
+        parser.error("--meta-chm, --chm-provenance and --canopy-report are required together")
 
     import geopandas as gpd
     import numpy as np
@@ -304,6 +310,66 @@ def main():
             "VoxCity acceptance failed: "
             + json.dumps(report, sort_keys=True, allow_nan=False)
         )
+    if args.meta_chm:
+        from ouem.komae_canopy import CanopyBlocked, convert_chm, scenario_arrays, sha256
+
+        output = Path(args.canopy_report)
+        canopy_report = {"schema": "ouem-komae-meta-chm-canopy/v0.1",
+                         "status": "RUNNING", "acceptance": "PENDING_LOCAL_REVIEW",
+                         "source_sha256": sha256(args.meta_chm),
+                         "provenance_sha256": sha256(args.chm_provenance)}
+        try:
+            top, bottom, alignment = convert_chm(
+                args.meta_chm, args.chm_provenance, rectangle, args.meshsize, dem)
+            top2, bottom2, alignment2 = convert_chm(
+                args.meta_chm, args.chm_provenance, rectangle, args.meshsize, dem2)
+            if alignment != alignment2 or not np.array_equal(top, top2) or not np.array_equal(bottom, bottom2):
+                raise CanopyBlocked("CHM alignment differs between independent A3 rasterizations")
+            current, bare = scenario_arrays(dem, heights, min_heights, ids, land_cover,
+                                            voxels, top, bottom, args.meshsize, rectangle)
+            current2, bare2 = scenario_arrays(dem2, heights2, min_heights2, ids2,
+                                              land_cover, voxels2, top2, bottom2, args.meshsize, rectangle)
+            deterministic = np.array_equal(current, current2) and np.array_equal(bare, bare2)
+            tree_count = int(np.count_nonzero(current == -2))
+            height = max(current.shape[2], bare.shape[2])
+            current_padded = np.zeros((*dem.shape, height), dtype=current.dtype)
+            bare_padded = np.zeros((*dem.shape, height), dtype=bare.dtype)
+            current_padded[:, :, :current.shape[2]] = current
+            bare_padded[:, :, :bare.shape[2]] = bare
+            canopy_report.update(
+                alignment=alignment, top_sha256=digest(np.asarray(top, dtype=np.float64)),
+                bottom_sha256=digest(np.asarray(bottom, dtype=np.float64)),
+                component_evidence=array_evidence(dem, heights, min_heights, ids, voxels),
+                current={"dtype": current.dtype.str, "shape": list(current.shape),
+                         "sha256": digest(current), "tree_voxels": tree_count,
+                         "building_voxels": int(np.count_nonzero(current == -3))},
+                no_canopy={"dtype": bare.dtype.str, "shape": list(bare.shape),
+                           "sha256": digest(bare), "tree_voxels": int(np.count_nonzero(bare == -2)),
+                           "building_voxels": int(np.count_nonzero(bare == -3))},
+                scenario_difference={"tree_voxels_added": tree_count,
+                                     "changed_voxels": int(np.count_nonzero(current_padded != bare_padded)),
+                                     "voxel_arrays_equal": bool(np.array_equal(current, bare))},
+                repeat_deterministic=bool(deterministic))
+            if not deterministic:
+                raise CanopyBlocked("Current/No-Canopy scenarios differed on independent repeat")
+            np.save(output.parent / "current-voxels.npy", current, allow_pickle=False)
+            np.save(output.parent / "no-canopy-voxels.npy", bare, allow_pickle=False)
+            canopy_report["outputs"] = {
+                name: sha256(output.parent / name)
+                for name in ("current-voxels.npy", "no-canopy-voxels.npy")}
+            if canopy_report["source_sha256"] != sha256(args.meta_chm) or canopy_report[
+                    "provenance_sha256"] != sha256(args.chm_provenance):
+                raise CanopyBlocked("CHM or provenance changed during processing")
+            canopy_report["status"] = "AUTOMATED_PASS"
+        except Exception as exc:
+            canopy_report.update(status="BLOCKED" if isinstance(exc, CanopyBlocked) else "FAILED",
+                                 error=f"{type(exc).__name__}: {exc}")
+            if isinstance(exc, CanopyBlocked) and exc.diagnostics is not None:
+                canopy_report["alignment"] = exc.diagnostics
+            raise
+        finally:
+            output.write_text(json.dumps(canopy_report, indent=2, sort_keys=True,
+                                         allow_nan=False) + "\n", encoding="utf-8")
 
 
 if __name__ == "__main__":
