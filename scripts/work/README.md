@@ -159,6 +159,61 @@ requires the actual local input and is not replaced by synthetic tests.
 
 ## Isolated Komae A1/A2/A3 integration demonstration
 
+### Meta CHM canopy scenario PoC (opt-in)
+
+After review/merge, prepare a developer-local Meta CHM GeoTIFF and an adjacent
+`<filename>.tif.provenance.json` in an ordinary Windows environment. The JSON
+must identify the exact raster hash and cite an explicit source statement that
+pixel values are canopy height **above local ground in metres**; a filename or
+unstated assumption is insufficient. Example structure (replace every example
+value with verified provenance and the actual file SHA-256):
+
+```json
+{"schema":"ouem-meta-chm-provenance/v0.1","raster_sha256":"<actual SHA-256>","height_semantics":"height_above_ground_m","evidence":{"source":"<Meta CHM release>","citation":"<source document/URL>","height_statement":"<source's explicit ground-relative metres statement>"}}
+```
+
+The TIFF must have one band, a declared CRS and invertible transform; pixel
+spacing at the first target centre must be finite, positive and at most 2 m
+for this 1 m PoC. Its
+targeted grid cells must cover every VoxCity cell centre, have finite,
+nonnegative heights, and contain no NoData. Source pixel size and transform
+are recorded. Resampling is deterministic nearest-neighbour at the actual
+VoxCity `uv_m`/south-up cell centres (including rotated rectangles). A source
+NoData/uncovered cell **blocks** the run with counts; it is never silently
+treated as bare ground. DEM cells must be finite and free of Standard NoData.
+Values below 3.0 m become no-canopy (top and bottom zero); otherwise top is
+CHM height and bottom is `0.4 × top`, without adding DEM elevation. Existing
+building overlap is retained for VoxCity to resolve.
+
+From an ordinary Windows cmd, not OSGeo4W Shell, run with a fresh ID and the
+explicit local CHM path (quote paths with spaces):
+
+```bat
+scripts\work\run_komae_meta_chm_e2e.cmd komae-canopy-001 "D:\local-data\meta-chm\komae.tif"
+```
+
+The launcher uses repository `.venv\Scripts\python.exe`, canonical Komae
+Native/Standard inputs, the accepted study-area configuration, 1 m mesh, and
+the two-repeat contained 92-building integration runner. Relative CHM paths
+are resolved from the repository root; the adjacent provenance file is required.
+Run IDs are new, portable names; existing runs are never resumed or overwritten.
+Each `data\work\integration\<run-id>\repeat-N\` contains
+`current-voxels.npy`, `no-canopy-voxels.npy` and `canopy-report.json`, in
+addition to existing A1/A2/A3 outputs. `integration-report.json` links the
+input hashes, per-repeat canopy checks and cross-repeat comparison. The canopy
+report records CRS/transform/pixel size, coverage, NoData policy, threshold,
+array hashes, tree/building voxel counts and deterministic results.
+
+`AUTOMATED_PASS` requires existing A1/A2/A3 quality, complete CHM/DEM input
+validation, preserved component arrays and building occupancy, tree voxels
+where canopy is present, no tree voxels in No-Canopy, and matching scenario
+results across repeats. Failure retains isolated run evidence. The report
+keeps `acceptance=PENDING_LOCAL_REVIEW`; company-PC execution and review are
+still required. The 92-building scope excludes 19 boundary-crossing buildings.
+No CHM accuracy, crown-base estimate, shade/solar/green-view performance or
+nationwide applicability is established. Those, and a future treatment of
+source NoData, remain separate work.
+
 `python -m ouem.komae_integration run` connects the existing Native Building
 standardizer, Native Terrain standardizer, and A3 acceptance runner. It runs
 all three stages twice in independent folders. It does not rerun CityGML
