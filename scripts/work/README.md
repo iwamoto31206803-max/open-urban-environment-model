@@ -242,15 +242,17 @@ footprints occupy the expected locations. The occupancy layer is an exact
 union of occupied grid cells, including cells overlapping buildings; visible
 tree voxels may be absent where building voxels took priority.
 
-For QGIS 3D View, use `canopy_3d_spans` as a PolygonZ layer with **absolute**
-altitude from its geometry Z (`base_m`) and extrusion from `height_m`; use the Standard terrain
-GeoTIFF as project terrain. The span features merge adjacent cells sharing
-the same consecutive voxel-level interval, without deleting occupied cells.
-Use `adapter_buildings` as a separate polygon 3D layer with `height_m` for
-building extrusion; its 2D footprints and heights are comparison context, not
-an exact per-voxel reconstruction of building roofs. `base_m` and `top_m`
+For QGIS 3D View, set the saved `terrain.tif` as project terrain. Render
+`canopy_3d_spans` from its PolygonZ **absolute** elevation (`base_m`) and
+extrude by `height_m`; do not add terrain elevation to its geometry Z again.
+Render `adapter_buildings` as a separate layer placed relative to the terrain
+surface and extruded by `height_m`. Its 2D footprints and heights are
+comparison context, not an exact per-voxel reconstruction of building roofs.
+The span features merge adjacent cells sharing the same consecutive voxel-level
+interval, without deleting occupied cells. `base_m` and `top_m`
 are voxel lower/upper faces: saved A3 DEM minimum + `k_start`/`k_end` times
-the mesh size. These are VoxCity grid levels, not original CHM heights.
+the mesh size. These are VoxCity grid levels, not original CHM heights. The
+display in QGIS 4.2 has not yet been verified on the company PC.
 
 Review `export-report.json` first. Export PASS requires saved hash integrity,
 matching repeat arrays, correct uv_m orientation/cell centres, DEM hash,
