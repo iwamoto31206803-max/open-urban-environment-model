@@ -16,6 +16,25 @@ OUEM is not installed into QGIS Python, and `osgeo` is not installed into the
 OUEM venv. Never start `.venv\Scripts\python.exe` from OSGeo4W Shell. GIS
 Python is used only as a child-process worker through a file/argument contract.
 
+### Diagnose unusually tall Komae Adapter buildings
+
+From the repository root in an ordinary Windows cmd terminal:
+
+```cmd
+scripts\work\diagnose_komae_building_heights.cmd komae-canopy-002
+```
+
+The helper only reads the saved integration run and its recorded RAW, Native,
+and Standard Terrain inputs. It replays pinned VoxCity 1.7.0 DEM sampling and
+building ID rasterization **in memory**, checking both against saved A3 array
+hashes; it does not regenerate Adapter, voxels, or formal artifacts. A new
+`data/work/dem-height-diagnostics/<run-id>-<unique-id>/` contains
+`diagnosis.json` (all building records and raster statistics) and `summary.md`
+(buildings at least 39 m and cause classification). `CONFIRMED` identifies a
+verified processing mechanism, `LIKELY` flags evidence requiring inspection,
+and `UNRESOLVED` requires more data. None establishes roof truth or changes
+acceptance. Do not place local data or diagnostic outputs in Git.
+
 ## Komae PLATEAU acceptance workflow
 
 ### 1. Manual preprocessing
