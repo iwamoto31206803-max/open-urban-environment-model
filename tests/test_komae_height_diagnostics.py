@@ -10,7 +10,7 @@ import numpy as np
 import pytest
 import rasterio
 from pyproj import Transformer
-from rasterio.transform import from_origin
+from rasterio.transform import Affine, from_origin
 from shapely.geometry import Polygon, mapping
 
 from ouem import komae_height_diagnostics as diagnosis
@@ -29,6 +29,57 @@ def _raster(tmp_path):
     rectangle = [ll.transform(*p) for p in ((-23600, -40800), (-23600, -40796),
                                             (-23596, -40796), (-23596, -40800))]
     return path, data, rectangle
+
+
+def _full_raster_nearest(path, rectangle, meshsize):
+    """Original all-pixel cKDTree selection, used only on tiny synthetic DEMs."""
+    from pyproj import CRS
+    from scipy.spatial import cKDTree
+    from voxcity.geoprocessor.raster.core import compute_cell_center_coords
+    grid = compute_cell_center_coords(rectangle, meshsize)
+    lons, lats = grid["lons"], grid["lats"]
+    zone = int((float(np.mean(lons)) + 180) // 6) + 1
+    metric = CRS.from_epsg((32600 if np.mean(lats) >= 0 else 32700) + zone)
+    target = Transformer.from_crs(4326, metric, always_xy=True).transform(lons, lats)
+    with rasterio.open(path) as src:
+        rows, cols = np.indices((src.height, src.width))
+        px, py = rasterio.transform.xy(src.transform, rows.ravel(), cols.ravel())
+        mx, my = Transformer.from_crs(src.crs, metric, always_xy=True).transform(px, py)
+        flat = cKDTree(np.column_stack((mx, my))).query(
+            np.column_stack((target[0].ravel(), target[1].ravel())))[1]
+        return flat.reshape(lons.shape) // src.width, flat.reshape(lons.shape) % src.width
+
+
+@pytest.mark.parametrize("case", ["boundary", "rotated_raster", "rotated_grid", "partly_outside", "fully_outside"])
+def test_windowed_nearest_matches_original_all_pixel_tree(tmp_path, case):
+    from voxcity.geoprocessor.raster import create_dem_grid_from_geotiff_polygon
+    path = tmp_path / "synthetic.tif"
+    transform = (Affine.translation(-23610, -40790) @ Affine.rotation(17) @ Affine.scale(1, -1)
+                 if case == "rotated_raster" else from_origin(-23610, -40790, 1, 1))
+    data = np.arange(24 * 27, dtype="float32").reshape(24, 27)
+    with rasterio.open(path, "w", driver="GTiff", width=27, height=24, count=1,
+                       dtype="float32", nodata=-9999, crs="EPSG:6677", transform=transform) as dst:
+        dst.write(data, 1)
+    if case == "fully_outside":
+        corners = [(-23560, -40770), (-23560, -40766), (-23556, -40766), (-23556, -40770)]
+    elif case == "partly_outside":
+        corners = [(-23612, -40792), (-23612, -40788), (-23608, -40788), (-23608, -40792)]
+    elif case == "rotated_grid":
+        corners = [(-23604, -40800), (-23603, -40796), (-23599, -40797), (-23600, -40801)]
+    else:
+        corners = [(-23610, -40813), (-23610, -40809), (-23606, -40809), (-23606, -40813)]
+    ll = Transformer.from_crs(6677, 4326, always_xy=True)
+    rectangle = [ll.transform(*point) for point in corners]
+    expected_rows, expected_cols = _full_raster_nearest(path, rectangle, 1)
+    actual = diagnosis._source_pixels(path, rectangle, 1)
+    np.testing.assert_array_equal(actual["nearest_rows"], expected_rows)
+    np.testing.assert_array_equal(actual["nearest_cols"], expected_cols)
+    np.testing.assert_array_equal(actual["nearest_values"], data[expected_rows, expected_cols])
+    engine = create_dem_grid_from_geotiff_polygon(path, 1, rectangle, dem_interpolation=False)
+    np.testing.assert_array_equal(engine, actual["nearest_values"])
+    assert actual["candidate_pixel_count"] <= actual["source_pixel_count"]
+    if case == "rotated_grid":
+        assert actual["candidate_pixel_count"] < actual["source_pixel_count"]
 
 
 def test_pinned_nearest_dem_zero_fill_and_building_record(tmp_path):
@@ -79,7 +130,7 @@ def test_classification_does_not_invent_roof_cause():
     assert diagnosis._classification(record)["level"] == "LIKELY"
 
 
-def test_saved_run_report_is_read_only_and_links_all_stages(tmp_path):
+def test_saved_run_report_is_read_only_and_links_all_stages(tmp_path, monkeypatch):
     from tests.test_komae_canopy_qgis_export import _synthetic_run, _source_hashes
     from voxcity.geoprocessor.raster import (create_building_height_grid_from_gdf_polygon,
                                              create_dem_grid_from_geotiff_polygon)
@@ -144,13 +195,22 @@ def test_saved_run_report_is_read_only_and_links_all_stages(tmp_path):
                            for p in root.rglob("*") if p.is_file() and p != report_path}
     report_path.write_text(json.dumps(report), encoding="utf-8")
     before = _source_hashes(root)
+    mappings = []
+    original_mapping = diagnosis._pixel_mapping
+    def record_mapping(*args):
+        mappings.append(args)
+        return original_mapping(*args)
+    monkeypatch.setattr(diagnosis, "_pixel_mapping", record_mapping)
     folder, result = diagnosis.export_run(root, tmp_path / "diagnostics")
+    assert len(mappings) == 1  # RAW, Standard, and both repeats share a grid.
     assert _source_hashes(root) == before and not folder.is_relative_to(root)
     assert result["repeat_diagnostics_equal"] and result["high_building_count"] == 0
     assert result["raw_terrain"]["valid"]["median"] == 20
     assert result["repeats"][0]["standard_terrain"]["valid"]["zero_count"] == 0
     assert result["repeats"][0]["buildings"][0]["evidence_matches_saved_adapter"]
     assert result["repeats"][0]["engine_nearest_replay_matches"]
+    assert "final or sole cause" in result["classification_scope"]
+    assert "final or sole cause" in (folder / "summary.md").read_text(encoding="utf-8")
     assert (folder / "diagnosis.json").is_file() and (folder / "summary.md").is_file()
 
 

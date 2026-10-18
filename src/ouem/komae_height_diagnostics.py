@@ -53,8 +53,8 @@ def _raster(path):
         return info, values, mask
 
 
-def _source_pixels(path, rectangle, meshsize):
-    """Replay pinned nearest-neighbour pixel selection; return direct-centre too."""
+def _pixel_mapping(path, rectangle, meshsize):
+    """Replay pinned UTM nearest centres without a full-raster source KD-tree."""
     import rasterio
     from pyproj import CRS, Transformer
     from scipy.spatial import cKDTree
@@ -69,31 +69,84 @@ def _source_pixels(path, rectangle, meshsize):
         zone = int((lon_mid + 180) // 6) + 1
         metric = CRS.from_epsg((32600 if lat_mid >= 0 else 32700) + zone)
         target_xy = Transformer.from_crs(4326, metric, always_xy=True).transform(lons, lats)
-        rows, cols = np.indices((src.height, src.width))
-        src_x, src_y = rasterio.transform.xy(src.transform, rows.ravel(), cols.ravel())
-        metric_x, metric_y = Transformer.from_crs(src.crs, metric, always_xy=True).transform(src_x, src_y)
-        nearest = cKDTree(np.column_stack((metric_x, metric_y))).query(
-            np.column_stack((target_xy[0].ravel(), target_xy[1].ravel())))[1].reshape(lons.shape)
+        targets = np.column_stack((target_xy[0].ravel(), target_xy[1].ravel()))
+        source_to_metric = Transformer.from_crs(src.crs, metric, always_xy=True)
         x, y = Transformer.from_crs(4326, src.crs, always_xy=True).transform(lons, lats)
         # Rasterio rowcol implements the direct pixel containing each actual
         # VoxCity cell centre; the engine instead picks the nearest UTM centre.
         direct_rows, direct_cols = rasterio.transform.rowcol(src.transform, x.ravel(), y.ravel())
         direct_rows = np.asarray(direct_rows).reshape(lons.shape)
         direct_cols = np.asarray(direct_cols).reshape(lons.shape)
+        # A clipped pixel-space envelope supplies an initial upper bound for
+        # every target. Include a one-pixel margin for edge and rotated grids.
+        low_row = max(0, min(src.height - 1, int(np.min(direct_rows)) - 1))
+        high_row = max(0, min(src.height - 1, int(np.max(direct_rows)) + 1))
+        low_col = max(0, min(src.width - 1, int(np.min(direct_cols)) - 1))
+        high_col = max(0, min(src.width - 1, int(np.max(direct_cols)) + 1))
+        window_rows = np.arange(low_row, high_row + 1)
+        window_cols = np.arange(low_col, high_col + 1)
+        initial = (window_rows[:, None] * src.width + window_cols).ravel()
+        def metric_points(flat):
+            px, py = rasterio.transform.xy(src.transform, flat // src.width, flat % src.width)
+            mx, my = source_to_metric.transform(px, py)
+            return np.column_stack((mx, my))
+
+        initial_points = metric_points(initial)
+        best_distance = cKDTree(initial_points).query(targets)[0]
+        bound = float(np.max(best_distance))
+        require(np.isfinite(bound), "nonfinite DEM-to-grid distance")
+        # Any omitted pixel able to beat an initial neighbour must lie within
+        # this bound of at least one target. Scan in chunks, retaining only
+        # these pixels; the final tree keeps pinned raster row-major order.
+        target_tree = cKDTree(targets)
+        fringe = []
+        for start in range(0, src.height * src.width, 65536):
+            flat = np.arange(start, min(start + 65536, src.height * src.width))
+            row, col = flat // src.width, flat % src.width
+            omitted = ~((row >= low_row) & (row <= high_row) &
+                        (col >= low_col) & (col <= high_col))
+            flat = flat[omitted]
+            if flat.size:
+                distance = target_tree.query(metric_points(flat))[0]
+                fringe.append(flat[distance <= np.nextafter(bound, np.inf)])
+        candidates = np.sort(np.concatenate([initial, *fringe]))
+        points = metric_points(candidates)
+        distances, selections = cKDTree(points).query(targets, k=2)
+        tie_fallback = bool(np.any(distances[:, 0] == distances[:, 1]))
+        if tie_fallback:
+            # cKDTree's exact-tie choice can depend on tree partitioning.
+            # Recreate the pinned full tree only for this exceptional case.
+            all_pixels = np.arange(src.height * src.width)
+            nearest = cKDTree(metric_points(all_pixels)).query(targets)[1].reshape(lons.shape)
+        else:
+            nearest = candidates[selections[:, 0]].reshape(lons.shape)
         inside = (direct_rows >= 0) & (direct_rows < src.height) & (direct_cols >= 0) & (direct_cols < src.width)
-        direct = np.full(lons.shape, np.nan, dtype=np.float64)
-        direct_nodata = np.ones(lons.shape, dtype=bool)
-        raw = src.read(1)
-        mask = src.read_masks(1) == 0
-        direct[inside] = raw[direct_rows[inside], direct_cols[inside]]
-        direct_nodata[inside] = mask[direct_rows[inside], direct_cols[inside]]
         return {"grid_shape": list(lons.shape), "utm_epsg": metric.to_epsg(),
-                "nearest_values": raw.ravel()[nearest], "nearest_nodata": mask.ravel()[nearest],
+                "source_pixel_count": src.height * src.width,
+                "candidate_pixel_count": int(candidates.size),
+                "full_tree_tie_fallback": tie_fallback,
                 "nearest_rows": nearest // src.width, "nearest_cols": nearest % src.width,
-                "direct_values": direct, "direct_nodata": direct_nodata,
                 "direct_rows": direct_rows, "direct_cols": direct_cols, "direct_inside": inside,
                 "different_pixel": inside & ((nearest // src.width != direct_rows) |
                                              (nearest % src.width != direct_cols))}
+
+
+def _source_pixels(path, rectangle, meshsize, *, mapping=None, values=None, mask=None):
+    """Sample DEM values using the pinned nearest-pixel mapping."""
+    if mapping is None:
+        mapping = _pixel_mapping(path, rectangle, meshsize)
+    if values is None or mask is None:
+        _, values, mask = _raster(path)
+    direct_rows, direct_cols = mapping["direct_rows"], mapping["direct_cols"]
+    inside = mapping["direct_inside"]
+    direct = np.full(direct_rows.shape, np.nan, dtype=np.float64)
+    direct_nodata = np.ones(direct_rows.shape, dtype=bool)
+    direct[inside] = values[direct_rows[inside], direct_cols[inside]]
+    direct_nodata[inside] = mask[direct_rows[inside], direct_cols[inside]]
+    return {**mapping,
+                "nearest_values": values[mapping["nearest_rows"], mapping["nearest_cols"]],
+                "nearest_nodata": mask[mapping["nearest_rows"], mapping["nearest_cols"]],
+                "direct_values": direct, "direct_nodata": direct_nodata}
 
 
 def _sample_summary(values, nodata):
@@ -210,6 +263,8 @@ def diagnose_run(root):
             raw_info["nodata_cells"] == native["terrain"]["nodata_cells"],
             "RAW raster changed from Native Terrain registration")
     repeats = []
+    mapping_cache = {}
+    terrain_cache = {}
     for number in (1, 2):
         command = provenance.command(evidence.report, number, "a3")
         building = evidence.artifact(command[2])
@@ -228,7 +283,11 @@ def diagnose_run(root):
                 manifest["output"]["sha256"] == runner.sha256_file(output) and
                 standard_manifest["source"]["sha256"] == runner.sha256_file(raw),
                 "saved Adapter or Standard Terrain lineage differs")
-        std_info, std_values, std_mask = _raster(terrain)
+        terrain_hash = manifest["inputs"]["standard_terrain"]["sha256"]
+        if terrain_hash not in terrain_cache:
+            terrain_cache[terrain_hash] = _raster(terrain)
+        std_info, std_values, std_mask = terrain_cache[terrain_hash]
+        std_info = {**std_info, "path": str(terrain)}
         require(raw_values.shape == std_values.shape and raw_info["transform"] == std_info["transform"] and
                 raw_info["crs"] == std_info["crs"] and np.array_equal(raw_mask, std_mask) and
                 np.array_equal(raw_values[~raw_mask], std_values[~std_mask]),
@@ -249,8 +308,16 @@ def diagnose_run(root):
         require(ids.dtype.str == ids_evidence["dtype"] and list(ids.shape) == ids_evidence["shape"] and
                 hashlib.sha256(ids.tobytes(order="C")).hexdigest() == ids_evidence["sha256"],
                 "replayed building ID grid differs from saved A3 array evidence")
-        pixels = _source_pixels(terrain, rectangle, mesh)
-        raw_pixels = _source_pixels(raw, rectangle, mesh)
+        mapping_key = runner.content_hash({"crs": std_info["crs"], "shape": std_info["shape"],
+                                           "transform": std_info["transform"],
+                                           "rectangle": rectangle, "mesh": mesh})
+        if mapping_key not in mapping_cache:
+            mapping_cache[mapping_key] = _pixel_mapping(terrain, rectangle, mesh)
+        mapping = mapping_cache[mapping_key]
+        pixels = _source_pixels(terrain, rectangle, mesh, mapping=mapping,
+                                values=std_values, mask=std_mask)
+        raw_pixels = _source_pixels(raw, rectangle, mesh, mapping=mapping,
+                                    values=raw_values, mask=raw_mask)
         require(pixels["grid_shape"] == list(dem.shape) and
                 np.array_equal(pixels["nearest_rows"], raw_pixels["nearest_rows"]) and
                 np.array_equal(pixels["nearest_cols"], raw_pixels["nearest_cols"]),
@@ -267,6 +334,9 @@ def diagnose_run(root):
                         "direct_cell_centres_outside_raster": int(np.count_nonzero(~pixels["direct_inside"])),
                         "nearest_vs_direct_pixel_mismatch_cells": int(np.count_nonzero(pixels["different_pixel"])),
                         "engine_nearest_metric_crs": f"EPSG:{pixels['utm_epsg']}",
+                        "nearest_source_candidates": pixels["candidate_pixel_count"],
+                        "nearest_source_total_pixels": pixels["source_pixel_count"],
+                        "nearest_full_tree_tie_fallback": pixels["full_tree_tie_fallback"],
                         "buildings": rows})
     require(runner.content_hash(repeats[0]["buildings"]) == runner.content_hash(repeats[1]["buildings"]),
             "repeat building-height diagnostics differ")
@@ -284,12 +354,13 @@ def diagnose_run(root):
                                                   "actual_raw_statistics": raw_info},
               "repeats": repeats, "repeat_diagnostics_equal": True,
               "high_building_count": len(high), "overall_mechanism_classification": overall,
+              "classification_scope": "CONFIRMED verifies a replayed processing mechanism only; it does not establish the final or sole cause of an anomalous building height.",
               "high_buildings": [{"ouem_id": row["ouem_id"], "voxcity_id": row["voxcity_id"],
                                   "height": row["height"], "classification": row["classification"]}
                                  for row in high],
               "limitations": ["No independent roof survey or terrain truth is available.",
-                              "CONFIRMED identifies a replayed zero-fill mechanism, not whether its source NoData is correct.",
-                              "Real-data cause remains unverified until this CLI runs against the local saved run."]}
+                              "CONFIRMED does not establish the final or sole cause of anomalous building heights or whether source NoData is correct.",
+                              "A saved-run replay alone cannot establish the final real-data cause; independent local roof and terrain evidence is required."]}
     return report, evidence
 
 
@@ -297,7 +368,8 @@ def _markdown(report):
     rows = report["high_buildings"]
     lines = ["# Komae building-height diagnosis", "", "Diagnostic only; no acceptance or input correction.", "",
              f"Run: `{report['run']}`", f"Buildings ≥39 m: {len(rows)}",
-             f"Overall mechanism classification: {report['overall_mechanism_classification']}", "",
+             f"Overall mechanism classification: {report['overall_mechanism_classification']}",
+             report["classification_scope"], "",
              "| OUEM ID | VoxCity ID | Height (m) | Classification | Reason |",
              "| --- | ---: | ---: | --- | --- |"]
     for row in rows:
