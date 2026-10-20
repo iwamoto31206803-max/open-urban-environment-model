@@ -35,6 +35,31 @@ verified processing mechanism, `LIKELY` flags evidence requiring inspection,
 and `UNRESOLVED` requires more data. None establishes roof truth or changes
 acceptance. Do not place local data or diagnostic outputs in Git.
 
+### Trace a building's vertical coordinates from CityGML
+
+For a saved run containing the target building, run from the repository root
+in an ordinary Windows terminal:
+
+```cmd
+.venv\Scripts\python.exe -m ouem.komae_vertical_provenance komae-canopy-002 bldg_5f2d3f6c --citygml data\raw\building\plateau_komae\53393465_bldg_6697_op.gml --output-base data\work\vertical-diagnostics
+```
+
+This read-only diagnosis resolves a unique Standard `source_id` prefix and
+matches it to the PLATEAU `gml:id`. It compares **all** CityGML vertex Z values
+with the recorded Converter, Native and two Standard/Adapter repeats, plus a
+few representative buildings. The new output directory contains
+`diagnosis.json` and `summary.md`. For DEM NoData/zero-cell replay, run the
+building-height diagnostic above against the same run. See the
+[vertical-geometry investigation](../../docs/research/OUEM_Komae_Building_Vertical_Geometry_Diagnosis.md)
+for evidence limits and interpretation. The target must appear in the supplied
+CityGML tile and have consistent saved repeats. Optional representatives from
+other tiles are marked `NOT_CHECKED` with a reason; they do not change a
+complete target's exit code. `transition_status` reports observed numerical Z
+changes, while `root_cause_status` remains `UNRESOLVED` until comparable
+source/Converter coordinates and settings establish the mechanism. Different
+vertex counts or sorted-Z hashes alone do not prove an incorrect vertical
+transform. No original run or accepted input is modified.
+
 ## Komae PLATEAU acceptance workflow
 
 ### 1. Manual preprocessing
