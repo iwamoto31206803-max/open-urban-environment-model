@@ -51,8 +51,14 @@ few representative buildings. The new output directory contains
 `diagnosis.json` and `summary.md`. For DEM NoData/zero-cell replay, run the
 building-height diagnostic above against the same run. See the
 [vertical-geometry investigation](../../docs/research/OUEM_Komae_Building_Vertical_Geometry_Diagnosis.md)
-for evidence limits and interpretation. No original run or accepted input is
-modified.
+for evidence limits and interpretation. The target must appear in the supplied
+CityGML tile and have consistent saved repeats. Optional representatives from
+other tiles are marked `NOT_CHECKED` with a reason; they do not change a
+complete target's exit code. `transition_status` reports observed numerical Z
+changes, while `root_cause_status` remains `UNRESOLVED` until comparable
+source/Converter coordinates and settings establish the mechanism. Different
+vertex counts or sorted-Z hashes alone do not prove an incorrect vertical
+transform. No original run or accepted input is modified.
 
 ## Komae PLATEAU acceptance workflow
 

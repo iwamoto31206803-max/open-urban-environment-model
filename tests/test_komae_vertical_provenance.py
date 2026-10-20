@@ -88,10 +88,24 @@ def test_classification_locates_first_numeric_change_without_claiming_root_cause
     finding = vertical._classify(stages, {"height": 39.4}, False)
     assert finding["first_z_max_change"] == "converter_to_native"
     assert finding["level"] == "CONFIRMED"
+    transition, cause, completeness = vertical._statuses(finding, True, [])
+    assert transition["status"] == "OBSERVED"
+    assert transition["evidence_level"] == "CONFIRMED"
+    assert cause["status"] == "UNRESOLVED"
+    assert completeness["status"] == "COMPLETE"
 
 
-@pytest.mark.parametrize("gml_z,first_change", [(20, "NONE_OBSERVED"), (24.44, "citygml_to_converter")])
-def test_saved_run_vertical_trace_is_read_only(tmp_path, gml_z, first_change):
+def test_vertex_reconstruction_is_not_root_cause_proof():
+    original = vertical.z_summary([20, 20, 25, 25])
+    reconstructed = vertical.z_summary([20, 25])
+    finding = vertical._classify(dict.fromkeys(("citygml", "converter", "native"), original)
+                                 | {"standard": reconstructed}, {"height": 5}, False)
+    assert not finding["transitions"]["native_to_standard"]["same_z_multiset"]
+    assert finding["first_z_extrema_change"] == "NONE_OBSERVED"
+    assert vertical._statuses(finding, True, [])[1]["status"] == "UNRESOLVED"
+
+
+def _saved_run(tmp_path, gml_z):
     root = make_run(tmp_path)
     city = tmp_path / "source.gml"
     _gml(city, [(SOURCE_ID, gml_z, "4.4")])
@@ -129,6 +143,12 @@ def test_saved_run_vertical_trace_is_read_only(tmp_path, gml_z, first_change):
     saved["inputs"]["native_building_manifest"] = runner.fingerprint(manifest_path)
     report_path.write_text(json.dumps(saved), encoding="utf-8")
     reindex(root)
+    return root, city
+
+
+@pytest.mark.parametrize("gml_z,first_change", [(20, "NONE_OBSERVED"), (24.44, "citygml_to_converter")])
+def test_saved_run_vertical_trace_is_read_only(tmp_path, gml_z, first_change):
+    root, city = _saved_run(tmp_path, gml_z)
     before = tree_bytes(tmp_path)
     report = vertical.diagnose_run(root, city, SOURCE_ID[:10])
     assert tree_bytes(tmp_path) == before
@@ -143,5 +163,50 @@ def test_saved_run_vertical_trace_is_read_only(tmp_path, gml_z, first_change):
     assert all(item["adapter_consistent"] for item in row["repeats"])
     assert row["classification"]["first_z_max_change"] == first_change
     assert row["classification"]["level"] == ("UNRESOLVED" if gml_z == 20 else "LIKELY")
+    assert row["root_cause_status"]["status"] == "UNRESOLVED"
+    assert report["target_completeness"]["status"] == "COMPLETE"
     assert all(report["input_integrity"].values())
     json.dumps(report, allow_nan=False)
+
+
+def test_missing_optional_citygml_is_not_target_failure(tmp_path, monkeypatch):
+    root, city = _saved_run(tmp_path, 24.44)
+    original_select = vertical._select
+    monkeypatch.setattr(vertical, "_select", lambda *args: original_select(*args) + [("other-tile-id", "low_measured_height")])
+    before = tree_bytes(tmp_path)
+    report = vertical.diagnose_run(root, city, SOURCE_ID[:10])
+    assert tree_bytes(tmp_path) == before
+    assert report["target_completeness"]["status"] == "COMPLETE"
+    assert report["representatives_completeness"]["not_checked"] == 1
+    representative = report["buildings"][1]
+    assert representative["completeness"]["status"] == "NOT_CHECKED"
+    assert "absent from supplied CityGML tile" in representative["completeness"]["reason"]
+
+
+def test_missing_target_citygml_blocks(tmp_path):
+    root, city = _saved_run(tmp_path, 24.44)
+    _gml(city, [("different-tile-id", 24.44, "4.4")])
+    with pytest.raises(vertical.provenance.Inconclusive, match="target gml:id"):
+        vertical.diagnose_run(root, city, SOURCE_ID[:10])
+
+
+def test_target_repeat_mismatch_blocks(tmp_path, monkeypatch):
+    root, city = _saved_run(tmp_path, 24.44)
+    original = vertical.provenance.diagnose_repeat
+    def inconsistent(evidence, number, ouem_id):
+        trace = original(evidence, number, ouem_id)
+        if number == 2:
+            trace["issues"] = ["synthetic mismatch"]
+        return trace
+    monkeypatch.setattr(vertical.provenance, "diagnose_repeat", inconsistent)
+    with pytest.raises(vertical.provenance.Inconclusive, match="target saved lineage"):
+        vertical.diagnose_run(root, city, SOURCE_ID[:10])
+
+
+def test_cli_exit_depends_on_target_completeness(monkeypatch, tmp_path, capsys):
+    monkeypatch.setattr(vertical, "diagnose_run", lambda *args: {
+        "target_completeness": {"status": "COMPLETE"},
+        "representatives_completeness": {"complete": 0, "not_checked": 1}})
+    monkeypatch.setattr(vertical.runner, "REPOSITORY", tmp_path)
+    assert vertical.main(["saved-run", "target"]) == 0
+    assert '"not_checked": 1' in capsys.readouterr().out

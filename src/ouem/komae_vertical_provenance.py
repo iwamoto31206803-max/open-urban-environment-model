@@ -186,10 +186,26 @@ def _classify(stages, adapter_record, city_link_verified):
         reason = f"first observed Z maximum change is {first}; source-to-Converter file provenance is not recorded" if first == "citygml_to_converter" else f"first observed Z maximum change is {first}"
     else:
         level, reason = "UNRESOLVED", "no saved-stage Z maximum change; inspect the complete CityGML geometry/LOD and vertical reference against independent source evidence"
-    return {"level": level, "first_z_extrema_change": first_extrema or "NONE_OBSERVED",
+    return {"level": level, "scope": "NUMERICAL_TRANSITION_ONLY",
+            "first_z_extrema_change": first_extrema or "NONE_OBSERVED",
             "first_z_max_change": first or "NONE_OBSERVED",
             "reason": reason, "transitions": transitions,
             "meaning": "CONFIRMED locates an observed numerical transition only; it does not prove the final cause of an anomalous building height."}
+
+
+def _statuses(verdict, complete, issues):
+    """Keep transition evidence distinct from the still-unverified causal mechanism."""
+    transition = {"status": "OBSERVED" if verdict["first_z_extrema_change"] != "NONE_OBSERVED"
+                  else "NOT_OBSERVED" if complete else "NOT_CHECKED",
+                  "evidence_level": verdict["level"],
+                  "first_z_extrema_change": verdict["first_z_extrema_change"],
+                  "first_z_max_change": verdict["first_z_max_change"],
+                  "reason": verdict["reason"]}
+    root_cause = {"status": "UNRESOLVED",
+                  "reason": "Comparable source and Converter coordinates, source-file provenance, and Converter transformation settings have not been verified; an approximately 37 m shift remains a hypothesis."}
+    completeness = {"status": "COMPLETE" if complete else "NOT_CHECKED",
+                    "reason": None if complete else "; ".join(issues) or "required saved-stage evidence is unavailable"}
+    return transition, root_cause, completeness
 
 
 def diagnose_run(root, citygml, source_prefix, extra_ids=()):
@@ -221,6 +237,8 @@ def diagnose_run(root, citygml, source_prefix, extra_ids=()):
             stages["converter"] = _feature(converter, converter_layer, "id", source_id)
             stages["native"] = _feature(native, native_manifest["parameters"]["output_layer"], "id", source_id)
         except (provenance.Inconclusive, KeyError, ValueError) as exc:
+            if role == "target":
+                raise
             issues.append(f"{type(exc).__name__}: {exc}")
         repeats = []
         for number in (1, 2):
@@ -229,7 +247,14 @@ def diagnose_run(root, citygml, source_prefix, extra_ids=()):
             standard = evidence.artifact(provenance.option(command, "--output"))
             manifest = evidence.manifest(standard)
             item = {"repeat": number, "lineage_issues": trace["issues"]}
-            standard_stage = _feature(standard, manifest["validation"]["output_layer"], "ouem_id", ouem_id)
+            try:
+                standard_stage = _feature(standard, manifest["validation"]["output_layer"], "ouem_id", ouem_id)
+            except (provenance.Inconclusive, KeyError, ValueError) as exc:
+                if role == "target":
+                    raise
+                issues.append(f"repeat {number} Standard: {type(exc).__name__}: {exc}")
+                repeats.append(item)
+                continue
             item["standard"] = standard_stage
             if number == 1:
                 stages["standard"] = standard_stage
@@ -238,7 +263,12 @@ def diagnose_run(root, citygml, source_prefix, extra_ids=()):
                 adapter_path = evidence.artifact(provenance.option(a3, "--adapter-output"))
                 adapter_manifest = evidence.manifest(adapter_path)
                 records = [value for value in adapter_manifest["buildings"] if value["ouem_id"] == ouem_id]
-                require(len(records) == 1, f"missing/duplicate Adapter ID {ouem_id}")
+                if role == "target":
+                    require(len(records) == 1, f"missing/duplicate Adapter ID {ouem_id}")
+                elif len(records) != 1:
+                    issues.append(f"repeat {number}: missing/duplicate Adapter ID {ouem_id}")
+                    repeats.append(item)
+                    continue
                 record = records[0]
                 item["adapter"] = {key: record[key] for key in ("voxcity_id", "z_top_abs", "ground_eff_abs",
                     "ground_sample_min_abs", "ground_sample_max_abs", "ground_sample_count", "height",
@@ -256,6 +286,14 @@ def diagnose_run(root, citygml, source_prefix, extra_ids=()):
                              and repeats[0].get("adapter") == repeats[1].get("adapter"))
         if not repeat_consistent:
             verdict.update(level="UNRESOLVED", reason="saved lineage, Adapter formula, or independent repeats differ")
+            if role == "target":
+                require(False, f"target saved lineage, Adapter formula, or independent repeats differ: {source_id}")
+            issues.append("representative saved lineage, Adapter formula, or repeats differ")
+        complete = not issues and repeat_consistent and all(name in stages for name in
+                     ("citygml", "converter", "native", "standard")) and adapter_record is not None
+        if role == "target":
+            require(complete, f"target evidence incomplete: {source_id}: {issues}")
+        transition_status, root_cause_status, completeness = _statuses(verdict, complete, issues)
         if adapter_record:
             verdict["citygml_max_minus_ground_m"] = (stages["citygml"]["z_max_m"] - adapter_record["ground_eff_abs"]
                 if "citygml" in stages else None)
@@ -265,16 +303,26 @@ def diagnose_run(root, citygml, source_prefix, extra_ids=()):
         rows.append({"role": role, "source_id": source_id, "gml_id": gml[source_id]["gml_id"] if source_id in gml else None,
                      "ouem_id": ouem_id, "stages": stages, "repeats": repeats,
                      "repeat_consistent": repeat_consistent,
-                     "classification": verdict, "issues": issues})
+                     "classification": verdict, "transition_status": transition_status,
+                     "root_cause_status": root_cause_status, "completeness": completeness,
+                     "issues": issues})
     integrity = evidence.finish()
+    target = rows[0]
+    representatives = rows[1:]
     return {"schema": "ouem-komae-building-vertical-diagnosis/v0.1", "scope": "DIAGNOSTIC_NOT_ACCEPTANCE",
             "run": str(root), "command": ["python", "-m", "ouem.komae_vertical_provenance",
                 str(Path(root).name), source_prefix, "--citygml", str(citygml)],
             "source_gml_to_converter_provenance": "NOT_VERIFIED: manual Converter receipt records its GeoPackage, not the source CityGML SHA-256",
             "inputs_sha256": {path: record["sha256"] for path, record in sorted(evidence.before.items())},
             "input_integrity": integrity, "buildings": rows,
+            "target_completeness": target["completeness"],
+            "representatives_completeness": {"complete": sum(row["completeness"]["status"] == "COMPLETE" for row in representatives),
+                "not_checked": sum(row["completeness"]["status"] == "NOT_CHECKED" for row in representatives),
+                "affects_exit_status": False},
             "limitations": ["This diagnostic alone does not establish formal real-data acceptance.",
                 "A numeric Z transition identifies its first observed interval, not the reason for that change.",
+                "Different vertex counts or sorted-Z hashes alone do not prove an incorrect vertical transformation; processing can deduplicate or reconstruct vertices. Pure reordering does not change a sorted-Z hash, but can invalidate positional vertex comparisons.",
+                "An approximately 37 m vertical shift remains a hypothesis until comparable source and Converter coordinates and transformation settings are verified.",
                 "Source-to-Converter identity cannot be confirmed without independently recorded CityGML provenance.",
                 "measuredHeight=-9999 is missing, never a valid height; measuredHeight is diagnostic, not a replacement for the Adapter contract."]}
 
@@ -282,8 +330,8 @@ def diagnose_run(root, citygml, source_prefix, extra_ids=()):
 def markdown(report):
     lines = ["# Komae building vertical-geometry diagnosis", "", f"Run: `{report['run']}`", "",
              "Diagnostic only; no data conversion, repair, or acceptance.", "",
-             "| Role | source_id / gml:id | CityGML Z min/max | Converter Z min/max | Native Z min/max | Standard Z min/max | Ground | Adapter height | First Z-max change | Classification |",
-             "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- | --- |"]
+             "| Role | source_id / gml:id | CityGML Z min/max | Converter Z min/max | Native Z min/max | Standard Z min/max | Ground | Adapter height | First Z-max change | Transition | Root cause | Completeness |",
+             "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- | --- | --- |"]
     for row in report["buildings"]:
         stage = row["stages"]
         def span(name):
@@ -293,8 +341,14 @@ def markdown(report):
         lines.append(f"| {row['role']} | {row['source_id']} | {span('citygml')} | {span('converter')} | "
                      f"{span('native')} | {span('standard')} | {adapter.get('ground_eff_abs', 'NOT_CHECKED')} | "
                      f"{adapter.get('height', 'NOT_CHECKED')} | {row['classification']['first_z_max_change']} | "
-                     f"{row['classification']['level']} |")
-    lines += ["", "`CONFIRMED` locates an observed numerical transition only, not the final cause.",
+                     f"{row['transition_status']['status']} ({row['transition_status']['evidence_level']}) | "
+                     f"{row['root_cause_status']['status']} | {row['completeness']['status']} |")
+        if row["completeness"]["reason"]:
+            lines.append(f"\n{row['role']} `{row['source_id']}` NOT_CHECKED: {row['completeness']['reason']}\n")
+    lines += ["", "The target must be complete for CLI success; optional representatives may be NOT_CHECKED.",
+              "`CONFIRMED` in legacy classification refers only to a numerical transition, never a root cause.",
+              "Different vertex counts or sorted-Z hashes alone do not prove an incorrect vertical transformation.",
+              "An approximately 37 m shift remains a hypothesis until comparable coordinates and Converter settings are verified.",
               "CityGML-to-Converter file identity requires independent provenance review.",
               "Review the JSON for full-vertex hashes, measuredHeight, both repeats, lineage, and SHA-256.", ""]
     return "\n".join(lines)
@@ -326,7 +380,7 @@ def main(argv=None):
             print(directory)
         else:
             print(json.dumps(report, indent=2, ensure_ascii=False, allow_nan=False))
-        return 0 if all(row["classification"]["level"] != "UNRESOLVED" for row in report["buildings"]) else 2
+        return 0 if report["target_completeness"]["status"] == "COMPLETE" else 2
     except Exception as exc:
         print(f"BLOCKED: {type(exc).__name__}: {exc}", file=sys.stderr)
         return 2

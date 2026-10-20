@@ -59,6 +59,12 @@ appropriate saved integration run; do not rerun A1/A2/A3 to make a diagnosis.
 The tool selects the target, a low and a higher valid `measured_height`
 representative, and a `-9999` representative if present. Additional exact
 IDs can be passed with `--extra-source-id ID`.
+The supplied CityGML tile must contain the primary target. A representative
+may come from another tile; its unavailable CityGML geometry is reported as
+`NOT_CHECKED` with a reason and does not change a complete target's CLI exit
+status. Missing target evidence, failed input integrity, or inconsistent target
+repeats still block diagnosis (exit code 2). The report gives separate
+`target_completeness` and `representatives_completeness` results.
 
 It creates a **new**, independent ignored directory with `diagnosis.json` and
 `summary.md`, or prints JSON without creating a file if `--output-base` is
@@ -66,8 +72,9 @@ omitted. It reads the existing report and hash-bound manifests, validates
 Native/Standard/Adapter ID lineage in both repeats, streams *all* `gml:pos`
 and `gml:posList` coordinates of the selected Building elements, and compares
 full vertex Z counts, extrema, and sorted-value hashes across stages. Unknown
-coordinate encodings, mixed/missing CRS, XLinks, missing IDs, or modified
-inputs block or leave the result unresolved. The Converter GeoPackage comes
+coordinate encodings, mixed/missing CRS, XLinks, missing target IDs, or modified
+inputs block diagnosis; unavailable optional representative geometry is
+explicitly `NOT_CHECKED`. The Converter GeoPackage comes
 from the recorded Native manifest, not from a guessed filename. CityGML is an
 explicit input: the manual Converter receipt does **not** record the CityGML
 SHA-256, so that file-to-Converter provenance needs independent review.
@@ -81,13 +88,22 @@ it does not claim a second DEM replay.
 
 ## 4. Decision and repair candidates
 
-`CONFIRMED` in the generated report means the first *numerical Z transition*
-between hash-checked saved stages was observed with consistent repeats. It
-does not establish why the operation occurred or whether it alone explains
-the building-height anomaly. CityGML-to-Converter changes are at most
-`LIKELY` without independent proof that the supplied CityGML produced the
-recorded Converter GeoPackage. Missing stages or inconsistent repeats are
-`UNRESOLVED`.
+The report separates `transition_status` (observed numerical extrema change
+and its first interval) from `root_cause_status` (whether the height anomaly's
+mechanism is established). The legacy `classification.level=CONFIRMED` applies
+**only** to a numerical transition between checked saved stages; the root cause
+remains `UNRESOLVED`. CityGML-to-Converter changes have at most `LIKELY`
+transition evidence without independent proof that the supplied CityGML
+produced the recorded Converter GeoPackage. A complete target diagnosis can
+therefore exit successfully while root cause remains unresolved.
+
+Vertex counts and sorted-Z multiset hashes remain useful evidence, but a
+difference alone does not prove an incorrect vertical transformation:
+deduplication or reconstruction can change them. Pure vertex reordering does
+not change the sorted hash, although it prevents positional comparison by
+vertex index. The suspected approximately 37 m shift is still a hypothesis
+until comparable source and Converter coordinates, source-file identity, and
+the Converter's transformation settings are verified.
 
 If the complete CityGML Z values are near the DEM and the Converter Z values
 are shifted, obtain the actual Converter CRS/vertical-operation settings and
