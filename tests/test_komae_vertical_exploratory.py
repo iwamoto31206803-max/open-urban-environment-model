@@ -91,10 +91,24 @@ def test_launcher_uses_venv_and_two_arguments():
 
 
 @pytest.mark.skipif(os.name != "nt", reason="cmd.exe launcher executes only on Windows")
-@pytest.mark.parametrize("arguments", [(), ("run",), ("run", "target", "extra"),
-                                      ("unsafe&run", "target"), ("run", "bad|target")])
+@pytest.mark.parametrize("arguments", [(), ("run",), ("run", "target", "extra")])
 def test_windows_launcher_rejects_invalid_arguments(arguments):
     launcher = Path(__file__).resolve().parents[1] / "scripts/work/diagnose_komae_vertical_exploratory.cmd"
     result = subprocess.run(["cmd.exe", "/d", "/c", str(launcher), *arguments],
                             capture_output=True, text=True, check=False)
     assert result.returncode == 2
+
+
+@pytest.mark.skipif(os.name != "nt", reason="cmd.exe launcher executes only on Windows")
+@pytest.mark.parametrize("run,target", [("unsafe&run", "target"), ("run", "bad|target"),
+                                            ('bad" & echo INJECTED>injected.txt & rem "', "target")])
+def test_windows_launcher_rejects_literal_metacharacters(tmp_path, run, target):
+    launcher = Path(__file__).resolve().parents[1] / "scripts/work/diagnose_komae_vertical_exploratory.cmd"
+    caller = tmp_path / "caller.cmd"
+    caller.write_text(f'@echo off\nsetlocal EnableDelayedExpansion\n"{launcher}" "!OUEM_TEST_RUN!" "!OUEM_TEST_TARGET!"\n',
+                      encoding="utf-8")
+    env = {**os.environ, "OUEM_TEST_RUN": run, "OUEM_TEST_TARGET": target}
+    result = subprocess.run(["cmd.exe", "/d", "/c", str(caller)], cwd=tmp_path, env=env,
+                            capture_output=True, text=True, check=False)
+    assert result.returncode == 2, (result.stdout, result.stderr)
+    assert not (tmp_path / "injected.txt").exists()
