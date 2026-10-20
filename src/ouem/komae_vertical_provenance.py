@@ -195,8 +195,8 @@ def _classify(stages, adapter_record, city_link_verified):
 
 def _statuses(verdict, complete, issues):
     """Keep transition evidence distinct from the still-unverified causal mechanism."""
-    transition = {"status": "OBSERVED" if verdict["first_z_extrema_change"] != "NONE_OBSERVED"
-                  else "NOT_OBSERVED" if complete else "NOT_CHECKED",
+    transition = {"status": "NOT_CHECKED" if not complete else
+                  "OBSERVED" if verdict["first_z_extrema_change"] != "NONE_OBSERVED" else "NOT_OBSERVED",
                   "evidence_level": verdict["level"],
                   "first_z_extrema_change": verdict["first_z_extrema_change"],
                   "first_z_max_change": verdict["first_z_max_change"],
