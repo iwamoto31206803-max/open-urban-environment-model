@@ -60,6 +60,25 @@ source/Converter coordinates and settings establish the mechanism. Different
 vertex counts or sorted-Z hashes alone do not prove an incorrect vertical
 transform. No original run or accepted input is modified.
 
+If that strict command blocks on a saved GeoPackage size/SHA-256 mismatch, keep
+the run untouched and use the separate **exploratory** diagnosis from ordinary
+Windows cmd:
+
+```cmd
+scripts\work\diagnose_komae_vertical_exploratory.cmd komae-canopy-002 bldg_5f2d3f6c
+```
+
+The launcher uses the canonical local CityGML path. Only if that file has
+moved, use the module's optional `--citygml PATH`. It does not rerun A1/A2/A3
+or write into the saved run. It creates a new
+`data/work/vertical-exploratory/<run-id>-<unique-id>/` containing
+`diagnosis.json` and `summary.txt`. The console summary lists every inspected
+byte mismatch, full-A1 XYZ/core-field comparison against the saved report and
+the other repeat, stage Z ranges, and the first observed numerical change.
+Matching geometry semantics cannot establish that an added `z_min` field was
+the only modification. Root cause and formal provenance remain unresolved;
+the original strict and acceptance workflows still block on altered bytes.
+
 ## Komae PLATEAU acceptance workflow
 
 ### 1. Manual preprocessing

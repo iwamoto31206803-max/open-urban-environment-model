@@ -125,6 +125,7 @@ def _saved_run(tmp_path, gml_z):
         for path in (full, subset):
             frame = gpd.read_file(path)
             frame["measured_height"] = 4.4
+            frame["source_lod"] = "2"
             frame.to_file(path, layer="standard_surfaces", driver="GPKG")
         subset_manifest = runner.adjacent(subset)
         subset_doc = json.loads(subset_manifest.read_text(encoding="utf-8"))
