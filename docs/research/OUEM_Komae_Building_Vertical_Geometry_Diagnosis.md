@@ -88,6 +88,19 @@ it does not claim a second DEM replay.
 
 ## 4. Decision and repair candidates
 
+If the frozen integration run has a byte mismatch, the strict diagnostic
+correctly blocks. The separate `ouem.komae_vertical_exploratory` mode can read
+the current CityGML, Converter, Native, full A1 Standard and saved Adapter
+evidence without changing them. It lists every inspected byte mismatch and
+compares the full A1 XYZ geometry and contract fields with the report's saved
+semantic digest and the second repeat. Any changed artifact makes its Z trace
+**exploratory**, not provenance-verified or accepted. A matching digest does
+not establish that `z_min` was the only edit; GeoPackage metadata and other
+untracked fields may differ. Divergent geometry or lineage is reported
+explicitly, and the cause remains unresolved until source/Converter coordinate
+pairs and conversion settings are reviewed. This mode does not change the
+strict workflow or its acceptance criteria.
+
 The report separates `transition_status` (observed numerical extrema change
 and its first interval) from `root_cause_status` (whether the height anomaly's
 mechanism is established). The legacy `classification.level=CONFIRMED` applies
