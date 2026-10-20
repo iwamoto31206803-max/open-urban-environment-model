@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+from collections import Counter
 import hashlib
 import json
 import math
@@ -22,6 +23,10 @@ GML = "http://www.opengis.net/gml"
 CITY = "http://www.opengis.net/citygml/building/2.0"
 ID = f"{{{GML}}}id"
 DEFAULT_GML = Path("data/raw/building/plateau_komae/53393465_bldg_6697_op.gml")
+
+
+class UnsupportedCityGMLGeometry(provenance.Inconclusive):
+    """Target exists, but its complete 3D coordinates cannot be established."""
 
 
 def require(condition, message):
@@ -53,6 +58,65 @@ def z_summary(values):
             "sorted_z_sha256": hashlib.sha256(np.sort(numbers).tobytes()).hexdigest()}
 
 
+def _building_positions(element):
+    """Read inline 3D GML coordinates; leave unresolved XLinks uncounted and explicit."""
+    parents = {child: node for node in element.iter() for child in node}
+    local_surfaces = {node.get(ID) for node in element.iter()
+                      if node.get(ID) and node.tag in (f"{{{GML}}}Polygon", f"{{{GML}}}MultiSurface",
+                                                       f"{{{GML}}}CompositeSurface", f"{{{GML}}}Surface")
+                      and any(child.tag in (f"{{{GML}}}posList", f"{{{GML}}}pos",
+                                                f"{{{GML}}}coordinates") for child in node.iter())}
+    positions, unsupported = [], Counter()
+
+    def dimension(node):
+        declared = set()
+        while node is not None:
+            value = node.get("srsDimension") or node.get("dimension")
+            if value is not None:
+                declared.add(value)
+            node = parents.get(node)
+        if declared - {"3"}:
+            raise ValueError("non-3D or conflicting declared dimension")
+        return bool(declared)
+
+    for node in element.iter():
+        tag = node.tag.rsplit("}", 1)[-1]
+        for key, href in node.attrib.items():
+            if key.endswith("}href"):
+                if not (tag == "surfaceMember" and href.startswith("#") and href[1:] in local_surfaces):
+                    unsupported[f"unresolved geometry reference ({tag})"] += 1
+        if node.tag not in (f"{{{GML}}}posList", f"{{{GML}}}pos", f"{{{GML}}}coordinates"):
+            if node.tag in (f"{{{GML}}}coord", f"{{{GML}}}tupleList"):
+                unsupported[f"unsupported coordinate representation ({tag})"] += 1
+            continue
+        try:
+            declared = dimension(node)
+            if node.tag == f"{{{GML}}}coordinates":
+                cs, ts, decimal = node.get("cs", ","), node.get("ts", " "), node.get("decimal", ".")
+                if not cs or not ts or cs == ts or decimal != ".":
+                    raise ValueError("unsupported coordinate separators")
+                tuples = (node.text or "").split(ts) if not ts.isspace() else (node.text or "").split()
+                triples = [tuple(map(float, item.strip().split(cs))) for item in tuples if item.strip()]
+                if not triples or any(len(item) != 3 for item in triples):
+                    raise ValueError("coordinates must contain XYZ tuples")
+            else:
+                tokens = (node.text or "").split()
+                if (not tokens or len(tokens) % 3 or
+                        (node.tag == f"{{{GML}}}pos" and len(tokens) != 3) or
+                        (node.tag == f"{{{GML}}}posList" and not declared)):
+                    raise ValueError("missing or ambiguous 3D XYZ tuples")
+                triples = [tuple(map(float, tokens[i:i + 3])) for i in range(0, len(tokens), 3)]
+            if not all(math.isfinite(value) for point in triples for value in point):
+                raise ValueError("nonfinite XYZ coordinates")
+            positions.extend(triples)
+        except ValueError as exc:
+            unsupported[f"{tag}: {exc}"] += 1
+    if unsupported or not positions:
+        details = ", ".join(f"{reason} ({count})" for reason, count in sorted(unsupported.items()))
+        raise UnsupportedCityGMLGeometry(details or "no supported 3D geometry coordinates")
+    return positions
+
+
 def citygml_buildings(path, source_ids, *, require_all=True):
     """Stream complete Building elements; report unsupported coordinates explicitly."""
     from pyproj import CRS
@@ -78,30 +142,10 @@ def citygml_buildings(path, source_ids, *, require_all=True):
                     f"missing or mixed CityGML CRS for {identifier}: {sorted(crs_names)}")
             crs = crs_values[0]
             require(crs.to_epsg() == 6697, f"CityGML {identifier} is not declared EPSG:6697")
-            positions, unsupported = [], []
-            for node in element.iter():
-                if node.tag not in (f"{{{GML}}}posList", f"{{{GML}}}pos"):
-                    if node.tag == f"{{{GML}}}coordinates" or any(key.endswith("}href") for key in node.attrib):
-                        unsupported.append(node.tag)
-                    continue
-                tokens = (node.text or "").split()
-                dimension = node.get("srsDimension") or node.get("dimension")
-                if dimension is not None and dimension != "3":
-                    unsupported.append(f"{node.tag}: dimension={dimension}")
-                    continue
-                if not tokens or len(tokens) % 3:
-                    unsupported.append(f"{node.tag}: incomplete XYZ tuples")
-                    continue
-                try:
-                    triples = [tuple(map(float, tokens[i:i + 3])) for i in range(0, len(tokens), 3)]
-                except ValueError:
-                    unsupported.append(f"{node.tag}: nonnumeric coordinates")
-                    continue
-                if not all(math.isfinite(value) for point in triples for value in point):
-                    unsupported.append(f"{node.tag}: nonfinite XYZ coordinates")
-                    continue
-                positions.extend(triples)
-            require(not unsupported, f"unsupported CityGML geometry for {identifier}: {unsupported}")
+            try:
+                positions = _building_positions(element)
+            except UnsupportedCityGMLGeometry as exc:
+                raise UnsupportedCityGMLGeometry(f"unsupported CityGML geometry for {identifier}: {exc}") from exc
             measured = [node.text for node in element.findall(f"{{{CITY}}}measuredHeight")]
             require(len(measured) <= 1, f"ambiguous measuredHeight for {identifier}")
             values = z_summary([point[2] for point in positions])

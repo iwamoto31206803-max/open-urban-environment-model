@@ -45,6 +45,67 @@ def test_citygml_checks_full_vertex_range_not_one_roof_point(tmp_path):
     assert result["z_min_m"] == 24.44 and result["z_max_m"] == 64.17
 
 
+def test_nested_surface_members_exterior_interior_and_legacy_coordinates(tmp_path):
+    path = tmp_path / "surfaces.gml"
+    path.write_text('''<bldg:Building xmlns:bldg="http://www.opengis.net/citygml/building/2.0"
+      xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"
+      gml:id="target" srsName="EPSG:6697" srsDimension="3">
+      <bldg:lod2MultiSurface><gml:MultiSurface>
+        <gml:surfaceMember><gml:Polygon><gml:exterior><gml:LinearRing>
+          <gml:posList>139 35 24 139.001 35 26 139 35 24</gml:posList>
+        </gml:LinearRing></gml:exterior><gml:interior><gml:LinearRing>
+          <gml:pos>139 35 30</gml:pos><gml:pos>139.001 35 31</gml:pos>
+        </gml:LinearRing></gml:interior></gml:Polygon></gml:surfaceMember>
+        <gml:surfaceMember xlink:href="#second"/>
+      </gml:MultiSurface></bldg:lod2MultiSurface>
+      <gml:Polygon gml:id="second"><gml:exterior><gml:LinearRing>
+        <gml:coordinates>139,35,42 139.001,35,45 139,35,42</gml:coordinates>
+      </gml:LinearRing></gml:exterior></gml:Polygon>
+    </bldg:Building>''', encoding="utf-8")
+    result = vertical.citygml_buildings(path, ["target"])["target"]
+    assert result["vertex_count"] == 8
+    assert result["z_min_m"] == 24 and result["z_max_m"] == 45
+
+
+def test_unresolved_surface_references_have_concise_error(tmp_path):
+    path = tmp_path / "referenced.gml"
+    path.write_text('''<bldg:Building xmlns:bldg="http://www.opengis.net/citygml/building/2.0"
+      xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"
+      gml:id="target" srsName="EPSG:6697">
+      <gml:surfaceMember xlink:href="#outside"/><gml:surfaceMember xlink:href="#other"/>
+    </bldg:Building>''', encoding="utf-8")
+    with pytest.raises(vertical.UnsupportedCityGMLGeometry, match=r"unresolved geometry reference.*\(2\)") as exc:
+        vertical.citygml_buildings(path, ["target"])
+    assert len(str(exc.value)) < 180
+    assert "<gml:" not in str(exc.value)
+
+
+def test_surface_reference_to_nongeometry_is_not_treated_as_resolved(tmp_path):
+    path = tmp_path / "wrong-target.gml"
+    path.write_text('''<bldg:Building xmlns:bldg="http://www.opengis.net/citygml/building/2.0"
+      xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"
+      gml:id="target" srsName="EPSG:6697">
+      <gml:surfaceMember xlink:href="#label"/><gml:name gml:id="label">roof</gml:name>
+      <gml:posList srsDimension="3">139 35 24</gml:posList>
+    </bldg:Building>''', encoding="utf-8")
+    with pytest.raises(vertical.UnsupportedCityGMLGeometry, match="unresolved geometry reference"):
+        vertical.citygml_buildings(path, ["target"])
+
+
+@pytest.mark.parametrize("fragment", [
+    "<gml:posList>1 2 3 4 5 6</gml:posList>",
+    '<gml:posList srsDimension="2">1 2 3 4 5 6</gml:posList>',
+    "<gml:coordinates>1,2 3,4</gml:coordinates>",
+])
+def test_ambiguous_or_2d_coordinates_remain_unsupported(tmp_path, fragment):
+    path = tmp_path / "unsafe.gml"
+    path.write_text('''<bldg:Building xmlns:bldg="http://www.opengis.net/citygml/building/2.0"
+      xmlns:gml="http://www.opengis.net/gml" gml:id="target" srsName="EPSG:6697">'''
+                    + fragment + "</bldg:Building>", encoding="utf-8")
+    with pytest.raises(vertical.UnsupportedCityGMLGeometry):
+        vertical.citygml_buildings(path, ["target"])
+
+
 def test_missing_representative_in_single_citygml_tile_is_explicit(tmp_path):
     path = tmp_path / "one-tile.gml"
     _gml(path, [("target", 24.44, "4.4")])

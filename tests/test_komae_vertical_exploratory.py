@@ -68,6 +68,27 @@ def test_modified_geometry_is_not_labeled_semantically_equal(tmp_path):
     assert report["root_cause"]["status"] == "UNRESOLVED"
 
 
+def test_unresolved_citygml_reference_retains_explicit_partial_trace(tmp_path):
+    root, city = _run_with_baseline(tmp_path)
+    city.write_text('''<bldg:Building xmlns:bldg="http://www.opengis.net/citygml/building/2.0"
+      xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"
+      gml:id="'''+ SOURCE_ID + '''" srsName="EPSG:6697">
+      <gml:surfaceMember xlink:href="#outside"/>
+    </bldg:Building>''', encoding="utf-8")
+    before = tree_bytes(tmp_path)
+    report = exploratory.diagnose_run(root, SOURCE_ID[:10], city)
+    assert tree_bytes(tmp_path) == before
+    diagnosis = report["vertical_coordinate_diagnosis"]
+    assert diagnosis["status"] == "PARTIAL_EXPLORATORY"
+    assert diagnosis["citygml"]["status"] == "NOT_CHECKED"
+    assert "unresolved geometry reference" in diagnosis["citygml"]["reason"]
+    assert "citygml" not in diagnosis["stages"]
+    assert all(name in diagnosis["stages"] for name in ("converter", "native", "standard"))
+    assert diagnosis["transitions"]["citygml_to_converter"]["status"] == "NOT_CHECKED"
+    assert "citygml: NOT_CHECKED" in exploratory.summary(report)
+    assert report["root_cause"]["status"] == "UNRESOLVED"
+
+
 def test_missing_target_and_changed_during_read_block(tmp_path, monkeypatch):
     root, city = _run_with_baseline(tmp_path)
     with pytest.raises(provenance.Inconclusive, match="target ID"):
