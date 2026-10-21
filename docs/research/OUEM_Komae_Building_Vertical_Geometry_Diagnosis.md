@@ -100,6 +100,13 @@ untracked fields may differ. Divergent geometry or lineage is reported
 explicitly, and the cause remains unresolved until source/Converter coordinate
 pairs and conversion settings are reviewed. This mode does not change the
 strict workflow or its acceptance criteria.
+The CityGML reader supports inline nested surfaces, exterior/interior rings,
+3D `gml:pos`, `gml:posList` with declared dimension, and 3D `gml:coordinates`.
+References resolved within the same Building are read from their local surface;
+external or ambiguous geometry references are not followed. If the target's
+CityGML geometry cannot be read completely, exploratory mode marks that stage
+`NOT_CHECKED` with a concise reason and continues with a
+`PARTIAL_EXPLORATORY` Converter → Adapter trace. The strict mode still blocks.
 
 The report separates `transition_status` (observed numerical extrema change
 and its first interval) from `root_cause_status` (whether the height anomaly's

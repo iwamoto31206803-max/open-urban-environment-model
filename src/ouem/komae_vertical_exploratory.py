@@ -80,14 +80,20 @@ def diagnose_run(root, target_id, citygml=vertical.DEFAULT_GML):
     vertical.require(first_frame.crs is not None and first_frame.crs.to_epsg() == 6677,
                      "first Standard CRS is not EPSG:6677")
     source_id, ouem_id = _target(first_frame, target_id)
-    gml = vertical.citygml_buildings(citygml, [source_id])[source_id]
+    try:
+        gml = vertical.citygml_buildings(citygml, [source_id])[source_id]
+        citygml_check = {"status": "CHECKED"}
+    except vertical.UnsupportedCityGMLGeometry as exc:
+        gml = None
+        citygml_check = {"status": "NOT_CHECKED", "reason": str(exc)}
     native = evidence.input("native_building")
     native_manifest = evidence.document(evidence.input("native_building_manifest"))
     source = native_manifest["source"]
     converter = evidence.protect(source["file"], source)
-    stages = {"citygml": {**gml, "path": str(citygml)},
-              "converter": vertical._feature(converter, source["layer_resolved"], "id", source_id),
+    stages = {"converter": vertical._feature(converter, source["layer_resolved"], "id", source_id),
               "native": vertical._feature(native, native_manifest["parameters"]["output_layer"], "id", source_id)}
+    if gml is not None:
+        stages["citygml"] = {**gml, "path": str(citygml)}
     repeats, semantic_checks = [], []
     for number in (1, 2):
         trace = provenance.diagnose_repeat(evidence, number, ouem_id)
@@ -138,11 +144,12 @@ def diagnose_run(root, target_id, citygml=vertical.DEFAULT_GML):
                 "citygml_to_converter_link": "NOT_VERIFIED"},
             "geometry_semantics": {"status": semantic_status, "full_a1": semantic_checks,
                 "meaning": "Compared all full-A1 XYZ geometry and contract fields; extra fields are listed, not asserted as the only changes."},
-            "vertical_coordinate_diagnosis": {"status": "PARTIAL_EXPLORATORY" if lineage_issues else
+            "vertical_coordinate_diagnosis": {"status": "PARTIAL_EXPLORATORY" if lineage_issues or gml is None else
                 "EXPLORATORY" if evidence.byte_mismatches else "CHECKED_SAVED_BYTES",
-                "stages": stages, "repeats": repeats, "first_z_extrema_change": verdict["first_z_extrema_change"],
+                "citygml": citygml_check, "stages": stages, "repeats": repeats,
+                "first_z_extrema_change": verdict["first_z_extrema_change"],
                 "first_z_max_change": verdict["first_z_max_change"], "transitions": verdict["transitions"]},
-            "root_cause": {"status": "UNRESOLVED", "reason": "The source CityGML file is not hash-linked to the Converter receipt; comparable XYZ points and Converter transformation settings are still required."},
+            "root_cause": {"status": "UNRESOLVED", "reason": "CityGML geometry is unavailable or not hash-linked to the Converter receipt; comparable XYZ points and Converter transformation settings are still required."},
             "limitations": ["Byte mismatches are reported, never waived for acceptance.",
                 "Matching geometry semantics do not prove that only an added z_min field changed.",
                 "Z extrema or multiset changes alone do not identify a vertical transformation mechanism."]}
@@ -156,6 +163,9 @@ def summary(report):
     lines.extend(f"  MISMATCH {item['path']}: recorded {item['recorded_bytes']} bytes / {item['recorded_sha256']}; actual {item['actual_bytes']} bytes / {item['actual_sha256']}"
                  for item in report["byte_provenance"]["mismatches"])
     lines += [f"Full-A1 geometry and contract fields: {report['geometry_semantics']['status']}"]
+    citygml = report["vertical_coordinate_diagnosis"]["citygml"]
+    if citygml["status"] == "NOT_CHECKED":
+        lines.append(f"citygml: NOT_CHECKED — {citygml['reason']}")
     for name, item in stages.items():
         lines.append(f"{name}: Z {item['z_min_m']:.3f} .. {item['z_max_m']:.3f} m ({item['vertex_count']} vertices)")
     lines += [f"First observed Z-max change: {report['vertical_coordinate_diagnosis']['first_z_max_change']}",

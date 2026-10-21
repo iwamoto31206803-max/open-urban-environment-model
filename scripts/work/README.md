@@ -78,6 +78,12 @@ the other repeat, stage Z ranges, and the first observed numerical change.
 Matching geometry semantics cannot establish that an added `z_min` field was
 the only modification. Root cause and formal provenance remain unresolved;
 the original strict and acceptance workflows still block on altered bytes.
+The CityGML reader collects 3D coordinates from nested surface members and
+polygon exterior/interior rings. If a target surface uses an unresolved XLink,
+an ambiguous dimension, or unsupported coordinates, it reports CityGML as
+`NOT_CHECKED` and continues the Converter → Native → Standard → Adapter trace
+as `PARTIAL_EXPLORATORY`. That partial result cannot locate a transition from
+CityGML to Converter or establish the cause of the height anomaly.
 
 ## Komae PLATEAU acceptance workflow
 
