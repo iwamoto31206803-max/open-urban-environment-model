@@ -61,6 +61,7 @@ def z_summary(values):
 def _building_positions(element):
     """Read inline 3D GML coordinates; leave unresolved XLinks uncounted and explicit."""
     parents = {child: node for node in element.iter() for child in node}
+    id_counts = Counter(node.get(ID) for node in element.iter() if node.get(ID))
     local_surfaces = {node.get(ID) for node in element.iter()
                       if node.get(ID) and node.tag in (f"{{{GML}}}Polygon", f"{{{GML}}}MultiSurface",
                                                        f"{{{GML}}}CompositeSurface", f"{{{GML}}}Surface")
@@ -83,7 +84,10 @@ def _building_positions(element):
         tag = node.tag.rsplit("}", 1)[-1]
         for key, href in node.attrib.items():
             if key.endswith("}href"):
-                if not (tag == "surfaceMember" and href.startswith("#") and href[1:] in local_surfaces):
+                target = href[1:] if href.startswith("#") else None
+                if tag == "surfaceMember" and target and id_counts[target] > 1:
+                    unsupported["ambiguous geometry reference (surfaceMember)"] += 1
+                elif not (tag == "surfaceMember" and target in local_surfaces and id_counts[target] == 1):
                     unsupported[f"unresolved geometry reference ({tag})"] += 1
         if node.tag not in (f"{{{GML}}}posList", f"{{{GML}}}pos", f"{{{GML}}}coordinates"):
             if node.tag in (f"{{{GML}}}coord", f"{{{GML}}}tupleList"):

@@ -92,6 +92,22 @@ def test_surface_reference_to_nongeometry_is_not_treated_as_resolved(tmp_path):
         vertical.citygml_buildings(path, ["target"])
 
 
+@pytest.mark.parametrize("second", [
+    '<gml:Polygon gml:id="shared"><gml:posList srsDimension="3">139 35 25</gml:posList></gml:Polygon>',
+    '<gml:name gml:id="shared">duplicate ID</gml:name>',
+])
+def test_duplicate_local_surface_id_is_ambiguous(tmp_path, second):
+    path = tmp_path / "duplicate-id.gml"
+    path.write_text('''<bldg:Building xmlns:bldg="http://www.opengis.net/citygml/building/2.0"
+      xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"
+      gml:id="target" srsName="EPSG:6697">
+      <gml:surfaceMember xlink:href="#shared"/>
+      <gml:Polygon gml:id="shared"><gml:posList srsDimension="3">139 35 24</gml:posList></gml:Polygon>'''
+                    + second + "</bldg:Building>", encoding="utf-8")
+    with pytest.raises(vertical.UnsupportedCityGMLGeometry, match="ambiguous geometry reference"):
+        vertical.citygml_buildings(path, ["target"])
+
+
 @pytest.mark.parametrize("fragment", [
     "<gml:posList>1 2 3 4 5 6</gml:posList>",
     '<gml:posList srsDimension="2">1 2 3 4 5 6</gml:posList>',
