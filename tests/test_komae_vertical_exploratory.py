@@ -44,6 +44,7 @@ def test_extra_z_min_attribute_is_exploratory_but_semantically_equal(tmp_path):
     report = exploratory.diagnose_run(root, SOURCE_ID[:10], city)
     assert tree_bytes(tmp_path) == before
     assert report["byte_provenance"]["status"] == "MISMATCH_EXPLORATORY"
+    assert report["byte_provenance"]["converter_path"]["status"] == "RECORDED_PATH"
     assert any(item["path"] == str(full) for item in report["byte_provenance"]["mismatches"])
     assert report["geometry_semantics"]["status"] == "MATCH_RECORDED_AND_REPEATS"
     assert report["geometry_semantics"]["full_a1"][0]["extra_columns"] == ["z_min"]
@@ -87,6 +88,50 @@ def test_unresolved_citygml_reference_retains_explicit_partial_trace(tmp_path):
     assert diagnosis["transitions"]["citygml_to_converter"]["status"] == "NOT_CHECKED"
     assert "citygml: NOT_CHECKED" in exploratory.summary(report)
     assert report["root_cause"]["status"] == "UNRESOLVED"
+
+
+def _relocate_converter(tmp_path, monkeypatch):
+    root, city = _run_with_baseline(tmp_path)
+    evidence = exploratory.ExploratoryEvidence(root)
+    source = evidence.document(evidence.input("native_building_manifest"))["source"]
+    candidate = tmp_path / "canonical-converter.gpkg"
+    Path(source["file"]).rename(candidate)
+    monkeypatch.setattr(exploratory, "CONVERTER_CANDIDATE", candidate)
+    return root, city, source, candidate
+
+
+def test_converter_relocation_requires_manifest_hash_and_preserves_inputs(tmp_path, monkeypatch):
+    root, city, source, candidate = _relocate_converter(tmp_path, monkeypatch)
+    before = tree_bytes(tmp_path)
+    report = exploratory.diagnose_run(root, SOURCE_ID[:10], city)
+    assert tree_bytes(tmp_path) == before
+    path = report["byte_provenance"]["converter_path"]
+    assert path == {"status": "RELOCATED_HASH_VERIFIED", "recorded_path": source["file"],
+                    "candidate_path": str(candidate), "sha256": source["sha256"]}
+    assert "RELOCATED_HASH_VERIFIED" in exploratory.summary(report)
+    assert report["root_cause"]["status"] == "UNRESOLVED"
+
+
+def test_converter_relocation_rejects_wrong_hash_and_missing_candidate(tmp_path, monkeypatch):
+    root, city, source, candidate = _relocate_converter(tmp_path, monkeypatch)
+    candidate.write_bytes(b"not the recorded Converter")
+    before = tree_bytes(tmp_path)
+    with pytest.raises(runner.Blocked, match="does not match Native manifest SHA-256"):
+        exploratory.diagnose_run(root, SOURCE_ID[:10], city)
+    assert tree_bytes(tmp_path) == before
+    candidate.unlink()
+    with pytest.raises(runner.Blocked, match="both missing"):
+        exploratory.diagnose_run(root, SOURCE_ID[:10], city)
+
+
+@pytest.mark.parametrize("suffix", ["-wal", "-shm"])
+def test_converter_relocation_rejects_sidecars_without_deleting_them(tmp_path, monkeypatch, suffix):
+    root, city, source, candidate = _relocate_converter(tmp_path, monkeypatch)
+    Path(str(candidate) + suffix).write_bytes(b"unresolved SQLite state")
+    before = tree_bytes(tmp_path)
+    with pytest.raises(runner.Blocked, match="sidecars"):
+        exploratory.diagnose_run(root, SOURCE_ID[:10], city)
+    assert tree_bytes(tmp_path) == before
 
 
 def test_missing_target_and_changed_during_read_block(tmp_path, monkeypatch):

@@ -15,6 +15,9 @@ from ouem import komae_vertical_provenance as vertical
 from ouem.komae_repair_qgis_export import _guard_output, _new_directory
 from ouem.standardize.building import deterministic_ouem_id
 
+CONVERTER_CANDIDATE = (runner.REPOSITORY / "data/work/building/plateau_komae/"
+                       "53393465_bldg_6697_op_convert.gpkg")
+
 
 class ExploratoryEvidence(provenance.Evidence):
     """Record saved-byte failures, but never turn them into verified provenance."""
@@ -67,6 +70,25 @@ def _adapter_record(evidence, number, ouem_id):
                                              "ground_sample_min_abs", "ground_sample_max_abs", "ground_sample_count")}
 
 
+def _converter(evidence, source):
+    """Use the canonical candidate only if the recorded path is absent and bytes match."""
+    recorded = Path(source["file"]).absolute()
+    for ancestor in (recorded, *recorded.parents):
+        runner.check_links(ancestor)
+    if os.path.lexists(recorded):
+        return evidence.protect(recorded, source), {"status": "RECORDED_PATH", "recorded_path": str(recorded)}
+    if not os.path.lexists(CONVERTER_CANDIDATE):
+        raise runner.Blocked(f"Converter recorded path and canonical candidate are both missing: "
+                             f"{recorded}; {CONVERTER_CANDIDATE}")
+    candidate = evidence.protect(CONVERTER_CANDIDATE)
+    actual = evidence.before[str(candidate)]
+    if actual["sha256"] != source["sha256"] or ("bytes" in source and actual["bytes"] != source["bytes"]):
+        raise runner.Blocked(f"Converter candidate does not match Native manifest SHA-256/size: "
+                             f"recorded path {recorded}; candidate {candidate}")
+    return candidate, {"status": "RELOCATED_HASH_VERIFIED", "recorded_path": str(recorded),
+                       "candidate_path": str(candidate), "sha256": actual["sha256"]}
+
+
 def diagnose_run(root, target_id, citygml=vertical.DEFAULT_GML):
     import geopandas as gpd
 
@@ -89,7 +111,7 @@ def diagnose_run(root, target_id, citygml=vertical.DEFAULT_GML):
     native = evidence.input("native_building")
     native_manifest = evidence.document(evidence.input("native_building_manifest"))
     source = native_manifest["source"]
-    converter = evidence.protect(source["file"], source)
+    converter, converter_path = _converter(evidence, source)
     stages = {"converter": vertical._feature(converter, source["layer_resolved"], "id", source_id),
               "native": vertical._feature(native, native_manifest["parameters"]["output_layer"], "id", source_id)}
     if gml is not None:
@@ -141,7 +163,7 @@ def diagnose_run(root, target_id, citygml=vertical.DEFAULT_GML):
             "byte_provenance": {"status": byte_status, "mismatches": evidence.byte_mismatches,
                 "inspected_sha256": {path: item["sha256"] for path, item in sorted(evidence.before.items())},
                 "stable_during_diagnosis": True,
-                "citygml_to_converter_link": "NOT_VERIFIED"},
+                "citygml_to_converter_link": "NOT_VERIFIED", "converter_path": converter_path},
             "geometry_semantics": {"status": semantic_status, "full_a1": semantic_checks,
                 "meaning": "Compared all full-A1 XYZ geometry and contract fields; extra fields are listed, not asserted as the only changes."},
             "vertical_coordinate_diagnosis": {"status": "PARTIAL_EXPLORATORY" if lineage_issues or gml is None else
@@ -162,6 +184,9 @@ def summary(report):
              f"Byte provenance: {report['byte_provenance']['status']}"]
     lines.extend(f"  MISMATCH {item['path']}: recorded {item['recorded_bytes']} bytes / {item['recorded_sha256']}; actual {item['actual_bytes']} bytes / {item['actual_sha256']}"
                  for item in report["byte_provenance"]["mismatches"])
+    converter_path = report["byte_provenance"]["converter_path"]
+    lines.append(f"Converter path: {converter_path['status']} — "
+                 f"{converter_path.get('candidate_path', converter_path['recorded_path'])}")
     lines += [f"Full-A1 geometry and contract fields: {report['geometry_semantics']['status']}"]
     citygml = report["vertical_coordinate_diagnosis"]["citygml"]
     if citygml["status"] == "NOT_CHECKED":

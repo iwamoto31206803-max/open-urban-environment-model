@@ -78,6 +78,14 @@ the other repeat, stage Z ranges, and the first observed numerical change.
 Matching geometry semantics cannot establish that an added `z_min` field was
 the only modification. Root cause and formal provenance remain unresolved;
 the original strict and acceptance workflows still block on altered bytes.
+If the Converter path recorded in the Native Building manifest is missing,
+this exploratory command checks the canonical
+`data/work/building/plateau_komae/53393465_bldg_6697_op_convert.gpkg`
+instead. It reads that candidate only when its SHA-256 matches the manifest;
+a mismatch, missing candidate, or any `.gpkg-wal`/`.gpkg-shm` sidecar blocks
+diagnosis. Close all GIS/SQLite users and investigate leftover sidecars;
+the command never deletes or checkpoints them. The report labels a verified
+path relocation separately from formal run provenance.
 The CityGML reader collects 3D coordinates from nested surface members and
 polygon exterior/interior rings. If a target surface uses an unresolved XLink,
 an ambiguous dimension, or unsupported coordinates, it reports CityGML as
