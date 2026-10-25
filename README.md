@@ -116,7 +116,7 @@ directory markers; real datasets must not be committed. The canonical Komae
 extent is defined in [`config/study_areas/komae_09LD3451.yaml`](config/study_areas/komae_09LD3451.yaml).
 
 See [Concept & Architecture v0.2](docs/OUEM_Concept_Architecture_v0.2.md)
-for the upper-level conceptual design draft under review for formal registration.
+for the formally registered basic design (upper-level conceptual design).
 It does not automatically change existing Standard contracts, Adapter specifications,
 or acceptance records. [Concept & Architecture v0.1](docs/OUEM_Concept_Architecture_v0.1.md)
 is retained as historical reference and as the source of inherited B1/B2 details
