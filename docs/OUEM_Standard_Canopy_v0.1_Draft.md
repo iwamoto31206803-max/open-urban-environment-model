@@ -93,7 +93,7 @@ A Standard bundle may represent partially missing canopy height accurately and s
 - CHM candidate: Meta/WRI CHMv2, from the separately audited AOI acquisition; source crop is EPSG:3857, not a canonical Standard raster.
 - Terrain: accepted Komae Standard Terrain (0.5 m, EPSG:6677, source-declared T.P.), subject to verified compatible source semantics.
 - CR candidate: constant 0.60.
-- **Blocking dependency:** identify and accept a canopy polygon source and its verified coverage footprint. CHM alone must not be silently promoted to the polygon source.
+- **Full Standard acceptance dependency (deferred):** identify and accept a canopy polygon source and verified coverage footprint. This is **not** a blocker for the limited CHM + DEM + CR height-envelope PoC. CHM-derived polygons require an explicit separate provenance-bearing generation step; CHM alone must not silently be promoted to an independent polygon source.
 - No CHMv2-vs-LiDAR comparison is required before this end-to-end PoC. Source interchangeability is a contract objective; comparative performance assessment is deferred.
 
 ## 9. Open decisions and validation plan
@@ -108,6 +108,17 @@ A Standard bundle may represent partially missing canopy height accurately and s
 8. Downstream VoxCity canopy Adapter behaviour on missing data and 3D overlap.
 9. Thresholds for structural QA vs real-data acceptance; no arbitrary universal tree-height cutoff.
 10. Derived mesh format and future LAD/transmissivity model (out of v0.1 scope).
+
+
+## 9A. Deferred polygon integration and phased execution (design review note)
+
+**Decision (2026-10-25):** Retain canopy polygons and coverage semantics as required capabilities of the complete Standard Canopy architecture, but **defer acquisition/generation of real Komae canopy polygons**. Their absence does **not** block the next CHM + DEM + CR vertical-envelope PoC.
+
+**Immediate next phase (height-envelope PoC, not full Standard acceptance):** Verify CHMv2 height semantics and masks, sample CHM and the accepted Terrain to a documented candidate GridSpec, derive cellwise absolute top/bottom Z using a versioned configurable CR model, record provenance and QA, and inspect integration feasibility with the existing experimental VoxCity canopy path. A synthetic canopy mask may be used for focused unit tests; no real polygon or asserted survey coverage is required for this limited experiment.
+
+**Future required phase:** Establish a polygon-generation/acquisition route, Native Canopy Polygon input contract, polygon/CHM combination, surveyed-coverage footprint, presence-versus-absence semantics, and end-to-end acceptance. CHM-derived polygons may be considered if generated as an explicit versioned, provenance-bearing artifact; they are not independent validation of the CHM.
+
+**Acceptance boundary:** A height-envelope-only PoC output is explicitly **experimental/partial** and must not be labelled accepted complete Standard Canopy. Do not fabricate canopy presence, surveyed absence, or coverage from the CHM. Do not change the Concept v0.2 canonical three-part representation or silently weaken its polygon requirement.
 
 ## 10. Design decision register
 
