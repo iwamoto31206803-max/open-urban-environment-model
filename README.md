@@ -240,6 +240,12 @@ post-processing, GIS output, and validation. Where reliable open-source
 upstream functionality exists, the project should use it rather than duplicate
 it.
 
+## Optional CHMv2 AOI acquisition PoC
+
+See the [CHMv2 acquisition guide](docs/Meta_CHMv2_AOI_Acquisition_PoC.md) for
+index-based tile downloads and a native-grid EPSG:3857 AOI crop. This opt-in
+path does not create Standard Canopy or connect to the existing canopy runner.
+
 ## Development
 
 The package skeleton uses a `src` layout and requires Python 3.10 or later.
