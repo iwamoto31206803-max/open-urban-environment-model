@@ -250,5 +250,10 @@ Native GIS tools and OUEM use separate processes and Python installations; see
 the [runtime architecture](docs/architecture.md) and the reproducible
 [local acceptance procedure](scripts/work/README.md).
 
+For the observed GEEKOM A6 Windows development setup, GIS runtime verification,
+Codex sandbox behavior, and iPhone Codex Remote acceptance, see the
+[2026-10-25 development and remote setup record](docs/development/OUEM_Windows_Development_and_Remote_Setup_20261025.md).
+This workstation record is not a real-data acceptance.
+
 No OUEM repository license has yet been selected. See [`LICENSE`](LICENSE) for
 the current licensing notice.
