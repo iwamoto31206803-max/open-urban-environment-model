@@ -1,6 +1,7 @@
 """Offline acquisition tests with tiny synthetic COGs, no public datasets."""
 import io
 import json
+from pathlib import Path
 
 import numpy as np
 import pytest
@@ -208,3 +209,95 @@ def test_canonical_komae_yaml_selects_only_intersecting_synthetic_index_tile():
         {"type": "Feature", "properties": {"tile": K2},
          "geometry": mapping(box(left+.1, bottom+.1, right+.1, top+.1))}]}
     assert chm.select_tiles(value, aoi) == [K1]
+
+
+@pytest.fixture
+def offline_inputs(tmp_path):
+    cog(tmp_path, K1, [[0, 255], [1, 2]])
+    cog(tmp_path, K2, [[3, 4], [5, 6]], x=2)
+    idx = tmp_path/"index.json"
+    idx.write_text(json.dumps(index()))
+    return dict(study_area=config(tmp_path), index=idx, tiles_dir=tmp_path,
+                raw_dir=tmp_path/"raw", work_dir=tmp_path/"work")
+
+
+@pytest.mark.parametrize("corruption", ["pixels", "mask", "metadata"])
+def test_post_write_verification_failure_never_publishes_output(offline_inputs, monkeypatch, corruption):
+    original = chm.validate_written_crop
+    def corrupt_then_validate(path, *args):
+        assert path.name.endswith(".unverified.tif")
+        assert not (path.parent/"chmv2_aoi.tif").exists()
+        # Reopen after writer closure to simulate a serialization defect.
+        with rasterio.Env(GDAL_TIFF_INTERNAL_MASK=True):
+            with rasterio.open(path, "r+") as dst:
+                if corruption == "pixels":
+                    data = dst.read(1)
+                    data[0, 0] = 42
+                    dst.write(data, 1)
+                elif corruption == "mask":
+                    dst.write_mask(np.zeros((dst.height, dst.width), dtype="uint8"))
+                else:
+                    dst.crs = "EPSG:4326"
+        return original(path, *args)
+    monkeypatch.setattr(chm, "validate_written_crop", corrupt_then_validate)
+    with pytest.raises(chm.AcquisitionError, match="Written"):
+        chm.acquire(**offline_inputs)
+    work = offline_inputs["work_dir"]
+    assert not (work/"chmv2_aoi.tif").exists()
+    record = json.loads((work/"acquisition-record.json").read_text())
+    assert record["status"] == "FAILED" and "output" not in record
+    assert len(record["unverified_artifacts"]) == 1
+    assert Path(record["unverified_artifacts"][0]).is_file()
+
+
+def test_publication_failure_is_failed_and_keeps_unverified_evidence(offline_inputs, monkeypatch):
+    def fail(*args): raise OSError("publication blocked")
+    monkeypatch.setattr(chm.os, "link", fail)
+    with pytest.raises(OSError, match="publication blocked"):
+        chm.acquire(**offline_inputs)
+    work = offline_inputs["work_dir"]
+    assert not (work/"chmv2_aoi.tif").exists()
+    record = json.loads((work/"acquisition-record.json").read_text())
+    assert record["status"] == "FAILED" and "output" not in record
+    assert record["unverified_artifacts"]
+
+
+def test_publication_closes_tiff_handles_and_does_not_replace_racing_output(tmp_path, monkeypatch):
+    source = cog(tmp_path, K1, [[0, 255], [2, 3]])
+    original_link = chm.os.link
+    output = tmp_path/"out.tif"
+    def racing_link(temporary, final):
+        # This Windows rename must succeed after both GDAL readers/writers close.
+        moved = temporary.with_suffix(".closed-check")
+        temporary.rename(moved)
+        moved.rename(temporary)
+        final.write_bytes(b"another producer's output")
+        original_link(temporary, final)
+    monkeypatch.setattr(chm.os, "link", racing_link)
+    with pytest.raises(FileExistsError):
+        chm.mosaic_crop([source], area((0, 0, 2, 2)), output)
+    assert output.read_bytes() == b"another producer's output"
+
+
+@pytest.mark.parametrize("dirty,changed,matches", [(True, False, True), (False, True, True), (False, False, False), (False, False, True)])
+def test_record_distinguishes_dirty_or_changed_code_from_clean_committed_code(offline_inputs, monkeypatch, dirty, changed, matches):
+    start = {"commit_sha": "a"*40, "status_porcelain": [" M module.py"] if dirty else [],
+             "worktree_clean": not dirty, "implementation_sha256": "b"*64,
+             "head_module_sha256": "b"*64, "module_matches_head": matches}
+    finish = dict(start)
+    if changed: finish["implementation_sha256"] = "c"*64
+    snapshots = iter([start, finish])
+    monkeypatch.setattr(chm, "code_identity", lambda: next(snapshots))
+    record = chm.acquire(**offline_inputs)
+    assert record["code_revision"] == start["commit_sha"]
+    assert record["code_identity_at_start"] == start
+    assert record["code_identity_at_finish"] == finish
+    assert record["committed_code_identity_verified"] == (not dirty and not changed and matches)
+
+
+@pytest.mark.parametrize("work", ["same", "nested"])
+def test_raw_work_separation_remains_required(tmp_path, work):
+    raw = tmp_path/"raw"
+    with pytest.raises(chm.AcquisitionError, match="separate"):
+        chm.acquire(config(tmp_path), raw, raw if work == "same" else raw/"work")
+    assert not raw.exists()

@@ -7,11 +7,13 @@ from datetime import datetime, timezone
 import hashlib
 import json
 import math
+import os
 from pathlib import Path
 import platform
 import re
 import shutil
 import subprocess
+import tempfile
 import urllib.request
 
 import numpy as np
@@ -133,6 +135,42 @@ def same_nodata(a, b):
     return a == b or (a is not None and b is not None and math.isnan(a) and math.isnan(b))
 
 
+def validate_written_crop(path, values, masks, profile, scales, offsets, units):
+    """Validate the closed temporary TIFF; return only after closing its reader."""
+    with rasterio.open(path) as dst:
+        if (not np.array_equal(values, dst.read(1), equal_nan=True)
+                or not np.array_equal(masks, dst.read_masks(1))):
+            raise AcquisitionError("Written samples or mask changed")
+        if (dst.crs != profile["crs"] or dst.transform != profile["transform"]
+                or dst.width != profile["width"] or dst.height != profile["height"]
+                or dst.count != profile["count"] or dst.dtypes != (profile["dtype"],)
+                or not same_nodata(dst.nodata, profile["nodata"])
+                or dst.scales != scales or dst.offsets != offsets or dst.units != units):
+            raise AcquisitionError("Written raster metadata changed")
+        return raster_metadata(dst)
+
+
+def code_identity():
+    """Record disk/HEAD identity and dirty state, not merely a nominal revision."""
+    root = Path(__file__).resolve().parents[3]
+    module_hash = sha256(__file__)
+    result = {"commit_sha": None, "status_porcelain": None, "worktree_clean": None,
+              "implementation_sha256": module_hash, "head_module_sha256": None,
+              "module_matches_head": None}
+    try:
+        def git(*args):
+            return subprocess.check_output(["git", *args], cwd=root, stderr=subprocess.DEVNULL)
+        result["commit_sha"] = git("rev-parse", "HEAD").decode().strip()
+        status = git("status", "--porcelain", "--untracked-files=all").decode("utf-8", errors="replace")
+        result.update(status_porcelain=status.splitlines(), worktree_clean=not status)
+        committed = git("show", "HEAD:src/ouem/acquire/meta_chmv2.py")
+        head_hash = hashlib.sha256(committed).hexdigest()
+        result.update(head_module_sha256=head_hash, module_matches_head=module_hash == head_hash)
+    except (OSError, subprocess.CalledProcessError) as exc:
+        result["verification_error"] = type(exc).__name__
+    return result
+
+
 def mosaic_crop(paths, area, output, *, max_pixels=16_000_000):
     """Copy native pixels to an outward-snapped AOI envelope; never resample."""
     output = Path(output)
@@ -195,21 +233,32 @@ def mosaic_crop(paths, area, output, *, max_pixels=16_000_000):
         profile = {"driver": "GTiff", "count": 1, "dtype": first.dtypes[0],
                    "crs": first.crs, "transform": dst_transform, "width": width,
                    "height": height, "nodata": first.nodata, "compress": "deflate"}
+        fd, name = tempfile.mkstemp(prefix=f".{output.stem}-", suffix=".unverified.tif", dir=output.parent)
+        os.close(fd)  # Windows: release the reservation before GDAL opens it.
+        temporary = Path(name)
         with rasterio.Env(GDAL_TIFF_INTERNAL_MASK=True):
-            with rasterio.open(output, "w", **profile) as dst:
+            with rasterio.open(temporary, "w", **profile) as dst:
                 dst.write(values, 1)
                 dst.write_mask(masks)
                 dst.scales, dst.offsets = first.scales, first.offsets
                 if first.units[0] is not None:
                     dst.set_band_unit(1, first.units[0])
-        with rasterio.open(output) as dst:
-            if (not np.array_equal(values, dst.read(1), equal_nan=True)
-                    or not np.array_equal(masks, dst.read_masks(1))):
-                raise AcquisitionError("Written samples or mask changed")
-            metadata = raster_metadata(dst)
-        return {"requested_bounds_3857": list(bounds), "operation": "native-grid aligned envelope crop; no resampling",
+        metadata = validate_written_crop(temporary, values, masks, profile,
+                                         first.scales, first.offsets, first.units)
+        result = {"requested_bounds_3857": list(bounds), "operation": "native-grid aligned envelope crop; no resampling",
                 "nodata_pixels": int((masks == 0).sum()), "raster": metadata,
                 "sources": [raster_metadata(src) for src in sources]}
+    # All GDAL handles are closed. Same-filesystem hard link publishes atomically
+    # without replacing a destination created concurrently (also on Windows NTFS).
+    # Filesystems without hard links fail closed; do not fall back to overwrite.
+    os.link(temporary, output)
+    try:
+        temporary.unlink()
+    except OSError:
+        # The verified final file is already published. Cleanup failure must not
+        # mislabel it as a failed validation or discard evidence.
+        result["temporary_cleanup_pending"] = str(temporary)
+    return result
 
 
 def acquire(study_area, raw_dir, work_dir, *, index=None, tiles_dir=None,
@@ -224,12 +273,10 @@ def acquire(study_area, raw_dir, work_dir, *, index=None, tiles_dir=None,
     area = load_study_area(study_area)
     raw_dir.mkdir(parents=True)
     work_dir.mkdir(parents=True)
-    try:
-        revision = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True, stderr=subprocess.DEVNULL).strip()
-    except (OSError, subprocess.CalledProcessError):
-        revision = None
+    identity = code_identity()
     record = {"schema": "ouem-chmv2-acquisition-poc/v0.1", "status": "RUNNING",
-              "started_at": utc_now(), "code_revision": revision,
+              "started_at": utc_now(), "code_revision": identity["commit_sha"],
+              "code_identity_at_start": identity,
               "implementation": file_record(__file__),
               "environment": {"python": platform.python_version(), "rasterio": rasterio.__version__,
                               "gdal": rasterio.__gdal_version__, "numpy": np.__version__},
@@ -262,8 +309,14 @@ def acquire(study_area, raw_dir, work_dir, *, index=None, tiles_dir=None,
         record["status"] = "COMPLETED"
     except Exception as exc:
         record.update(status="FAILED", error=f"{type(exc).__name__}: {exc}")
+        record["unverified_artifacts"] = [str(path.resolve()) for path in sorted(work_dir.glob("*.unverified.tif"))]
         raise
     finally:
+        final_identity = code_identity()
+        record["code_identity_at_finish"] = final_identity
+        record["committed_code_identity_verified"] = bool(
+            identity == final_identity and identity["worktree_clean"] is True
+            and identity["module_matches_head"] is True)
         record["finished_at"] = utc_now()
         (work_dir / "acquisition-record.json").write_text(
             json.dumps(record, ensure_ascii=False, indent=2, allow_nan=False)+"\n", encoding="utf-8")
