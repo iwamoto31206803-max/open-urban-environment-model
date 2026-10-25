@@ -113,4 +113,38 @@ B-02では次の証拠を区別する。
 2. **当時の未コミットコードreplay**：HEADは同じ`37ebfa9...`、disk module SHA-256は`59d5191353158f9918e5a926f9b9bb123f9b04997253e329d12a0f198db40568`。これもコミット前実行で、clean状態の証拠はない。GitはLFを格納する一方、当時のWindows fileはCRLFだったため、このdisk hashを後のcommit blob hashと同一視しない。
 3. **今回の修正をコミット後のreplay**：新しいRaw／Workを使う。開始／終了それぞれのHEAD、`git status --porcelain --untracked-files=all`、disk module hash、HEADのmodule blob hashを記録し、両時点が同じ・clean・moduleのbyte一致がすべて成立するときだけ`committed_code_identity_verified=true`とする。Git情報取得失敗や改行差も未一致として扱い、無条件にコミットと実行コードの同一性を主張しない。対象はこのmoduleのbyte一致とGit作業ツリーであり、依存全体・Pythonのロード済みmemoryの独立証明ではない。
 
-今回の入力は元取得Rawからのローカルコピーで、ネットワーク再取得ではない。入力SHA-256を比較し、元の実取得recordと当時のreplay recordのSHA-256が変わっていないことも確認する。コミット済みコードの再実行結果は、実装commit後に別項として追記する。
+今回の入力は元取得Rawからのローカルコピーで、ネットワーク再取得ではない。入力SHA-256を比較し、元の実取得recordと当時のreplay recordのSHA-256が変わっていないことも確認する。コミット済みコードの再実行結果を次項に記す。
+
+### コミット済み修正コードでのオフライン再実行
+
+以下は元の実取得と独立した、保存済みRawからのローカル再実行の証拠である。ネットワーク取得は行っていない。
+
+| 項目 | 結果 |
+|---|---|
+| 実装コミット／実行時HEAD | `d059c1d0f72cbeb5f259e49c0a825f7d5fe9194e` |
+| 実行時刻（UTC） | 2026-10-25 12:09:16.414643〜12:09:22.190688 |
+| 状態 | COMPLETED、`committed_code_identity_verified=true` |
+| 開始／終了Git状態 | 両方`status_porcelain=[]`、`worktree_clean=true`、同じHEAD |
+| 実装module SHA-256 | `c477c0d820e0f03749bb52f36b3b5c78d65b2cb624bdf0a330ec7c8226203510`。diskとHEAD内moduleの双方で一致、開始／終了でも一致 |
+| 入力索引SHA-256 | `3f3d102d4a4d2d221125744c9c081b2420ce1cf1322e08c568ebf48678e84c2e` |
+| 入力COG SHA-256 | `6313f286dca3b9f760be95d998e9648d0dd77b0a9305081b67422150340af862` |
+| 出力SHA-256 | `c5f99a4e9b21e8f419825ef2cac25ec7b36bafbe8a79a89b062201343f0ef880` |
+| 入出力比較 | 入力索引・COGは元取得Rawとbyte hash一致。出力は元の実取得時と当時のreplay出力のhashに一致。無理な値変更や出力hash調整は行っていない |
+| 新規Raw | `data/raw/canopy/meta_chmv2_komae_committed_audit_20261025/` |
+| 新規出力／record | `data/work/meta_chmv2_komae_committed_audit_20261025/chmv2_aoi.tif`、同directoryの`acquisition-record.json` |
+| 新record SHA-256 | `ab83b9b466b85a4dd2a4a73749b1c2fffb68104b88f9d630ea88f2da76c956e0` |
+
+元の実取得record（SHA `c4c4a842...`）と当時のreplay record（SHA `3666e113...`）も再検算し、前掲の完全SHA-256と一致した。これらを上書きしていない。新しいrecordには元入力へのsource_path、コピー後Rawのhash、出力hash、開始／終了のコード同一性を保存している。Raw／生成物／recordはGit対象外のまま保持する。
+
+実行時の対象moduleは、Windowsの作業ファイルをLFで保持し、コミットblobとbyte一致させた。`core.autocrlf`等の認証・Git設定は変更していない。将来のcheckoutでCRLFへ変換される場合、byte一致検査はfalseになり得るため、cleanだけを根拠に同一性を宣言しない。
+
+この結果追記は実装コミット後の**文書のみの別コミット**として保存する。PR最終HEADと上記の実行時HEADを混同しない。追記後も実装moduleとテストの内容は実行時コミットから変更しない。
+
+### 監査対応のテストと範囲
+
+- `-m pytest -q tests/test_meta_chmv2_acquisition.py`：**31 passed、38 warnings**。
+- `-m pytest -q`：**431 passed、5 skipped、166 warnings**、136.31秒。既存Building／Terrain／Adapter／Canopyを含む全体で失敗なし。warningsはRasterioのAffine演算に関するPendingDeprecationWarning。
+- 追加回帰：書込後の画素／mask／CRS破損で最終pathなし・FAILED・output登録なし、確定操作失敗時の未検証証拠保持、Windowsでhandleを閉じてから確定、競合した最終名の上書き拒否、dirty／実行中変更／module byte不一致をコミット同一と判定しないこと、Raw／Work分離。
+- 修正後に実装をコミットし、クリーンな状態で保存済みRawから再実行。全入力・出力hashと旧record不変を確認した。最終追記は文書のみで、テスト済み実装を変更していない。
+
+B-01／B-02の要求への対応と上記検証を完了した。独立監査による再確認・承認は別であり、既存受入やStandard Canopyの確定を意味しない。PRはDraftのまま、マージしない。
