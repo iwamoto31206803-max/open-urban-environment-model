@@ -11,9 +11,9 @@
 1. Terrain、Building、Canopyは**レイヤーごと**に最適なソースを明示選択する。自動フォールバックは初期実装しない。
 2. Source Catalog（候補の知識）、Source Selection Record（実行前の選択理由）、Acquisition Recipe（手順）、Dataset Manifest（実取得物）、Run Record（実処理）は異なる。単純な一対一連鎖ではなく、Dataset Manifestは複数Runに再利用でき、Runは複数Dataset Manifestから複数Artifactを生成できる。
 3. Rawは元の配布単位を可能な限り保持する。Rawが外部所在のみの場合は再取得不能リスクを記録する。Workは再生成可能な中間物。Native/Standardの既存manifest・receipt・acceptanceを置換しない。
-4. 公式サイトの存在と、個別配布ファイルの利用条件・版・CRS・鉛直基準の検証完了を混同しない。**この文書に記載したURLやS3 prefixは実ダウンロード・ライセンス受入の証拠ではない。**
+4. **新規のGML解析・再投影・鉛直変換・共通格子化は現行Standard Terrain v0.1の既存受入範囲を自動拡張しない。** T-01が生成するNative候補を既存契約へ入力する際は適合性を独立判定し、不適合な入力・処理には別途仕様・テスト・受入が必要となる。公式サイトの存在と、個別配布ファイルの利用条件・版・CRS・鉛直基準の検証完了を混同しない。**この文書に記載したURLやS3 prefixは実ダウンロード・ライセンス受入の証拠ではない。**
 5. Source Selectionの承認と、Run実行状態と、各段階のQA判定（PASS / CONDITIONAL PASS / FAIL）は別管理。未実施・保留はQA FAILと同義ではない。
-6. Standardは共通水平CRS、絶対標高Z、原形状・来歴・品質区別を目標とする。Canopyの正式契約・符号化は未確定。メッシュ所有と交差検索は区別し、原形状を境界で切らない。
+6. Standardは共通水平CRS、絶対標高Z、原形状・来歴・品質区別を目標とする。Canopyの正式契約・符号化は未確定。Canopyの**セル状態**（未観測・非樹冠・無効など）と**値の根拠**（直接観測・モデル推定・補間・CR推定など）は別軸で管理する。メッシュ所有と交差検索は区別し、原形状を境界で切らない。
 
 ## 2. Source Catalog候補
 
@@ -51,7 +51,7 @@ Catalog最小項目案：`source_dataset_key`, `provider`, `dataset_name`, `offi
 - 出力：元Rawの参照、Work、Native候補、QA診断、Artifact IDとSHA-256、Run Record。Standardへの昇格は**既存の別途受入手続き**。
 - 記録：ソフトウェア版（GDAL/PDAL/Converter/モデル等）、コードrevision、CRS変換・鉛直変換根拠、元解像度、出力格子、NoData、測量/撮影時期。
 - ゲート：ライセンス・取得可否・AOI+Buffer被覆・水平/鉛直適合・データ品質。必須の鉛直基準や利用条件が未確認なら正式受入PASSにしない。
-- 同一Recipeの再実行は新しいRun Recordで表し、Rawを重複登録する必要はない。失敗・保留Runも診断可能な範囲で記録する。
+- 同一Recipeの再実行は新しいRun Recordで表し、Rawを重複登録する必要はない。失敗・保留Runも診断可能な範囲で記録する。**上流Recipeの生成Artifactを下流Recipeが入力する場合、入力Artifact ID・ハッシュと上流Run IDを参照可能にする。** とくにC-02/C-03がL-01のCHMを再利用する場合、Raw Datasetから中間CHM、最終Canopy候補までの来歴を途切れさせない。具体的なフィールド名・参照スキーマは実装前に確定する。
 
 ## 5. 個別Recipe設計
 
@@ -62,6 +62,7 @@ Catalog最小項目案：`source_dataset_key`, `provider`, `dataset_name`, `offi
 3. JPGIS/GMLの格子定義、原点、間隔、標高値、NoDataを解析しWork GeoTIFFへ変換。単純なXYZ点群として誤解釈しない。
 4. 元CRS/鉛直基準を検証し、Native Terrainへ。必要時に正式な座標・鉛直変換を経て共通格子へ変換。
 5. QA：ZIP完全性、被覆率、格子原点・解像度、NoData、異常標高、境界、鉛直整合。5m→1mの再標本化は実効精度向上を意味しない。
+6. **受入境界**：GML→GeoTIFF、水平再投影、鉛直変換、全国共通格子化はT-01の新規処理候補であり、現行Standard Terrain v0.1の既存受入条件には含まれない。まずRaw取得・GML解析・GeoTIFF化・Native QAまでを初回スコープとし、Standard Terrainへの投入は既存契約への適合判定後に別途実施する。不適合なら停止・保留し、新規仕様と独立受入を先行させる。
 
 **実装前の確認**：GMLパーサ仕様版、測地成果の扱い、複数DEMの接合と優先規則、既存Terrain manifestとのリンク。
 
@@ -91,9 +92,13 @@ Catalog最小項目案：`source_dataset_key`, `provider`, `dataset_name`, `offi
 4. 適合DEMから`Z_top = Z_ground + H_CHM`を生成。下端ZはCR等の推定法・適用範囲・地盤との関係を明記。
 5. QA：モデル推定値とLiDAR直接観測の区別、樹冠以外の混入、元格子・時期差、地盤Z整合、NoData、上下端と地盤の関係。
 
+**来歴の別管理**：配布データ版、推論モデル版、衛星画像の撮影時期（取得可能な粒度）、利用条件・権利証跡を別項目として扱う。日時や権利情報がタイル単位で取得できない場合はunknownとして記録する。
+
 **未決**：樹冠閾値・連結領域、タイル索引の実装、モデル推定誤差、Standard Canopyの符号化・受入条件。CHM有効値だけで樹冠や樹種を確定しない。
 
-### L-01 — LiDAR → HAG → CHM（共通Work）
+### L-01 — LiDAR → HAG → CHM（共通加工Recipe）
+
+L-01は独立したStandardレイヤーを新設するものではなく、BuildingやCanopyの複合Recipeから参照する**共通加工Recipe**である。生成CHM等は上流Run・入力Dataset・Artifact ID・ハッシュを伴い、下流で再利用する。
 
 1. LAS/LAZのファイル、点密度、分類、水平CRS、鉛直基準、測量時期、AOI+BufferをPreflight。
 2. 適合DEM/DTMまたは検査済み地盤点から地盤基準を作り、`HAG = point_Z - ground_Z`を計算。
@@ -104,7 +109,7 @@ Catalog最小項目案：`source_dataset_key`, `provider`, `dataset_name`, `offi
 ### C-02 — 自治体樹林ポリゴン + L-01 CHM
 
 1. 樹林区域・樹冠外縁などの元データの意味、作成時期、形状を確認。
-2. CHMと独立にポリゴンの位置・被覆・街路樹欠落・道路建物混入を評価。
+2. CHMと独立にポリゴンの位置・被覆・街路樹欠落・道路建物混入を評価。L-01由来CHMのArtifactと上流Runを入力来歴として参照する。
 3. ポリゴンマスクとCHMを統合し、絶対Z・下端Z推定・来歴・QAを付与。
 
 **未決**：樹林区域と樹冠の差の補正、自治体間の仕様差。
@@ -113,7 +118,7 @@ Catalog最小項目案：`source_dataset_key`, `provider`, `dataset_name`, `offi
 
 1. 空中写真の撮影年、元解像度、ライセンス、タイル出典を確認。
 2. モデル重みの利用条件・版を検証し、GSI画像のスケールに適合させて推論。
-3. 推論マスクをポリゴン化し、独立QAの後L-01 CHMと統合。
+3. 推論マスクをポリゴン化し、独立QAの後L-01 CHMと統合。CHMのArtifact・上流Runと、画像・モデル・推論Runをそれぞれ追跡する。
 4. QA：画像/点群時期差、位置ずれ、分類精度、樹冠の過不足、非樹木混入。
 
 **Blocking unresolved**：商用利用可能な重みと日本向け性能の検証。既存PoCは全国性能の証明ではない。
@@ -127,11 +132,13 @@ Catalog最小項目案：`source_dataset_key`, `provider`, `dataset_name`, `offi
 
 ## 7. 実装順序・受入境界
 
-1. **P0設計・証拠確認**：CatalogとRecipeのID/Schema、公式取得経路・利用条件・鉛直基準を確定。PR #61のマージ・独立監査状態を確認。
+1. **P0設計・証拠確認**：CatalogとRecipeのID/Schema、公式取得経路・利用条件・鉛直基準を確定。PR #61は2026-10-25にマージ済み（独立監査報告による）。
 2. **P1 T-01**：GSI DEMのRaw登録、GML変換、Native QA、既存Terrain契約への非破壊接続。
 3. **P2 B-01**：PLATEAUのRaw→Converter→Nativeの再現性・Z診断。
 4. **P3 C-01**：CHMv2のタイル取得・モデル来歴・樹冠候補・QA。Standard Canopy契約を別途策定。
 5. **P4 B-02/L-01/C-02/C-03**：GSI建物外周線、LiDAR、自治体樹冠、OAM-TCDを段階導入。
+
+**工程対応**：本書のP0〜P4はPR #61の広域ロードマップを置換する番号体系ではなく、Source CatalogとRecipeの実装順序を細分化した計画である。両者の段階番号を一対一対応させず、各実装PRで依存関係を明示する。
 
 初期実装地域は狛江市を既存比較基準とし、PLATEAU未整備等のフォールバックを別地域で検証する。**この文書のレビューやマージは、実データ取得、ライセンス・鉛直基準の検証、Standard改訂、実装・QA受入を意味しない。**
 
@@ -144,4 +151,4 @@ Catalog最小項目案：`source_dataset_key`, `provider`, `dataset_name`, `offi
 5. 3次メッシュ所有と原形状保持、QA状態と処理状態の分離。
 6. P1着手前に必須の決定と、実データ検証まで保留できる事項。
 
-**状態確認：設計ドラフト。取得・実行・独立監査・受入は未実施。**
+**状態確認：設計ドラフト。PR #62について独立設計監査（CONDITIONAL PASS）が実施され、指摘事項を反映した。修正後の監査確認・マージ、実データ取得・実行・QA受入は未実施。**
