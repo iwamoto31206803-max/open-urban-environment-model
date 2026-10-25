@@ -3,8 +3,17 @@
 
 - 作成日：2026-10-21
 - 状態：**Draft / 設計合意の統合版（実装受入済みではない）**
-- 基礎文書：Concept & Architecture v0.1（2026-09-28）
+- 基礎文書：[Concept & Architecture v0.1（2026-09-28）](OUEM_Concept_Architecture_v0.1.md)
 - 更新根拠：設計決定01〜36の対話上の合意
+
+## 文書の位置付けと適用範囲
+
+本書は設計決定01〜36を統合した**上位概念設計**であり、正式登録に向けたレビュー中のドラフトである。新たな設計判断や実装受入を追加するものではない。本書の登録によって、既存Standard契約・Adapter仕様・受入記録を自動的に変更・置換しない。
+
+- 現行の具体的な契約・動作は、[Standard Building v0.1](OUEM_Standard_Building_v0.1.md)、[Standard Terrain v0.1](OUEM_Standard_Terrain_v0.1.md)、[VoxCity Adapter v0.1](OUEM_VoxCity_Adapter_v0.1.md)を参照する。ライフサイクルと実装境界は[Phase A Implementation Design v0.1](Phase_A_Implementation_Design_v0.1.md)のCurrent-status noteと現行契約を併せて参照する。
+- 本書の一般化されたNative / Standard / Adapterの記述、空間基準、表現・QA・運用方針と現行契約の差分は、今後の仕様化・実装・検証で扱う。本書だけを根拠に現行スキーマ、処理条件、データ配置を変更しない。
+- 受入の根拠は[Building受入記録](../experiments/a1_e2e_pilot/README.md)、[A2 Terrain正式受入記録](acceptance/OUEM_A2_Standard_Terrain_Komae_Acceptance_20261006.md)、[A3 VoxCity正式受入記録](acceptance/OUEM_A3_VoxCity_Komae_Acceptance_20261005.md)とする。受入は記録されたデータセット・環境・条件に限られ、Standard契約のFINAL化、全国適用、樹冠統合やB1/B2の受入を意味しない。
+- 2026-10-25の文書監査結果CONDITIONAL PASSは文書の監査判定であり、第5章のデータセット受入判定とは別である。第8章の未決・要検証事項と第9章の未承認提案は、その状態を維持する。
 
 ## 1. 目的・対象
 OUEMは、利用可能な地理空間データから地形・建物・樹冠を統合した3D都市環境モデルを構築し、都市に暮らす人が体感する樹木の環境機能を面的に評価するモデル／ワークフローである。3D樹冠生成そのものを最終目的としない。
@@ -37,6 +46,18 @@ Raw → Native → OUEM Standard → Engine / Analysis Adapter
 - **A3 GSI-LiDAR National Target**：GSI点群・建物外周線等を活用するターゲット。
 
 A1/A2/A3は固定的なデータセット構成ではなく**代表的な構築プロファイル**。レイヤー単位でデータソースを選択・変更できる。初期段階ではプロファイル既定値＋手動オーバーライドとし、自動最適選択は実装しない。
+
+### 2.2 既存実装工程との名称の区別
+
+本書の構築プロファイルA1/A2/A3と、既存実装・受入記録の工程A1/A2/A3は**異なる名称体系**であり、番号の一致は同じ範囲や受入状態を意味しない。
+
+| 番号 | 本書の構築プロファイル | 既存実装工程・受入記録での名称 |
+|---|---|---|
+| A1 | Tokyo Reference | PLATEAU Buildingの取込・Native-to-Standard処理 |
+| A2 | National Baseline | Standard Terrain処理 |
+| A3 | GSI-LiDAR National Target | Standard-to-VoxCity Adapterとボクセル生成までの接続 |
+
+既存工程の根拠は前掲の実装設計と受入記録を参照する。例えば工程A3の狛江受入は、構築プロファイルA3のGSI-LiDAR全国ターゲットが実装・受入済みであることを示さない。第4.2章や第9章のA1/A3は構築プロファイルを指す。
 
 ## 3. 空間基準と処理範囲
 - **管理・保存の基本単位**：日本の3次メッシュ。ただし地物や解析領域をメッシュ境界に強制的に閉じ込めない。
@@ -103,6 +124,16 @@ A1/A2/A3は固定的なデータセット構成ではなく**代表的な構築�
 - **B2**：360° Green View Index (Canopy)／360°緑視率（樹冠）を主要指標とする。写真式緑視率を直接置換するものではない。
 - 指標のTier分類、気象・時間帯・視点高・透過パラメータ等の詳細はv0.1を継承し、実装・検証で具体化する。
 - VoxCityの樹冠内部特性の扱いは、Adapter実装時に実際のAPI・モデル仕様で確認する。
+
+### 7.1 継承する詳細仕様と参照先
+
+本書で明示的に更新した概念上の事項を除き、Phase B1/B2の詳細仕様はv0.1から継承する。第7章の要約によって、以下の詳細を廃止・置換しない。v0.1は履歴として保持し、継承対象の詳細仕様の参照元とする。
+
+- **B1**：[v0.1 第6章「B1 — Solar & Shade Assessment」](OUEM_Concept_Architecture_v0.1.md#6-b1----solar--shade-assessment)。第6.1〜6.6節の目的、基本計算、Current / No-Canopy比較、Output Tiers、評価期間、タイル処理を継承する。
+- **B2**：[v0.1 第7章「B2 — Green View Assessment」](OUEM_Concept_Architecture_v0.1.md#7-b2----green-view-assessment)。第7.1〜7.6節の正式指標と対象、基本算定、360°評価、Output Tiers、日本の写真式緑視率との関係を継承する。
+- **検証課題**：[v0.1 第9章「認識済みの主要Engineering / Validation Issues」](OUEM_Concept_Architecture_v0.1.md#9-認識済みの主要engineering--validation-issues)のPhase B1/B2を参照する。気象・時間帯・視点高・透過パラメータ等の検証課題も継承し、検証済みとは扱わない。
+
+継承は概念・詳細仕様の参照関係を示すものであり、B1/B2の実装完了や受入を宣言するものではない。
 
 ## 8. 未決・要検証（決定事項ではない）
 1. 日本の鉛直基準・標高成果の具体的な採用範囲、PLATEAU / LiDAR / DEM間の変換と検証方法。

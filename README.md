@@ -115,9 +115,14 @@ and `data/output/`. All local data locations are ignored by Git except for
 directory markers; real datasets must not be committed. The canonical Komae
 extent is defined in [`config/study_areas/komae_09LD3451.yaml`](config/study_areas/komae_09LD3451.yaml).
 
-See the governing [Concept & Architecture v0.1](docs/OUEM_Concept_Architecture_v0.1.md)
-and the [Phase A Implementation Design v0.1](docs/Phase_A_Implementation_Design_v0.1.md)
-for the conceptual baseline and implementation contracts respectively. The
+See [Concept & Architecture v0.2](docs/OUEM_Concept_Architecture_v0.2.md)
+for the upper-level conceptual design draft under review for formal registration.
+It does not automatically change existing Standard contracts, Adapter specifications,
+or acceptance records. [Concept & Architecture v0.1](docs/OUEM_Concept_Architecture_v0.1.md)
+is retained as historical reference and as the source of inherited B1/B2 details
+identified in v0.2 Section 7.1. The
+[Phase A Implementation Design v0.1](docs/Phase_A_Implementation_Design_v0.1.md),
+read with its current-status note, links the current implementation contracts. The
 [OUEM Standard Building v0.1](docs/OUEM_Standard_Building_v0.1.md) defines the
 coordinate, geometry, PLATEAU source, and minimum metadata contract for
 standardized buildings.
