@@ -50,7 +50,7 @@ The subsequent `scripts\work\plateau_komae_local_acceptance.cmd ouem` stage was 
 - Full OUEM test run on the new PC: **400 passed, 5 skipped, 0 failed**, 128 warnings.
 - Normal VS Code PowerShell successfully launched `.venv\Scripts\python.exe`, reporting Python **3.11.9**.
 - Codex local smoke test: repository and Git status read; temporary `data/work/codex-smoke-test/smoke.py` created, then removed; final `git status --short` was empty.
-- The initial Codex **sandboxed** Python launch failed (exit code **103**). Diagnosis: sandbox access was denied to the base Python at `C:\Users\iwahi\AppData\Local\Programs\Python\Python311\python.exe`; the base Python and venv were confirmed present and working outside the sandbox. **Do not interpret this as a broken venv.**
+- The initial Codex **sandboxed** Python launch failed (exit code **103**). Diagnosis: sandbox access was denied to the base Python at `%LOCALAPPDATA%\Programs\Python\Python311\python.exe`; the base Python and venv were confirmed present and working outside the sandbox. **Do not interpret this as a broken venv.**
 - Codex then ran `.venv\Scripts\python.exe -m pytest -q tests/test_komae_preflight.py` with approval for execution outside the sandbox: **36 passed**, 24 Rasterio `PendingDeprecationWarning` warnings, exit code **0**, 21.21 s.
 - Codex permission setting during successful workflow: **Approve for me**. Keep approval boundaries; **Full access is not required**. Inspect and approve privileged operations as needed. Do not bypass the sandbox silently.
 - No source/config edits or commits were made by the smoke tests. Pytest cache creation was not separately audited.
