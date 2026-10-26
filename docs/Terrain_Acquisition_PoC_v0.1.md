@@ -208,6 +208,43 @@ Windows ordinary OUEM venv results on 2026-10-26: focused **44 passed**, no warn
 Hard-link publication and rollback succeeded on this local Windows filesystem;
 unsupported/denied storage remains an explicit limitation, not a portability claim.
 
-The separate real acquisition/Native compatibility check will be recorded after
-running committed code. Standard regeneration and formal re-acceptance are
-deliberately not performed.
+### Separate real acquisition and Native compatibility check
+
+On 2026-10-26, the usage command above was executed with
+`--raw-dir data/raw/terrain/tokyo_tama_dem_050m/komae/acquisition-20261026-01`.
+Run commit: `df0157e71f3d6795787a814fa76c00b70fb474f7`; acquisition and Native
+check start/end Git status both empty; implementation identities unchanged.
+Environment: Windows, OUEM Python 3.11.9, Rasterio 1.4.4 / GDAL 3.10.3.
+The acquisition command ran with individual approval outside the network-restricted
+Codex sandbox; this does not establish connectivity within that sandbox.
+
+Result: **Raw acquisition COMPLETED**, HTTP 200, 837282 bytes ZIP / 1922867 bytes
+TIFF. ZIP hash matches the survey ZIP above; TIFF hash exactly matches the
+formal A2 original above. Metadata matches the pinned profile, 480000 valid /
+0 missing cells, min/max `19.577999114990234` / `25.29599952697754` m.
+HTTP acquired time: `2026-10-26T01:49:49.559040+00:00`; ETag
+`7679bf8552f7b91a3bb25959c5b81a02`; Last-Modified `2023-10-02 07:52:31 UTC`.
+No `.staging-*` directory or FAILED record remained. These results establish
+this acquisition and identity check, not independent accuracy or new acceptance.
+
+The unchanged `accept_native_terrain` API then registered this Raw TIFF to the
+fresh local path
+`data/work/terrain-acquisition-native-check/acquisition-20261026-01/native.json`;
+`load_native_manifest` revalidated it. Result **PASS**; TIFF hashes before/after
+equal the accepted original. The check used Tama source-declared T.P. evidence,
+and left canonical Native/Standard artifacts untouched. A separate local
+`native-compatibility-check.json` records the source/Native/record hashes and
+execution identity. No acquisition record was overwritten by the Native check.
+
+| Evidence | SHA-256 |
+|---|---|
+| Acquisition module disk bytes at execution | `2e424ac0e2977551495ee97461b6fa672323f590b6b130114b399723b6770705` |
+| Existing Native inspection module disk bytes | `79abb3cde477f4561e6df64b07979a2a85be5ce7d724aa553db1e13f910c14fd` |
+| Raw acquisition manifest | `ea0c54d798db06274cef95b33c43439924742ea8707fb24a3c1de8e5f0180e9d` |
+| Separate Native compatibility manifest | `dff97a78dd111d240ba9bbc7af2a74f5c3b9d8aa7292d4f7792f468f4853aef9` |
+
+Git revision and disk hashes are separate evidence (Git line-ending conversion
+can differ from on-disk bytes). The subsequent documentation-only evidence
+commit does not change the code used for these runs. Raw data, generated JSONs,
+and runtime artifacts remain local/ignored and are not PR contents.
+**Standard regeneration and formal re-acceptance were not performed.**
