@@ -52,14 +52,23 @@ CRS. `vertical_reference_status` is exactly one of `verified`,
 both a reference name and evidence/source. Unresolved requires both fields to
 be null.
 
-The Tokyo 23-ku 0.5 m DEM source profile used for Komae is recorded as
-**source-declared T.P. (Tokyo Peil / Tokyo Bay mean sea level)**. This is a
-provider declaration, not an OUEM independent survey or benchmark comparison,
-so its status is not `verified`. The evidence is Tokyo Metropolitan Government
-official source metadata declaring JGD2011, Plane Rectangular CS IX, and
-elevation relative to Tokyo Bay mean sea level; the official release relating
-the 23-ku point cloud, ground data, and 0.5 m grid DEM; and the Bureau of
-Construction documentation identifying Tokyo Bay mean sea level as T.P.:
+**Source clarification (2026-10-26):** Komae tile `09LD3451` comes from the
+Tokyo Digital Twin **Tama region** point-cloud dataset, ground grid (0.50 m).
+The public original's SHA-256 exactly matches the frozen A2 source. The
+[dated provenance correction](acceptance/OUEM_A2_Terrain_Source_Provenance_Correction_20261026.md)
+adds the evidence and limitations without changing the original A2/A3 records.
+The [Tokyo Tama catalogue](https://catalog.data.metro.tokyo.lg.jp/dataset/t000029d0000000020)
+declares JGD2011 / Plane Rectangular CS IX and elevation relative to Tokyo Bay
+mean sea level. The appropriate Komae provenance remains **source-declared
+T.P. (Tokyo Peil / Tokyo Bay mean sea level)**, not independently surveyed
+`verified`. The [acquisition PoC](Terrain_Acquisition_PoC_v0.1.md) documents
+the original byte identity and read-only raster inspection.
+
+**Historical source explanation:** Earlier versions described this Komae
+source profile as Tokyo 23-ku and used the following portal, 23-ku release,
+and Bureau of Construction T.P. explanation. These links are retained to
+identify the earlier reasoning; the 23-ku release is not the distribution
+evidence for this Tama tile:
 
 - [Tokyo Metropolitan Government Open Data Portal](https://portal.data.metro.tokyo.lg.jp/)
 - [Release: 区部の3次元点群データを公開](https://www.metro.tokyo.lg.jp/information/press/2024/10/2024103126)

@@ -213,17 +213,73 @@ passing. The formal result and its scope limitations are recorded in
 
 ## Komae Terrain local acceptance
 
-Install the package (including Rasterio) in the repository venv, place the
-developer-local DEM at `data\raw\terrain\tokyo_23ku_dem_050m\komae\09LD3451.tif`, and run from an
-ordinary Windows terminal:
+The current Komae source is Tokyo Digital Twin **Tama** ground grid (0.50 m),
+tile `09LD3451`; see the [dated source correction](../../docs/acceptance/OUEM_A2_Terrain_Source_Provenance_Correction_20261026.md).
+The historical `tokyo_23ku_dem_050m` path and 2026-10-06 invocation remain in
+the frozen A2 record; do not move old data or overwrite old manifests.
+
+Install the package (including Rasterio) in the repository venv and use an
+ordinary Windows terminal, not OSGeo4W Shell. First read the licence/terms in
+the [acquisition procedure](../../docs/Terrain_Acquisition_PoC_v0.1.md).
+Acquire Raw using a **new** Tama run directory (example identifiers must be
+changed if already used):
 
 ```bat
-scripts\work\terrain_komae_local_acceptance.cmd
+.venv\Scripts\python.exe -m ouem.acquire.tokyo_tama_dem --raw-dir data/raw/terrain/tokyo_tama_dem_050m/komae/new-acquisition-01
 ```
 
-An optional first argument overrides the input path. The helper runs synthetic
-automated tests, creates the Native registration manifest, and creates and
-validates Standard Terrain. Its Standard summary reports paths, dimensions,
+Require a COMPLETED acquisition manifest, matching ZIP/TIFF hashes, no FAILED
+record and no staging residue. These are operator checks: the current helper
+does **not** read PR #66's acquisition manifest, check its COMPLETED status, or
+compare the hashes recorded there with the ZIP/TIFF files. The helper's own
+input checks only enforce the pinned A2 original TIFF hash and tile metadata;
+they do not establish acquisition-manifest integrity or a completed acquisition
+run. Acquisition does not register Native, generate Standard or grant acceptance.
+Run **read-only preflight** with explicit input and a **new output directory**:
+
+```bat
+scripts\work\terrain_komae_local_acceptance.cmd "data\raw\terrain\tokyo_tama_dem_050m\komae\new-acquisition-01\09LD3451.tif" --run-dir "data\work\terrain-local-acceptance\new-rerun-01" --check
+```
+
+`--check` prints checked source hash, raster metadata, Tama source-declared T.P.
+evidence and planned command arguments. It creates no output directories/files,
+runs no tests and performs no Native/Standard processing. No-argument/old
+one-argument invocation now fails with usage: this intentional change avoids
+silently overwriting historical Native/Standard outputs. No source is auto-discovered.
+Both relative paths resolve from the repository root when using the CMD launcher.
+
+For a separately authorized future local generation, run the same command
+**without `--check`**. The helper runs the full automated tests, rechecks source
+identity, exclusively reserves the new output directory, calls the unchanged
+Native CLI to write `native.json`, then the unchanged Standard CLI to write
+`standard.tif` and `standard.tif.manifest.json`. No existing output directory,
+even empty, is reused. Failed processing may leave partial results in that new
+run; inspect and retain it, and choose a fresh directory for retry. This is a
+single-writer local workflow, not an atomic transaction or protection against
+hostile concurrent modification. The helper uses fixed, corrected Tama evidence
+for this hash-pinned original; it is not a general provider/vertical override.
+
+The printed command plan also supports separate Native and Standard CLI stages.
+Native registration records Raw path/hash and provenance without copying Raw;
+Standard generation consumes that manifest. Neither command's success creates
+a formal acceptance decision. A later reviewer must examine the new manifests,
+output hashes, grid/elevation validation and environment in a separate record.
+`PROCESSING_COMPLETED_PENDING_REVIEW` means **only that the Native and Standard
+CLI subprocesses exited successfully**. Those CLIs perform their existing
+internal checks; the helper does not independently reopen/validate the outputs,
+check output-file existence/hashes after their exit, or grant formal acceptance.
+
+At the next formal re-acceptance, independently verify the acquisition manifest's
+COMPLETED status and absence of FAILED/staging residue, compare its ZIP/TIFF
+hashes with the retained files, and trace the Raw TIFF hash through the Native
+manifest and Standard manifest's source identity. Match the Standard manifest's
+output hash to the actual Standard TIFF, independently inspect grid/elevation
+preservation and corrected source provenance, and compare with the historical
+accepted baseline. Record any differences and the review/acceptance decision in
+a new record. These cross-stage checks are a future re-acceptance procedure,
+**not implemented by the current helper**; this PR adds no acceptance automation.
+
+The Standard summary reports paths, dimensions,
 CRSs, pixel sizes, extents, type, both NoData values, valid/NoData counts and
 proportion, elevation range, grid/elevation preservation, source-declared T.P.
 vertical status, and overall PASS/FAIL. The Native and adjacent Standard
