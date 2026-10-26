@@ -73,7 +73,7 @@ The DEM remains at its accepted native grid. Only sampled copies are used. The s
 
 ## CR and numeric output contract
 
-`CrownRatioModel` exposes `specification()` and `ratios(grid, chm, dem)`. A model returns one ratio per output cell and JSON metadata with ID/version/parameters. Models receive copies of sampled heights and terrain. The initial `ConstantCR` is `constant_cr_v0.1`, version `0.1`, configurable default `0.60`, finite `0 < CR <= 1`. This is an experimental continuity parameter, not ecological validation. A later class/spatial model can supply ratio arrays without changing the output bundle. Such a model must enumerate its own source identities and applicability in its specification; the current CLI only constructs the constant model.
+`CrownRatioModel` exposes `specification()` and `ratios(grid, chm, dem)`. A model returns one ratio per output cell and JSON metadata with ID/version/parameters. Models receive copies of sampled heights and terrain. The only concrete CR model implemented for the v0.1 PoC release is `ConstantCR` / `constant_cr_v0.1`, version `0.1`, configurable default `0.60`, finite `0 < CR <= 1`. This is the implementation scope of this PR, not full Standard Canopy acceptance. This is an experimental continuity parameter, not ecological validation. A later class/spatial model can supply ratio arrays without changing the output bundle. Such a model must enumerate its own source identities and applicability in its specification; the current CLI only constructs the constant model.
 
 For finite valid samples and CR:
 
@@ -91,7 +91,7 @@ Calculation uses Float64 then stores Float32. Valid stored outputs must remain f
 | `height_envelope_state.tif` | UInt8 flags below, no raster NoData tag, output GridSpec |
 | `height_envelope_manifest.json` | PoC schema `ouem-height-envelope-poc/v0.1`, COMPLETED marker and evidence/QA |
 
-The -9999 sentinel is a PoC representation choice, not a newly ratified Canopy Standard. Nonvalid heights are always NoData. All three rasters are staged, closed, reopened and verified before any final file is linked into the new output directory. Hard links avoid replacing existing names; unsupported filesystems fail closed. If publication fails, links created by this run are removed. The manifest is published last as the bundle completion marker; an interrupted run without it is incomplete, even if some TIFFs exist. Empty/incomplete run directories are not automatically reused.
+The -9999 sentinel is a PoC representation choice, not a newly ratified Canopy Standard. Nonvalid heights are always NoData. All three rasters are staged, closed, reopened and verified before any final file is linked into the new output directory. Hard links avoid replacing existing names; unsupported filesystems fail closed. If publication fails, rollback attempts to remove every final link created by this run; denied removals are reported explicitly as incomplete rollback. Existing or concurrently created files are not rollback targets. The manifest is published last as the bundle completion marker; an interrupted run without it is incomplete, even if some TIFFs exist. Empty/incomplete run directories are not automatically reused.
 
 ## State encoding: validity flags, never canopy presence
 
@@ -134,3 +134,54 @@ Static baseline: main `a405ed2` fetched before implementation. Validation used r
 Local readiness check found the real CHM at `data/work/meta_chmv2_komae_committed_audit_20261025/chmv2_aoi.tif` (SHA-256 `c5f99a4e9b21e8f419825ef2cac25ec7b36bafbe8a79a89b062201343f0ef880`), matching its COMPLETED acquisition record (SHA-256 `ab83b9b466b85a4dd2a4a73749b1c2fffb68104b88f9d630ea88f2da76c956e0`). Neither `data/standard/terrain/komae_09LD3451.tif` nor its adjacent manifest exists. Thus **real Komae envelope execution was not performed**. No synthetic DEM was substituted for the missing accepted dataset, and no evidence bridge for real inputs was fabricated.
 
 Only the standalone module, its synthetic tests, and this PoC document are added. Existing contracts, acceptance records, canonical data, VoxCity integration and `src/ouem/komae_canopy.py` remain unchanged. The validation results establish the experimental implementation's tested behaviour, not full Standard Canopy acceptance.
+
+## PR #65 independent-review follow-up
+
+### Publication: observed Windows success and environment limits
+
+Ordinary Windows OUEM-venv synthetic runs successfully publish and reread the bundle using real `os.link` calls. A read-only `Get-Volume -DriveLetter C` check reports NTFS on this workstation; other volumes/providers were not tested. The earlier sandbox denial (WinError 5) is a separate environment result; it is not a raster-validation failure or evidence that arbitrary Windows locations support publication.
+
+Microsoft documents [CreateHardLinkW](https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-createhardlinkw) as an NTFS file operation requiring the same volume. Incompatible sharing modes can prevent linking, and path limits can cause failure. This PoC stages inside the new destination directory and closes GDAL handles before linking. That addresses its own same-volume/handle boundary, not all storage-provider or security-policy restrictions.
+
+| Condition | Evidence / expected handling |
+|---|---|
+| Ordinary local Windows run | Real link publication succeeds in the synthetic suite; all outputs are reopened and hash-checked |
+| Sandbox or permissions deny links | The prior WinError 5 was observed. New fault-injection cases test fail-closed handling of PermissionError |
+| Unsupported filesystem/provider or different device | Unsupported-operation and cross-device errors are injected, not claims of empirical FAT/exFAT/SMB testing. Unsupported storage must stop; no silent copy fallback |
+| Existing destination directory | Rejected before publication; its existing bytes remain unchanged |
+| A destination file appears during publication | Link creation fails without replacement; rollback removes only this run's successful links and preserves the other producer's file |
+| Failure at TIFF 1, 2, 3, or final manifest publication | Fault-injection tests confirm rollback of this run's earlier links and absence of its completion manifest |
+| Removal itself is denied | Remaining removals are still attempted. `EnvelopeBlocked` reports incomplete rollback and retained paths, chained to the publication error; a new run is required |
+
+The new directory is a single-writer workspace. The four-file bundle is **not** one filesystem transaction: process termination, device loss, changing ACLs, incompatible external handles, or denied cleanup can leave incomplete residue. Do not infer success from TIFF existence; the manifest is published last, and consumers/reviewers must verify its file identities and hashes. A run without its verified completion manifest is incomplete. After failure, retain/quarantine the run, close conflicting writers and investigate; do not automatically delete evidence or reuse that directory. Cleanup/temporary-directory removal can itself fail and must not be treated as a portability guarantee.
+
+**Alternative considered:** copying with exclusive destination creation is more broadly available but exposes partially copied final-named files before completion. `os.replace` permits overwriting, and a portable `rename` design needs platform-specific no-replace semantics or additional locking. For this local PoC, retaining the tested same-volume hard-link path preserves verified-file publication and no-replacement behaviour with a smaller change. Broader filesystem support remains deferred; no automatic fallback or blanket Windows compatibility claim is made. See [Python os filesystem operations](https://docs.python.org/3.11/library/os.html) for their platform-dependent error and rename/replace behaviour.
+
+### Evidence bridge: mandatory human review for real-data acceptance
+
+The bridge checks declared fields, exact input hashes and quoted snapshot consistency. A fabricated or scientifically wrong source statement can still be internally consistent: these checks **do not automatically guarantee scientific validity**, accuracy, independent observation, or applicability of a height model to the AOI. Source text and a reviewer/date field are evidence to examine, not an automated approval.
+
+Before any real-data acceptance, a person must record findings and unresolved issues for:
+
+1. **Source identity and meaning:** verify the actual provider/release and complete source context; confirm the cited snapshot is authentic and applies to the exact raster/model, with HAG relative to local ground in metres rather than absolute Z, DSM, or a filename-based assumption. Check encoding, units, scale/offset and acquisition-to-crop lineage.
+2. **Ground and vertical compatibility:** verify the DEM's exact accepted bytes, bare-earth meaning, vertical reference/status/source and that its manifest and TIFF agree. Evaluate whether the CHM's model-ground assumptions, dates and local conditions are compatible with this DEM. Document unresolved differences; do not invent an offset or infer a datum from EPSG:6677.
+3. **Spatial/data quality:** review source dates, coverage, centre sampling, masks/NoData, missing/invalid states, known model errors and any representative independent height/ground evidence available. Hashes and top/bottom inequalities alone do not establish roof, ground or canopy truth.
+4. **CR/model applicability and use:** justify the chosen constant CR and its scope, review sensitivity/uncertainty and estimated bottom heights, and keep height validity separate from canopy presence/absence and downstream analysis suitability.
+5. **Review decision:** retain reviewer/date, supporting source references, input/output identities, limitations, inspection results and the actual acceptance decision in the appropriate separate review record. Defer/stop acceptance if source meaning or compatibility is unresolved; do not overwrite earlier records or promote synthetic success to real acceptance.
+
+### CR extension boundary
+
+`constant_cr_v0.1` is the sole concrete model in this PR's v0.1 implementation scope. `CrownRatioModel` is an extension port. The synthetic class-array and invalid-array tests verify interface plumbing and error classification only; they are **not** implementation or acceptance of a real class-based or spatially variable CR model. CLI construction remains constant-only, and CR=0.60 has no universal ecological acceptance claim.
+
+A later model needs separately reviewed class/spatial source identities and hashes, model/version and training/calibration evidence, parameter/ratio provenance, coverage/CRS/grid alignment, class-boundary and missing/unknown-class rules, per-cell range and mask handling, scale/time/region applicability, uncertainty/sensitivity, deterministic tests, and independent real-data validation/acceptance. External model inputs must be included in provenance and input-change protection rather than merely mentioned in metadata. This work and any ecological performance claims are **deferred / not accepted**; the unchanged top/bottom output interface alone does not satisfy those requirements.
+
+### Follow-up validation
+
+On the ordinary Windows repository OUEM venv, after the rollback change and added review regressions:
+
+- `.venv/Scripts/python.exe -m pytest -q tests/test_height_envelope.py`: **40 passed, 77 warnings**, 13.19 s.
+- `.venv/Scripts/python.exe -m pytest -q`: **471 passed, 5 skipped, 243 warnings**, 160.19 s. No existing Terrain, Building, acquisition, Adapter or Canopy regression failures. Warnings remain Rasterio Affine PendingDeprecationWarning messages.
+- Read-only `Get-Volume -DriveLetter C` returned NTFS in the approved ordinary environment. Its sandboxed CIM query was denied; this is distinct from the prior sandbox hard-link denial.
+- Permission, unsupported-link and cross-device failures were injected; destination protection, each publication failure point and rollback denial were checked with synthetic data. These tests do not certify untested storage providers or guarantee cleanup under every OS failure.
+
+This follow-up changes only the height-envelope module's rollback handling, its tests and this document. It performs no real Komae height-envelope processing or full Standard Canopy acceptance. The independent reviewer determines merge readiness separately; this PR remains Draft and unmerged.

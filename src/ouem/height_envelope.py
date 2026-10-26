@@ -348,8 +348,17 @@ def generate(chm, acquisition_record, chm_evidence, terrain, terrain_manifest,
             for name in [*outputs, filename]:
                 os.link(stage/name, out/name)
                 published.append(out/name)
-        except Exception:
-            for path in reversed(published): path.unlink()
+        except Exception as exc:
+            retained = []
+            for path in reversed(published):
+                try:
+                    path.unlink()
+                except OSError:
+                    retained.append(str(path))
+            if retained:
+                raise EnvelopeBlocked(
+                    f"Publication failed; rollback incomplete; quarantine this run directory: {retained}"
+                ) from exc
             raise
     return manifest
 

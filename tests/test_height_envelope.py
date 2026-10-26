@@ -247,13 +247,14 @@ def test_nonzero_source_offset_is_blocked_not_silently_added(inputs, tmp_path):
     assert not (tmp_path/"blocked").exists()
 
 
-def test_partial_bundle_publication_failure_rolls_back_outputs(inputs, tmp_path, monkeypatch):
+@pytest.mark.parametrize("fail_at", [1, 2, 3, 4])
+def test_partial_bundle_publication_failure_rolls_back_outputs(inputs, tmp_path, monkeypatch, fail_at):
     original = env.os.link
     calls = 0
     def fail_second(*args):
         nonlocal calls
         calls += 1
-        if calls == 2: raise OSError("simulated publication failure")
+        if calls == fail_at: raise OSError("simulated publication failure")
         return original(*args)
     monkeypatch.setattr(env.os, "link", fail_second)
     with pytest.raises(OSError, match="publication"):
@@ -311,3 +312,56 @@ def test_changing_an_input_before_publication_blocks_bundle(inputs, tmp_path, mo
         env.generate(**inputs, output_dir=tmp_path/"out")
     assert not list((tmp_path/"out").glob("*.tif"))
     assert not (tmp_path/"out/height_envelope_manifest.json").exists()
+
+
+@pytest.mark.parametrize("failure", [PermissionError(13, "permission denied"), OSError(95, "links unsupported"), OSError(18, "cross-device link")])
+def test_environment_link_failures_never_publish_a_bundle(inputs, tmp_path, monkeypatch, failure):
+    def blocked(*args): raise failure
+    monkeypatch.setattr(env.os, "link", blocked)
+    with pytest.raises(OSError): env.generate(**inputs, output_dir=tmp_path/"blocked")
+    assert not list((tmp_path/"blocked").glob("*.tif"))
+    assert not (tmp_path/"blocked/height_envelope_manifest.json").exists()
+
+
+def test_existing_directory_and_files_are_not_changed(inputs, tmp_path):
+    out = tmp_path/"existing"; out.mkdir()
+    old = out/"canopy_top_z.tif"; old.write_bytes(b"pre-existing result")
+    before = env.sha256(old)
+    with pytest.raises(env.EnvelopeBlocked, match="new output directory"):
+        env.generate(**inputs, output_dir=out)
+    assert env.sha256(old) == before
+    assert list(out.iterdir()) == [old]
+
+
+def test_concurrent_target_is_preserved_and_own_links_rolled_back(inputs, tmp_path, monkeypatch):
+    original = env.os.link
+    out = tmp_path/"race"
+    def race(source, target):
+        if target.name == "canopy_bottom_z.tif":
+            target.write_bytes(b"another producer")
+        return original(source, target)
+    monkeypatch.setattr(env.os, "link", race)
+    with pytest.raises(FileExistsError): env.generate(**inputs, output_dir=out)
+    assert (out/"canopy_bottom_z.tif").read_bytes() == b"another producer"
+    assert not (out/"canopy_top_z.tif").exists()
+    assert not (out/"height_envelope_manifest.json").exists()
+
+
+def test_rollback_denial_reports_residue_and_attempts_other_removals(inputs, tmp_path, monkeypatch):
+    original_link, original_unlink = env.os.link, Path.unlink
+    out = tmp_path/"denied-rollback"
+    def fail_manifest(source, target):
+        if target.name == "height_envelope_manifest.json": raise OSError("link failed")
+        return original_link(source, target)
+    def deny_one(path, *args, **kwargs):
+        if path == out/"height_envelope_state.tif": raise PermissionError("unlink denied")
+        return original_unlink(path, *args, **kwargs)
+    monkeypatch.setattr(env.os, "link", fail_manifest)
+    monkeypatch.setattr(Path, "unlink", deny_one)
+    with pytest.raises(env.EnvelopeBlocked, match="rollback incomplete") as error:
+        env.generate(**inputs, output_dir=out)
+    assert isinstance(error.value.__cause__, OSError)
+    assert (out/"height_envelope_state.tif").exists()
+    assert not (out/"canopy_top_z.tif").exists()
+    assert not (out/"canopy_bottom_z.tif").exists()
+    assert not (out/"height_envelope_manifest.json").exists()
