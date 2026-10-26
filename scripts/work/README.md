@@ -229,9 +229,12 @@ changed if already used):
 ```
 
 Require a COMPLETED acquisition manifest, matching ZIP/TIFF hashes, no FAILED
-record and no staging residue. Acquisition does not register Native, generate
-Standard or grant acceptance. The local helper additionally requires the exact
-A2 original hash and tile metadata; a filename/path alone is insufficient.
+record and no staging residue. These are operator checks: the current helper
+does **not** read PR #66's acquisition manifest, check its COMPLETED status, or
+compare the hashes recorded there with the ZIP/TIFF files. The helper's own
+input checks only enforce the pinned A2 original TIFF hash and tile metadata;
+they do not establish acquisition-manifest integrity or a completed acquisition
+run. Acquisition does not register Native, generate Standard or grant acceptance.
 Run **read-only preflight** with explicit input and a **new output directory**:
 
 ```bat
@@ -261,7 +264,20 @@ Native registration records Raw path/hash and provenance without copying Raw;
 Standard generation consumes that manifest. Neither command's success creates
 a formal acceptance decision. A later reviewer must examine the new manifests,
 output hashes, grid/elevation validation and environment in a separate record.
-The helper reports `PROCESSING_COMPLETED_PENDING_REVIEW`, never ACCEPTED.
+`PROCESSING_COMPLETED_PENDING_REVIEW` means **only that the Native and Standard
+CLI subprocesses exited successfully**. Those CLIs perform their existing
+internal checks; the helper does not independently reopen/validate the outputs,
+check output-file existence/hashes after their exit, or grant formal acceptance.
+
+At the next formal re-acceptance, independently verify the acquisition manifest's
+COMPLETED status and absence of FAILED/staging residue, compare its ZIP/TIFF
+hashes with the retained files, and trace the Raw TIFF hash through the Native
+manifest and Standard manifest's source identity. Match the Standard manifest's
+output hash to the actual Standard TIFF, independently inspect grid/elevation
+preservation and corrected source provenance, and compare with the historical
+accepted baseline. Record any differences and the review/acceptance decision in
+a new record. These cross-stage checks are a future re-acceptance procedure,
+**not implemented by the current helper**; this PR adds no acceptance automation.
 
 The Standard summary reports paths, dimensions,
 CRSs, pixel sizes, extents, type, both NoData values, valid/NoData counts and

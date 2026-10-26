@@ -1,4 +1,16 @@
-"""Komae-only local helper: explicit inputs, fresh outputs, corrected Tama evidence."""
+"""Komae-only local helper: explicit inputs, fresh outputs, corrected Tama evidence.
+
+PROCESSING_COMPLETED_PENDING_REVIEW means only that the Native and Standard
+CLIs exited successfully. Their own checks are not independent output
+verification by this helper, nor formal acceptance. This helper does not
+reopen/independently validate their outputs.
+
+Input checks pin the TIFF hash and raster profile, but do not read PR #66's
+acquisition manifest, check its COMPLETED status, or compare its recorded
+ZIP/TIFF hashes with files. The next formal re-acceptance must independently
+check that acquisition evidence and trace it through Native/Standard manifests
+to the actual Standard output before a separate acceptance decision.
+"""
 from __future__ import annotations
 
 import argparse
@@ -45,6 +57,11 @@ def preflight(source, run_dir):
 
 
 def run(source, run_dir, *, check=False):
+    """Plan or invoke existing CLIs; successful exits alone set pending-review status.
+
+    No acquisition-manifest validation or independent output verification is
+    performed here; see the module description and work README for the boundary.
+    """
     report = preflight(source, run_dir)
     if check:
         return report
