@@ -137,12 +137,13 @@ def test_komae_acceptance_declares_tokyo_profile_and_official_evidence():
     workflow = (ROOT / "scripts/work/terrain_komae_local_acceptance.cmd").read_text(
         encoding="utf-8"
     )
-    assert "--vertical-reference-status source-declared" in workflow
-    assert f'--vertical-reference "{TOKYO_VERTICAL_REFERENCE}"' in workflow
-    assert "Tokyo Metropolitan Government" in workflow
-    assert "https://portal.data.metro.tokyo.lg.jp/" in workflow
-    assert "https://www.metro.tokyo.lg.jp/information/press/2024/10/2024103126" in workflow
-    assert "https://www.kensetsu.metro.tokyo.lg.jp/jimusho/tech/04-kijyun/kijyunsetu" in workflow
+    assert "-m ouem.terrain_local_acceptance %*" in workflow
+    from ouem.terrain_local_acceptance import VERTICAL_NAME, VERTICAL_SOURCE
+    assert VERTICAL_NAME == TOKYO_VERTICAL_REFERENCE
+    assert "Tokyo Metropolitan Government" in VERTICAL_SOURCE
+    assert "Tama" in VERTICAL_SOURCE
+    assert "https://catalog.data.metro.tokyo.lg.jp/dataset/t000029d0000000020" in VERTICAL_SOURCE
+    assert "23-ku" not in VERTICAL_SOURCE
 
 
 @pytest.mark.parametrize("crs", [None, "EPSG:4326"])

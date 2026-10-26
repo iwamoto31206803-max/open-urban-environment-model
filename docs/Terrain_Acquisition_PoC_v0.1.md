@@ -172,6 +172,14 @@ with that Native manifest and the existing study-area YAML, retaining the
 
 ## Additive source clarification and outstanding correction plan (2026-10-26)
 
+Follow-up: the [dated source provenance correction](acceptance/OUEM_A2_Terrain_Source_Provenance_Correction_20261026.md)
+now supplements this PR #66 evidence. The Standard Terrain source explanation
+and [current local procedure](../scripts/work/README.md#komae-terrain-local-acceptance)
+use Tama provenance with explicit source/new output paths and read-only
+preflight. The table below is the historical PR #66 correction plan, not a
+claim that those follow-ups are still unimplemented. Formal A2/A3 records and
+PR #66's recorded run evidence remain unchanged.
+
 The public **Tama** TIFF exactly matches the original SHA in the frozen A2
 record. Tokyo's Tama catalogue supplies the appropriate Tokyo Bay mean sea
 level declaration. This clarifies geographic/source provenance; it neither
