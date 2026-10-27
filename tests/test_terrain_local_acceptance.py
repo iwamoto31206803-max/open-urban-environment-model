@@ -3,8 +3,10 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import shutil
 import subprocess
 import sys
+import venv
 
 import pytest
 
@@ -112,15 +114,33 @@ def test_cli_check_and_failure_status(inputs, monkeypatch, capsys):
 
 
 @pytest.mark.skipif(os.name != "nt", reason="cmd.exe launcher executes only on Windows")
-def test_windows_launcher_requires_explicit_arguments_and_checks_without_writes(inputs):
+def test_windows_launcher_requires_explicit_arguments_and_checks_without_writes(inputs, tmp_path):
     source, out = inputs
-    launcher = helper.ROOT / "scripts/work/terrain_komae_local_acceptance.cmd"
-    result = subprocess.run(["cmd", "/d", "/c", str(launcher)], cwd=helper.ROOT,
-                            capture_output=True, text=True, timeout=30)
+    # Hosted CI installs into setup-python, not a repository .venv. Exercise the
+    # unchanged launcher in an isolated repo; never depend on or modify a user's
+    # existing .venv. Reuse this test process's dependencies without pip/network.
+    repo = tmp_path / "repo"
+    launcher = repo / "scripts/work/terrain_komae_local_acceptance.cmd"
+    launcher.parent.mkdir(parents=True)
+    shutil.copy2(helper.ROOT / "scripts/work/terrain_komae_local_acceptance.cmd", launcher)
+    env = {**os.environ, "PYTHONPATH": os.pathsep.join(
+        str(Path(entry).resolve()) for entry in sys.path if entry
+    )}
+
+    def launch(*args):
+        return subprocess.run(["cmd", "/d", "/c", str(launcher), *map(str, args)],
+                              cwd=tmp_path, env=env, capture_output=True, text=True, timeout=30)
+
+    # A missing repository interpreter must still fail closed before Python runs.
+    result = launch()
+    assert result.returncode == 2 and "repository venv not found" in result.stdout
+    assert str(repo / ".venv/Scripts/python.exe") in result.stdout
+    assert not out.parent.exists()
+    venv.EnvBuilder(with_pip=False, system_site_packages=True).create(repo / ".venv")
+    result = launch()
     assert result.returncode == 2 and "required" in result.stderr
     # A separate process uses the real fixed hash, so synthetic bytes must fail.
-    result = subprocess.run(["cmd", "/d", "/c", str(launcher), str(source),
-                             "--run-dir", str(out), "--check"], cwd=helper.ROOT,
-                            capture_output=True, text=True, timeout=30)
+    result = launch(source, "--run-dir", out, "--check")
     assert result.returncode == 2 and "SHA-256" in result.stderr
     assert not out.parent.exists()
+    assert source.read_bytes() == b"synthetic identified input"
