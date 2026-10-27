@@ -1,0 +1,273 @@
+{
+  "purpose": "Independent authored fixture design and PyProj horizontal oracle; no Converter-derived expected values",
+  "fixture_sha256": "ac2794be68822389f784c3ae896b0343dd4a046edcf46d8ca577418af52081f8",
+  "crs": "EPSG:6697",
+  "source_axis_order": [
+    "latitude",
+    "longitude",
+    "H_m"
+  ],
+  "buildings": [
+    {
+      "id": "synthetic_tokyo",
+      "base_H_m": 10.25,
+      "lod1_top_H_m": 18.25,
+      "lod2_top_H_m": 19.75,
+      "lod1_polygons": 6,
+      "lod2_polygons": 10,
+      "lod2_interior_rings": 2,
+      "horizontal_control_points": [
+        {
+          "source_lat_lon": [
+            35.63,
+            139.57
+          ],
+          "expected_gpkg_lon_lat": [
+            139.57,
+            35.63
+          ],
+          "expected_6677_easting_northing": [
+            -23851.158102583362,
+            -41017.52799653441
+          ]
+        },
+        {
+          "source_lat_lon": [
+            35.63,
+            139.5701
+          ],
+          "expected_gpkg_lon_lat": [
+            139.5701,
+            35.63
+          ],
+          "expected_6677_easting_northing": [
+            -23842.100680106272,
+            -41017.55224256409
+          ]
+        },
+        {
+          "source_lat_lon": [
+            35.630100000000006,
+            139.5701
+          ],
+          "expected_gpkg_lon_lat": [
+            139.5701,
+            35.630100000000006
+          ],
+          "expected_6677_easting_northing": [
+            -23842.070987531883,
+            -41006.458098363895
+          ]
+        },
+        {
+          "source_lat_lon": [
+            35.630100000000006,
+            139.57
+          ],
+          "expected_gpkg_lon_lat": [
+            139.57,
+            35.630100000000006
+          ],
+          "expected_6677_easting_northing": [
+            -23851.12839872879,
+            -41006.433852305185
+          ]
+        },
+        {
+          "source_lat_lon": [
+            35.630030000000005,
+            139.57003
+          ],
+          "expected_gpkg_lon_lat": [
+            139.57003,
+            35.630030000000005
+          ],
+          "expected_6677_easting_northing": [
+            -23848.431965703094,
+            -41014.2070280635
+          ]
+        },
+        {
+          "source_lat_lon": [
+            35.630030000000005,
+            139.57007
+          ],
+          "expected_gpkg_lon_lat": [
+            139.57007,
+            35.630030000000005
+          ],
+          "expected_6677_easting_northing": [
+            -23844.80899806818,
+            -41014.216726478626
+          ]
+        },
+        {
+          "source_lat_lon": [
+            35.63007,
+            139.57007
+          ],
+          "expected_gpkg_lon_lat": [
+            139.57007,
+            35.63007
+          ],
+          "expected_6677_easting_northing": [
+            -23844.79711968481,
+            -41009.77906879487
+          ]
+        },
+        {
+          "source_lat_lon": [
+            35.63007,
+            139.57003
+          ],
+          "expected_gpkg_lon_lat": [
+            139.57003,
+            35.63007
+          ],
+          "expected_6677_easting_northing": [
+            -23848.42008551489,
+            -41009.76937037549
+          ]
+        }
+      ]
+    },
+    {
+      "id": "synthetic_niigata",
+      "base_H_m": 100.125,
+      "lod1_top_H_m": 112.625,
+      "lod2_top_H_m": 114.875,
+      "lod1_polygons": 6,
+      "lod2_polygons": 10,
+      "lod2_interior_rings": 2,
+      "horizontal_control_points": [
+        {
+          "source_lat_lon": [
+            37.12,
+            138.28
+          ],
+          "expected_gpkg_lon_lat": [
+            138.28,
+            37.12
+          ],
+          "expected_6677_easting_northing": [
+            -138038.04442183176,
+            125402.70568318528
+          ]
+        },
+        {
+          "source_lat_lon": [
+            37.12,
+            138.2801
+          ],
+          "expected_gpkg_lon_lat": [
+            138.2801,
+            37.12
+          ],
+          "expected_6677_easting_northing": [
+            -138029.1572555771,
+            125402.56024913512
+          ]
+        },
+        {
+          "source_lat_lon": [
+            37.1201,
+            138.2801
+          ],
+          "expected_gpkg_lon_lat": [
+            138.2801,
+            37.1201
+          ],
+          "expected_6677_easting_northing": [
+            -138028.97564801198,
+            125413.65824677925
+          ]
+        },
+        {
+          "source_lat_lon": [
+            37.1201,
+            138.28
+          ],
+          "expected_gpkg_lon_lat": [
+            138.28,
+            37.1201
+          ],
+          "expected_6677_easting_northing": [
+            -138037.86280256626,
+            125413.80368097314
+          ]
+        },
+        {
+          "source_lat_lon": [
+            37.12003,
+            138.28003
+          ],
+          "expected_gpkg_lon_lat": [
+            138.28003,
+            37.12003
+          ],
+          "expected_6677_easting_northing": [
+            -138035.32378725978,
+            125405.99145129144
+          ]
+        },
+        {
+          "source_lat_lon": [
+            37.12003,
+            138.28007
+          ],
+          "expected_gpkg_lon_lat": [
+            138.28007,
+            37.12003
+          ],
+          "expected_6677_easting_northing": [
+            -138031.76892216422,
+            125405.93327765452
+          ]
+        },
+        {
+          "source_lat_lon": [
+            37.12007,
+            138.28007
+          ],
+          "expected_gpkg_lon_lat": [
+            138.28007,
+            37.12007
+          ],
+          "expected_6677_easting_northing": [
+            -138031.69627773413,
+            125410.3724767293
+          ]
+        },
+        {
+          "source_lat_lon": [
+            37.12007,
+            138.28003
+          ],
+          "expected_gpkg_lon_lat": [
+            138.28003,
+            37.12007
+          ],
+          "expected_6677_easting_northing": [
+            -138035.2511409576,
+            125410.43065039029
+          ]
+        }
+      ]
+    }
+  ],
+  "horizontal_oracle": {
+    "engine": "PyProj",
+    "version": "3.7.2",
+    "source_horizontal_epsg": 6668,
+    "target_epsg": 6677,
+    "always_xy": true
+  },
+  "proposed_computational_tolerances": {
+    "preserved_H_m": 1e-09,
+    "horizontal_residual_m": 0.0001,
+    "status": "fixture diagnostic budgets, not survey accuracy; review before Converter run"
+  },
+  "geoid_reference": null,
+  "geoid_status": "NOT RUN: no independent N reference supplied",
+  "full_xsd_validation": "NOT RUN: complete pinned schema closure not supplied"
+}
