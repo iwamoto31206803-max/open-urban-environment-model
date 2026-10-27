@@ -38,8 +38,14 @@ records; **Provisional** contracts remain non-FINAL; **Draft** proposals await
 approval; **Experimental** records describe bounded technical work;
 **Historical** documents retain the context of their recorded date.
 
+For a new chat/session, read this README, then the relevant Current State,
+then its linked Standard / Implementation and Verification / Acceptance records.
+The governance document defines responsibilities and update rules.
+
 | Start here | Role and scope |
 |---|---|
+| [Documentation Governance](docs/OUEM_Documentation_Governance_v0.1.md) | Proposed role boundaries, status meanings and PR update rules; no contract or acceptance change. |
+| [Canopy Current State](docs/status/CANOPY_CURRENT_STATE.md) / [Building Current State](docs/status/BUILDING_CURRENT_STATE.md) | Dated implementation/evidence entry points and open gates; summaries do not override contracts or records. |
 | [Concept & Architecture v0.2](docs/OUEM_Concept_Architecture_v0.2.md) / [v0.1](docs/OUEM_Concept_Architecture_v0.1.md) | Formal upper-level design / Historical baseline with inherited B1/B2 details. |
 | [Standard Building](docs/OUEM_Standard_Building_v0.1.md) / [Standard Terrain](docs/OUEM_Standard_Terrain_v0.1.md) | Provisional contracts; Komae acceptance is limited to recorded datasets and conditions. |
 | [VoxCity Building Adapter](docs/OUEM_VoxCity_Adapter_v0.1.md) | Formal versioned Building boundary; accepted voxel integration scope only. |
