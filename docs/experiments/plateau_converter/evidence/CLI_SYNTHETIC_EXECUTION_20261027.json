@@ -1,0 +1,633 @@
+{
+  "status": "Experimental technical execution evidence; not acceptance",
+  "evidence_date": "2026-10-27",
+  "documentation_baseline_main": "0ba20af4b675f76e39676f0a4e20508aadbd7065",
+  "execution_ouem_commit": "8d052872d468a380d04102a062cf29e9acd3172b",
+  "converter_build_environment": {
+    "repository": "https://github.com/MIERUNE/plateau-gis-converter",
+    "commit": "ce7766df9788ce391b149c55df16d33082d0bc72",
+    "recorded_at": "2026-10-27T23:18:21.6270252+09:00",
+    "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+    "cargo": "cargo 1.99.1 (5f94df478 2026-08-27)",
+    "toolchain": "stable-x86_64-pc-windows-msvc (default)",
+    "msvc": "14.51.36231",
+    "windows_sdk": "10.0.26100.0\\",
+    "lockfile_sha256": "e061cc4dc2db366d46ce620ddbbdbd2502a49a4e2c7e63823509dddba66f2730",
+    "lockfile_git_blob": "0ea0ee91aad7f488fa37d21535d80e20055e4e57",
+    "command": "cargo build --locked -p nusamai --bin nusamai --profile release-lto --target x86_64-pc-windows-msvc",
+    "source_modified": false,
+    "citygml_conversion_performed": false
+  },
+  "converter_build_result": {
+    "help_exit_code": 0,
+    "version_exit_code": 0,
+    "exe_sha256": "0195a11df4fd0ef30dcd5578175035a918c41285b1fcc329f3399f5337326f1b",
+    "exe_size_bytes": 27265024,
+    "build_exit_code": 0
+  },
+  "runtime": {
+    "python": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+    "platform": "Windows-10-10.0.26300-SP0",
+    "shapely": "2.2.0",
+    "pyproj": "3.7.2",
+    "proj": "9.5.1"
+  },
+  "fixture": {
+    "path": "tests/fixtures/plateau_converter/two_buildings.gml",
+    "sha256": "ac2794be68822389f784c3ae896b0343dd4a046edcf46d8ca577418af52081f8",
+    "expected_path": "tests/fixtures/plateau_converter/expected.json",
+    "expected_sha256": "4116bb577fd45c3db025f4d0f6fec0b51fcd079b21069a41287403c5b2583ca1",
+    "structural_checks": {
+      "status": "PASS",
+      "scope": "XML/identity/LoD/ring/height structure only",
+      "full_xsd_validation": "NOT RUN",
+      "solid_topology": "NOT RUN",
+      "buildings": [
+        {
+          "id": "synthetic_tokyo",
+          "structural_checks": "PASS"
+        },
+        {
+          "id": "synthetic_niigata",
+          "structural_checks": "PASS"
+        }
+      ]
+    }
+  },
+  "historical_run_id": "data/work/plateau-converter-cli/synthetic-execution-20261027-01",
+  "commands": {
+    "help": {
+      "argv": [
+        "C:\\dev\\plateau-gis-converter\\target\\x86_64-pc-windows-msvc\\release-lto\\nusamai.exe",
+        "--help"
+      ],
+      "cwd": "C:\\dev\\open-urban-environment-model\\data\\work\\plateau-converter-cli\\synthetic-execution-20261027-01",
+      "started_at_utc": "2026-10-27T14:29:13.666288+00:00",
+      "ended_at_utc": "2026-10-27T14:29:13.682021+00:00",
+      "exit_code": 0,
+      "error": null,
+      "stdout_sha256": "539e69092625a324fa0a8315c98168846dc555e4b87cc0f4bc9377ccd05849be",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "version": {
+      "argv": [
+        "C:\\dev\\plateau-gis-converter\\target\\x86_64-pc-windows-msvc\\release-lto\\nusamai.exe",
+        "--version"
+      ],
+      "cwd": "C:\\dev\\open-urban-environment-model\\data\\work\\plateau-converter-cli\\synthetic-execution-20261027-01",
+      "started_at_utc": "2026-10-27T14:29:13.691941+00:00",
+      "ended_at_utc": "2026-10-27T14:29:13.707940+00:00",
+      "exit_code": 0,
+      "error": null,
+      "stdout_sha256": "74c366751c51e351280d0b9953face96d28112aedcf31f8098114fbf4ae9e1f1",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "convert_6697": {
+      "argv": [
+        "C:\\dev\\plateau-gis-converter\\target\\x86_64-pc-windows-msvc\\release-lto\\nusamai.exe",
+        "C:\\dev\\open-urban-environment-model\\tests\\fixtures\\plateau_converter\\two_buildings.gml",
+        "--sink",
+        "gpkg",
+        "--output",
+        "C:\\dev\\open-urban-environment-model\\data\\work\\plateau-converter-cli\\synthetic-execution-20261027-01\\lod2_epsg6697.gpkg",
+        "--epsg",
+        "6697",
+        "-t",
+        "use_lod=lod2"
+      ],
+      "cwd": "C:\\dev\\open-urban-environment-model\\data\\work\\plateau-converter-cli\\synthetic-execution-20261027-01",
+      "started_at_utc": "2026-10-27T14:29:13.719635+00:00",
+      "ended_at_utc": "2026-10-27T14:29:13.797271+00:00",
+      "exit_code": 0,
+      "error": null,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "d980c3dbfac34aea95f0d34e2e28c22bc2a75b1f3b4e5d8f931952f893dae69c"
+    },
+    "convert_4979": {
+      "argv": [
+        "C:\\dev\\plateau-gis-converter\\target\\x86_64-pc-windows-msvc\\release-lto\\nusamai.exe",
+        "C:\\dev\\open-urban-environment-model\\tests\\fixtures\\plateau_converter\\two_buildings.gml",
+        "--sink",
+        "gpkg",
+        "--output",
+        "C:\\dev\\open-urban-environment-model\\data\\work\\plateau-converter-cli\\synthetic-execution-20261027-01\\lod2_epsg4979.gpkg",
+        "--epsg",
+        "4979",
+        "-t",
+        "use_lod=lod2"
+      ],
+      "cwd": "C:\\dev\\open-urban-environment-model\\data\\work\\plateau-converter-cli\\synthetic-execution-20261027-01",
+      "started_at_utc": "2026-10-27T14:29:13.803456+00:00",
+      "ended_at_utc": "2026-10-27T14:29:13.882561+00:00",
+      "exit_code": 0,
+      "error": null,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "d980c3dbfac34aea95f0d34e2e28c22bc2a75b1f3b4e5d8f931952f893dae69c"
+    },
+    "convert_6677": {
+      "argv": [
+        "C:\\dev\\plateau-gis-converter\\target\\x86_64-pc-windows-msvc\\release-lto\\nusamai.exe",
+        "C:\\dev\\open-urban-environment-model\\tests\\fixtures\\plateau_converter\\two_buildings.gml",
+        "--sink",
+        "gpkg",
+        "--output",
+        "C:\\dev\\open-urban-environment-model\\data\\work\\plateau-converter-cli\\synthetic-execution-20261027-01\\lod2_epsg6677.gpkg",
+        "--epsg",
+        "6677",
+        "-t",
+        "use_lod=lod2"
+      ],
+      "cwd": "C:\\dev\\open-urban-environment-model\\data\\work\\plateau-converter-cli\\synthetic-execution-20261027-01",
+      "started_at_utc": "2026-10-27T14:29:13.882561+00:00",
+      "ended_at_utc": "2026-10-27T14:29:13.962094+00:00",
+      "exit_code": 0,
+      "error": null,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "d980c3dbfac34aea95f0d34e2e28c22bc2a75b1f3b4e5d8f931952f893dae69c"
+    },
+    "repeat_6697": {
+      "argv": [
+        "C:\\dev\\plateau-gis-converter\\target\\x86_64-pc-windows-msvc\\release-lto\\nusamai.exe",
+        "C:\\dev\\open-urban-environment-model\\tests\\fixtures\\plateau_converter\\two_buildings.gml",
+        "--sink",
+        "gpkg",
+        "--output",
+        "C:\\dev\\open-urban-environment-model\\data\\work\\plateau-converter-cli\\synthetic-execution-20261027-01\\repeat_lod2_epsg6697.gpkg",
+        "--epsg",
+        "6697",
+        "-t",
+        "use_lod=lod2"
+      ],
+      "cwd": "C:\\dev\\open-urban-environment-model\\data\\work\\plateau-converter-cli\\synthetic-execution-20261027-01",
+      "started_at_utc": "2026-10-27T14:31:55.609746+00:00",
+      "ended_at_utc": "2026-10-27T14:31:55.691379+00:00",
+      "exit_code": 0,
+      "error": null,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "d980c3dbfac34aea95f0d34e2e28c22bc2a75b1f3b4e5d8f931952f893dae69c"
+    },
+    "repeat_4979": {
+      "argv": [
+        "C:\\dev\\plateau-gis-converter\\target\\x86_64-pc-windows-msvc\\release-lto\\nusamai.exe",
+        "C:\\dev\\open-urban-environment-model\\tests\\fixtures\\plateau_converter\\two_buildings.gml",
+        "--sink",
+        "gpkg",
+        "--output",
+        "C:\\dev\\open-urban-environment-model\\data\\work\\plateau-converter-cli\\synthetic-execution-20261027-01\\repeat_lod2_epsg4979.gpkg",
+        "--epsg",
+        "4979",
+        "-t",
+        "use_lod=lod2"
+      ],
+      "cwd": "C:\\dev\\open-urban-environment-model\\data\\work\\plateau-converter-cli\\synthetic-execution-20261027-01",
+      "started_at_utc": "2026-10-27T14:31:55.698383+00:00",
+      "ended_at_utc": "2026-10-27T14:31:55.785967+00:00",
+      "exit_code": 0,
+      "error": null,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "d980c3dbfac34aea95f0d34e2e28c22bc2a75b1f3b4e5d8f931952f893dae69c"
+    },
+    "repeat_6677": {
+      "argv": [
+        "C:\\dev\\plateau-gis-converter\\target\\x86_64-pc-windows-msvc\\release-lto\\nusamai.exe",
+        "C:\\dev\\open-urban-environment-model\\tests\\fixtures\\plateau_converter\\two_buildings.gml",
+        "--sink",
+        "gpkg",
+        "--output",
+        "C:\\dev\\open-urban-environment-model\\data\\work\\plateau-converter-cli\\synthetic-execution-20261027-01\\repeat_lod2_epsg6677.gpkg",
+        "--epsg",
+        "6677",
+        "-t",
+        "use_lod=lod2"
+      ],
+      "cwd": "C:\\dev\\open-urban-environment-model\\data\\work\\plateau-converter-cli\\synthetic-execution-20261027-01",
+      "started_at_utc": "2026-10-27T14:31:55.787980+00:00",
+      "ended_at_utc": "2026-10-27T14:31:55.867652+00:00",
+      "exit_code": 0,
+      "error": null,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "d980c3dbfac34aea95f0d34e2e28c22bc2a75b1f3b4e5d8f931952f893dae69c"
+    },
+    "control_lod1": {
+      "argv": [
+        "C:\\dev\\plateau-gis-converter\\target\\x86_64-pc-windows-msvc\\release-lto\\nusamai.exe",
+        "C:\\dev\\open-urban-environment-model\\tests\\fixtures\\plateau_converter\\two_buildings.gml",
+        "--sink",
+        "gpkg",
+        "--output",
+        "C:\\dev\\open-urban-environment-model\\data\\work\\plateau-converter-cli\\synthetic-execution-20261027-01\\control_lod1_epsg6697.gpkg",
+        "--epsg",
+        "6697",
+        "-t",
+        "use_lod=lod1"
+      ],
+      "cwd": "C:\\dev\\open-urban-environment-model\\data\\work\\plateau-converter-cli\\synthetic-execution-20261027-01",
+      "started_at_utc": "2026-10-27T14:31:55.873220+00:00",
+      "ended_at_utc": "2026-10-27T14:31:55.958596+00:00",
+      "exit_code": 0,
+      "error": null,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "d980c3dbfac34aea95f0d34e2e28c22bc2a75b1f3b4e5d8f931952f893dae69c"
+    }
+  },
+  "outputs": {
+    "6697": {
+      "sha256": "00af24b34f750ef71ead24b02cf7ff395c0ac125e51449888c3a84ab309d0fce",
+      "size": 98304,
+      "integrity_check": "ok",
+      "foreign_key_violations": [],
+      "tables": [
+        "bldg:Building",
+        "gpkg_contents",
+        "gpkg_geometry_columns",
+        "gpkg_spatial_ref_sys",
+        "sqlite_sequence"
+      ],
+      "contents": [
+        {
+          "table_name": "bldg:Building",
+          "data_type": "features",
+          "identifier": "bldg:Building",
+          "description": "",
+          "last_change": "2026-10-27T14:29:13.775Z",
+          "min_x": 138.28,
+          "min_y": 35.63,
+          "max_x": 139.5701,
+          "max_y": 37.1201,
+          "srs_id": 6697
+        }
+      ],
+      "geometry_columns": [
+        {
+          "table_name": "bldg:Building",
+          "column_name": "geometry",
+          "geometry_type_name": "MULTIPOLYGON",
+          "srs_id": 6697,
+          "z": 1,
+          "m": 0
+        }
+      ],
+      "selected_srs": {
+        "srs_name": "JGD2011 + JGD2011 (vertical) height",
+        "srs_id": 6697,
+        "organization": "EPSG",
+        "organization_coordsys_id": 6697,
+        "definition": "COMPOUNDCRS[\"JGD2011 + JGD2011 (vertical) height\",GEOGCRS[\"JGD2011\",DATUM[\"Japanese Geodetic Datum 2011\",ELLIPSOID[\"GRS 1980\",6378137,298.257222101,LENGTHUNIT[\"metre\",1,ID[\"EPSG\",9001]],ID[\"EPSG\",7019]],ID[\"EPSG\",1128]],CS[ellipsoidal,2,ID[\"EPSG\",6422]],AXIS[\"Geodetic latitude (Lat)\",north],AXIS[\"Geodetic longitude (Lon)\",east],ANGLEUNIT[\"degree\",0.0174532925199433,ID[\"EPSG\",9102]],ID[\"EPSG\",6668]],VERTCRS[\"JGD2011 (vertical) height\",VDATUM[\"Japanese Geodetic Datum 2011 (vertical)\",ID[\"EPSG\",1131]],CS[vertical,1,ID[\"EPSG\",6499]],AXIS[\"Gravity-related height (H)\",up],LENGTHUNIT[\"metre\",1,ID[\"EPSG\",9001]],ID[\"EPSG\",6695]],ID[\"EPSG\",6697]]",
+        "description": null
+      },
+      "wkt_equals_epsg": true,
+      "wkt_axes": [
+        {
+          "name": "Geodetic latitude",
+          "direction": "north",
+          "unit": "degree"
+        },
+        {
+          "name": "Geodetic longitude",
+          "direction": "east",
+          "unit": "degree"
+        },
+        {
+          "name": "Gravity-related height",
+          "direction": "up",
+          "unit": "metre"
+        }
+      ],
+      "feature_count": 2,
+      "buildings": {
+        "synthetic_tokyo": {
+          "blob_srid": 6697,
+          "polygon_count": 10,
+          "ring_count": 12,
+          "interior_ring_count": 2,
+          "vertex_occurrences": 60,
+          "max_abs_xy_error": 0.0,
+          "max_abs_H_difference_m": 0.0,
+          "Z_min": 10.25,
+          "Z_max": 19.75,
+          "dZ_min": 0.0,
+          "dZ_max": 0.0,
+          "same_xy_thickness_max_error_m": 0.0,
+          "measuredHeight": 9.5,
+          "all_finite": true
+        },
+        "synthetic_niigata": {
+          "blob_srid": 6697,
+          "polygon_count": 10,
+          "ring_count": 12,
+          "interior_ring_count": 2,
+          "vertex_occurrences": 60,
+          "max_abs_xy_error": 0.0,
+          "max_abs_H_difference_m": 0.0,
+          "Z_min": 100.125,
+          "Z_max": 114.875,
+          "dZ_min": 0.0,
+          "dZ_max": 0.0,
+          "same_xy_thickness_max_error_m": 0.0,
+          "measuredHeight": 14.75,
+          "all_finite": true
+        }
+      },
+      "normalized_semantic_sha256": "8a3d013ecd0913ac1d739bf484c9e813d91eb845f55d9acfc71522bb06ffcfad"
+    },
+    "4979": {
+      "sha256": "9ea28fd02a46611abfc85ddd2d67e9c77edbae114c099c28ba561365734320de",
+      "size": 98304,
+      "integrity_check": "ok",
+      "foreign_key_violations": [],
+      "tables": [
+        "bldg:Building",
+        "gpkg_contents",
+        "gpkg_geometry_columns",
+        "gpkg_spatial_ref_sys",
+        "sqlite_sequence"
+      ],
+      "contents": [
+        {
+          "table_name": "bldg:Building",
+          "data_type": "features",
+          "identifier": "bldg:Building",
+          "description": "",
+          "last_change": "2026-10-27T14:29:13.852Z",
+          "min_x": 138.28,
+          "min_y": 35.63,
+          "max_x": 139.5701,
+          "max_y": 37.1201,
+          "srs_id": 4979
+        }
+      ],
+      "geometry_columns": [
+        {
+          "table_name": "bldg:Building",
+          "column_name": "geometry",
+          "geometry_type_name": "MULTIPOLYGON",
+          "srs_id": 4979,
+          "z": 1,
+          "m": 0
+        }
+      ],
+      "selected_srs": {
+        "srs_name": "WGS 84 (3D)",
+        "srs_id": 4979,
+        "organization": "EPSG",
+        "organization_coordsys_id": 4979,
+        "definition": "GEOGCRS [\"WGS 84\",ENSEMBLE[\"World Geodetic System 1984 ensemble\", MEMBER[\"World Geodetic System 1984 (Transit)\", ID[\"EPSG\",1166]], MEMBER[\"World Geodetic System 1984 (G730)\", ID[\"EPSG\",1152]], MEMBER[\"World Geodetic System 1984 (G873)\", ID[\"EPSG\",1153]], MEMBER[\"World Geodetic System 1984 (G1150)\", ID[\"EPSG\",1154]], MEMBER[\"World Geodetic System 1984 (G1674)\", ID[\"EPSG\",1155]], MEMBER[\"World Geodetic System 1984 (G1762)\", ID[\"EPSG\",1156]], MEMBER[\"World Geodetic System 1984 (G2139)\", ID[\"EPSG\",1309]], ELLIPSOID[\"WGS 84\",6378137,298.257223563,LENGTHUNIT[\"metre\",1,ID[\"EPSG\",9001]],ID[\"EPSG\",7030]], ENSEMBLEACCURACY[2],\r\nID [\"EPSG\",6326]],CS[ellipsoidal,3,ID[\"EPSG\",6423]],AXIS[\"Geodetic latitude (Lat)\",north,ANGLEUNIT[\"degree\",0.0174532925199433,ID[\"EPSG\",9102]]],\r\nAXIS [\"Geodetic longitude (Lon)\",east,ANGLEUNIT[\"degree\",0.0174532925199433,ID[\"EPSG\",9102]]],\r\nAXIS [\"Ellipsoidal height (h)\",up,LENGTHUNIT[\"metre\",1,ID[\"EPSG\",9001]]],\r\nID [\"EPSG\",4979]]",
+        "description": null
+      },
+      "wkt_equals_epsg": true,
+      "wkt_axes": [
+        {
+          "name": "Geodetic latitude",
+          "direction": "north",
+          "unit": "degree"
+        },
+        {
+          "name": "Geodetic longitude",
+          "direction": "east",
+          "unit": "degree"
+        },
+        {
+          "name": "Ellipsoidal height",
+          "direction": "up",
+          "unit": "metre"
+        }
+      ],
+      "feature_count": 2,
+      "buildings": {
+        "synthetic_niigata": {
+          "blob_srid": 4979,
+          "polygon_count": 10,
+          "ring_count": 12,
+          "interior_ring_count": 2,
+          "vertex_occurrences": 60,
+          "max_abs_xy_error": 0.0,
+          "max_abs_H_difference_m": 39.49331448000004,
+          "Z_min": 139.61740892,
+          "Z_max": 154.36831448000004,
+          "dZ_min": 39.49240892,
+          "dZ_max": 39.49331448000004,
+          "same_xy_thickness_max_error_m": 0.0,
+          "measuredHeight": 14.75,
+          "all_finite": true
+        },
+        "synthetic_tokyo": {
+          "blob_srid": 4979,
+          "polygon_count": 10,
+          "ring_count": 12,
+          "interior_ring_count": 2,
+          "vertex_occurrences": 60,
+          "max_abs_xy_error": 0.0,
+          "max_abs_H_difference_m": 37.256111280000034,
+          "Z_min": 47.50503752000003,
+          "Z_max": 57.006111280000034,
+          "dZ_min": 37.25503752000003,
+          "dZ_max": 37.256111280000034,
+          "same_xy_thickness_max_error_m": 0.0,
+          "measuredHeight": 9.5,
+          "all_finite": true
+        }
+      },
+      "normalized_semantic_sha256": "850ba1005d9677a16c24b8ca1a61283ccaf05a796bcb6e006f22c9217cb85e48"
+    },
+    "6677": {
+      "sha256": "f3b324788ecfb6cdff85c593a808b358f5c10e6dde3313379c218c03d812a752",
+      "size": 98304,
+      "integrity_check": "ok",
+      "foreign_key_violations": [],
+      "tables": [
+        "bldg:Building",
+        "gpkg_contents",
+        "gpkg_geometry_columns",
+        "gpkg_spatial_ref_sys",
+        "sqlite_sequence"
+      ],
+      "contents": [
+        {
+          "table_name": "bldg:Building",
+          "data_type": "features",
+          "identifier": "bldg:Building",
+          "description": "",
+          "last_change": "2026-10-27T14:29:13.937Z",
+          "min_x": -138038.04442186342,
+          "min_y": -41017.55224256409,
+          "max_x": -23842.070987564144,
+          "max_y": 125413.80368097314,
+          "srs_id": 6677
+        }
+      ],
+      "geometry_columns": [
+        {
+          "table_name": "bldg:Building",
+          "column_name": "geometry",
+          "geometry_type_name": "MULTIPOLYGON",
+          "srs_id": 6677,
+          "z": 1,
+          "m": 0
+        }
+      ],
+      "selected_srs": {
+        "srs_name": "JGD2011 / Japan Plane Rectangular CS IX + JGD2011 (vertical) height",
+        "srs_id": 6677,
+        "organization": "EPSG",
+        "organization_coordsys_id": 6677,
+        "definition": "PROJCRS[\"JGD2011 / Japan Plane Rectangular CS IX\",BASEGEOGCRS[\"JGD2011\",DATUM[\"Japanese Geodetic Datum 2011\",ELLIPSOID[\"GRS 1980\",6378137,298.257222101,LENGTHUNIT[\"metre\",1]]],PRIMEM[\"Greenwich\",0,ANGLEUNIT[\"degree\",0.0174532925199433]],ID[\"EPSG\",6668]],CONVERSION[\"Japan Plane Rectangular CS zone IX\",METHOD[\"Transverse Mercator\",ID[\"EPSG\",9807]],PARAMETER[\"Latitude of natural origin\",36,ANGLEUNIT[\"degree\",0.0174532925199433],ID[\"EPSG\",8801]],PARAMETER[\"Longitude of natural origin\",139.833333333333,ANGLEUNIT[\"degree\",0.0174532925199433],ID[\"EPSG\",8802]],PARAMETER[\"Scale factor at natural origin\",0.9999,SCALEUNIT[\"unity\",1],ID[\"EPSG\",8805]],PARAMETER[\"False easting\",0,LENGTHUNIT[\"metre\",1],ID[\"EPSG\",8806]],PARAMETER[\"False northing\",0,LENGTHUNIT[\"metre\",1],ID[\"EPSG\",8807]]],CS[Cartesian,2],AXIS[\"northing (X)\",north,ORDER[1],LENGTHUNIT[\"metre\",1]],AXIS[\"easting (Y)\",east,ORDER[2],LENGTHUNIT[\"metre\",1]],USAGE[        SCOPE[\"Cadastre, engineering survey, topographic mapping (large and medium scale).\"],AREA[\"Japan - onshore - Honshu - Tokyo-to. (Excludes offshore island areas of Tokyo-to covered by Japan Plane Rectangular Coordinate System zones XIV, XVIII and XIX).\"],BBOX[29.31,138.4,37.98,141.11]],ID[\"EPSG\",6677]]",
+        "description": null
+      },
+      "wkt_equals_epsg": true,
+      "wkt_axes": [
+        {
+          "name": "Northing",
+          "direction": "north",
+          "unit": "metre"
+        },
+        {
+          "name": "Easting",
+          "direction": "east",
+          "unit": "metre"
+        }
+      ],
+      "feature_count": 2,
+      "buildings": {
+        "synthetic_niigata": {
+          "blob_srid": 6677,
+          "polygon_count": 10,
+          "ring_count": 12,
+          "interior_ring_count": 2,
+          "vertex_occurrences": 60,
+          "max_abs_xy_error": 3.1694071367383e-08,
+          "max_abs_H_difference_m": 0.0,
+          "Z_min": 100.125,
+          "Z_max": 114.875,
+          "dZ_min": 0.0,
+          "dZ_max": 0.0,
+          "same_xy_thickness_max_error_m": 0.0,
+          "measuredHeight": 14.75,
+          "all_finite": true
+        },
+        "synthetic_tokyo": {
+          "blob_srid": 6677,
+          "polygon_count": 10,
+          "ring_count": 12,
+          "interior_ring_count": 2,
+          "vertex_occurrences": 60,
+          "max_abs_xy_error": 3.2272509997710586e-08,
+          "max_abs_H_difference_m": 0.0,
+          "Z_min": 10.25,
+          "Z_max": 19.75,
+          "dZ_min": 0.0,
+          "dZ_max": 0.0,
+          "same_xy_thickness_max_error_m": 0.0,
+          "measuredHeight": 9.5,
+          "all_finite": true
+        }
+      },
+      "normalized_semantic_sha256": "b122ddde2b80f3c9b398631ce9ebba9aae2b6cb08f0a81e498c9b01d8f49cc3c"
+    }
+  },
+  "repeat": {
+    "6697": {
+      "original_sha256": "00af24b34f750ef71ead24b02cf7ff395c0ac125e51449888c3a84ab309d0fce",
+      "repeat_sha256": "35b55accb0c49f29927f88441e3782cc8a3c4913331bc4c0fb94d3085a53b407",
+      "byte_equal": false,
+      "normalized_semantic_equal": true,
+      "normalized_semantic_sha256": "8a3d013ecd0913ac1d739bf484c9e813d91eb845f55d9acfc71522bb06ffcfad",
+      "contents_equal_ignoring_last_change": true,
+      "original_last_change": "2026-10-27T14:29:13.775Z",
+      "repeat_last_change": "2026-10-27T14:31:55.671Z",
+      "geometry_columns_equal": true,
+      "selected_srs_equal": true
+    },
+    "4979": {
+      "original_sha256": "9ea28fd02a46611abfc85ddd2d67e9c77edbae114c099c28ba561365734320de",
+      "repeat_sha256": "4633e6f925badbd7c1e4b14146478fdcdabe0cf2023b849fea3266e7496b57bd",
+      "byte_equal": false,
+      "normalized_semantic_equal": true,
+      "normalized_semantic_sha256": "850ba1005d9677a16c24b8ca1a61283ccaf05a796bcb6e006f22c9217cb85e48",
+      "contents_equal_ignoring_last_change": true,
+      "original_last_change": "2026-10-27T14:29:13.852Z",
+      "repeat_last_change": "2026-10-27T14:31:55.756Z",
+      "geometry_columns_equal": true,
+      "selected_srs_equal": true
+    },
+    "6677": {
+      "original_sha256": "f3b324788ecfb6cdff85c593a808b358f5c10e6dde3313379c218c03d812a752",
+      "repeat_sha256": "aad441c8ce17ab899038ee06fe35a6f9f7db8b853d6e7607f05a9c05bd154062",
+      "byte_equal": false,
+      "normalized_semantic_equal": true,
+      "normalized_semantic_sha256": "b122ddde2b80f3c9b398631ce9ebba9aae2b6cb08f0a81e498c9b01d8f49cc3c",
+      "contents_equal_ignoring_last_change": true,
+      "original_last_change": "2026-10-27T14:29:13.937Z",
+      "repeat_last_change": "2026-10-27T14:31:55.847Z",
+      "geometry_columns_equal": true,
+      "selected_srs_equal": true
+    }
+  },
+  "lod1_control": {
+    "synthetic_tokyo": {
+      "exact_lod1_xyz_and_rings": true,
+      "polygon_count": 6,
+      "z_min": 10.25,
+      "z_max": 18.25
+    },
+    "synthetic_niigata": {
+      "exact_lod1_xyz_and_rings": true,
+      "polygon_count": 6,
+      "z_min": 100.125,
+      "z_max": 112.625
+    }
+  },
+  "local_source_evidence_identities": {
+    "RESULTS.md": {
+      "sha256": "aa77bf28d794c65a6510246b4a63f1f6feff6cefa3b104dd7ae6faeb38581691",
+      "size": 12095
+    },
+    "execution.json": {
+      "sha256": "39ab9bcb0d261e1c8ad3efd27587a7b67fbfd66af89490933883aea604792394",
+      "size": 5550
+    },
+    "independent_verification.json": {
+      "sha256": "3fdc15449fe709eb9dd800306a6b8cc0443da670e5ad042445a5aca347656aae",
+      "size": 35343
+    },
+    "repeat_and_control.json": {
+      "sha256": "8b7b2b72e1942aa340f1168d8fe189d15566648f81c2e4f1a2f46eb1a59b4e01",
+      "size": 39762
+    },
+    "verify_outputs.py": {
+      "sha256": "1e3b3a89e92671d946a8f90168f64bf7db73112a57c841ac4fe8ff29b4b8914b",
+      "size": 8867
+    },
+    "verify_repeat_and_control.py": {
+      "sha256": "4b194ae8d02a6c5ae5ec5248f7cbaf6f5f627b93bc68faee59359e1bd3075150",
+      "size": 2431
+    },
+    "lod2_epsg6697.vertices.csv": {
+      "sha256": "aa8e3fab74530f8f3f86e8d2662911a75dc59ac3495f70c2886385e4fd946b04",
+      "size": 10169
+    },
+    "lod2_epsg4979.vertices.csv": {
+      "sha256": "f22789ae7307def87304546e4433e92c2ecc37fded59552f7794561941e3dded",
+      "size": 13117
+    },
+    "lod2_epsg6677.vertices.csv": {
+      "sha256": "3e27b5e9f9c369e28660c6d9d2c5edaf6a557a4895d3e2ad440982533df17eec",
+      "size": 18404
+    }
+  },
+  "common_conversion_stderr_utf8": " WARN  nusamai::sink::gpkg::table > TypeDef::Feature - Unsupported attribute type: Point ('location')\n WARN  nusamai::sink::gpkg::table > TypeDef::Feature - Unsupported attribute type: Point ('startPoint')\n WARN  nusamai::sink::gpkg::table > TypeDef::Feature - Unsupported attribute type: Point ('endPoint')\n WARN  nusamai::sink::gpkg::table > TypeDef::Feature - Unsupported attribute type: Point ('origin')\n WARN  nusamai::sink::gpkg::table > TypeDef::Feature - Unsupported attribute type: Point ('elevationValue')\n WARN  nusamai::sink::gpkg::table > TypeDef::Feature - Unsupported attribute type: Point ('pos')\n",
+  "lod1_control_sha256": "f3f0b0fe4feef4858a7f37d17ef9c4e30bacfef8ceb7905d68ed96c1cb230b1f",
+  "interpretation_limits": [
+    "4979 independent geoid accuracy INCONCLUSIVE",
+    "6677 standalone vertical declaration INCONCLUSIVE",
+    "real CityGML NOT TESTED",
+    "OUEM Native/Standard generation NOT TESTED",
+    "full XSD and 3D solid topology NOT TESTED",
+    "normalized equality excludes fid/ordering/cyclic ring start-direction and last_change only where stated",
+    "build environment citygml_conversion_performed=false is build-stage only, before later recorded conversions"
+  ],
+  "historical_related_tests": {
+    "command": ".venv/Scripts/python.exe -m pytest tests/test_plateau_converter_probe.py tests/test_gdal_citygml_feasibility.py -q",
+    "result": "14 passed in 0.36s",
+    "scope": "existing fixture/recorder checks, not Converter process tests"
+  }
+}

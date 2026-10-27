@@ -1,5 +1,9 @@
 # PLATEAU Converter CLI synthetic verification — 2026-10-27
 
+Later evidence: [Windows CLI synthetic execution](CLI_SYNTHETIC_EXECUTION_20261027.md)
+records the subsequent successful build/run and bounded output checks. The
+BLOCKED preflight below remains a historical account of its inspected environment.
+
 ## Result and scope
 
 **Converter execution: BLOCKED.** No located Windows CLI or Rust/Cargo build
