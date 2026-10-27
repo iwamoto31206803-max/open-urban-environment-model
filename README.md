@@ -30,6 +30,27 @@ the Standard contracts remain provisional. In these implementation records,
 A2 denotes Standard Terrain and A3 denotes the VoxCity adapter, distinct from
 the conceptual National Baseline and GSI-LiDAR National Target variants above.
 
+## Documentation Guide
+
+Document roles are separate from implementation or dataset acceptance:
+**Formal** identifies registered designs, versioned contracts or scoped acceptance
+records; **Provisional** contracts remain non-FINAL; **Draft** proposals await
+approval; **Experimental** records describe bounded technical work;
+**Historical** documents retain the context of their recorded date.
+
+| Start here | Role and scope |
+|---|---|
+| [Concept & Architecture v0.2](docs/OUEM_Concept_Architecture_v0.2.md) / [v0.1](docs/OUEM_Concept_Architecture_v0.1.md) | Formal upper-level design / Historical baseline with inherited B1/B2 details. |
+| [Standard Building](docs/OUEM_Standard_Building_v0.1.md) / [Standard Terrain](docs/OUEM_Standard_Terrain_v0.1.md) | Provisional contracts; Komae acceptance is limited to recorded datasets and conditions. |
+| [VoxCity Building Adapter](docs/OUEM_VoxCity_Adapter_v0.1.md) | Formal versioned Building boundary; accepted voxel integration scope only. |
+| [Standard Canopy DRAFT](docs/OUEM_Standard_Canopy_v0.1_Draft.md) | Draft full Canopy proposal; not finalized by the experiments below. |
+| [Building acceptance](experiments/a1_e2e_pilot/README.md) / [A2 Terrain](docs/acceptance/OUEM_A2_Standard_Terrain_Komae_Acceptance_20261006.md) / [A3 Adapter](docs/acceptance/OUEM_A3_VoxCity_Komae_Acceptance_20261005.md) | Formal, bounded historical acceptance records, retained unchanged; the [record directory](docs/acceptance/) also contains technical verification with its own approval status. |
+| [CHM Height Envelope PoC](docs/CHM_Height_Envelope_PoC_v0.1.md) | Experimental absolute top/bottom generation and validity-state contract; no canopy-presence acceptance. |
+| [VoxCity Canopy Shadow experiment index](docs/experiments/voxcity_canopy_shadow/README.md) | Experimental Phase 2–4 evidence and usage, plus Historical Phase 0–1 context. |
+| [Phase 4 Completion Gate](docs/experiments/voxcity_canopy_shadow/PHASE4_COMPLETION_GATE_REVIEW_20261027.md) / [Repository inventory](docs/experiments/voxcity_canopy_shadow/REPOSITORY_INVENTORY_20261027.md) | Experimental review: CONDITIONAL PASS for the canopy-only milestone; dated consolidation audit. |
+| [Phase 5 Integration Plan](docs/experiments/voxcity_canopy_shadow/PHASE5_INTEGRATION_PLAN_v0.1_Draft.md) | Draft; integration remains blocked until the Gate's class A pre-start conditions close. |
+| [Runtime architecture](docs/architecture.md) / [Windows environment record](docs/development/OUEM_Windows_Development_and_Remote_Setup_20261025.md) / [Execution runbook](scripts/work/README.md) | Operational guidance and recorded local environment; keep OUEM and GIS runtimes separate. |
+
 ## Local data layout and Phase A lifecycle
 
 Local datasets are organized by processing stage:
@@ -92,6 +113,11 @@ The Komae Tokyo 0.5 m DEM source convention is
 `data/raw/terrain/tokyo_23ku_dem_050m/komae/09LD3451.tif`. Terrain uses a validated Native manifest
 rather than duplicating unchanged raster bytes, followed by Standard GeoTIFF
 creation under `data/standard/terrain/`:
+
+This example retains the historical `tokyo_23ku_dem_050m` path. For new
+acquisition, follow the [Tama Terrain acquisition recipe](docs/Terrain_Acquisition_PoC_v0.1.md)
+and [dated source correction](docs/acceptance/OUEM_A2_Terrain_Source_Provenance_Correction_20261026.md).
+Existing Raw paths and past records remain in place.
 
 ```shell
 ouem-accept-terrain data/raw/terrain/tokyo_23ku_dem_050m/komae/09LD3451.tif \
