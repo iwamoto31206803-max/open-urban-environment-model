@@ -48,10 +48,11 @@ ray-origin Z = D0 + (g + int(h/s) + 0.5)*s
 
 Ground +1 adds s; individual ground/crown rounding also changes faces.
 With flat ground and h=1.5 m, ray height is 2.5 m for s=1 and 2.25 m for s=0.5.
-No scalar parameter makes exactly 1.5 m above that flat ground at either size:
-ray centres lie on half-integer multiples of s after the surface transition.
-Rough terrain adds spatial rounding differences, so a common scalar cannot
-represent exact 1.5 m everywhere. The investigated public map API has no explicit
+For s=1 on flat ground, a parameter in [0,1) m (including the tested h=0.5)
+places the ray exactly 1.5 m above DEM. For s=0.5, no nonnegative scalar
+parameter places it exactly at 1.5 m on that flat ground: attainable heights
+are 0.75, 1.25, 1.75, 2.25, ... m. Rough terrain adds spatial rounding
+differences, so a common scalar cannot represent exact 1.5 m everywhere. The investigated public map API has no explicit
 per-cell absolute-origin input. No undocumented correction is introduced.
 
 ## Controlled resampling and cases
