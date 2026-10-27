@@ -129,8 +129,8 @@ A1/A2/A3は固定的なデータセット構成ではなく**代表的な構築�
 
 本書で明示的に更新した概念上の事項を除き、Phase B1/B2の詳細仕様はv0.1から継承する。第7章の要約によって、以下の詳細を廃止・置換しない。v0.1は履歴として保持し、継承対象の詳細仕様の参照元とする。
 
-- **B1**：[v0.1 第6章「B1 — Solar & Shade Assessment」](OUEM_Concept_Architecture_v0.1.md#6-b1----solar--shade-assessment)。第6.1〜6.6節の目的、基本計算、Current / No-Canopy比較、Output Tiers、評価期間、タイル処理を継承する。
-- **B2**：[v0.1 第7章「B2 — Green View Assessment」](OUEM_Concept_Architecture_v0.1.md#7-b2----green-view-assessment)。第7.1〜7.6節の正式指標と対象、基本算定、360°評価、Output Tiers、日本の写真式緑視率との関係を継承する。
+- **B1**：[v0.1 第6章「B1 — Solar & Shade Assessment」](OUEM_Concept_Architecture_v0.1.md#6-b1-----solar--shade-assessment)。第6.1〜6.6節の目的、基本計算、Current / No-Canopy比較、Output Tiers、評価期間、タイル処理を継承する。
+- **B2**：[v0.1 第7章「B2 — Green View Assessment」](OUEM_Concept_Architecture_v0.1.md#7-b2-----green-view-assessment)。第7.1〜7.6節の正式指標と対象、基本算定、360°評価、Output Tiers、日本の写真式緑視率との関係を継承する。
 - **検証課題**：[v0.1 第9章「認識済みの主要Engineering / Validation Issues」](OUEM_Concept_Architecture_v0.1.md#9-認識済みの主要engineering--validation-issues)のPhase B1/B2を参照する。気象・時間帯・視点高・透過パラメータ等の検証課題も継承し、検証済みとは扱わない。
 
 継承は概念・詳細仕様の参照関係を示すものであり、B1/B2の実装完了や受入を宣言するものではない。
