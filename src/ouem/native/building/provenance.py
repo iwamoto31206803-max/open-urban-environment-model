@@ -1,7 +1,7 @@
 """Source-H foundation checks only: declarations and bytes, never eligibility.
 
-No existing ingest/Standardizer calls this module. GPKG/XML contents and human
-review authenticity are intentionally outside this first validation layer.
+Legacy ingest/Standardizer do not call this module. Independent Step 2 uses its
+reports; GPKG/XML contents and human review authenticity remain outside this layer.
 """
 
 from __future__ import annotations
@@ -114,7 +114,7 @@ def _ids(value: object, field: str, checks: _Checks) -> list[str]:
     return value
 
 
-def _validate_format(record: object, c: _Checks) -> dict:
+def _validate_format(record: object, c: _Checks, *, planned_native: bool = False) -> dict:
     r = c.obj(record, "record", {"schema", "profile", "artifacts", "source_declaration",
               "coordinate_contract", "converter", "geometry_selection", "native", "operations"},
               {"validation", "eligibility_review", "acceptance", "extensions"})
@@ -133,13 +133,15 @@ def _validate_format(record: object, c: _Checks) -> dict:
             c.fail("artifacts", "nonempty string artifact IDs required")
             continue
         prefix = f"artifacts.{identifier}"
-        a = c.obj(value, prefix, {"path", "size_bytes", "sha256", "role"}, {"layer", "extensions"})
+        planned = planned_native and isinstance(value, dict) and value.get("role") == "native_gpkg"
+        required = {"path", "role", "layer"} if planned else {"path", "size_bytes", "sha256", "role"}
+        a = c.obj(value, prefix, required, {"layer", "extensions"})
         c.text(a.get("path"), prefix + ".path")
         size = a.get("size_bytes")
-        if type(size) is not int or size < 0:
+        if not planned and (type(size) is not int or size < 0):
             c.fail(prefix + ".size_bytes", "nonnegative integer required", artifact=identifier)
         digest = a.get("sha256")
-        if not isinstance(digest, str) or not SHA256.fullmatch(digest):
+        if not planned and (not isinstance(digest, str) or not SHA256.fullmatch(digest)):
             c.fail(prefix + ".sha256", "lowercase SHA-256 required", artifact=identifier)
         role = a.get("role")
         if isinstance(role, str) and role in roles:
@@ -221,6 +223,31 @@ def _validate_format(record: object, c: _Checks) -> dict:
                 c.fail(prefix + ".offset_m", "identity_H requires zero offset", "VERTICAL_SEMANTICS_CONFLICT")
             c.exact(op.get("geoid_model"), None, prefix + ".geoid_model", "VERTICAL_SEMANTICS_CONFLICT")
     return artifacts
+
+
+def validate_source_h_inputs(record: object, *, artifact_root: str | Path) -> ValidationReport:
+    """Step 2 preflight: Native is a plan WITHOUT size/hash, all inputs exist.
+
+    This does not alter validate_source_h_record's completed-record requirements.
+    Every checked ID is an actual input; the planned Native ID is never included.
+    """
+    c = _Checks()
+    artifacts = _validate_format(record, c, planned_native=True)
+    if c.issues:
+        return ValidationReport("FAIL", "NOT_RUN", tuple(c.issues),
+                                validation_scope="source-h-input-preflight/v0.1")
+    try:
+        root = Path(artifact_root).resolve(strict=True)
+        if not root.is_dir():
+            raise ValueError("artifact_root must be a directory")
+    except (OSError, ValueError) as exc:
+        c.fail("artifact_root", str(exc), "PROVENANCE_MISSING")
+        return ValidationReport("PASS", "FAIL", tuple(c.issues),
+                                validation_scope="source-h-input-preflight/v0.1")
+    inputs = {k: v for k, v in artifacts.items() if v["role"] != "native_gpkg"}
+    checked = _files(inputs, root, c)
+    return ValidationReport("PASS", "FAIL" if c.issues else "PASS", tuple(c.issues), checked,
+                            validation_scope="source-h-input-preflight/v0.1")
 
 
 def _argv(value: object, c: _Checks) -> None:
