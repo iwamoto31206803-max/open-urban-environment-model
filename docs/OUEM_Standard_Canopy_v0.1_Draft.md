@@ -143,3 +143,61 @@ The statuses below distinguish the Concept baseline, explicitly selected candida
 - [Standard-to-VoxCity Building Adapter v0.1](OUEM_VoxCity_Adapter_v0.1.md)
 
 **Non-goals of this document-only PR:** no code, no dataset generation, no test-result claims, no changes to accepted contracts, no declaration that Komae Standard Canopy has been accepted.
+
+## 12. Implementation status and evidence (informational, 2026-10-27)
+
+Checked against main `8ab89df1041077fa549e76df29d130718afe72b8`, after PR #78.
+This section closes documentation gaps identified by the [consistency review](reviews/OUEM_Standard_Canopy_Consistency_Review_20261027.md);
+it adds no design decision or acceptance. This DRAFT retains design requirements
+and candidates; [Canopy Current State](status/CANOPY_CURRENT_STATE.md) is the
+entry point for current implementation, evidence and open issues under the
+[documentation governance](OUEM_Documentation_Governance_v0.1.md).
+
+**Implemented and technically verified, within Experimental scope:**
+[Meta CHMv2 AOI acquisition](Meta_CHMv2_AOI_Acquisition_PoC.md),
+[CHM + Terrain + CR Height Envelope generation](CHM_Height_Envelope_PoC_v0.1.md),
+and the limited canopy-only VoxCity shadow PoC. The
+[Phase 2-4 index](experiments/voxcity_canopy_shadow/README.md) links real-data
+A/B direct-irradiance results, voxel/observer sensitivity, and Phase 4A/4B
+geometry/state verification. These are partial experimental results, not
+implementation or acceptance of complete Standard Canopy.
+
+**Not implemented or accepted as a complete Standard path:** formal canopy
+polygon acquisition/generation and ID management; independent assessment
+coverage; the full Native -> Standard Canopy lifecycle; ratified Canopy state
+encoding; complete Standard Canopy acceptance; and real-data Building/canopy
+integration. A derived visualization geometry is not accepted source canopy
+polygons or assessment coverage.
+
+**State meanings remain separate.** Section 6 codes are unratified candidates.
+Height Envelope uses an experimental bitset for numeric validity, missing,
+invalid and outside-raster-support conditions; it is not compatible with those
+candidate presence/coverage classes. Its `state=1` does **not** mean canopy
+presence. Raster support is not verified assessment coverage. CHM=0 and TREE=0
+are not evidence of canopy absence; NoData must not become zero/absence. See
+[Phase 4B](experiments/voxcity_canopy_shadow/PHASE4B_CANOPY_PRESENCE_AND_COVERAGE_AUDIT.md)
+for the source-validity, coverage, height-estimate, presence and occupancy axes.
+
+**Implementation limits, not universal Standard choices:**
+
+- The PoC uses aligned EPSG:6677 grids and rejects unaligned bounds; it does not
+  implement the full general GridSpec candidates in section 3.
+- Phase 3's 0.5m case subdivides retained 1m samples; it adds no source information
+  and is not a DEM bilinear-sampling comparison. Current sampling uses the
+  effective source mask; contradictory mask/NoData reconciliation remains open
+  as described in the consistency review.
+- `constant_cr_v0.1` with CR=0.60 is a configurable PoC choice, not a general
+  ecological standard; future class/spatial models remain unaccepted.
+- The Height Envelope manifest is an experimental schema, not the complete
+  Standard Canopy manifest. See the implementation document for its interface
+  and provenance limits.
+- VoxCity rounding, ground conditioning, actual observer positions and TREE
+  occupancy are engine-specific Adapter concerns. The [Phase 4A findings](experiments/voxcity_canopy_shadow/PHASE4A_OBSERVER_GEOMETRY_AND_VERTICAL_CONTRACT.md)
+  do not establish universal Standard geometry rules or resolve Building Z.
+
+Section 9A's initial next-step wording and earlier PoC environment/run notes
+remain records of their dates; the links above identify subsequent work without
+rewriting that history. The [Completion Gate](experiments/voxcity_canopy_shadow/PHASE4_COMPLETION_GATE_REVIEW_20261027.md)
+and [Phase 5 Integration Plan DRAFT](experiments/voxcity_canopy_shadow/PHASE5_INTEGRATION_PLAN_v0.1_Draft.md)
+retain their existing entry conditions and unresolved issues. This addendum
+neither closes those gates nor changes this document's DRAFT status.
