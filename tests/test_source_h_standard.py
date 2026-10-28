@@ -83,6 +83,39 @@ def test_exact_dispatch_no_legacy_fallback(native,tmp_path,area,profile):
     assert not (tmp_path/'standard-run').exists()
 
 
+def test_argument_profile_matches_validated_native_manifest(native,tmp_path,area,monkeypatch):
+    original=s.validate_native
+    observed=[]
+    def validate(*args):
+        result=original(*args)
+        observed.append(result[0]['profile'])
+        return result
+    monkeypatch.setattr(s,'validate_native',validate)
+    result=run(tmp_path,area,profile=SOURCE_H_PROFILE)
+    assert observed and all(value==SOURCE_H_PROFILE for value in observed)
+    assert result['status']=='COMPLETED'
+    assert json.loads(Path(result['manifest']).read_text())['profile']==SOURCE_H_PROFILE
+
+
+@pytest.mark.parametrize('manifest_profile',[
+    'ouem-native-building/plateau-source-h/v9',
+    'ouem-native-building/plateau-legacy-4979-claimed-tp/v0.1',
+])
+def test_argument_profile_mismatch_refused_before_output_directory(native,tmp_path,area,monkeypatch,manifest_profile):
+    original=s.validate_native
+    def inconsistent_result(*args):
+        record,*rest=original(*args)
+        # Isolate the caller's equality guard after real input validation.
+        # The real validator still rejects unsupported/legacy profiles itself.
+        return ({**record,'profile':manifest_profile},*rest)
+    monkeypatch.setattr(s,'validate_native',inconsistent_result)
+    with pytest.raises(s.SourceHStandardError) as error:
+        run(tmp_path,area,profile=SOURCE_H_PROFILE)
+    assert error.value.report['code']=='PROFILE_MISMATCH'
+    assert error.value.report['field']=='Native.profile'
+    assert not (tmp_path/'standard-run').exists()
+
+
 @pytest.mark.parametrize('target',['native','converter','raw','receipt','manifest'])
 def test_hash_and_record_mutations_fail_closed(native,tmp_path,area,target):
     paths={'native':tmp_path/'native-run/native.gpkg','converter':tmp_path/'converter.gpkg','raw':tmp_path/'raw.gml',

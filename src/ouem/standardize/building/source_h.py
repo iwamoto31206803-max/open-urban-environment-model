@@ -107,6 +107,8 @@ def standardize_source_h(*, profile, native_manifest, artifact_root, output, stu
         manifest_path = confined(root,native_manifest)
         before_manifest = digest(manifest_path)
         record,native,receipt_path,snapshot = validate_native(manifest_path,root)
+        require(profile == record['profile'], 'Native.profile',
+                'argument profile must exactly match Native manifest profile', 'PROFILE_MISMATCH')
         before_receipt = digest(receipt_path)
         output_path = confined(root,output)
         require(output_path.suffix.lower()=='.gpkg' and output_path.parent != root, 'output', 'new child GeoPackage required')

@@ -59,6 +59,8 @@ Manifest/output locators must be relative and confined to artifact-root; the
 study-area file has its own explicit path/hash. Output parent must be a **new**
 child directory with an existing parent. No accepted or existing run is reused.
 The explicit profile must match exactly; CRS alone never selects the lane.
+The argument must also exactly match the profile returned by Native manifest
+validation; a mismatch fails with `PROFILE_MISMATCH` before output directory creation.
 Legacy/unprofiled/future-version input fails closed. Existing legacy CLI remains
 available with its original behavior; this entry point never dispatches to it.
 
