@@ -1,6 +1,6 @@
 # Building Current State
 
-Last checked: **2026-10-28**, main baseline `36942f0dba1f37916a0e3be2015d0c0932e32906` (PR #94 merged).
+Last checked: **2026-10-28**, main baseline `9f01631c5c5a06b3dcafa8ead6d210d34aefff23` (PR #95 merged).
 This is an informational entry point under the [documentation governance](../OUEM_Documentation_Governance_v0.1.md).
 It does not amend contracts, historical acceptance or source Z. Code/record and
 explicit path checks were performed. The legacy inventory below was originally
@@ -36,6 +36,12 @@ executes the pinned building raster and Voxelizer on the same two authored boxes
 and flat ground. Actual saved 3D arrays, ID/ground QA and sections are recorded;
 the +1 surface layer and height rounding are retained explicitly. This is not
 physical roof alignment, real-data acceptance or a solar result; gates remain OPEN.
+
+[Step 4B-4 synthetic direct solar](../Source_H_Synthetic_Solar_v0.1.md) now
+executes actual CPU A/B solar calls on that synthetic Building/flat-ground
+model with common geometry, observers and ground mask. Building shade was
+detected and saved; observer discretization and finite-domain clipping remain
+explicit. No real-data/scientific or formal acceptance; gates remain OPEN.
 
 ## Contracts, implementation and bounded evidence
 
