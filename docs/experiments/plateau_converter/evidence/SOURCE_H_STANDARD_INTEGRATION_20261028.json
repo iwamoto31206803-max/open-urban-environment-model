@@ -1,0 +1,120 @@
+{
+  "status": "PASS experimental integration; not acceptance",
+  "scope": "Actual Converter output derived Native of synthetic two-building CityGML; no real municipality data",
+  "local_run": "data/work/source-h-standard/converter-integration-20261028-01",
+  "identity": {
+    "head": "4602b928dfddd95b9a9ef5b392b5355d76585529",
+    "dirty_status": "?? src/ouem/standardize/building/source_h.py\n?? src/ouem/standardize/building/source_h_geometry.py\n?? tests/test_source_h_standard.py\n",
+    "modules": {
+      "source_h.py": "ecb5cf2e110e383c713ee7df27a711825e4b0d72c5cedc318ad8020302200a1a",
+      "source_h_geometry.py": "66f3fe0586e385d289e117fb4bcee01365923dc18ccd9163750fecd9e802b594"
+    },
+    "scope": "PR #90 Native from actual Converter output of synthetic CityGML; not municipality data; broad synthetic AOI includes both fixture locations"
+  },
+  "processed_at": "2026-10-28T03:49:02.800Z",
+  "inputs": {
+    "native_sha256": "27ce692dadf78462d6b6e2fc28870cbc4ea7caedbf7157013361b1b54b0d0c89",
+    "native_manifest_sha256": "32918947fb7a84a9ce933f5f3474c5183119d3a613a695b6dc366226c98e1c6c",
+    "native_receipt_sha256": "1735879b6d37874ffb85aa222f04cd413f80bb23f1316f37f37f1d64a6f13283",
+    "converter_sha256": "00af24b34f750ef71ead24b02cf7ff395c0ac125e51449888c3a84ab309d0fce",
+    "raw_sha256": "ac2794be68822389f784c3ae896b0343dd4a046edcf46d8ca577418af52081f8"
+  },
+  "outputs": {
+    "standard_sha256": "f0f8dd826e5055277cb8d39f6f40b67efe3d7e02f19be57a89c392e1994d785c",
+    "manifest_sha256": "5d68d5441314af3313bb56b9793e22bc86d8f1a6e40ed0ceb4f6a836ddea0559",
+    "receipt_sha256": "e330d2369634d620ab945e18e66976d76e0702dca33a1a51962cb8b147df53bf",
+    "size_bytes": 53248
+  },
+  "coordinate_contract": {
+    "horizontal_crs": "EPSG:6677",
+    "vertical_quantity": "gravity_related_height",
+    "vertical_crs": "EPSG:6695",
+    "vertical_unit": "metre",
+    "vertical_operation": "identity_H",
+    "horizontal_operation": "EPSG:6668 -> EPSG:6677",
+    "source_horizontal_crs": "EPSG:6668",
+    "source_compound_crs": "EPSG:6697"
+  },
+  "operation": {
+    "always_xy": true,
+    "meaning": "input GIS longitude/latitude -> easting/northing",
+    "input_storage_axes": [
+      "longitude",
+      "latitude",
+      "H"
+    ],
+    "output_storage_axes": [
+      "easting",
+      "northing",
+      "H"
+    ],
+    "arguments": "XY only; original H never passed to PROJ",
+    "definition": "proj=pipeline step proj=unitconvert xy_in=deg xy_out=rad step proj=tmerc lat_0=36 lon_0=139.833333333333 k=0.9999 x_0=0 y_0=0 ellps=GRS80",
+    "description": "axis order change (2D) + Japan Plane Rectangular CS zone IX + axis order change (2D)",
+    "accuracy_m": 0.0,
+    "allow_ballpark": false,
+    "only_best": true
+  },
+  "validation": {
+    "all_vertex_H_exact": "PASS",
+    "structure_order_ids_attributes": "PASS",
+    "independent_XY": "PASS",
+    "max_xy_error_m": 0.0,
+    "xy_tolerance_m": 1e-07,
+    "h_tolerance_m": 0,
+    "buildings": {
+      "synthetic_tokyo": {
+        "geometry_type": "MultiPolygon",
+        "faces": 10,
+        "exterior_rings": 10,
+        "interior_rings": 2,
+        "vertices": 60
+      },
+      "synthetic_niigata": {
+        "geometry_type": "MultiPolygon",
+        "faces": 10,
+        "exterior_rings": 10,
+        "interior_rings": 2,
+        "vertices": 60
+      }
+    }
+  },
+  "independent_readback": {
+    "status": "PASS",
+    "vertex_occurrences": 120,
+    "H_bit_exact": true,
+    "max_authored_control_XY_error_m": 7.130438461899757e-10,
+    "oracle": "Unchanged tests/fixtures/plateau_converter/expected.json; source XY control correspondence within 1e-12 degree for authored-vs-XML float representation only"
+  },
+  "source_h_eligibility": "NOT_ESTABLISHED",
+  "human_review": "NOT_VERIFIED",
+  "formal_acceptance": "NOT_VERIFIED",
+  "independent_geopandas_readback": {
+    "status": "PASS",
+    "geopandas": "1.2.0",
+    "pyogrio": "0.13.0",
+    "gdal": "3.12.4",
+    "crs": "EPSG:6677",
+    "feature_count": 2,
+    "geometry_types": [
+      "MultiPolygon",
+      "MultiPolygon"
+    ],
+    "has_z": [
+      true,
+      true
+    ],
+    "source_ids": [
+      "synthetic_tokyo",
+      "synthetic_niigata"
+    ],
+    "source_lod": [
+      null,
+      null
+    ],
+    "measured_height": [
+      9.5,
+      14.75
+    ]
+  }
+}
