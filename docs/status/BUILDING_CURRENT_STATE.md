@@ -1,6 +1,6 @@
 # Building Current State
 
-Last checked: **2026-10-28**, main baseline `4602b928dfddd95b9a9ef5b392b5355d76585529` (PR #90 merged).
+Last checked: **2026-10-28**, main baseline `a5fb05d4d8eb44c00dc056b0855c5f7b57390e76` (PR #92 merged).
 This is an informational entry point under the [documentation governance](../OUEM_Documentation_Governance_v0.1.md).
 It does not amend contracts, historical acceptance or source Z. Code/record and
 explicit path checks were performed. The legacy inventory below was originally
@@ -19,6 +19,11 @@ This is implemented/technically tested, not a new accepted path or verified
 real-municipality datum. Existing 4979 lane, formal Standard and Adapter are
 unchanged. The Adapter does not accept v0.2. Eligibility NOT_ESTABLISHED;
 human review/Formal Acceptance NOT_VERIFIED; Phase 5 A1–A4 remain OPEN.
+
+[Step 4B-1 Consumer Validator](../Source_H_Standard_Consumer_Validation_v0.1.md)
+adds independent read-only candidate Standard/provenance/all-vertex validation,
+including a saved Converter-derived synthetic Standard smoke test. This does
+not connect the Adapter, establish real-data eligibility or change those gates.
 
 ## Contracts, implementation and bounded evidence
 

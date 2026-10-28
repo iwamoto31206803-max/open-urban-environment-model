@@ -1,0 +1,104 @@
+{
+  "status": "Experimental read-only Consumer smoke test; not acceptance",
+  "recorded_at_utc": "2026-10-28T05:13:37.843255+00:00",
+  "scope": "PR #91 saved Standard derived from actual Converter output of synthetic CityGML, not real municipality data. No Standardizer or engine execution.",
+  "local_run": "data/work/source-h-consumer/converter-integration-20261028-03",
+  "identity": {
+    "head": "a5fb05d4d8eb44c00dc056b0855c5f7b57390e76",
+    "dirty_status": "M  docs/Source_H_Standard_Building_v0.1.md\nAM docs/Source_H_Standard_Consumer_Validation_v0.1.md\nA  docs/experiments/plateau_converter/evidence/SOURCE_H_CONSUMER_INTEGRATION_20261028.json\nM  docs/status/BUILDING_CURRENT_STATE.md\nA  src/ouem/consumers/__init__.py\nA  src/ouem/consumers/_source_h_geometry.py\nAM src/ouem/consumers/source_h_standard.py\nAM tests/test_source_h_consumer.py\n",
+    "module_sha256": {
+      "src/ouem/consumers/source_h_standard.py": "374cac9a9e5a1db66cad3838427691351613bc8675e700020ea3f9d5643bdd3b",
+      "src/ouem/consumers/_source_h_geometry.py": "76bc0cec4043c1f221901f68915bf29622ca53ee75a701ce6e72f9e63b2f26c8",
+      "src/ouem/consumers/__init__.py": "2f058405edd920332fb67b6b63ab6f8b9a53706dc49af43024138f347bf9cfba"
+    },
+    "python": "3.11.9"
+  },
+  "technical_validation": "PASS",
+  "verified_profile": "ouem-native-building/plateau-source-h/v0.1",
+  "verified_schema": "ouem-standard-building-manifest/v0.2",
+  "artifact_identities": {
+    "standard_manifest": {
+      "path": "open-urban-environment-model/data/work/source-h-standard/converter-integration-20261028-01/standard/standard.gpkg.manifest.json",
+      "size_bytes": 11789,
+      "sha256": "5d68d5441314af3313bb56b9793e22bc86d8f1a6e40ed0ceb4f6a836ddea0559"
+    },
+    "standard": {
+      "path": "open-urban-environment-model/data/work/source-h-standard/converter-integration-20261028-01/standard/standard.gpkg",
+      "size_bytes": 53248,
+      "sha256": "f0f8dd826e5055277cb8d39f6f40b67efe3d7e02f19be57a89c392e1994d785c"
+    },
+    "standard_receipt": {
+      "path": "open-urban-environment-model/data/work/source-h-standard/converter-integration-20261028-01/standard/standard.gpkg.receipt.json",
+      "size_bytes": 360,
+      "sha256": "e330d2369634d620ab945e18e66976d76e0702dca33a1a51962cb8b147df53bf"
+    },
+    "native_manifest": {
+      "path": "open-urban-environment-model/data/work/source-h-native/converter-integration-20261028-01/native/native.gpkg.manifest.json",
+      "size_bytes": 7022,
+      "sha256": "32918947fb7a84a9ce933f5f3474c5183119d3a613a695b6dc366226c98e1c6c"
+    },
+    "chain.raw": {
+      "path": "open-urban-environment-model/tests/fixtures/plateau_converter/two_buildings.gml",
+      "size_bytes": 23554,
+      "sha256": "ac2794be68822389f784c3ae896b0343dd4a046edcf46d8ca577418af52081f8"
+    },
+    "chain.cli": {
+      "path": "plateau-gis-converter/target/x86_64-pc-windows-msvc/release-lto/nusamai.exe",
+      "size_bytes": 27265024,
+      "sha256": "0195a11df4fd0ef30dcd5578175035a918c41285b1fcc329f3399f5337326f1b"
+    },
+    "chain.converter": {
+      "path": "open-urban-environment-model/data/work/plateau-converter-cli/synthetic-execution-20261027-01/lod2_epsg6697.gpkg",
+      "size_bytes": 98304,
+      "sha256": "00af24b34f750ef71ead24b02cf7ff395c0ac125e51449888c3a84ab309d0fce"
+    },
+    "chain.evidence": {
+      "path": "open-urban-environment-model/docs/experiments/plateau_converter/CLI_SYNTHETIC_EXECUTION_20261027.md",
+      "size_bytes": 17641,
+      "sha256": "fb54b4f8c44ba34a507737b41815ab6e799472c624d5a4943328f0e5d2f10675"
+    },
+    "chain.native": {
+      "path": "open-urban-environment-model/data/work/source-h-native/converter-integration-20261028-01/native/native.gpkg",
+      "size_bytes": 98304,
+      "sha256": "27ce692dadf78462d6b6e2fc28870cbc4ea7caedbf7157013361b1b54b0d0c89"
+    },
+    "native_receipt": {
+      "path": "open-urban-environment-model/data/work/source-h-native/converter-integration-20261028-01/native/native.gpkg.receipt.json",
+      "size_bytes": 355,
+      "sha256": "1735879b6d37874ffb85aa222f04cd413f80bb23f1316f37f37f1d64a6f13283"
+    },
+    "study_area_config": {
+      "path": "open-urban-environment-model/data/work/source-h-standard/converter-integration-20261028-01/area.yaml",
+      "size_bytes": 143,
+      "sha256": "d09b2a4ab2cd7bd9598b2dac29a90880849351acdea87722a1af0ff0270b89e0"
+    }
+  },
+  "feature_count": 2,
+  "vertex_count": 120,
+  "xy_h_qa": {
+    "H_binary64_exact": "PASS",
+    "ordered_geometry": "PASS",
+    "XY": "PASS",
+    "xy_tolerance_m": 1e-07,
+    "max_xy_error_m": 0.0,
+    "h_tolerance_m": 0
+  },
+  "input_immutability_checks": "PASS",
+  "source_h_eligibility": "NOT_ESTABLISHED",
+  "human_review": "NOT_VERIFIED",
+  "formal_acceptance": "NOT_VERIFIED",
+  "phase5_gates": {
+    "A1": "OPEN",
+    "A2": "OPEN",
+    "A3": "OPEN",
+    "A4": "OPEN"
+  },
+  "limitations": [
+    "Technical point-in-time validation only; no eligibility, datum accuracy or acceptance approval.",
+    "Hashes and coordinate correspondence do not authenticate original execution claims, source declarations or reviewers.",
+    "Bounded candidate ISO WKB Z / inline Raw LoD2 scope; not a complete CityGML or solid-topology validator.",
+    "Pre/post hashes, metadata and resolved-path checks are best-effort TOCTOU detection, not an atomic snapshot or lock.",
+    "Later Adapter must revalidate at use or bind immutable verified inputs; this report is not an authorization token.",
+    "No Terrain compatibility, coverage, grid fusion, voxelization or solar validation; Phase 5 A1-A4 remain OPEN."
+  ]
+}

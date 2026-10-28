@@ -34,6 +34,10 @@ of their Z values are not retrospectively changed.
 
 ## API and CLI
 
+[Step 4B-1 Consumer Validator](Source_H_Standard_Consumer_Validation_v0.1.md)
+independently rechecks saved candidate outputs read-only; it does not enable the
+VoxCity Adapter or alter this producer's API/behavior.
+
 Implementation: [orchestrator](../src/ouem/standardize/building/source_h.py),
 [geometry IO/QA](../src/ouem/standardize/building/source_h_geometry.py).
 Uses existing PyProj/Shapely and Python SQLite; no GDAL worker, OSGeo4W,
