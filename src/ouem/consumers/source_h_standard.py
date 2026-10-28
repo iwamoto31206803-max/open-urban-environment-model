@@ -95,7 +95,8 @@ class Watch:
     def scan(self, locator, *, json_data=False):
         path = self.resolve(locator)
         require(not any(Path(str(path)+s).exists() for s in ('-wal','-shm','-journal')), locator, 'live sidecar not frozen input')
-        require(stat.S_ISREG(path.stat().st_mode), locator, 'regular file required')
+        path_before = path.stat()
+        require(stat.S_ISREG(path_before.st_mode), locator, 'regular file required')
         digest = hashlib.sha256()
         chunks = []
         with path.open('rb') as stream:
@@ -111,10 +112,21 @@ class Watch:
                 remaining-=len(chunk)
                 count+=len(chunk)
             after = os.fstat(stream.fileno())
-        require(count==before.st_size and self.stamp(before)==self.stamp(after)==self.stamp(path.stat())
-                and self.resolve(locator)==path, locator, 'changed during read', 'INPUT_CHANGED')
+        path_after = path.stat()
+        # Windows CPython can expose ChangeTime through fstat().st_ctime_ns
+        # but CreationTime through stat().st_ctime_ns. Retain both clocks and
+        # compare each only with the same API; cross-check the common identity.
+        fd_before, fd_after = self.stamp(before), self.stamp(after)
+        binding_before, binding_after = self.stamp(path_before), self.stamp(path_after)
+        require(count==before.st_size and fd_before==fd_after
+                and binding_before==binding_after and fd_before[:4]==binding_before[:4]
+                and fd_after[:4]==binding_after[:4] and self.resolve(locator)==path,
+                locator, 'changed during read: '+json.dumps({'descriptor_before':fd_before,
+                    'descriptor_after':fd_after,'path_before':binding_before,'path_after':binding_after}),
+                'INPUT_CHANGED')
         return {'path':locator,'resolved_path':path.relative_to(self.root).as_posix(),
-                'size_bytes':after.st_size,'sha256':digest.hexdigest(),'stamp':self.stamp(after)}, b''.join(chunks)
+                'size_bytes':after.st_size,'sha256':digest.hexdigest(),'stamp':fd_after,
+                'path_stamp':binding_after}, b''.join(chunks)
 
     def capture(self, key, locator, sha=None, size=None, *, json_data=False):
         identity,data = self.scan(locator,json_data=json_data)

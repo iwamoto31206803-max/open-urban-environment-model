@@ -4,6 +4,8 @@ import json
 from pathlib import Path
 import sqlite3
 import struct
+import os
+from types import SimpleNamespace
 
 import pytest
 
@@ -13,6 +15,79 @@ from ouem.native.building.source_h import ingest_source_h
 from ouem.standardize.building import source_h as standardizer
 from ouem.consumers import source_h_standard as c
 from ouem.consumers import _source_h_geometry as g
+
+
+def altered_stat(info, **changes):
+    fields = ('st_mode', 'st_dev', 'st_ino', 'st_size', 'st_mtime_ns', 'st_ctime_ns')
+    return SimpleNamespace(**({key:getattr(info,key) for key in fields} | changes))
+
+
+def test_different_stat_fstat_clocks_preserve_success_and_error_codes(standard,tmp_path,area,monkeypatch):
+    original = os.fstat
+    def change_clock(fd):
+        info = original(fd)
+        return altered_stat(info, st_ctime_ns=info.st_ctime_ns+1000000000)
+    monkeypatch.setattr(os, 'fstat', change_clock)
+    report = validate(tmp_path,area)
+    assert report['technical_validation']=='PASS', report['issues']
+    assert validate(tmp_path,area,study_area_config=None)['issues'][0]['code']=='CONFIG_LOCATOR_REQUIRED'
+    assert validate(tmp_path,area,study_area_config='../escape.yaml')['issues'][0]['code']=='PATH_INVALID'
+
+
+@pytest.mark.parametrize('field',['st_ctime_ns','st_mtime_ns','st_ino','st_dev','st_size'])
+def test_descriptor_change_during_scan_fails_closed(tmp_path,monkeypatch,field):
+    (tmp_path/'input').write_bytes(b'unchanged')
+    original = os.fstat
+    calls = 0
+    def changing(fd):
+        nonlocal calls
+        calls += 1
+        info = original(fd)
+        return altered_stat(info, **{field:getattr(info,field)+(calls>1)})
+    monkeypatch.setattr(os,'fstat',changing)
+    with pytest.raises(Exception) as caught:
+        c.Watch(tmp_path).scan('input')
+    assert caught.value.code=='INPUT_CHANGED'
+    assert 'descriptor_before' in str(caught.value)
+
+
+def test_native_stat_clock_diagnostic(tmp_path):
+    """Show real Windows CI clocks, without assuming either ctime meaning."""
+    import warnings
+    path = tmp_path/'clock'
+    path.write_bytes(b'before')
+    path.write_bytes(b'after!')
+    with path.open('rb') as stream:
+        before = os.fstat(stream.fileno())
+        stream.read()
+        after = os.fstat(stream.fileno())
+        by_path = path.stat()
+    stamps = {'descriptor_before':c.Watch.stamp(before),'descriptor_after':c.Watch.stamp(after),
+              'path_after':c.Watch.stamp(by_path)}
+    assert stamps['descriptor_before']==stamps['descriptor_after'], stamps
+    assert stamps['descriptor_after'][:4]==stamps['path_after'][:4], stamps
+    if before.st_ctime_ns != by_path.st_ctime_ns:
+        warnings.warn('stat/fstat ctime diagnostic (expected platform difference): '+json.dumps(stamps),UserWarning)
+    identity,_ = c.Watch(tmp_path).scan('clock')
+    assert identity['sha256']==sha(path)
+
+
+def test_path_ctime_change_during_scan_fails_closed(tmp_path,monkeypatch):
+    target = tmp_path/'input'
+    target.write_bytes(b'unchanged')
+    original = Path.stat
+    calls = 0
+    def changing(path,*args,**kwargs):
+        nonlocal calls
+        info = original(path,*args,**kwargs)
+        if path==target:
+            calls += 1
+            return altered_stat(info,st_ctime_ns=info.st_ctime_ns+(calls>1))
+        return info
+    monkeypatch.setattr(Path,'stat',changing)
+    with pytest.raises(Exception) as caught:
+        c.Watch(tmp_path).scan('input')
+    assert caught.value.code=='INPUT_CHANGED'
 
 
 @pytest.fixture

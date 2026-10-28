@@ -155,6 +155,39 @@ selection QA, re-resolve and rehash the complete watch set and compare device,
 inode, size, modification/creation metadata and content. Same-byte replacement
 is detectable via file identity. Growing files do not cause unbounded streaming.
 
+### Windows CI clock compatibility correction
+
+PR #93 run 40637447023 used Python 3.12: Ubuntu passed, Windows had eight
+Consumer failures. The initial read rejected unchanged manifests with
+`INPUT_CHANGED`, masking expected `CONFIG_LOCATOR_REQUIRED` / `PATH_INVALID`.
+Local Python 3.11 did not reproduce those eight failures. CPython's
+[Windows stat/fstat issue](https://github.com/python/cpython/issues/157671)
+documents distinct meanings for `st_ctime_ns` through the two APIs.
+The original five-field cross-API stamp equality was therefore invalid.
+
+The correction retains **both complete stamps**, comparing descriptor ctime
+only across descriptor observations and path ctime only across path observations.
+Device, inode, size and mtime must additionally match across APIs. Both stamps,
+hashes and resolved bindings are checked again at completion. Failure diagnostics
+include descriptor/path before/after stamps. No `INPUT_CHANGED` is suppressed;
+no platform exception permits changed inputs. This is still best-effort detection,
+not a lock or guarantee for later consumers.
+
+Regression coverage simulates different stable API clocks while requiring full
+validation PASS and correct missing-config/traversal error codes. Separate tests
+reject descriptor identity/size/mtime/ctime changes and path ctime changes.
+Existing content-change, same-byte replacement, hash and confinement tests remain.
+A real-filesystem diagnostic records actual differing clocks as a pytest warning
+on affected runtimes so CI logs retain the observed values. This warning is an
+intentional diagnostic, not a validation failure. Source-H geometry/provenance,
+H/XY rules, read-only behavior and Adapter v0.1 are unchanged.
+
+Local correction validation (Windows, OUEM Python 3.11.9): related Consumer,
+Standardizer and Adapter suites **153 passed**; full pytest **856 passed,
+5 skipped, 250 warnings** (215.95s). Skips are existing Windows symlink privilege
+constraints; warnings are existing Rasterio deprecations. These local results
+are distinct from the Python 3.12 Windows/Ubuntu CI results recorded in PR #93.
+
 This is **best-effort point-in-time observation**, not a lock, atomic snapshot,
 signature or proof against every reversible concurrent mutation. A successful
 report cannot guarantee later input identity. A later Adapter must revalidate
