@@ -10,6 +10,11 @@ uses this same Standardizer and Consumer Validator after bounded Raw reference
 resolution. It leaves the horizontal-only operation, exact H checks, candidate
 schema, source-H eligibility and Phase 5 gates unchanged.
 
+The subsequent [real Building + Terrain VoxCity experiment](experiments/real_komae_voxel/README.md)
+uses a separate bounded experimental runner with fresh Consumer validation.
+It does not enable candidate v0.2 inputs in the accepted v0.1 Adapter or change
+the Standard/eligibility/acceptance contracts.
+
 ## Compatibility decisions before implementation
 
 Owning sources: [Standard Building v0.1](OUEM_Standard_Building_v0.1.md),
