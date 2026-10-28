@@ -407,352 +407,107 @@ not the conceptual national model variants.
 
 ### Read-only Adapter content failure diagnosis
 
-After review/merge, from an ordinary Windows cmd at the repository root:
+The following five tools inspect existing contained-PoC evidence. Use the OUEM
+venv from an ordinary Windows terminal, separately from GIS Python. They verify
+recorded paths, lineage and hashes before/after reading; unsafe links, changed
+bytes and active GeoPackage sidecars block inspection. Close writers; do not
+remove sidecars or edit evidence to make checks pass. Recorded commands are
+never executed, and no A1/A2/A3 or voxel pipeline is rerun. Inputs, saved runs,
+quality criteria and acceptance remain unchanged. Only the final QGIS export
+writes files, in a fresh diagnostic directory. Other tools print to stdout;
+if retaining it, choose a new review file outside inputs/runs (shell redirection
+has no overwrite protection).
 
 ```bat
 scripts\work\diagnose_komae_adapter_content.cmd komae-contained-001
 ```
 
-This reads an **existing contained-PoC run** only. It does not start the runner,
-A1/A2/A3, GIS Python, VoxCity, standardization, or a repair. Nothing in the run
-is overwritten, deleted or regenerated. Use OUEM `.venv`, separately from GIS.
-The launcher accepts exactly one run ID, not a path; no `--force` or output-file
-option exists. Python equivalent (Linux uses `.venv/bin/python`):
-
-```bat
-.venv\Scripts\python.exe -B -m ouem.komae_adapter_diagnostics komae-contained-001
-```
-
-The diagnostic reads `integration-report.json`, discovers each A3 input and
-Adapter from its recorded `repeat-N-a3` command and artifact inventory, and
-reads the inventoried PoC reference. It **never executes a recorded command**.
-It does not guess Adapter/Standard filenames. The reference supplies the exact
-sorted ID list used by the runner; each repeat's Standard Building IDs are also
-checked against it. Artifact SHA-256/size must match the saved inventory and
-input hashes must remain unchanged during inspection. Missing/ambiguous stages,
-changed artifacts, unsafe paths/links or active GeoPackage sidecars block the
-diagnostic. Close concurrent writers; do not delete sidecars or edit evidence to
-make it pass. A relocated byte-identical run can be read through its relative
-inventory keys even when the saved command paths refer to the original location.
-
-Each repeat shows these unchanged `adapter_quality()` clauses separately:
-
-- Exact CRS string `urn:ogc:def:crs:EPSG::4326`, including the observed value.
-- Exact ordered `ouem_id` list equality, with missing/extra occurrences,
-  order-only mismatch, and differing positions. Set equality alone is not PASS.
-- `id == voxcity_id ==` the 1-based feature position, with offending building,
-  expected sequence value and both actual values. No new integer-type rule.
-- Finite positive `height` and `min_height == 0`, with offending ID and values.
-- Valid, nonempty, 2D geometry of positive area, with invalid/empty/Z/nonpositive
-  area classifications, geometry type, area and Shapely validity explanation.
-
-The production function and all generation/quality code remain unchanged.
-Diagnostics call that existing function and check aggregate parity, then compare
-with saved `quality.adapter_content`. Exceptions in the existing predicate are
-reported as ERROR/NOT_CHECKED, never claimed as a verified boolean result.
-Repeat comparison covers conditions and their observations; it is a diagnosis
-comparison, **not a new voxel reproducibility or acceptance verdict**.
-
-Exit codes: **0** both repeats PASS with consistent evidence; **1** one or more
-adapter conditions FAIL, with matching existing/saved predicates; **2** blocked,
-incomplete, exception, or inconsistent evidence. Exit 1 is an explained quality
-failure, not a request to rerun the pipeline. The tool does not change the saved
-`status`, `quality`, `reproducibility` or `acceptance` fields.
-
-For complete per-building observations, add `--json` to the Python command;
-JSON goes to stdout and nonfinite numeric values are represented as strings.
-No files are created by the tool. If retaining terminal output, choose a new
-local review file **outside existing runs and accepted inputs**; shell redirection
-can overwrite files and is not protected by this tool.
-
-Codex and CI use synthetic fixtures only. Run this command on the company PC to
-identify the actual failing conditions/IDs in `komae-contained-001`. A cause in
-Adapter generation, any correction, and formal acceptance require separate
-review after inspecting those results. Do not commit diagnostic artifacts or
-real-data inputs to GitHub.
+This checks both repeats against the original `adapter_quality()` predicates:
+exact CRS, ordered reference IDs, `id == voxcity_id`, heights and 2D footprint
+validity. Exit **0** means consistent evidence and both repeats PASS; **1** means
+an explained predicate failure; **2** means blocked/incomplete or inconsistent
+evidence. It diagnoses failure without changing the saved verdict.
+[Historical detail](https://github.com/iwamoto31206803-max/open-urban-environment-model/blob/1f0b9f0a48d86cf4097a846f987cbab14d958235/scripts/work/README.md#L408-L473).
 
 ### Read-only geometry provenance diagnosis
-
-After reviewing/merging this diagnostic, use an ordinary Windows cmd and the
-OUEM `.venv` (not OSGeo4W Shell):
 
 ```bat
 scripts\work\diagnose_komae_geometry_provenance.cmd komae-contained-001
 ```
 
-The default target is `oub-21a29be1-9794-593f-b22c-e3639a7d9d45`. Supply an
-optional second argument to inspect another OUEM ID. Python equivalent:
-
-```bat
-.venv\Scripts\python.exe -B -m ouem.komae_geometry_provenance komae-contained-001
-```
-
-This inspects saved Native → full A1 Standard → contained Standard → Adapter
-geometry for **both repeats**. Recorded A1/A3 commands, the artifact inventory,
-adjacent manifests and subset parent fingerprints identify files. Commands are
-never executed. Native is located through the report's original input path and
-hash, not a guessed filename. Its manifest identifies the layer; A1's recorded
-`source_id` mapping and deterministic OUEM ID rule identify the Native `id`.
-There is no row-number or nearest-geometry fallback. A relocated run still needs
-its Native inputs at their recorded paths; missing inputs/lineage are reported
-as INCONCLUSIVE. Do not edit records to redirect them.
-
-Each saved shape reports type, declared CRS, XY validity/reason, empty/Z flags,
-bounds, area, polygon/ring/vertex counts (including ring closure vertices), WKB
-hash and any self-intersection coordinate reported by GEOS. Areas and shape
-differences are compared in **EPSG:6677 metres**, not geographic degrees.
-Reprojection is horizontal-only and in memory, preserving Z without interpreting
-Native EPSG:4979 Z as ellipsoidal height. Symmetric-difference area is only
-calculated for valid, nonempty polygonal inputs; otherwise it is NOT_CHECKED.
-
-The first invalid **saved representation** and its interval (Native already
-invalid, Native→Standard, or Standard→Adapter) are distinct from a proven cause
-of the Adapter's self-intersection. Native/Standard can contain 3D surface
-assemblies whose XY projections overlap; GEOS ignores Z, and their raw area is
-not the dissolved footprint area. Adapter manifest footprint diagnostics are
-shown as recorded observations, not independently reconstructed geometry.
-An XY-only projection probe shows whether projecting the raw Standard reproduces
-the invalid Adapter exactly; it does **not** repeat footprint generation.
-Missing normalized/pre-reprojection and rounding snapshots leave the causal
-mechanism INCONCLUSIVE. No repair, union, `make_valid`, `buffer(0)`, rounding,
-GIS conversion, standardization, voxel generation or E2E rerun is performed.
-
-Saved hashes/sizes are checked before opening artifacts and Native inputs;
-all opened evidence (including manifests/report) is fingerprinted and checked
-again afterwards. Links, unsafe inventory paths, hash mismatches and active
-GeoPackage sidecars block diagnosis. Close other writers first; do not remove
-sidecars or alter evidence to make checks pass. Existing report/acceptance status
-and all input/output files remain unchanged. Only this building's lineage is
-inspected; this is not a revalidation of every run artifact.
-
-Exit codes: **0** complete lineage with all saved geometries valid; **1** complete
-lineage with an observed invalid geometry; **2** INCONCLUSIVE lineage, blocked
-safety/integrity check, or an unreadable diagnostic. A complete observed interval
-can still have an INCONCLUSIVE causal mechanism. Repeat comparison reports
-geometry hashes, classification and diagnostic equality separately; it does not
-replace the runner's reproducibility/quality checks or establish acceptance.
-
-Add `--json` to the Python command for full metrics/evidence on stdout. No output
-file option is provided, so the diagnostic itself cannot overwrite an existing
-file. If retaining stdout, choose a **new external review file**, outside runs
-and accepted inputs; shell redirection is not protected by the diagnostic.
-Do not commit local data or diagnostic reports. Codex/CI exercise synthetic
-fixtures only. The actual `komae-contained-001` diagnosis remains a company-PC
-task after review/merge; any repair requires a separately reviewed change.
+Traces both repeats' saved Native → full Standard → contained Standard → Adapter
+for one building. Native must resolve at its recorded path; missing/conflicting
+lineage is INCONCLUSIVE. EPSG:6677 area/shape comparisons and an XY projection
+probe locate the first invalid saved representation, not its proven cause;
+raw 3D-surface XY validity differs from footprint validity. Exit **0** means
+complete valid lineage; **1** means complete lineage with observed invalidity;
+**2** means INCONCLUSIVE/blocked/error. A complete interval can have unresolved cause.
+[Historical detail](https://github.com/iwamoto31206803-max/open-urban-environment-model/blob/1f0b9f0a48d86cf4097a846f987cbab14d958235/scripts/work/README.md#L474-L542).
 
 ### Read-only Adapter intermediate geometry diagnosis
-
-After review/merge, from ordinary Windows cmd using OUEM `.venv`:
 
 ```bat
 scripts\work\diagnose_komae_adapter_geometry_steps.cmd komae-contained-001
 ```
 
-An optional second argument selects another OUEM ID; the default is
-`oub-21a29be1-9794-593f-b22c-e3639a7d9d45`. Full JSON metrics go to stdout:
-
-```bat
-.venv\Scripts\python.exe -B -m ouem.komae_adapter_geometry_steps komae-contained-001 --json
-```
-
-This complements saved-geometry provenance diagnosis by replaying **only the
-target's Adapter geometry operations in memory** for both repeats. It discovers
-the Standard input and saved Adapter through recorded A3 commands, the report
-inventory and adjacent manifests. It verifies their linkage/hashes and reads the
-exact `building` layer used by `_run_voxcity_grids`. Recorded commands are never
-executed. DEM, grids, VoxCity voxels, A1/A2/A3 and all file writers are excluded.
-
-The inspected production sequence is:
-
-1. `build_normalized_footprint`: per-surface `shapely.force_2d`; discard empty,
-   nonfinite-area or zero-area projections; conditional existing `make_valid`;
-   retain positive polygonal parts; `normalize` and WKB sort; `unary_union`;
-   conditional existing `make_valid`; retain/sort polygonal parts; final
-   `normalize(unary_union(...))` and validity guard.
-2. `_set_normalized_footprints`: preserve source CRS when assigning geometry.
-3. `_to_voxcity_building_crs`: GeoPandas `to_crs(4326)`.
-4. GeoPandas `iterfeatures` (observed separately) and `to_json(drop_id=True)`,
-   `json.loads`, then the Adapter's `canonical_json` and a diagnostic decode.
-
-The Adapter source and public API are unchanged. A temporary, thread-local
-Python call/return profiler observes the actual footprint function's Shapely
-operands/results. It never substitutes implementations. Metrics are calculated
-after profiling stops; an independent unprofiled call must give identical WKB
-and footprint statistics. An existing profiler is not replaced. Unsupported or
-incomplete capture yields INCONCLUSIVE. Existing conditional repair calls run
-**only as part of the original function**, under the original conditions; no new
-repair, `buffer(0)` or rounding operation is introduced.
-
-The inspected path has **no explicit coordinate rounding**: JSON uses its normal
-numeric encoding, and canonicalization changes key ordering/formatting only.
-Each actual operation records input/output validity and reason, type, CRS,
-empty/Z flags, bounds, area in EPSG:6677 m², polygon/ring/vertex counts, GEOS
-self-intersection location, WKB hash, precision grid and shape differences.
-Union operands are inspected individually, not assembled into an artificial
-invalid MultiPolygon. Raw 3D surface XY validity remains distinct from footprint
-validity; discarded projections are identified explicitly.
-
-Before classifying an observed valid→invalid transition, the replay must match
-**every recorded footprint statistic exactly** (including area) and the saved
-final Geometry WKB exactly. Ring/coordinate-order differences and floating-point
-area discrepancies do not silently pass. Mismatches, missing evidence or capture
-failures produce INCONCLUSIVE with details. Multiple implicated operation types
-are reported separately from a single operation. The report includes runtime
-library versions and Adapter source hash; current-runtime reproduction is not
-proof that historical library versions were identical.
-
-Grid-derived scalar properties are taken from the saved manifest; they are not
-recomputed. The pinned grid function filters/copies the GeoDataFrame before its
-own processing, and the Adapter serializes its original GeoDataFrame. The tool
-checks **geometry** reproduction, not whole-feature/file equality or voxel
-quality. Repeat equality is reported independently of the original E2E verdict.
-
-The existing diagnostic safety checks apply: reject unsafe links/paths, changed
-hashes and active GeoPackage sidecars; verify SHA-256 before/after every opened
-artifact/manifest/report. Nothing is written. Close concurrent writers first.
-If retaining stdout, choose a new review file outside runs/accepted inputs;
-shell redirection can overwrite files and is not protected by this CLI.
-Exit **0** means faithful replay with no valid→invalid transition, **1** means a
-faithfully reproduced transition, and **2** means INCONCLUSIVE or BLOCKED.
-Neither a replay nor a CI PASS changes quality criteria or establishes acceptance.
-Codex/CI use synthetic data; company-PC diagnosis and any later repair remain
-separate user-reviewed tasks. Keep real data and diagnosis outputs out of Git.
+Replays the target's actual normalization, CRS transformation and JSON geometry
+steps in memory for both repeats. A thread-local profiler observes existing
+operations without replacement; an existing profiler is not displaced. All saved
+footprint statistics and final WKB must match exactly, or results are INCONCLUSIVE.
+No new repair or rounding is introduced. Exit **0** means faithful replay without
+a valid→invalid transition; **1** means a reproduced transition; **2** means
+INCONCLUSIVE/blocked. This is geometry fidelity, not whole-feature/voxel quality.
+[Historical detail](https://github.com/iwamoto31206803-max/open-urban-environment-model/blob/1f0b9f0a48d86cf4097a846f987cbab14d958235/scripts/work/README.md#L543-L620).
 
 ### Memory-only CRS repair candidate evaluation
-
-After user review/merge, use the ordinary company-PC cmd and OUEM `.venv`:
 
 ```bat
 scripts\work\evaluate_komae_adapter_crs_repairs.cmd komae-contained-001
 ```
 
-The optional second argument is the target OUEM ID (default
-`oub-21a29be1-9794-593f-b22c-e3639a7d9d45`). Console output summarizes candidates;
-full machine-readable JSON goes to stdout with:
+Requires exact baseline geometry/statistic replay over both full 92-building
+repeats before memory-only A–D comparisons: conditional post-CRS `make_valid`,
+source repeated-point removal, post-CRS rounding, and source-edge densification.
+Only invalid baseline CRS outputs may change; already-valid buildings remain
+exact. Empty/nonpolygonal/invalid results are rejected; components are never
+silently discarded. Structural changes require review; small deformation or
+Pareto inclusion is not approval. Ground/roof/voxel consistency needs subsequent
+validation. Exit **0** means a complete repeatable evaluation (`EVALUATED`),
+not an approved repair; **2** means INCONCLUSIVE/blocked. Parameter values,
+measurements and candidate-screening rules remain in the
+[historical detail](https://github.com/iwamoto31206803-max/open-urban-environment-model/blob/1f0b9f0a48d86cf4097a846f987cbab14d958235/scripts/work/README.md#L621-L719).
 
-```bat
-.venv\Scripts\python.exe -B -m ouem.komae_crs_repair_evaluation komae-contained-001 --json
-```
-
-The tool reads the saved A3 command/inventory, Standard input, Adapter and
-adjacent manifests for both repeats. All opened evidence is hash/size-checked
-and SHA-256 is verified again after reading, using the existing diagnostic
-link/path/GeoPackage-sidecar guards. Close other writers first. Nothing is
-written; if saving stdout, use a **new review file outside accepted inputs and
-existing runs**. Shell redirection is outside the tool's overwrite protection.
-No DEM, grid, voxel or E2E processing runs. Production Adapter code, quality
-gates, Standard contracts and accepted evidence remain unchanged.
-
-Before experiments, the tool reuses `build_normalized_footprint`,
-`_set_normalized_footprints`, `_to_voxcity_building_crs` and GeoPandas JSON
-serialization for **every building**. Saved final geometry and every footprint
-manifest statistic must match exactly. It also reuses the PR #41 target replay.
-Missing/ambiguous provenance or runtime reproduction mismatch is INCONCLUSIVE.
-The saved VoxCity version/commit declaration must match the repository pin;
-this does not verify an installed commit (VoxCity is not executed).
-
-The inspected CRS path is GeoPandas `to_crs(4326)` via PyProj/PROJ with
-double-precision coordinates and **no explicit coordinate rounding**. Target
-evidence includes before/after rings/vertices, GEOS validity and intersection
-locations, anomalously intersecting edges and their endpoints, short edges,
-close/duplicate vertices, binary64 ULP scale, signed orientation determinants,
-endpoint-to-other-edge clearances, midpoint/chord offsets and roundtrip shape
-differences. Closure vertices are excluded from duplicate-pair detection.
-The 0.1 mm proximity cutoff is a diagnostic reporting setting, not an acceptance
-tolerance. Decimal determinants describe stored binary64 coordinates only;
-they are not a high-precision independent CRS transform.
-
-Reprojecting endpoints and reconnecting them with straight chords can matter
-near a narrow clearance. A synthetic fixture reproduces valid→invalid geometry
-through the real CRS function, without mocking PROJ. This does **not** establish
-the mechanism in the real Komae building: nonlinear projection, finite precision
-and near-degenerate geometry can interact. Native 3D validity is a separate,
-deferred issue; no Native geometry is repaired.
-
-All policies inspect all saved buildings, but **only an invalid baseline CRS
-output may be changed**. Already-valid buildings remain exactly unchanged.
-Experimental settings below are neither production defaults nor quality limits:
-
-| Candidate | Memory-only operation |
-| --- | --- |
-| A | Conditional `make_valid` after CRS transformation; retain all returned components, including lines/collections. |
-| B | Conditional `remove_repeated_points` in EPSG:6677 at 1 µm and 0.1 mm, only when a consecutive edge is at/below that setting. Reject invalid/empty/nonpolygonal preprocessing; no fallback repair or blanket simplification. |
-| C | Pointwise rounding after CRS transformation to 10 and 12 decimal places; no automatic topology repair. |
-| D | Conditional source-edge `segmentize` with maximum 1 m segment length before CRS. This tests the straight-chord effect while adding vertices; it is not assumed safe or equivalent after projection. |
-
-For each building/candidate, JSON records validity, type and component types,
-counts, empty/Z flags, changed IDs, preserved attributes and numeric IDs, vertex
-count change, and area difference (m²/%), symmetric-difference area and Hausdorff
-distance against the **original valid EPSG:6677 footprint**. Baseline roundtrip
-measurements are also reported so ordinary transformation noise is visible.
-Invalid/nonpolygonal operands are never silently repaired to compute metrics;
-unavailable/nonfinite results are NOT_CHECKED. Failed candidate operations retain
-the building's failure record and have no fabricated candidate content hash.
-
-Empty, invalid, nonpolygonal, nonfinite or 3D output is REJECTED. In particular,
-GeometryCollections are not silently reduced to polygonal components. A valid
-MultiPolygon may be contract-compatible but any polygon/ring/type change is
-flagged STRUCTURAL_REVIEW_REQUIRED. Other measurable candidates remain
-REVIEW_REQUIRED; small area change alone never passes a safety test. Preserved
-properties are copied, not recomputed: geometry changes may invalidate their
-relationship with grid-derived heights/ground, which requires later validation.
-
-Both full **92-building** repeats, exact baseline fidelity, ordered candidate
-feature content hashes (including attributes) and measurement comparisons are
-reported. Changed IDs, rejection/incomplete-metric/structural-change IDs and
-all-building aggregate differences expose effects beyond the target. An optional
-Pareto shortlist excludes rejected, structurally changed, nonrepeatable or
-unmeasurable candidates. It compares area/symmetric difference/Hausdorff metrics
-without an arbitrary weighted score; it is **not a safest-candidate ranking**.
-The production recommendation remains INCONCLUSIVE until deformation tolerances,
-visual review and downstream evidence support a choice.
-
-Exit **0** means a complete, reproducible 92-building comparison was performed,
-not that any repair is approved; **2** means INCONCLUSIVE or BLOCKED. JSON
-separates experiment completion, candidate screening and recommendation.
-Codex/CI use only synthetic fixtures. Real quantitative findings must come from
-this command on the company PC. Before any production patch, review the target
-edges/rings and all changed buildings in QGIS; verify DEM/computation-domain
-coverage, 92-ID retention, attribute/ground/roof/overlap consistency, voxel content
-and independent E2E repeatability under explicit authorization. Do not commit
-local datasets/reports or declare formal acceptance from this experiment.
+For these four tools, the Python equivalent is
+`.venv\Scripts\python.exe -B -m MODULE RUN-ID [OUEM-ID] --json` from the repository
+root. Modules, in section order: `ouem.komae_adapter_diagnostics`,
+`ouem.komae_geometry_provenance`, `ouem.komae_adapter_geometry_steps`,
+`ouem.komae_crs_repair_evaluation`. Omit `[OUEM-ID]` entirely for the first tool;
+the other three accept an optional second positional argument (also in CMD),
+defaulting to `oub-21a29be1-9794-593f-b22c-e3639a7d9d45`. `--json` selects full
+JSON stdout and is a Python-only option. Run IDs identify existing directories
+under `data/work/integration/`, not arbitrary paths. No output-file option exists.
 
 ### Export Candidate A for QGIS inspection
-
-After review/merge, use an ordinary Windows cmd in the repository with the OUEM
-`.venv` and the existing 92-building E2E run:
 
 ```bat
 scripts\work\export_komae_adapter_repair_qgis.cmd komae-contained-001
 ```
 
-An optional second argument selects another OUEM ID. The default is
-`oub-21a29be1-9794-593f-b22c-e3639a7d9d45`. The command prints a new
-GeoPackage path and each constituent Polygon's EPSG:6677 area. Open that path
-in QGIS; use the `adapter_before`, `candidate_a`, `candidate_a_parts`, and
-`self_intersection` layers. The point uses the approximate coordinates in
-GEOS's validity message and is omitted when that location is unavailable.
+Accepts the same optional OUEM ID/default. Python equivalent:
+`.venv\Scripts\python.exe -B -m ouem.komae_repair_qgis_export RUN-ID [OUEM-ID]`
+(no `--json`). Requires both baseline repeats and Candidate A geometry/attributes
+to reproduce the current evaluator exactly, with source hashes unchanged.
+Nonpolygonal output blocks export; no components are dropped. It creates a fresh
+directory under `data/work/diagnostics/adapter-repair/` and prints the GeoPackage
+path, Polygon areas and `inspection.json` path. Exit **0** means exported for
+inspection; **2** means blocked/error. Failed partial output is retained.
 
-Candidate A calls the **same** conditional Shapely `make_valid` function on the
-saved EPSG:4326 Adapter geometry and applies the same canonical JSON numeric
-roundtrip as the PR #42 evaluator. It verifies the PR #42 current-runtime
-candidate geometry hash, both saved repeats' complete baseline replay, their
-Candidate A geometry and attributes, and SHA-256 of all source evidence before
-and after export. A changed source or nonpolygonal Candidate A blocks export;
-no component is dropped. `inspection.json` records provenance, input hashes,
-parts, areas, percentage shares, vertex counts, and distances from the reported
-intersection point. Original properties, including nested attributes, are
-preserved verbatim in `properties_json`; ID and height fields are also available
-as QGIS columns. `part_index` starts at 1 and does not renumber building IDs.
-
-Each invocation creates a fresh directory under
-`data/work/diagnostics/adapter-repair/`, separate from the existing E2E run.
-Inspect the two Polygon areas and their position in QGIS before deciding on a
-production change. This export does not rerun A1/A2/A3, apply a production fix,
-recheck voxel quality, or establish formal acceptance. Historical PR #42 JSON
-is not an input to this command; parity here is against the current PR #42
-evaluator. Keep diagnostic GeoPackages and reports
-on the company PC and out of Git.
+Open `adapter_before`, `candidate_a`, `candidate_a_parts` and `self_intersection`
+in QGIS. The last layer is omitted if GEOS provides no approximate location.
+Review part areas/positions; original properties are in `properties_json`, with
+ID/height columns and 1-based part indices. No production repair, downstream
+voxel-quality recheck or formal acceptance is performed. Historical PR #42 JSON
+is not an input. [Historical detail](https://github.com/iwamoto31206803-max/open-urban-environment-model/blob/1f0b9f0a48d86cf4097a846f987cbab14d958235/scripts/work/README.md#L720-L756).
 
 ### Opt-in 92-building contained E2E PoC
 
@@ -840,6 +595,19 @@ Study Area or implement/constrain a future Computation Domain extension.
 Codex/CI use synthetic inputs and mocked GIS stages; actual selection evidence,
 coverage and E2E reports must be generated and reviewed on the company PC after
 merge. Never commit those local artifacts or runtime snapshots.
+
+For the separate read-only reference DEM coverage diagnostic, run from the
+**repository root** in an ordinary Windows terminal (the former CMD shortcut
+has been removed):
+
+```bat
+.venv\Scripts\python.exe -B scripts\work\diagnose_komae_dem_coverage.py
+```
+
+It takes no arguments and reads the canonical Standard Building, Native Terrain
+manifest/its Raw DEM, and study-area configuration. JSON goes to stdout; no files
+are written. It reports boundary classes and coverage shortfalls, not NoData or
+actual engine-output validation. Exceptions exit nonzero; completion is not acceptance.
 
 ### Read-only preflight (before authorizing a real-data run)
 
