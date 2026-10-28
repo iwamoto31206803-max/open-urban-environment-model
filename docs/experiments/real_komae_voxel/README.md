@@ -58,6 +58,13 @@ rectangle, within the unchanged preparation Study Area and actual input coverage
 `context_buffer_m` expands it to the projected computation reference; actual
 engine centres/domain, shape, ROI mask and conditioning remain authoritative.
 Both reports retain the exact config SHA/settings and observed input identities.
+Each run preserves the submitted bytes as `submitted-config.json` and a runnable
+`run-config.json` under `output_parent/run_id/`. The latter changes only the
+relative `artifact_root` locator for its saved location; reports and watch sets
+bind this saved configuration and the submitted bytes. After editing or deleting
+the original JSON, use `--config <output_parent>/<run_id>/run-config.json` to run
+that run's Solar stage or load it for revalidation. Saved files must remain
+unchanged; stage outputs are still exclusive and cannot be rerun in place.
 Resolution/profile/solar/CR/optics/observer rules remain fixed. There is no new
 Study Area schema, data acquisition, arbitrary CRS support or orchestrator.
 

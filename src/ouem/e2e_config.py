@@ -3,6 +3,8 @@ from dataclasses import dataclass
 from pathlib import Path, PureWindowsPath
 from types import SimpleNamespace
 import math
+import hashlib
+import os
 import re
 
 from ouem.consumers.source_h_standard import Watch, strict_json, same_json
@@ -128,6 +130,11 @@ class RunConfig:
         require(watch.root == self.root, 'config.root', 'watch/config root differs')
         data = watch.capture('run_config', self.path.relative_to(self.root).as_posix(), self.sha256, json_data=True)
         same_json(data, self.document, 'config.identity')
+        if self.path == self.run_root/'run-config.json':
+            submitted = watch.capture('submitted_config',
+                (self.run_root/'submitted-config.json').relative_to(self.root).as_posix(), json_data=True)
+            same_json({k:v for k,v in submitted.items() if k != 'artifact_root'},
+                      {k:v for k,v in data.items() if k != 'artifact_root'}, 'config.snapshot')
         for name in ('study_area', *self.document['inputs']):
             binding = keys(self.binding(name), ('path','sha256'), 'inputs.'+name)
             require(type(binding['sha256']) is str and re.fullmatch(r'[0-9a-f]{64}', binding['sha256']),
@@ -148,10 +155,28 @@ class RunConfig:
             base_run=self.run_root/'voxel', run_dir=self.run_root/stage)
 
     def prepare(self, stage):
+        snapshot = self.run_root/'run-config.json'
         if stage == 'voxel':
+            watch = Watch(self.root)
+            self.capture(watch)
+            submitted = self.path.read_bytes()
+            require(hashlib.sha256(submitted).hexdigest() == self.sha256,
+                    'config.snapshot', 'submitted configuration changed')
+            watch.unchanged()
             self.run_root.mkdir()  # exclusive: no resume, even after failure
+            with (self.run_root/'submitted-config.json').open('xb') as stream:
+                stream.write(submitted)
+            # Only relocate the root locator; keep all model settings and bindings.
+            write(snapshot, dict(self.document, artifact_root=os.path.relpath(self.root, self.run_root)))
         else:
             require(self.run_root.is_dir(), 'run_root', 'run the voxel stage first')
+            if self.path != snapshot:
+                require(digest(self.run_root/'submitted-config.json') == self.sha256,
+                        'config.snapshot', 'use the exact submitted configuration or saved run-config.json')
+        saved = RunConfig.load(snapshot)
+        same_json(dict(self.document, artifact_root=str(self.root)),
+                  dict(saved.document, artifact_root=str(saved.root)), 'config.snapshot')
+        return saved
 
     def seal_voxel(self):
         report = self.run_root/'voxel/report.json'

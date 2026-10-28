@@ -129,7 +129,7 @@ def test_cli_config_cannot_be_mixed_with_legacy_paths(settings):
 
 
 def test_receipt_requires_complete_exact_config_and_bound_report(settings):
-    path,data=settings;cfg=config.RunConfig.load(path);cfg.prepare('voxel')
+    path,data=settings;cfg=config.RunConfig.load(path).prepare('voxel')
     (cfg.run_root/'voxel').mkdir()
     report=dict(status='FAILED',input_immutability='PASS',run_config=cfg.record())
     save(cfg.run_root/'voxel/report.json',report)
@@ -247,6 +247,7 @@ def test_same_config_complete_source_chain_two_adjacent_rectangles(complete_scen
         model=voxel.run(cfg.arguments('voxel'))
         assert model['status']=='COMPLETED' and model['consumer']['technical_validation']=='PASS'
         report=solar.run(cfg.arguments('solar'))
+        cfg=config.RunConfig.load(cfg.run_root/'run-config.json')
         assert report['status']=='COMPLETED' and report['input_immutability']=='PASS'
         assert report['run_config']==model['run_config']==cfg.record()
         assert report['solar']['canopy_effect_detected']
@@ -260,6 +261,7 @@ def test_same_config_complete_source_chain_two_adjacent_rectangles(complete_scen
 def test_independent_model_checks_reject_self_consistent_container_tampering(complete_scene,case):
     path,data=complete_scene
     cfg=config.RunConfig.load(path);voxel.run(cfg.arguments('voxel'))
+    cfg=config.RunConfig.load(cfg.run_root/'run-config.json')
     model=cfg.run_root/'voxel';report=json.loads((model/'report.json').read_text())
     if case=='domain':
         file=model/'grid.json';grid=json.loads(file.read_text());grid['projected_domain_bounds'][0]-=1
@@ -275,3 +277,47 @@ def test_independent_model_checks_reject_self_consistent_container_tampering(com
     # Even a re-bound local receipt cannot disable the independent grid/voxel audit.
     (cfg.run_root/'voxel-receipt.json').unlink();cfg.seal_voxel()
     with pytest.raises(GeometryValidationError):solar.preflight(cfg.arguments('solar'),Watch(cfg.root))
+
+
+def test_saved_config_survives_reusing_then_deleting_submission(complete_scene):
+    path,data=complete_scene
+    original=path.read_bytes()
+    first=config.RunConfig.load(path)
+    model=voxel.run(first.arguments('voxel'))
+    saved_path=first.run_root/'run-config.json'
+    saved_bytes=saved_path.read_bytes()
+    assert (first.run_root/'submitted-config.json').read_bytes()==original
+    assert model['run_config']['path']==saved_path.relative_to(first.root).as_posix()
+    # Same editable file, different run and adjacent rectangle, same prepared inputs.
+    data['run_id']='second'
+    data['analysis_extent'][0]+=16;data['analysis_extent'][2]+=16
+    save(path,data);second=config.RunConfig.load(path)
+    voxel.run(second.arguments('voxel'));solar.run(second.arguments('solar'))
+    path.unlink()
+    saved=config.RunConfig.load(saved_path)
+    assert saved_path.read_bytes()==saved_bytes
+    assert saved.root==first.root and saved.extent==first.extent
+    # Actual Solar preflight rechecks the prior report, every output/source hash,
+    # Consumer, engine centres, DEM, ID/ground/occupancy and Envelope chain.
+    watch=Watch(saved.root)
+    _,_,_,_,checks=solar.preflight(saved.arguments('solar'),watch)
+    watch.unchanged()
+    assert checks['fresh_consumer']['technical_validation']=='PASS'
+    report=solar.run(saved.arguments('solar'))
+    assert report['status']=='COMPLETED' and report['input_immutability']=='PASS'
+    assert report['run_config']==model['run_config']==saved.record()
+    for result in (model,report):
+        for identity in result['input_artifacts'].values():
+            assert sha(saved.root/identity['path'])==identity['sha256']
+
+
+@pytest.mark.parametrize('name',['run-config.json','submitted-config.json'])
+def test_saved_configuration_tampering_is_rejected(complete_scene,name):
+    path,_=complete_scene
+    cfg=config.RunConfig.load(path);voxel.run(cfg.arguments('voxel'))
+    saved=cfg.run_root/'run-config.json'
+    target=cfg.run_root/name
+    data=json.loads(target.read_text());data['analysis_extent'][0]-=1;save(target,data)
+    with pytest.raises(GeometryValidationError):
+        cfg=config.RunConfig.load(saved)
+        solar.preflight(cfg.arguments('solar'),Watch(cfg.root))

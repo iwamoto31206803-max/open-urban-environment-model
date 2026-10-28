@@ -318,7 +318,8 @@ def run(args):
     config = getattr(args, 'config', None)
     extent = config.extent if config else Extent()
     if config:
-        config.prepare('voxel')
+        config = config.prepare('voxel')
+        args = config.arguments('voxel')
     run_dir = args.run_dir.resolve(); run_dir.mkdir()  # no overwrite/resume
     report = dict(status='RUNNING', source_h_eligibility='NOT_ESTABLISHED', formal_acceptance='NOT_VERIFIED',
                   phase5_gates=dict.fromkeys(('A1','A2','A3','A4'), 'OPEN'), started_at=datetime.now(timezone.utc).isoformat())

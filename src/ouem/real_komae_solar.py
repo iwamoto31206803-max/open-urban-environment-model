@@ -362,7 +362,8 @@ def export(run, arrays, grid):
 def run(args):
     config = getattr(args, 'config', None)
     if config:
-        config.prepare('solar')
+        config = config.prepare('solar')
+        args = config.arguments('solar')
     output=args.run_dir.resolve();output.mkdir()
     report=dict(status='RUNNING',started_at=datetime.now(timezone.utc).isoformat(),
                 source_h_eligibility='NOT_ESTABLISHED',formal_acceptance='NOT_VERIFIED',phase5_gates=dict.fromkeys(('A1','A2','A3','A4'),'OPEN'))
