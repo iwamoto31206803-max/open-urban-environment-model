@@ -1,0 +1,381 @@
+{
+  "status": "Experimental integration evidence; not acceptance",
+  "local_run": "data/work/source-h-native/converter-integration-20261028-01",
+  "artifact_root_at_execution": "C:/dev",
+  "path_policy": "Native results use repository-relative locators here; plan locators are relative to artifact_root. Original Converter argv retains historical absolute execution paths; adapt paths for reproduction without claiming a new run has historical byte identity.",
+  "identity": {
+    "head": "970c5860aaf14de62fce420883b6ea016c0f0196",
+    "dirty_status": "?? tests/integration/\n",
+    "module_sha256": {
+      "src/ouem/native/building/source_h.py": "ad0ae3279dd1a8005e8af7b4852628ad7ac5605bc0edf9f7b5a9a3f6691de704",
+      "src/ouem/native/building/source_h_geometry.py": "afb992dab7bad8c72e33dc9f08c1e2761a8cc19bbf8ebf46cbcc91d37012ce95",
+      "src/ouem/native/building/source_h_lod2.py": "754d4a8961be0fb94bd5de09559d9269c9cda3b75bbc69efe373da1ca58772cb"
+    },
+    "runner_sha256": "2b0386bbece5336088f6e289d27f3e621814db359328c51a9405b61d4b0c2ab0",
+    "cli_version_stdout": "nusamai 0.1.19\n",
+    "cli_version_exit_code": 0,
+    "historical_receipt_and_stream_hash_checks": "PASS"
+  },
+  "plan_sha256": "9743916529f050274851ff2d84d6125890ed3db3650393ce5b66214f7a63df4a",
+  "plan": {
+    "schema": "ouem-plateau-native-ingest/v0.2",
+    "profile": "ouem-native-building/plateau-source-h/v0.1",
+    "artifacts": {
+      "raw": {
+        "path": "open-urban-environment-model/tests/fixtures/plateau_converter/two_buildings.gml",
+        "role": "raw_citygml",
+        "size_bytes": 23554,
+        "sha256": "ac2794be68822389f784c3ae896b0343dd4a046edcf46d8ca577418af52081f8"
+      },
+      "cli": {
+        "path": "plateau-gis-converter/target/x86_64-pc-windows-msvc/release-lto/nusamai.exe",
+        "role": "converter_cli",
+        "size_bytes": 27265024,
+        "sha256": "0195a11df4fd0ef30dcd5578175035a918c41285b1fcc329f3399f5337326f1b"
+      },
+      "converter": {
+        "path": "open-urban-environment-model/data/work/plateau-converter-cli/synthetic-execution-20261027-01/lod2_epsg6697.gpkg",
+        "role": "converter_gpkg",
+        "size_bytes": 98304,
+        "sha256": "00af24b34f750ef71ead24b02cf7ff395c0ac125e51449888c3a84ab309d0fce",
+        "layer": "bldg:Building"
+      },
+      "evidence": {
+        "path": "open-urban-environment-model/docs/experiments/plateau_converter/CLI_SYNTHETIC_EXECUTION_20261027.md",
+        "role": "source_evidence",
+        "size_bytes": 17641,
+        "sha256": "fb54b4f8c44ba34a507737b41815ab6e799472c624d5a4943328f0e5d2f10675"
+      },
+      "native": {
+        "path": "open-urban-environment-model/data/work/source-h-native/converter-integration-20261028-01/native/native.gpkg",
+        "role": "native_gpkg",
+        "layer": "bldg:Building"
+      }
+    },
+    "source_declaration": {
+      "srs_name": "http://www.opengis.net/def/crs/EPSG/0/6697",
+      "horizontal_epsg": 6668,
+      "vertical_epsg": 6695,
+      "quantity": "gravity_related_height",
+      "unit": "metre",
+      "axes": [
+        "latitude",
+        "longitude",
+        "H"
+      ],
+      "evidence_artifact_id": "evidence"
+    },
+    "coordinate_contract": {
+      "input_epsg": 6697,
+      "horizontal_epsg": 6668,
+      "vertical_epsg": 6695,
+      "quantity": "gravity_related_height",
+      "unit": "metre",
+      "storage_axes": [
+        "longitude",
+        "latitude",
+        "H"
+      ]
+    },
+    "geometry_selection": {
+      "requested_lod": 2,
+      "split_components": false
+    },
+    "converter": {
+      "schema": "ouem-building-converter-run/v0.1",
+      "repository": "https://github.com/MIERUNE/plateau-gis-converter",
+      "commit": "ce7766df9788ce391b149c55df16d33082d0bc72",
+      "version": "0.1.19",
+      "cli_artifact_id": "cli",
+      "input_artifact_ids": [
+        "raw"
+      ],
+      "output_artifact_id": "converter",
+      "argv": [
+        "C:\\dev\\plateau-gis-converter\\target\\x86_64-pc-windows-msvc\\release-lto\\nusamai.exe",
+        "C:\\dev\\open-urban-environment-model\\tests\\fixtures\\plateau_converter\\two_buildings.gml",
+        "--sink",
+        "gpkg",
+        "--output",
+        "C:\\dev\\open-urban-environment-model\\data\\work\\plateau-converter-cli\\synthetic-execution-20261027-01\\lod2_epsg6697.gpkg",
+        "--epsg",
+        "6697",
+        "-t",
+        "use_lod=lod2"
+      ],
+      "resolved_options": {
+        "sink": "gpkg",
+        "epsg": 6697,
+        "use_lod": "lod2",
+        "split_components": false
+      },
+      "exit_code": 0,
+      "execution_status": "COMPLETED"
+    },
+    "native": {
+      "input_artifact_id": "converter",
+      "output_artifact_id": "native"
+    },
+    "operations": [
+      {
+        "input_artifact_ids": [
+          "raw"
+        ],
+        "output_artifact_id": "converter",
+        "horizontal_operation": "latitude_longitude_to_gis_longitude_latitude",
+        "vertical_operation": "identity_H",
+        "offset_m": 0,
+        "geoid_model": null
+      },
+      {
+        "input_artifact_ids": [
+          "converter"
+        ],
+        "output_artifact_id": "native",
+        "horizontal_operation": "identity_XY",
+        "vertical_operation": "identity_H",
+        "offset_m": 0,
+        "geoid_model": null
+      }
+    ],
+    "extensions": {
+      "historical_receipt": {
+        "path": "open-urban-environment-model/data/work/plateau-converter-cli/synthetic-execution-20261027-01/convert_6697.json",
+        "role": "source_evidence",
+        "size_bytes": 902,
+        "sha256": "c73d59b6d4ec92af84d4b7c6b5f090e14bb1edb63a98ac575f5e4943a6a9504d"
+      },
+      "historical_execution": {
+        "path": "open-urban-environment-model/data/work/plateau-converter-cli/synthetic-execution-20261027-01/execution.json",
+        "role": "source_evidence",
+        "size_bytes": 5550,
+        "sha256": "39ab9bcb0d261e1c8ad3efd27587a7b67fbfd66af89490933883aea604792394"
+      },
+      "scope": "Synthetic authored source-H declarations; not measured T.P. evidence. resolved split_components=false is pinned-source default, not an explicit historical argv option."
+    }
+  },
+  "result": {
+    "status": "PASS",
+    "scope": "actual Converter output of synthetic CityGML; not real Komae data",
+    "python": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+    "platform": "Windows-10-10.0.26300-SP0",
+    "sqlite": "3.45.1",
+    "shapely": "2.2.0",
+    "input_sha256": {
+      "raw": "ac2794be68822389f784c3ae896b0343dd4a046edcf46d8ca577418af52081f8",
+      "cli": "0195a11df4fd0ef30dcd5578175035a918c41285b1fcc329f3399f5337326f1b",
+      "converter": "00af24b34f750ef71ead24b02cf7ff395c0ac125e51449888c3a84ab309d0fce",
+      "evidence": "fb54b4f8c44ba34a507737b41815ab6e799472c624d5a4943328f0e5d2f10675"
+    },
+    "input_unchanged": true,
+    "source_summary": {
+      "layer": "bldg:Building",
+      "feature_count": 2,
+      "buildings": {
+        "synthetic_tokyo": {
+          "geometry_type": "MultiPolygon",
+          "faces": 10,
+          "exterior_rings": 10,
+          "interior_rings": 2,
+          "vertices": 60
+        },
+        "synthetic_niigata": {
+          "geometry_type": "MultiPolygon",
+          "faces": 10,
+          "exterior_rings": 10,
+          "interior_rings": 2,
+          "vertices": 60
+        }
+      },
+      "geometry_blob_sha256": {
+        "synthetic_tokyo": "4f9aa445149c05ea02efefaab4084540fcf61594afd9a7c89471651d21d9f901",
+        "synthetic_niigata": "47a41777d6fc224b82e326ebdfc753fd0ab39f551a3613357e6b3ff0d717d483"
+      }
+    },
+    "raw_qa": {
+      "lod2_correspondence": "PASS",
+      "source_storage_axis_correspondence": "PASS",
+      "scope": "supported inline LoD2 numerical geometry only; not H datum accuracy"
+    },
+    "excluded_ids": [],
+    "native_result": {
+      "status": "COMPLETED",
+      "profile": "ouem-native-building/plateau-source-h/v0.1",
+      "manifest_schema": "ouem-plateau-native-ingest/v0.2",
+      "output": "data/work/source-h-native/converter-integration-20261028-01/native/native.gpkg",
+      "manifest": "data/work/source-h-native/converter-integration-20261028-01/native/native.gpkg.manifest.json",
+      "receipt": "data/work/source-h-native/converter-integration-20261028-01/native/native.gpkg.receipt.json",
+      "qa": {
+        "building_id_preservation": "PASS",
+        "all_vertex_xyz_preservation": "PASS",
+        "geometry_structure_and_order": "PASS",
+        "geometry_blob_preservation": "PASS",
+        "summary": {
+          "layer": "bldg:Building",
+          "feature_count": 2,
+          "buildings": {
+            "synthetic_tokyo": {
+              "geometry_type": "MultiPolygon",
+              "faces": 10,
+              "exterior_rings": 10,
+              "interior_rings": 2,
+              "vertices": 60
+            },
+            "synthetic_niigata": {
+              "geometry_type": "MultiPolygon",
+              "faces": 10,
+              "exterior_rings": 10,
+              "interior_rings": 2,
+              "vertices": 60
+            }
+          },
+          "geometry_blob_sha256": {
+            "synthetic_tokyo": "4f9aa445149c05ea02efefaab4084540fcf61594afd9a7c89471651d21d9f901",
+            "synthetic_niigata": "47a41777d6fc224b82e326ebdfc753fd0ab39f551a3613357e6b3ff0d717d483"
+          }
+        },
+        "lod2_correspondence": "PASS",
+        "source_storage_axis_correspondence": "PASS",
+        "scope": "supported inline LoD2 numerical geometry only; not H datum accuracy",
+        "gpkg_structure": "PASS",
+        "source_h_eligibility": "NOT_ESTABLISHED",
+        "human_review": "NOT_VERIFIED",
+        "formal_acceptance": "NOT_VERIFIED",
+        "excluded_no_lod2_ids": []
+      }
+    },
+    "final_provenance": {
+      "format_status": "PASS",
+      "file_hash_status": "PASS",
+      "issues": [],
+      "checked_artifact_ids": [
+        "raw",
+        "cli",
+        "converter",
+        "evidence",
+        "native"
+      ],
+      "coordinate_geometry_status": "NOT_RUN",
+      "converter_qualification_status": "NOT_VERIFIED",
+      "human_review_status": "NOT_VERIFIED",
+      "formal_acceptance_status": "NOT_VERIFIED",
+      "eligibility": "NOT_ESTABLISHED",
+      "validation_scope": "source-h-foundation/v0.1",
+      "foundation_valid": true
+    },
+    "exact_comparison": {
+      "building_id_preservation": "PASS",
+      "all_vertex_xyz_preservation": "PASS",
+      "geometry_structure_and_order": "PASS",
+      "geometry_blob_preservation": "PASS",
+      "summary": {
+        "layer": "bldg:Building",
+        "feature_count": 2,
+        "buildings": {
+          "synthetic_tokyo": {
+            "geometry_type": "MultiPolygon",
+            "faces": 10,
+            "exterior_rings": 10,
+            "interior_rings": 2,
+            "vertices": 60
+          },
+          "synthetic_niigata": {
+            "geometry_type": "MultiPolygon",
+            "faces": 10,
+            "exterior_rings": 10,
+            "interior_rings": 2,
+            "vertices": 60
+          }
+        },
+        "geometry_blob_sha256": {
+          "synthetic_tokyo": "4f9aa445149c05ea02efefaab4084540fcf61594afd9a7c89471651d21d9f901",
+          "synthetic_niigata": "47a41777d6fc224b82e326ebdfc753fd0ab39f551a3613357e6b3ff0d717d483"
+        }
+      }
+    },
+    "independent_geos_and_raw_comparison": "PASS",
+    "output_sha256": {
+      "output": "27ce692dadf78462d6b6e2fc28870cbc4ea7caedbf7157013361b1b54b0d0c89",
+      "manifest": "32918947fb7a84a9ce933f5f3474c5183119d3a613a695b6dc366226c98e1c6c",
+      "receipt": "1735879b6d37874ffb85aa222f04cd413f80bb23f1316f37f37f1d64a6f13283"
+    },
+    "source_h_eligibility": "NOT_ESTABLISHED",
+    "human_review": "NOT_VERIFIED",
+    "formal_acceptance": "NOT_VERIFIED",
+    "completed_at_utc": "2026-10-28T03:25:47.267995+00:00"
+  },
+  "observed_gpkg": {
+    "contents": [
+      [
+        "bldg:Building",
+        "features",
+        6697
+      ]
+    ],
+    "geometry_columns": [
+      [
+        "bldg:Building",
+        "geometry",
+        "MULTIPOLYGON",
+        6697,
+        1,
+        0
+      ]
+    ],
+    "wkt_matches_compound_6697": true,
+    "wkt_sha256": "7d89f1afda7f5d1b57cb0433728a98fa934c932e4c0ec32cd995090bd99185da",
+    "geometry_headers": [
+      {
+        "id": "synthetic_tokyo",
+        "flags": 1,
+        "envelope_code": 0,
+        "blob_srid": 6697,
+        "wkb_type": 1006
+      },
+      {
+        "id": "synthetic_niigata",
+        "flags": 1,
+        "envelope_code": 0,
+        "blob_srid": 6697,
+        "wkb_type": 1006
+      }
+    ]
+  },
+  "file_sizes_bytes": {
+    "converter": 98304,
+    "output": 98304,
+    "manifest": 7022,
+    "receipt": 355
+  },
+  "container_byte_comparison": {
+    "same_length": true,
+    "differences": [
+      {
+        "offset_zero_based": 27,
+        "converter": 3,
+        "native": 1
+      },
+      {
+        "offset_zero_based": 43,
+        "converter": 4,
+        "native": 1
+      },
+      {
+        "offset_zero_based": 95,
+        "converter": 3,
+        "native": 1
+      },
+      {
+        "offset_zero_based": 98,
+        "converter": 122,
+        "native": 118
+      },
+      {
+        "offset_zero_based": 99,
+        "converter": 112,
+        "native": 137
+      }
+    ],
+    "bytes_from_offset_100_equal": true
+  }
+}

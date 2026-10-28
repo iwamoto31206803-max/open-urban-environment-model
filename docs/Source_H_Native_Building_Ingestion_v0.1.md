@@ -200,6 +200,11 @@ reverify files/receipt/manifest. COMPLETED is technical execution, not acceptanc
 
 ## Tests, limits and next Step
 
+Follow-up [actual Converter-output integration smoke test](experiments/plateau_converter/SOURCE_H_NATIVE_INTEGRATION_20261028.md)
+passed using PR #87's saved EPSG:6697 output from the **synthetic** two-building
+CityGML. This is separate from the 34 synthetic WKB unit cases below, and is not
+real PLATEAU data acceptance. No ingestion behavior change was necessary.
+
 [Synthetic tests](../tests/test_source_h_ingestion.py) create actual SQLite GPKGs
 and ISO WKB from the committed two-building fixture using an independent test
 encoder. They exercise compound CRS/header conflicts, Z/NaN/Inf, IDs, LoD2 face/
