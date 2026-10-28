@@ -33,13 +33,70 @@ with its report and partial artifacts preserved; retry only in a new directory.
 
 ## Method and reuse boundary
 
+### Configurable reuse (v0.2 Phase 2)
+
+The two stages accept the same strict JSON configuration, for example
+[`config/experiments/komae_e2e.json`](../../../config/experiments/komae_e2e.json).
+This example binds existing local input hashes; it is not evidence of a new run.
+From the repository root, after separate authorization for real processing:
+
+```powershell
+New-Item -ItemType Directory -Force data/work/configurable-e2e
+.venv\Scripts\python.exe -m ouem.real_komae_voxel --config config/experiments/komae_e2e.json
+.venv\Scripts\python.exe -m ouem.real_komae_solar --config config/experiments/komae_e2e.json
+```
+
+`artifact_root` resolves relative to the JSON file; all input/output locators are
+relative to that root and confined to it. Create `output_parent` explicitly.
+`output_parent/run_id/voxel` and `/solar` are the new stage directories. Voxel
+exclusively reserves `run_id`; failure is retained and requires a new ID. Do not
+mix `--config` with the legacy path arguments. Unknown/duplicate keys, nonfinite
+or inverted bounds, nonpositive context, unsafe paths and wrong hashes fail.
+
+Change `analysis_extent` (EPSG:6677) and use a new portable `run_id` for a new
+rectangle, within the unchanged preparation Study Area and actual input coverage.
+`context_buffer_m` expands it to the projected computation reference; actual
+engine centres/domain, shape, ROI mask and conditioning remain authoritative.
+Both reports retain the exact config SHA/settings and observed input identities.
+Each run preserves the submitted bytes as `submitted-config.json` and a runnable
+`run-config.json` under `output_parent/run_id/`. The latter changes only the
+relative `artifact_root` locator for its saved location; reports and watch sets
+bind this saved configuration and the submitted bytes. After editing or deleting
+the original JSON, use `--config <output_parent>/<run_id>/run-config.json` to run
+that run's Solar stage or load it for revalidation. Saved files must remain
+unchanged; stage outputs are still exclusive and cannot be rerun in place.
+Resolution/profile/solar/CR/optics/observer rules remain fixed. There is no new
+Study Area schema, data acquisition, arbitrary CRS support or orchestrator.
+
+The Voxel stage writes `voxel-receipt.json` only after a completed report and
+immutable inputs. It binds that report's hash to the exact JSON bytes. Solar
+requires this receipt and the same config; editing the rectangle, bindings or ID
+between stages fails. It then revalidates all source/output hashes, Consumer,
+actual grid, DEM, ground and voxel rules. This is a single-writer local handoff,
+not a signature or protection against a writer replacing both report and receipt;
+keep outputs frozen and do not edit receipts to accept other runs. For a changed
+input release, review new provenance/bindings rather than bypassing validation.
+
+Legacy invocations still use the historical bounds. Historical reports/RESULTS
+are unchanged: new code/JSON serialization and timestamps create new identities,
+even when numeric arrays agree. Baseline implementation is available at
+[`ca54b70`](https://github.com/iwamoto31206803-max/open-urban-environment-model/tree/ca54b70d1091b1932e21e15e1840880695596cc6).
+Old report watch sets include implementation paths: revalidating them needs the
+historical bytes/locators, not today's edited source at those paths. Do not rewrite
+old hashes. The Phase 2 work retained original on-disk bytes/reports and a Git
+archive under ignored `data/work/configurable-e2e-phase2/`; historical paths,
+manifests and large data were not moved or modified.
+
+### Retained model rules
+
 1. Verify pinned engine installation through existing PEP 610 + RECORD checks.
    Run the independent Consumer on the actual source-H Standard and rebind its
    full input watch set. Verify Terrain manifest SHA, EPSG:6677, north-up Float32
    grid/NoData and explicit source-declared T.P. versus Building EPSG:6695 H.
    Require Building/Terrain extent overlap and contained ROI/domain definitions.
-2. Reuse only `ROI`/`DOMAIN` constants from `canopy_shadow_poc.py`: EPSG:6677
-   64×64 m evaluation bounds and 128×128 m computation bounds with 32 m halo.
+2. Legacy defaults retain EPSG:6677 64×64 m evaluation bounds and 128×128 m
+   computation bounds with 32 m halo; their ownership is now `e2e_config.py`.
+   Configured runs derive both bounds from the JSON instead.
    No canopy or solar functions are called. Transform corners to EPSG:4326;
    VoxCity `compute_cell_center_coords` defines the actual affine lon/lat grid.
    Its NE corner is reconstructed from SW + u + v, not assumed identical to the

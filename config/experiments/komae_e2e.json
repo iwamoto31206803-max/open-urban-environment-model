@@ -1,0 +1,35 @@
+{
+  "schema": "ouem-e2e-run/v0.1",
+  "artifact_root": "../../..",
+  "study_area": {
+    "path": "open-urban-environment-model/config/study_areas/komae_09LD3451.yaml",
+    "sha256": "ccb6f29d713286bee12f6cd041b2085057b41b7d17f389c0422c8146dd984899"
+  },
+  "analysis_extent": [
+    -23320,
+    -40760,
+    -23256,
+    -40696
+  ],
+  "context_buffer_m": 32,
+  "inputs": {
+    "building_manifest": {
+      "path": "open-urban-environment-model/data/work/real-komae-source-h/run-20261028-04/standard/standard.gpkg.manifest.json",
+      "sha256": "8be11e67868e5078911903497f467b226b5b2d741e0178ee57f54501a8007c83"
+    },
+    "terrain": {
+      "path": "open-urban-environment-model/data/work/terrain-reproducibility/komae-20261026-01/generated/standard.tif",
+      "sha256": "0afb6d1706b97bd39c8c93ff8feb580094fe585f567e2de1f2081c082602f90a"
+    },
+    "terrain_manifest": {
+      "path": "open-urban-environment-model/data/work/terrain-reproducibility/komae-20261026-01/generated/standard.tif.manifest.json",
+      "sha256": "5e96bf3e0ababad7e2f79a0d2090d0356fdc707dff6115575c8b0ba8b88f5dbb"
+    },
+    "envelope_manifest": {
+      "path": "open-urban-environment-model/data/work/height-envelope/komae-exploratory-20261026-01/generated/height_envelope_manifest.json",
+      "sha256": "6121cbf732f8ece9553013be2483203f08faf9a8d364136a919c184b46738d68"
+    }
+  },
+  "output_parent": "open-urban-environment-model/data/work/configurable-e2e",
+  "run_id": "komae-baseline-01"
+}

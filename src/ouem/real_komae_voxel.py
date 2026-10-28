@@ -13,7 +13,7 @@ import rasterio
 from affine import Affine
 from shapely.geometry import Polygon, box
 
-from ouem.canopy_shadow_poc import ROI, DOMAIN  # Reuse extents only; no canopy/solar calls.
+from ouem.e2e_config import ROI, DOMAIN, Extent, configured_arguments
 from ouem.consumers.source_h_standard import Watch, validate_source_h_standard, SOURCE_H_PROFILE
 from ouem.consumers._source_h_geometry import read_standard
 from ouem.standardize.building import deterministic_ouem_id
@@ -99,7 +99,7 @@ def audit_voxels(voxels, ids, dem, segments, effective, d0, *, numba):
                 missing_or_floating_or_buried_columns=0), ground
 
 
-def prepare_buildings(features):
+def prepare_buildings(features, domain=DOMAIN):
     """Full source-H surface supports; source geometry and H are read-only."""
     mapping = numeric_id_mapping(deterministic_ouem_id(k) for k in features)
     rows, inventory = [], []
@@ -109,8 +109,8 @@ def prepare_buildings(features):
         zs = [p[2] for p in points(tree)]
         item = dict(source_id=source_id, ouem_id=ouem_id, id=mapping[ouem_id],
                     z_top_abs=max(zs), z_bottom_geom_abs=min(zs), measured_height=measured,
-                    intersects_projected_domain=bool(footprint.intersects(box(*DOMAIN))),
-                    crosses_projected_domain=bool(footprint.intersects(box(*DOMAIN)) and not box(*DOMAIN).covers(footprint)),
+                    intersects_projected_domain=bool(footprint.intersects(box(*domain))),
+                    crosses_projected_domain=bool(footprint.intersects(box(*domain)) and not box(*domain).covers(footprint)),
                     footprint_diagnostics=diagnostics)
         inventory.append(item)
         rows.append(dict(source_id=source_id, ouem_id=ouem_id, id=mapping[ouem_id],
@@ -150,18 +150,20 @@ def raster_buildings(frame, rectangle, dem, inventory):
     require(False, 'ground', 'engine ownership/height iteration did not stabilize')
 
 
-def execute_model(features, terrain, *, rectangle=None):
+def execute_model(features, terrain, *, rectangle=None, extent=None):
     from voxcity.geoprocessor.raster.core import compute_cell_center_coords, process_grid, create_cell_polygon
     from voxcity.generator.voxelizer import Voxelizer, NUMBA_AVAILABLE
     geographic = Transformer.from_crs(6677, 4326, always_xy=True)
-    xmin, ymin, xmax, ymax = DOMAIN
+    extent = extent or Extent()
+    domain, roi = extent.domain, extent.analysis
+    xmin, ymin, xmax, ymax = domain
     rectangle = rectangle or [geographic.transform(x, y) for x, y in
                               ((xmin, ymin), (xmin, ymax), (xmax, ymax), (xmax, ymin))]
     geom = compute_cell_center_coords(rectangle, 1.)
     dem, x, y = sample_dem(terrain, geom['lons'], geom['lats'])
-    roi_mask = (x >= ROI[0]) & (x < ROI[2]) & (y >= ROI[1]) & (y < ROI[3])
+    roi_mask = (x >= roi[0]) & (x < roi[2]) & (y >= roi[1]) & (y < roi[3])
     require(int(roi_mask.sum()) > 0, 'ROI', 'empty evaluation ROI')
-    projected, inventory = prepare_buildings(features)
+    projected, inventory = prepare_buildings(features, domain)
     geographic_frame = projected.to_crs(4326)
     origin = np.asarray(geom['origin'])
     u = geom['adj_mesh'][0]*np.asarray(geom['u_vec'])
@@ -233,8 +235,8 @@ def execute_model(features, terrain, *, rectangle=None):
                 rectangle_crs='EPSG:4326', rectangle_vertices_lonlat=rectangle,
                 origin_lonlat=origin.tolist(), u_step_lonlat=u.tolist(), v_step_lonlat=v.tolist(),
                 adjusted_horizontal_mesh_m=list(map(float, geom['adj_mesh'])), shape=list(voxels.shape),
-                projected_reference_crs='EPSG:6677', projected_domain_bounds=list(DOMAIN),
-                projected_evaluation_ROI_bounds=list(ROI), halo_m=32, evaluation_cell_count=int(roi_mask.sum()),
+                projected_reference_crs='EPSG:6677', projected_domain_bounds=list(domain),
+                projected_evaluation_ROI_bounds=list(roi), halo_m=extent.buffer_m, evaluation_cell_count=int(roi_mask.sum()),
                 centre_mapping='origin+(i+0.5)*u_step+(j+0.5)*v_step; no flip/transpose',
                 axis0_true_azimuth_deg=float(azimuth),
                 D0_raw_H_m=float(dem.min()), D0_effective_H_m=d0_effective,
@@ -253,7 +255,7 @@ def execute_model(features, terrain, *, rectangle=None):
                                  'Voxel classes carry no Building ID; separate last-wins ID and contributor grids bind identities.',
                                  'Boundary-crossing geometry is retained; only intersecting computation cells are voxelized.',
                                  'Source-declared H/T.P. compatibility and numerical diagnostics are not survey verification.',
-                                 '32m halo is a chosen geometry domain, not demonstrated sufficient for future solar conditions.',
+                                 'Context buffer is a chosen geometry domain, not demonstrated sufficient for future solar conditions.',
                                  'No canopy, solar, land-cover observations, visual/formal acceptance or eligibility approval.'])
     arrays = dict(voxels=voxels, building_ids=ids, building_heights=heights, terrain_H=dem,
                   effective_dem=effective, effective_ground_H=conditioned, ground_indices=ground_indices,
@@ -313,6 +315,11 @@ def export_outputs(run, arrays, metadata, frame, cells):
 
 
 def run(args):
+    config = getattr(args, 'config', None)
+    extent = config.extent if config else Extent()
+    if config:
+        config = config.prepare('voxel')
+        args = config.arguments('voxel')
     run_dir = args.run_dir.resolve(); run_dir.mkdir()  # no overwrite/resume
     report = dict(status='RUNNING', source_h_eligibility='NOT_ESTABLISHED', formal_acceptance='NOT_VERIFIED',
                   phase5_gates=dict.fromkeys(('A1','A2','A3','A4'), 'OPEN'), started_at=datetime.now(timezone.utc).isoformat())
@@ -326,6 +333,9 @@ def run(args):
         report['consumer'] = consumer
         require(consumer['technical_validation'] == 'PASS', 'Consumer', str(consumer['issues']))
         watch = Watch(args.artifact_root.resolve())
+        if config:
+            config.capture(watch)
+            report['run_config'] = config.record()
         manifest = None
         for key, identity in consumer['artifacts'].items():
             value = watch.capture(key, identity['path'], identity['sha256'], identity['size_bytes'], json_data=key == 'standard_manifest')
@@ -333,7 +343,7 @@ def run(args):
             if key == 'standard_manifest': manifest = value
         require(manifest is not None, 'manifest', 'missing Standard record')
         for key, path in (('terrain_manifest', args.terrain.with_suffix('.tif.manifest.json')), ('terrain', args.terrain),
-                          ('roi_definition', Path(sys.modules['ouem.canopy_shadow_poc'].__file__)),
+                          ('roi_definition', Path(sys.modules['ouem.e2e_config'].__file__)),
                           ('implementation', Path(__file__))):
             value = watch.capture(key, path.resolve().relative_to(watch.root).as_posix(), json_data=key == 'terrain_manifest')
             if key == 'terrain_manifest': terrain_meta = value
@@ -352,12 +362,12 @@ def run(args):
             terrain_bounds = list(ds.bounds)
         require(box(*building_bounds).intersects(box(*terrain_bounds)),
                 'preflight.overlap', 'Building/Terrain horizontal extents do not overlap')
-        require(box(*manifest['study_area']['extent']).covers(box(*DOMAIN)) and box(*DOMAIN).covers(box(*ROI)),
+        require(box(*manifest['study_area']['extent']).covers(box(*extent.domain)) and box(*extent.domain).covers(box(*extent.analysis)),
                 'domain', 'existing ROI/domain must lie inside study area')
-        report['preflight'] = dict(status='PASS', standard_features=len(features), ROI=list(ROI), domain=list(DOMAIN),
+        report['preflight'] = dict(status='PASS', standard_features=len(features), ROI=list(extent.analysis), domain=list(extent.domain),
                                    building_manifest=manifest['standard_output'], terrain_vertical=terrain_meta['vertical_reference'],
                                    building_bounds=building_bounds, terrain_bounds=terrain_bounds, horizontal_overlap=True)
-        arrays, meta, frame, cells = execute_model(features, args.terrain.resolve())
+        arrays, meta, frame, cells = execute_model(features, args.terrain.resolve(), extent=extent)
         watch.unchanged()
         export_outputs(run_dir, arrays, meta, frame, cells)
         report.update(model=meta, status='COMPLETED', input_artifacts=watch.identities)
@@ -377,14 +387,17 @@ def run(args):
                          "See report.json for fresh Consumer, input fingerprints, actual grid, ID/ground/roof and scalar voxel QA.\n\n"
                          "![Plan](plan.png)\n\n![Section](section.png)\n\n"
                          "No canopy/solar. Eligibility NOT_ESTABLISHED; formal acceptance NOT_VERIFIED; Phase 5 gates OPEN.\n")
+    if config:
+        config.seal_voxel()
     return report
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--config', type=Path)
     for key in ('run-dir', 'building-manifest', 'terrain', 'study-area', 'artifact-root'):
-        parser.add_argument('--'+key, type=Path, required=True)
-    run(parser.parse_args())
+        parser.add_argument('--'+key, type=Path)
+    run(configured_arguments(parser, parser.parse_args(), 'voxel'))
 
 
 if __name__ == '__main__':

@@ -12,8 +12,9 @@ from pyproj import Transformer
 import rasterio
 from affine import Affine
 
-from ouem.consumers.source_h_standard import Watch, validate_source_h_standard, SOURCE_H_PROFILE
-from ouem.height_envelope import sample_raster, validate_sources
+from ouem.consumers.source_h_standard import Watch, validate_source_h_standard, SOURCE_H_PROFILE, same_json
+from ouem.height_envelope import sample_raster, validate_sources, GridSpec
+from ouem.e2e_config import configured_arguments
 from ouem.komae_integration import environment, voxcity_provenance
 from ouem.native.building.source_h_geometry import require
 from ouem.real_komae_source_h import write, digest, distribution
@@ -172,6 +173,7 @@ def solar_pair(current, no_canopy, a, grid, high, low, *, maximum_source_H=None)
     lowest_observer = grid['D0_effective_H_m']+float(origin_k[observed].min())+.5
     conservative_edge = max(highest_edge, maximum_source_H+2. if maximum_source_H is not None else highest_edge)
     reach = max(0., conservative_edge-lowest_observer)/math.tan(elevation)
+    context = grid.get('halo_m', 32.)
     categories = np.zeros(ids.shape, dtype='uint8')
     categories[building_reduction > tolerance] = 1
     categories[reduction > tolerance] = 2
@@ -193,20 +195,28 @@ def solar_pair(current, no_canopy, a, grid, high, low, *, maximum_source_H=None)
                   full_AOI_maximum_source_H=maximum_source_H, conservative_edge_bound_H=conservative_edge,
                   source_edge_rounding_allowance_m=2.,
                   horizontal_reach_m=reach, isotropic_32m_bound_sufficient=bool(reach+2 <= 32),
+                  context_buffer_m=context, isotropic_context_bound_sufficient=bool(reach+2 <= context),
                   minimum_sunward_exit_distance_m=min_border_distance,
                   directional_known_height_bound_sufficient=bool(reach+2 <= min_border_distance), margin_m=2.,
                   crop_ROI_increase_cells=int((halo_delta[local_valid] > tolerance).sum()),
                   crop_ROI_max_increase_W_m2=float(halo_delta[local_valid].max()),
                   general_external_occluder_sufficiency='UNVERIFIED: objects outside source domain may be taller; no expanded-domain convergence run'),
+        technical_calculation='COMPLETED', canopy_effect_detected=bool(np.any(reduction[observed] > tolerance)),
         invariants=dict(common_grid_D0_building_ground_observers_ROI='PASS', non_TREE_voxels_equal='PASS',
                         irradiance_increase_cells=int((reduction[valid] < -tolerance).sum()), tolerance_W_m2=tolerance))
 
 
 def preflight(args, watch):
+    config = getattr(args, 'config', None)
+    if config:
+        config.capture(watch)
     base_dir = args.base_run.resolve()
     def capture(key, path, sha=None, size=None, json_data=False):
         return watch.capture(key, Path(path).resolve().relative_to(watch.root).as_posix(), sha, size, json_data=json_data)
-    previous = capture('PR98_report', base_dir/'report.json', BASE_REPORT_SHA, json_data=True)
+    model_sha = config.model_sha(watch) if config else BASE_REPORT_SHA
+    previous = capture('PR98_report', base_dir/'report.json', model_sha, json_data=True)
+    if config:
+        same_json(previous.get('run_config'), config.record(), 'model.config')
     require(previous['status'] == 'COMPLETED' and previous['consumer']['technical_validation'] == 'PASS'
             and previous['input_immutability'] == 'PASS', 'PR98', 'incomplete previous model/Consumer')
     for key, ref in previous['input_artifacts'].items():
@@ -215,6 +225,8 @@ def preflight(args, watch):
         capture('base_output:'+name, base_dir/name, ref['sha256'], ref['size_bytes'])
     consumer_ref = previous['consumer']['artifacts']
     manifest_path = watch.resolve(consumer_ref['standard_manifest']['path'])
+    if config:
+        require(manifest_path == config.input_path('building_manifest'), 'model.inputs', 'different Building manifest')
     consumer = validate_source_h_standard(manifest_path, watch.root, SOURCE_H_PROFILE,
                     study_area_config=args.study_area.resolve())
     require(consumer['technical_validation'] == 'PASS', 'Consumer', str(consumer['issues']))
@@ -222,32 +234,60 @@ def preflight(args, watch):
         old = consumer_ref[key]
         require(all(identity[k] == old[k] for k in ('path','sha256','size_bytes')), 'Consumer.binding', 'source changed since PR98')
     grid = capture('grid', base_dir/'grid.json', previous['outputs']['grid.json']['sha256'], json_data=True)
-    require(grid == previous['model']['grid'] and grid['shape'] == [128,128,27] and grid['layout'] == 'uv_m/SOUTH_UP',
+    shape = grid['shape']
+    require(type(shape) is list and len(shape) == 3 and all(type(n) is int and n > 0 for n in shape),
+            'grid.shape', 'positive integer 3D shape required')
+    require(grid == previous['model']['grid'] and (config is not None or shape == [128,128,27]) and grid['layout'] == 'uv_m/SOUTH_UP',
             'grid', 'unexpected PR98 grid')
+    if config:
+        require(grid['nominal_voxel_size_m'] == 1. and grid['projected_reference_crs'] == 'EPSG:6677'
+                and grid['rectangle_crs'] == 'EPSG:4326'
+                and grid['projected_evaluation_ROI_bounds'] == list(config.extent.analysis)
+                and grid['projected_domain_bounds'] == list(config.extent.domain)
+                and grid['halo_m'] == config.extent.buffer_m, 'grid.config', 'model grid differs from configuration')
+        from voxcity.geoprocessor.raster.core import compute_cell_center_coords
+        xmin,ymin,xmax,ymax = config.extent.domain
+        transform = Transformer.from_crs(6677,4326,always_xy=True)
+        rectangle = [transform.transform(x,y) for x,y in ((xmin,ymin),(xmin,ymax),(xmax,ymax),(xmax,ymin))]
+        require(np.allclose(rectangle, grid['rectangle_vertices_lonlat'], atol=1e-12, rtol=0),
+                'grid.rectangle', 'actual rectangle is not the configured domain')
+        fresh_grid = compute_cell_center_coords(rectangle, 1.)
+        require(fresh_grid['lons'].shape == tuple(shape[:2]), 'grid.shape', 'engine/config shape mismatch')
     arrays = {p.stem: np.load(p, allow_pickle=False) for p in base_dir.glob('*.npy') if p.name in previous['outputs']}
-    indices = np.indices((128,128))
+    require(arrays['voxels'].shape == tuple(shape) and all(arrays[k].shape == tuple(shape[:2]) for k in
+            ('building_ids','building_heights','terrain_H','effective_ground_H','effective_dem','ground_indices',
+             'centre_lon','centre_lat','centre_x','centre_y','roi_mask')), 'grid.arrays', 'array shape mismatch')
+    indices = np.indices(shape[:2])
     for axis, key in enumerate(('centre_lon', 'centre_lat')):
         reconstructed = grid['origin_lonlat'][axis]+(indices[0]+.5)*grid['u_step_lonlat'][axis]+(indices[1]+.5)*grid['v_step_lonlat'][axis]
         require(np.allclose(reconstructed, arrays[key], atol=1e-12, rtol=0), 'grid.centres', key)
+        if config:
+            require(np.allclose(fresh_grid['lons' if axis == 0 else 'lats'], arrays[key], atol=1e-12, rtol=0),
+                    'grid.engine_centres', key)
     x,y = Transformer.from_crs(4326,6677,always_xy=True).transform(arrays['centre_lon'], arrays['centre_lat'])
     require(np.allclose(x, arrays['centre_x'], atol=1e-7, rtol=0) and np.allclose(y, arrays['centre_y'], atol=1e-7, rtol=0), 'grid.XY', 'saved CRS centres differ')
     xmin,ymin,xmax,ymax = grid['projected_evaluation_ROI_bounds']
     require(np.array_equal(arrays['roi_mask'], (x>=xmin)&(x<xmax)&(y>=ymin)&(y<ymax)), 'ROI', 'saved ROI mask differs')
     dem_path = watch.resolve(previous['input_artifacts']['terrain']['path'])
+    if config:
+        require(dem_path == config.input_path('terrain'), 'model.inputs', 'different Terrain')
     sampled,_,_ = sample_dem(dem_path, arrays['centre_lon'], arrays['centre_lat'])
     require(np.array_equal(sampled, arrays['terrain_H']), 'Terrain', 'actual centre DEM differs')
     ground, d0 = effective_ground(arrays['building_ids'], sampled)
     require(np.array_equal(ground, arrays['effective_ground_H']) and d0 == grid['D0_effective_H_m']
             and np.allclose(ground-d0, arrays['effective_dem'], atol=1e-10, rtol=0), 'D0', 'effective ground/D0 differs')
     segment_record = capture('segments', base_dir/'building_segments.json', previous['outputs']['building_segments.json']['sha256'], json_data=True)
-    segments = np.empty((128,128), object)
+    require(segment_record['shape'] == shape[:2], 'segments.shape', 'wrong segment dimensions')
+    segments = np.empty(shape[:2], object)
     for ij in np.ndindex(segments.shape): segments[ij] = []
     for cell in segment_record['cells']: segments[cell['i'], cell['j']] = cell['segments']
     _, fresh_ground = audit_voxels(arrays['voxels'], arrays['building_ids'], sampled, segments, arrays['effective_dem'], d0, numba=previous['model']['numba'])
     require(np.array_equal(fresh_ground, arrays['ground_indices']), 'observer.ground', 'saved ground indices differ')
     arrays['building_segments'] = segments
-    envelope_dir = args.envelope_run.resolve()/'generated'
-    envelope = capture('envelope_manifest', envelope_dir/'height_envelope_manifest.json', ENVELOPE_SHA, json_data=True)
+    envelope_path = config.input_path('envelope_manifest') if config else args.envelope_run.resolve()/'generated/height_envelope_manifest.json'
+    envelope_dir = envelope_path.parent
+    envelope_sha = config.binding('envelope_manifest')['sha256'] if config else ENVELOPE_SHA
+    envelope = capture('envelope_manifest', envelope_path, envelope_sha, json_data=True)
     require(envelope['status'] == 'COMPLETED' and envelope['schema'] == 'ouem-height-envelope-poc/v0.1'
             and envelope['cr_model']['parameters']['cr'] == .6, 'Envelope', 'unexpected/incomplete CR model')
     for key, ref in envelope['input_files'].items(): capture('envelope_input:'+key, ref['path'], ref['sha256'], ref['bytes'])
@@ -260,10 +300,14 @@ def preflight(args, watch):
     review = evidence['compatibility_review']
     capture('limited_review_record', Path(inputs['chm_evidence']['path']).parent/review['approval_record_path'], review['approval_record_sha256'])
     paths = [envelope_dir/n for n in ('canopy_top_z.tif','canopy_bottom_z.tif','height_envelope_state.tif')]
+    source_grid = GridSpec(tuple(envelope['grid_spec']['bounds']), envelope['grid_spec']['resolution'], envelope['grid_spec']['epsg'])
+    require(envelope['grid_spec']['width'] == source_grid.width and envelope['grid_spec']['height'] == source_grid.height
+            and envelope['grid_spec']['transform'] == list(source_grid.transform)[:6], 'Envelope.grid', 'inconsistent source grid metadata')
     for path in paths:
         ref = envelope['outputs'][path.name]; capture('canopy_output:'+path.name, path, ref['sha256'], ref['bytes'])
         with rasterio.open(path) as ds:
-            require(ds.crs.to_epsg()==6677 and ds.shape==(300,400) and list(ds.transform)[:6]==envelope['grid_spec']['transform'], 'Envelope.grid', 'source CRS/shape/affine mismatch')
+            require(ds.crs.to_epsg()==6677 and ds.shape==(source_grid.height,source_grid.width)
+                    and list(ds.transform)[:6]==envelope['grid_spec']['transform'], 'Envelope.grid', 'source CRS/shape/affine mismatch')
     canopy = sample_canopy(paths, arrays['centre_x'], arrays['centre_y'])
     require(canopy['valid'].all(), 'Envelope.coverage', 'missing/invalid/outside/state cells: cannot infer absence')
     standard_manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
@@ -274,21 +318,24 @@ def preflight(args, watch):
     watch.unchanged()
     return arrays, grid, segments, canopy, dict(status='PASS', fresh_consumer=consumer, envelope_semantics=semantics,
             source_CR=.6, maximum_source_H=maximum_source_H,
-            state_rule='1=valid computation only; not canopy presence', source_model_report_sha256=BASE_REPORT_SHA)
+            state_rule='1=valid computation only; not canopy presence', source_model_report_sha256=model_sha)
 
 
 def export(run, arrays, grid):
     origin=np.asarray(grid['origin_lonlat']); u=np.asarray(grid['u_step_lonlat']); v=np.asarray(grid['v_step_lonlat'])
-    start=origin+128*u; transform=Affine(v[0],-u[0],start[0],v[1],-u[1],start[1])
+    nu,nv,nz = arrays['current_voxels'].shape
+    start=origin+nu*u; transform=Affine(v[0],-u[0],start[0],v[1],-u[1],start[1])
     for key, array in arrays.items():
         with (run/(key+'.npy')).open('xb') as stream: np.save(stream, array, allow_pickle=False)
         require(np.array_equal(array,np.load(run/(key+'.npy'),allow_pickle=False),equal_nan=True), 'readback', key)
-        if array.shape != (128,128): continue
+        if array.shape != (nu,nv): continue
         raster=array[::-1,:].copy()
         if raster.dtype==bool: raster=raster.astype('uint8')
         nodata=np.nan if raster.dtype.kind=='f' and np.isnan(raster).any() else None
-        with rasterio.open(run/(key+'.tif'),'w',driver='GTiff',width=128,height=128,count=1,dtype=raster.dtype,
+        with rasterio.open(run/(key+'.tif'),'w',driver='GTiff',width=nv,height=nu,count=1,dtype=raster.dtype,
                            crs=4326,transform=transform,nodata=nodata) as ds: ds.write(raster,1)
+        with rasterio.open(run/(key+'.tif')) as ds:
+            require(np.array_equal(ds.read(1),raster,equal_nan=True), 'GeoTIFF.readback', key)
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
@@ -305,7 +352,7 @@ def export(run, arrays, grid):
     from matplotlib.colors import ListedColormap, BoundaryNorm
     d0=grid['D0_effective_H_m']
     ax.imshow(arrays['current_voxels'][:,cut,:].T,origin='lower',aspect='auto',interpolation='nearest',
-              extent=[0,128,d0,d0+27],cmap=ListedColormap(['#c68a3f','#1d9949','#776044','#ffffff','#b8a67b']),
+              extent=[0,nu,d0,d0+nz],cmap=ListedColormap(['#c68a3f','#1d9949','#776044','#ffffff','#b8a67b']),
               norm=BoundaryNorm([-3.5,-2.5,-1.5,-.5,.5,1.5],5))
     ax.set_title(f'Current section v={cut}: Building brown, estimated TREE green; nominal index-edge H')
     ax.set_xlabel('u / approximately north');ax.set_ylabel('H (m)')
@@ -313,12 +360,19 @@ def export(run, arrays, grid):
 
 
 def run(args):
+    config = getattr(args, 'config', None)
+    if config:
+        config = config.prepare('solar')
+        args = config.arguments('solar')
     output=args.run_dir.resolve();output.mkdir()
     report=dict(status='RUNNING',started_at=datetime.now(timezone.utc).isoformat(),
                 source_h_eligibility='NOT_ESTABLISHED',formal_acceptance='NOT_VERIFIED',phase5_gates=dict.fromkeys(('A1','A2','A3','A4'),'OPEN'))
     started=time.perf_counter();watch=Watch(args.artifact_root.resolve())
     try:
         report['environment']=environment()
+        if config:
+            report['run_config'] = config.record()
+            watch.capture('config_implementation',Path(__file__).with_name('e2e_config.py').resolve().relative_to(watch.root).as_posix())
         require(report['environment']['voxcity']['verified'],'engine','fixed VoxCity installation not verified')
         watch.capture('implementation',Path(__file__).resolve().relative_to(watch.root).as_posix())
         a,grid,segments,canopy,checks=preflight(args,watch);report['preflight']=checks
@@ -348,8 +402,9 @@ def run(args):
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
-    for key in ('run-dir','base-run','envelope-run','artifact-root','study-area'): parser.add_argument('--'+key,type=Path,required=True)
-    run(parser.parse_args())
+    parser.add_argument('--config',type=Path)
+    for key in ('run-dir','base-run','envelope-run','artifact-root','study-area'): parser.add_argument('--'+key,type=Path)
+    run(configured_arguments(parser, parser.parse_args(), 'solar'))
 
 
 if __name__=='__main__': main()
