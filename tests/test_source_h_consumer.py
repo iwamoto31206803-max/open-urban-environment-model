@@ -54,8 +54,11 @@ def test_descriptor_change_during_scan_fails_closed(tmp_path,monkeypatch,field):
 def test_native_stat_clock_diagnostic(tmp_path):
     """Show real Windows CI clocks, without assuming either ctime meaning."""
     import warnings
+    import time
     path = tmp_path/'clock'
     path.write_bytes(b'before')
+    # Separate creation/write even on a coarse Windows filesystem clock.
+    time.sleep(0.05)
     path.write_bytes(b'after!')
     with path.open('rb') as stream:
         before = os.fstat(stream.fileno())
@@ -66,8 +69,8 @@ def test_native_stat_clock_diagnostic(tmp_path):
               'path_after':c.Watch.stamp(by_path)}
     assert stamps['descriptor_before']==stamps['descriptor_after'], stamps
     assert stamps['descriptor_after'][:4]==stamps['path_after'][:4], stamps
-    if before.st_ctime_ns != by_path.st_ctime_ns:
-        warnings.warn('stat/fstat ctime diagnostic (expected platform difference): '+json.dumps(stamps),UserWarning)
+    if os.name=='nt':
+        warnings.warn('stat/fstat ctime diagnostic (cross-API equality is not required): '+json.dumps(stamps),UserWarning)
     identity,_ = c.Watch(tmp_path).scan('clock')
     assert identity['sha256']==sha(path)
 
