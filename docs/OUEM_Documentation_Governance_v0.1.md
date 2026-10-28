@@ -1,13 +1,16 @@
 # OUEM Documentation Governance v0.1
 
 Status: proposed documentation policy for review; no data-contract or acceptance change.
-Baseline checked: 2026-10-27, main `66f262f1e9d0d22d01b25ae73ce5a4a7fd9057e2`
-(PRs #75 and #76 merged).
+Alignment checked: 2026-10-28, main `888633bfe8df017b00ab2e471c57410dacc364ee`
+(PR #103 merged). The policy remains proposed. The user-agreed
+[Development Principles](OUEM_Development_Principles_v0.1.md) own development
+judgment and collaboration; adopting them does not approve this governance policy.
 
 ## Responsibilities and existing owners
 
 | Role | Owns | Existing entry points |
 |---|---|---|
+| Development policy / agent instructions | Shared development principles and daily Codex practice | [Development Principles](OUEM_Development_Principles_v0.1.md), [AGENTS.md](../AGENTS.md) |
 | Architecture / Standard | Normative design, data meaning and contracts, subject to each document's status | [Concept v0.2](OUEM_Concept_Architecture_v0.2.md), [Building](OUEM_Standard_Building_v0.1.md), [Terrain](OUEM_Standard_Terrain_v0.1.md), [Building Adapter](OUEM_VoxCity_Adapter_v0.1.md), [Canopy DRAFT](OUEM_Standard_Canopy_v0.1_Draft.md) |
 | Implementation / Interface | Implemented CLI, inputs, outputs and processing boundaries | [Height Envelope usage/contract](CHM_Height_Envelope_PoC_v0.1.md), [Phase 2 usage](experiments/voxcity_canopy_shadow/PHASE2_USAGE.md), [runtime architecture](architecture.md), [execution runbook](../scripts/work/README.md), and linked source/tests |
 | Verification / Acceptance | What was executed, evidence identities, results, limits and approval scope | [Building acceptance](../experiments/a1_e2e_pilot/README.md), [acceptance records](acceptance/), [3D verification](verification/OUEM_Height_Envelope_3D_Visualization_Komae_20261026.md), [experiment index](experiments/voxcity_canopy_shadow/README.md) |
@@ -63,6 +66,8 @@ consolidation requires a separate review, preserving reproducibility and links;
 the [repository inventory](experiments/voxcity_canopy_shadow/REPOSITORY_INVENTORY_20261027.md)
 lists candidates, not authorized removals.
 
-For a new chat/session, read [README](../README.md), the relevant Current State,
-then the required Standard / Implementation and Verification / Acceptance sources.
+For a new chat/session, start with [README](../README.md) and the relevant
+Current State. Consult the required Standard / Implementation and Verification /
+Acceptance sources on demand. Use the Development Principles for shared decisions
+and AGENTS.md for agent operations, rather than loading all historical records.
 An old plan or environment record is evidence of its date, not today's capability.

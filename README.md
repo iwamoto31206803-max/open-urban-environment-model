@@ -79,6 +79,10 @@ and numerical H retention do not independently prove surveyed datum accuracy.
 
 ## Development
 
+Use the [Development Principles](docs/OUEM_Development_Principles_v0.1.md) for
+shared development decisions and collaboration; [AGENTS.md](AGENTS.md) contains
+daily Codex instructions. These do not change data contracts or acceptance.
+
 Use Python 3.10+ and the repository OUEM virtual environment. VoxCity 1.7.0 remains
 pinned in [pyproject.toml](pyproject.toml); its source is not vendored.
 
