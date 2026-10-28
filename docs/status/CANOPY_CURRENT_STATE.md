@@ -1,72 +1,84 @@
 # Canopy Current State
 
-Last checked: **2026-10-27**. Main baseline:
-`66f262f1e9d0d22d01b25ae73ce5a4a7fd9057e2` (PRs #75 and #76 merged).
-This is an informational entry point under the [documentation governance](../OUEM_Documentation_Governance_v0.1.md),
-not a new acceptance decision. Checks here are code/record inspection, not a new
-real-data run or a rerun of the cited tests.
+Last checked: **2026-10-28**, main baseline
+`3d767f039b6542edf37b01025f92084daf3ed6e9` (PR #99 merged).
+This [informational entry point](../OUEM_Documentation_Governance_v0.1.md)
+reflects code and existing records; no new processing, accuracy validation or
+acceptance is declared.
 
-## Design and implemented path
+## Current milestone: mixed real-city PoC
 
-[Concept v0.2](../OUEM_Concept_Architecture_v0.2.md) is the registered upper design;
-[Standard Canopy v0.1 DRAFT](../OUEM_Standard_Canopy_v0.1_Draft.md) remains a proposal.
-The implemented experimental raster path is:
+The exploratory Komae path now combines real source-H Building, Standard Terrain
+and an estimated Meta CHMv2 Height Envelope on the actual VoxCity grid, then
+compares Current / No-Canopy direct irradiance using public engine APIs.
+[PR #99 procedure](../experiments/real_komae_solar/README.md) and
+[executed results](../experiments/real_komae_solar/RESULTS.md) own the methods,
+metrics, input/output identities and boundary diagnostics.
 
-Meta/WRI CHMv2 COGs → AOI acquisition raster/record → evidence-guarded Height
-Envelope with Standard Terrain → canopy-only VoxCity conversion → CPU direct
-irradiance A/B comparison. This path does not complete the proposed
-Raw → Native → Standard Canopy → Adapter lifecycle.
+It reuses [PR #97 source-H Building](../experiments/real_komae_source_h/README.md)
+([results](../experiments/real_komae_source_h/RESULTS.md)) and
+[PR #98 Building/Terrain voxels](../experiments/real_komae_voxel/README.md)
+([results](../experiments/real_komae_voxel/RESULTS.md)). The
+[Building Current State](BUILDING_CURRENT_STATE.md) distinguishes this
+experimental lane from the accepted v0.1 path.
 
-| Implemented component / source | Interface and meaning | Verification scope |
-|---|---|---|
-| [CHMv2 acquisition](../../src/ouem/acquire/meta_chmv2.py) | [Acquisition usage](../Meta_CHMv2_AOI_Acquisition_PoC.md): source COG/index identities, AOI GeoTIFF in EPSG:3857, acquisition record; not Standard Canopy | Recorded acquisition/audit evidence in that document; [offline tests](../../tests/test_meta_chmv2_acquisition.py) |
-| [Height Envelope](../../src/ouem/height_envelope.py) | [Usage and contract](../CHM_Height_Envelope_PoC_v0.1.md): CHM HAG in metres plus absolute Terrain and evidence bridge; Float32 absolute `canopy_top_z.tif` / `canopy_bottom_z.tif`, validity-state raster and manifest. Initial Komae grid EPSG:6677, 1m; replaceable model's implemented choice is `constant_cr_v0.1` | [Synthetic tests](../../tests/test_height_envelope.py); [real-data 3D verification](../verification/OUEM_Height_Envelope_3D_Visualization_Komae_20261026.md) links the upstream envelope evidence; no scientific accuracy acceptance |
-| [Canopy shadow PoC](../../src/ouem/canopy_shadow_poc.py) | [Phase 2 usage](../experiments/voxcity_canopy_shadow/PHASE2_USAGE.md): guarded inputs, DEM subtraction once, north-up to south-up conversion, canopy-free / canopy voxel pairs and CPU direct irradiance | [Phase 2 results](../experiments/voxcity_canopy_shadow/PHASE2_RESULTS_20261027.md), [tests](../../tests/test_canopy_shadow_poc.py); fixed ROI, sun and assumed optical parameters |
-| [Sensitivity runner](../../src/ouem/canopy_shadow_sensitivity.py) | Isotropic 1m / 0.5m experiments; finer grid adds no new source information | [Phase 3 method](../experiments/voxcity_canopy_shadow/PHASE3_API_AND_METHOD.md), [results](../experiments/voxcity_canopy_shadow/PHASE3_RESULTS_20261027.md), [tests](../../tests/test_canopy_shadow_sensitivity.py); geometry, horizontal sampling and observer effects are mixed |
+## Implemented Canopy preparation and meaning
 
-The older [komae_canopy.py](../../src/ouem/komae_canopy.py) is a separate experimental
-path with its own legacy provenance/threshold assumptions, not the current envelope
-contract or a full Standardizer. The [Native](../../src/ouem/native/canopy/__init__.py),
-[Standardize](../../src/ouem/standardize/canopy/__init__.py) and
-[Model](../../src/ouem/model/canopy/__init__.py) Canopy namespaces are placeholders.
-Canonical polygon acquisition/rasterization, full Standard Canopy production and
-formal acceptance, and mixed Building/canopy Phase 5 are **not implemented by this path**.
+| Component | Owning reference |
+|---|---|
+| CHMv2 source COG/index acquisition and AOI crop | [Acquisition procedure and evidence](../Meta_CHMv2_AOI_Acquisition_PoC.md); [implementation](../../src/ouem/acquire/meta_chmv2.py) |
+| HAG + source-declared Terrain → absolute crown top/bottom and validity state | [Height Envelope contract](../CHM_Height_Envelope_PoC_v0.1.md); [implementation](../../src/ouem/height_envelope.py); [earlier 3D verification](../verification/OUEM_Height_Envelope_3D_Visualization_Komae_20261026.md) |
+| Saved engine-centre sampling, TREE integration and paired direct solar | [Real-city implementation](../../src/ouem/real_komae_solar.py); [regression tests](../../tests/test_real_komae_solar.py) |
 
-## Validity is not canopy presence
+Envelope **state=1 means valid computation, not confirmed canopy presence**.
+PR #99 candidates require covered, unmasked, finite top/bottom with valid state
+and positive crown depth. NoData, outside coverage and valid zero height remain
+separate. Neither CHM/TREE presence nor absence independently establishes real
+trees. The [presence audit](../experiments/voxcity_canopy_shadow/PHASE4B_CANOPY_PRESENCE_AND_COVERAGE_AUDIT.md)
+and [tests](../../tests/test_canopy_presence_semantics.py) retain this distinction.
 
-The [envelope implementation](../../src/ouem/height_envelope.py) treats state=1
-as numerically valid, including CHM=0. Other bits distinguish CHM/DEM missing,
-invalid and outside coverage, plus invalid model output. Top/bottom NoData denotes
-invalid output; the codes are not the proposed Standard Canopy state encoding.
-Do not fill missing/outside cells with zero or collapse coverage, numeric validity,
-height estimate, presence evidence and model occupancy into one boolean.
+Canopy is sampled at PR #98's saved actual centres, not matched by array index
+to the older EPSG:6677 north-up grid. Public voxelization gives BUILDING priority;
+Current with TREE removed equals No-Canopy and the saved Building/Terrain base.
+Grid, D0, Building occupancy, ground, ROI and observations remain common.
+Numerical placement and pair checks do not validate estimated crowns above roofs.
 
-In the [strict shadow path](../../src/ouem/canopy_shadow_poc.py), selected inputs
-must be valid. Positive envelope thickness controls conversion; zero thickness
-produces no model TREE. Float32 or voxel rounding can also remove positive height
-or alter thin crowns. Neither CHM>0 nor TREE>0 proves real canopy presence; neither
-CHM=0 nor TREE=0 proves absence. See the factorized
-[Phase 4B audit](../experiments/voxcity_canopy_shadow/PHASE4B_CANOPY_PRESENCE_AND_COVERAGE_AUDIT.md)
-and [fixtures](../../tests/test_canopy_presence_semantics.py).
+## Unresolved validation and acceptance
 
-## Verified limits and next gate
-
-[Phase 4A](../experiments/voxcity_canopy_shadow/PHASE4A_OBSERVER_GEOMETRY_AND_VERTICAL_CONTRACT.md)
-and its [fixtures](../../tests/test_canopy_observer_geometry.py) document actual
-ray origins, ground-layer and rounding contributions. The public surface-map API
-does not generally represent exact physical DEM+1.5m observations; a low-level
-fractional-origin counterexample prevents claiming a safe arbitrary-point adapter.
-Retain its option C and record actual coordinates. Terrain source-declared T.P.
-and the evidence bridge do not independently validate CHM height science or
-ground compatibility. CR and optical parameters remain assumptions.
+[Standard Canopy](../OUEM_Standard_Canopy_v0.1_Draft.md) remains **DRAFT**.
+Canonical polygon acquisition, full Native / Standard Canopy production and its
+formal acceptance remain incomplete; the Canopy namespaces are placeholders.
+The implemented Envelope route does not complete that proposed lifecycle.
+Source-H eligibility remains **NOT_ESTABLISHED**, mixed-lane Formal Acceptance
+**NOT_VERIFIED**, and Phase 5 A1–A4 **OPEN**.
 
 The [Completion Gate](../experiments/voxcity_canopy_shadow/PHASE4_COMPLETION_GATE_REVIEW_20261027.md)
-proposes **CONDITIONAL PASS** for the canopy-only milestone. Phase 5 execution
-remains **blocked pending class A closure**: observer interpretation, common grid
-and Building conditioning, selected Building identity/Z evidence, and state,
-overlap and comparison-mask policy. The [Phase 5 Integration Plan DRAFT](../experiments/voxcity_canopy_shadow/PHASE5_INTEGRATION_PLAN_v0.1_Draft.md)
-defines proposed implementation checks, not completed features or approval.
-Use [Building Current State](BUILDING_CURRENT_STATE.md) for the Building evidence gap.
-Independent canopy presence, source timing/registration, optical calibration and
-scientific accuracy remain unverified within this exploratory scope. Detailed
-metrics, hashes and historical test executions belong to the linked records.
+proposes CONDITIONAL PASS for the canopy-only milestone; the
+[Phase 5 plan](../experiments/voxcity_canopy_shadow/PHASE5_INTEGRATION_PLAN_v0.1_Draft.md)
+remains Draft. Earlier statements that mixed integration was unimplemented
+refer to that earlier baseline. PR #97–#99 supply subsequent exploratory
+implementation and technical checks, without closing the recorded approval gates.
+
+Independent canopy presence, XY/time alignment, local HAG/ground accuracy,
+constant crown-ratio and optical assumptions remain unverified or uncalibrated.
+Strong modeled attenuation is not measured canopy benefit. The
+[observer audit](../experiments/voxcity_canopy_shadow/PHASE4A_OBSERVER_GEOMETRY_AND_VERTICAL_CONTRACT.md)
+explains why shared API ray origins do not establish exact physical DEM+1.5m
+observations. Voxel surface/rounding errors are distinct from source-H conversion.
+General halo sufficiency remains unverified: PR #99's known-height directional
+check and cropped controls do not establish expanded-domain convergence or
+coverage of unknown exterior objects. No annual/global solar or heat result is
+established. Detailed limits belong to the linked RESULTS.
+
+## Reproduction and earlier experiments
+
+Use the PR #99 procedure after its upstream Building/Terrain and Envelope
+prerequisites. It requires actual files and provenance, not a historical PASS;
+source hashes, engine identity and runtime requirements are in the owning records.
+This documentation refresh did not rerun models or recheck local artifact hashes.
+
+The [canopy-only experiment index](../experiments/voxcity_canopy_shadow/README.md)
+retains Phase 2 execution, Phase 3 sensitivity and Phase 4 audits. Older
+[komae_canopy.py](../../src/ouem/komae_canopy.py) uses separate provenance and
+threshold assumptions; it is not the current Envelope or a full Standardizer.
+These earlier experiments and tests remain evidence of their recorded conditions.

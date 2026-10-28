@@ -2,301 +2,95 @@
 
 **オープン都市環境モデル**
 
-OUEM is an early-stage project for building reproducible 3D urban environment
-models from open or otherwise available geospatial data and evaluating
-human-scale environmental functions.
+OUEM prepares reproducible 3D urban environment models from geospatial data
+and explores human-scale environmental assessment using external engines.
+Phase A covers model construction; Phase B covers solar/shade and green view.
+The [concept and architecture](docs/OUEM_Concept_Architecture_v0.2.md) defines
+these phases and their variants.
 
-## Scope
+## Current milestone
 
-- **Phase A — 3D Urban Environment Model Construction**
-  - A1 — Tokyo Reference
-  - A2 — National Baseline
-  - A3 — GSI-LiDAR National Target
-- **Phase B — Urban Environmental Assessment**
-  - B1 — Solar & Shade Assessment
-  - B2 — Green View Assessment
+An **exploratory real-city End-to-End PoC is complete for a small Komae area**:
+real PLATEAU source-H Building and Standard Terrain were integrated with an
+estimated Meta CHMv2 Height Envelope on one actual VoxCity grid, followed by
+Current / No-Canopy direct-solar comparison using public VoxCity APIs.
 
-The current target is the **Komae Phase A pilot**. This repository implements
-Standard Building and Terrain preparation plus the versioned A3
-Standard-to-VoxCity Building adapter. Komae-specific A3 execution through
-VoxCity voxel generation is **ACCEPTED**; nationwide applicability and Phase B
-environmental simulations are not accepted.
+| Experimental step | Procedure | Executed evidence |
+|---|---|---|
+| PR #97: CityGML → fixed Converter → source-H Native / Standard / Consumer | [Building preparation](docs/experiments/real_komae_source_h/README.md) | [H retention and Terrain checks](docs/experiments/real_komae_source_h/RESULTS.md) |
+| PR #98: Building + Terrain → actual VoxCity voxels | [Voxel integration](docs/experiments/real_komae_voxel/README.md) | [Grid, IDs and vertical diagnostics](docs/experiments/real_komae_voxel/RESULTS.md) |
+| PR #99: estimated Canopy + paired direct solar | [Three-element PoC](docs/experiments/real_komae_solar/README.md) | [Solar comparison and limitations](docs/experiments/real_komae_solar/RESULTS.md) |
 
-Recorded Komae results are documented in the formal
-[A2 Standard Terrain acceptance](docs/acceptance/OUEM_A2_Standard_Terrain_Komae_Acceptance_20261006.md)
-and [A3 VoxCity adapter acceptance](docs/acceptance/OUEM_A3_VoxCity_Komae_Acceptance_20261005.md).
-Both are accepted only within their recorded local baselines and conditions;
-the Standard contracts remain provisional. In these implementation records,
-A2 denotes Standard Terrain and A3 denotes the VoxCity adapter, distinct from
-the conceptual National Baseline and GSI-LiDAR National Target variants above.
+These are bounded technical results. Formal acceptance of this source-H / mixed
+solar lane is **NOT_VERIFIED**, source-H eligibility **NOT_ESTABLISHED**, and
+Phase 5 A1–A4 remain **OPEN**. Scientific accuracy, nationwide applicability and
+general solar-boundary sufficiency have not been established. Canopy is estimated,
+and direct irradiance is modeled with assumed optics, not measured exposure.
+
+## Accepted and experimental paths
+
+| Path | Boundary and status |
+|---|---|
+| Accepted v0.1 Komae path | Converter GeoPackage → Native → Standard Building + Terrain → versioned VoxCity Building Adapter and voxel generation. Acceptance is limited to the recorded datasets and conditions. |
+| Experimental source-H path | Fixed Converter retains source H; separate Native / Standard / Consumer and real-city runners reach mixed voxels and direct solar. It does not extend the accepted Adapter's manifest whitelist or acceptance scope. |
+
+The [Building acceptance record](experiments/a1_e2e_pilot/README.md),
+[A2 Terrain record](docs/acceptance/OUEM_A2_Standard_Terrain_Komae_Acceptance_20261006.md)
+and [A3 Adapter record](docs/acceptance/OUEM_A3_VoxCity_Komae_Acceptance_20261005.md)
+remain unchanged. Standard Building and Terrain remain **PROVISIONAL**;
+Standard Canopy remains **DRAFT**. A2/A3 in these implementation records mean
+Terrain/Adapter, distinct from the conceptual National Baseline/GSI-LiDAR variants.
 
 ## Documentation Guide
 
-Document roles are separate from implementation or dataset acceptance:
-**Formal** identifies registered designs, versioned contracts or scoped acceptance
-records; **Provisional** contracts remain non-FINAL; **Draft** proposals await
-approval; **Experimental** records describe bounded technical work;
-**Historical** documents retain the context of their recorded date.
+Start with the [Building Current State](docs/status/BUILDING_CURRENT_STATE.md)
+or [Canopy Current State](docs/status/CANOPY_CURRENT_STATE.md), then follow its
+implementation, verification and acceptance links. Detailed metrics, hashes and
+commands belong to those owning records.
 
-For a new chat/session, read this README, then the relevant Current State,
-then its linked Standard / Implementation and Verification / Acceptance records.
-The governance document defines responsibilities and update rules.
-
-| Start here | Role and scope |
+| Reference | Role |
 |---|---|
-| [Documentation Governance](docs/OUEM_Documentation_Governance_v0.1.md) | Proposed role boundaries, status meanings and PR update rules; no contract or acceptance change. |
-| [Canopy Current State](docs/status/CANOPY_CURRENT_STATE.md) / [Building Current State](docs/status/BUILDING_CURRENT_STATE.md) | Dated implementation/evidence entry points and open gates; summaries do not override contracts or records. |
-| [Concept & Architecture v0.2](docs/OUEM_Concept_Architecture_v0.2.md) / [v0.1](docs/OUEM_Concept_Architecture_v0.1.md) | Formal upper-level design / Historical baseline with inherited B1/B2 details. |
-| [Standard Building](docs/OUEM_Standard_Building_v0.1.md) / [Standard Terrain](docs/OUEM_Standard_Terrain_v0.1.md) | Provisional contracts; Komae acceptance is limited to recorded datasets and conditions. |
-| [VoxCity Building Adapter](docs/OUEM_VoxCity_Adapter_v0.1.md) | Formal versioned Building boundary; accepted voxel integration scope only. |
-| [Standard Canopy DRAFT](docs/OUEM_Standard_Canopy_v0.1_Draft.md) | Draft full Canopy proposal; not finalized by the experiments below. |
-| [Building acceptance](experiments/a1_e2e_pilot/README.md) / [A2 Terrain](docs/acceptance/OUEM_A2_Standard_Terrain_Komae_Acceptance_20261006.md) / [A3 Adapter](docs/acceptance/OUEM_A3_VoxCity_Komae_Acceptance_20261005.md) | Formal, bounded historical acceptance records, retained unchanged; the [record directory](docs/acceptance/) also contains technical verification with its own approval status. |
-| [CHM Height Envelope PoC](docs/CHM_Height_Envelope_PoC_v0.1.md) | Experimental absolute top/bottom generation and validity-state contract; no canopy-presence acceptance. |
-| [VoxCity Canopy Shadow experiment index](docs/experiments/voxcity_canopy_shadow/README.md) | Experimental Phase 2–4 evidence and usage, plus Historical Phase 0–1 context. |
-| [Phase 4 Completion Gate](docs/experiments/voxcity_canopy_shadow/PHASE4_COMPLETION_GATE_REVIEW_20261027.md) / [Repository inventory](docs/experiments/voxcity_canopy_shadow/REPOSITORY_INVENTORY_20261027.md) | Experimental review: CONDITIONAL PASS for the canopy-only milestone; dated consolidation audit. |
-| [Phase 5 Integration Plan](docs/experiments/voxcity_canopy_shadow/PHASE5_INTEGRATION_PLAN_v0.1_Draft.md) | Draft; integration remains blocked until the Gate's class A pre-start conditions close. |
-| [Runtime architecture](docs/architecture.md) / [Windows environment record](docs/development/OUEM_Windows_Development_and_Remote_Setup_20261025.md) / [Execution runbook](scripts/work/README.md) | Operational guidance and recorded local environment; keep OUEM and GIS runtimes separate. |
+| [Documentation governance](docs/OUEM_Documentation_Governance_v0.1.md) | Proposed roles and update rules; summaries do not override contracts or acceptance. |
+| [Concept v0.2](docs/OUEM_Concept_Architecture_v0.2.md), [historical v0.1](docs/OUEM_Concept_Architecture_v0.1.md), [Phase A implementation design](docs/Phase_A_Implementation_Design_v0.1.md) | Design context; read the implementation design's current-status note. |
+| [Standard Building](docs/OUEM_Standard_Building_v0.1.md), [Standard Terrain](docs/OUEM_Standard_Terrain_v0.1.md), [VoxCity Building Adapter](docs/OUEM_VoxCity_Adapter_v0.1.md) | Existing contracts and accepted boundaries. |
+| [Standard Canopy draft](docs/OUEM_Standard_Canopy_v0.1_Draft.md), [Height Envelope](docs/CHM_Height_Envelope_PoC_v0.1.md) | Full Canopy proposal and separate experimental raster contract. |
+| [Canopy shadow experiment index](docs/experiments/voxcity_canopy_shadow/README.md) | Earlier canopy-only results, observer/presence audits and historical context. |
+| [Completion Gate](docs/experiments/voxcity_canopy_shadow/PHASE4_COMPLETION_GATE_REVIEW_20261027.md), [Phase 5 draft plan](docs/experiments/voxcity_canopy_shadow/PHASE5_INTEGRATION_PLAN_v0.1_Draft.md) | Recorded gate and proposal; subsequent exploratory execution does not close approval conditions. |
 
-## Local data layout and Phase A lifecycle
+## Data and reproduction
 
-Local datasets are organized by processing stage:
+The formal lifecycle is `raw → native → standard → model → output` under
+`data/`. `data/work/` is a side workspace for non-authoritative processing and
+experiments; Converter output there is not already OUEM Native. Real datasets,
+run artifacts and runtime snapshots remain outside Git. The shared study area
+is [komae_09LD3451.yaml](config/study_areas/komae_09LD3451.yaml).
 
-```text
-data/
-├─ raw/        # provider/source data as acquired
-├─ native/     # accepted OUEM Native contract artifacts
-├─ standard/   # accepted OUEM Standard contract artifacts
-├─ model/      # model/engine-ready representations
-├─ output/     # model and analysis outputs
-└─ work/       # non-authoritative, reproducible processing intermediates
-```
+For the real-city PoC, follow PR #97 → #98 → #99 procedures above. Actual inputs,
+adjacent manifests, source evidence and matching hashes are required; a past PASS
+or cloned repository does not supply missing data. New upstream artifacts require
+the identity review described in those procedures.
 
-The canonical pipeline is:
-
-```text
-raw
-  ↓
-OUEM ingest
-  ↓
-native
-  ↓
-OUEM standardization
-  ↓
-standard
-  ↓
-model
-  ↓
-output
-```
-
-The formal lifecycle is `raw → native → standard → model → output`. `work` is
-not a formal lifecycle stage: it is a side workspace for non-authoritative,
-reproducible technical intermediates needed to produce formal artifacts.
-
-The current PLATEAU Building branch uses that side workspace as follows:
-
-```text
-raw
-  │ external/manual processing
-  ▼
-work
-  │ OUEM ingest
-  ▼
-native
-  │ OUEM standardization
-  ▼
-standard
-```
-
-For PLATEAU, source CityGML belongs under `data/raw/building/plateau_komae/`,
-while PLATEAU GIS Converter output belongs under
-`data/work/building/plateau_komae/`. OUEM's accepted Native Building is under
-`data/native/building/`, and Standard Building is under
-`data/standard/building/`. The Converter output is an external/manual
-processing intermediate, **not** OUEM Native Building.
-
-The Komae Tokyo 0.5 m DEM source convention is
-`data/raw/terrain/tokyo_23ku_dem_050m/komae/09LD3451.tif`. Terrain uses a validated Native manifest
-rather than duplicating unchanged raster bytes, followed by Standard GeoTIFF
-creation under `data/standard/terrain/`:
-
-This example retains the historical `tokyo_23ku_dem_050m` path. For new
-acquisition, follow the [Tama Terrain acquisition recipe](docs/Terrain_Acquisition_PoC_v0.1.md)
-and [dated source correction](docs/acceptance/OUEM_A2_Terrain_Source_Provenance_Correction_20261026.md).
-Existing Raw paths and past records remain in place.
-
-```shell
-ouem-accept-terrain data/raw/terrain/tokyo_23ku_dem_050m/komae/09LD3451.tif \
-  --output data/native/terrain/komae_09LD3451.json \
-  --provider "Tokyo Metropolitan Government" \
-  --source-dataset "Tokyo 0.50 m bare-earth DEM" \
-  --vertical-reference-status source-declared \
-  --vertical-reference "T.P." \
-  --vertical-reference-source "Tokyo Metropolitan Government source metadata"
-ouem-standardize-terrain data/native/terrain/komae_09LD3451.json \
-  --output data/standard/terrain/komae_09LD3451.tif \
-  --study-area config/study_areas/komae_09LD3451.yaml
-```
-
-See the [provisional Terrain contract](docs/OUEM_Standard_Terrain_v0.1.md).
-EPSG:6677 is horizontal only; the Tokyo source declares T.P. separately.
-Standard Terrain remains canonical rather than an engine-specific artifact.
-
-Analysis-ready models and derived GIS products continue under `data/model/`
-and `data/output/`. All local data locations are ignored by Git except for
-directory markers; real datasets must not be committed. The canonical Komae
-extent is defined in [`config/study_areas/komae_09LD3451.yaml`](config/study_areas/komae_09LD3451.yaml).
-
-See [Concept & Architecture v0.2](docs/OUEM_Concept_Architecture_v0.2.md)
-for the formally registered basic design (upper-level conceptual design).
-It does not automatically change existing Standard contracts, Adapter specifications,
-or acceptance records. [Concept & Architecture v0.1](docs/OUEM_Concept_Architecture_v0.1.md)
-is retained as historical reference and as the source of inherited B1/B2 details
-identified in v0.2 Section 7.1. The
-[Phase A Implementation Design v0.1](docs/Phase_A_Implementation_Design_v0.1.md),
-read with its current-status note, links the current implementation contracts. The
-[OUEM Standard Building v0.1](docs/OUEM_Standard_Building_v0.1.md) defines the
-coordinate, geometry, PLATEAU source, and minimum metadata contract for
-standardized buildings.
-
-## PLATEAU Building Provider v0.1
-
-A1 uses **PLATEAU GIS Converter GUI output as its technical ingestion
-boundary**. Direct GDAL/OGR conversion of the tested CityGML exposed the layer
-as `3D PolyhedralSurface`, but individual geometries became
-`POLYHEDRALSURFACE Z EMPTY`. Converter output retained real `MULTIPOLYGON Z`
-geometry, so direct CityGML conversion is not an OUEM A1 processing path.
-
-The manual and OUEM steps are:
-
-1. obtain PLATEAU CityGML;
-2. convert it with PLATEAU GIS Converter GUI to a GeoPackage using settings
-   that retain 3D geometry;
-3. pass that GeoPackage to OUEM building ingest;
-4. create and automatically validate OUEM Native Building; and
-5. inspect position, visible geometry, height, and form in QGIS 3D View.
-
-The successful Komae PoC produced `data/native/building/komae.gpkg` with layer
-`building`, 3,637 features, 3D Multi Polygon geometry, EPSG:4979, retained Z,
-and `measuredHeight` and other source attributes. Source and Native Building
-counts matched at 3,637. This count records this Komae acceptance dataset only;
-features in unrelated layers of the intermediate GeoPackage are not included.
-
-Run ingest from the separate OUEM runtime after completing the GIS runtime
-stage documented in [`scripts/work/README.md`](scripts/work/README.md):
-
-```shell
-ouem-plateau-buildings data/work/building/plateau_komae/53393465_bldg_6697_op_convert.gpkg \
-  --output data/native/building/komae.gpkg \
-  --gis-runtime scripts/work/.runtime/plateau_komae_gis.json
-```
-
-The command runs from the repository-local OUEM Python environment
-(`.venv/Scripts/python.exe` on Windows). GDAL, OGR, PDAL, and other native GIS
-tools remain the responsibility of a separate OSGeo4W/QGIS environment. The
-GIS acceptance stage records what child processes need in `--gis-runtime`;
-OUEM Python never runs inside the GIS shell, and GIS Python is used only for the
-standalone child worker. OUEM is not installed into GIS Python, and the OUEM
-venv does not need `osgeo`. The confirmed local combination is QGIS 4.2.3,
-GDAL 3.13.3, and GIS Python 3.12.14 with OUEM Python 3.11.9; these are observed
-acceptance versions rather than package-wide requirements. Ingest copies the
-resolved building layer without clipping, reprojection, geometry repair, or
-dimensional reduction and preserves all source attributes. It rejects empty or
-2D geometry, undefined CRS, zero features, missing `measuredHeight`, feature
-loss, or field loss. A SHA-256 receipt enables reuse, and a manifest records
-source provenance and validation results. The concise run summary reports
-input/output counts, geometry type, CRS, Z and non-empty counts, and fields.
-
-Manual visual acceptance checks Building footprints and attributes in QGIS 2D
-View, then uses geometry Z in QGIS 3D View. The accepted data showed building
-height and form without artificial renderer extrusion.
-
-PLATEAU GIS Converter automation, direct CityGML parsing/conversion, LiDAR/CHM,
-canopy, solar/shade, and GVI processing are outside this minimal A1 ingest.
-
-## OUEM Standard Building v0.1 conversion
-
-The separate `ouem-standardize-buildings` command consumes accepted Native
-Building, selects complete buildings intersecting the configured study-area
-rectangle, transforms the accepted EPSG:4979 Native coordinates' EPSG:4326
-horizontal component to EPSG:6677, and preserves every Z as absolute T.P.
-elevation without treating it as ellipsoidal height. Boundary-crossing buildings are
-not clipped. It writes only the five Standard metadata fields and a validation
-manifest; see the [provisional contract](docs/OUEM_Standard_Building_v0.1.md)
-for the exact nullable mappings and deterministic ID rule. This milestone does
-not include VoxCity or make the provisional contract final.
-
-The Komae real-data local acceptance passed with 3,637 Native input buildings
-and 111 study-area-selected Standard output buildings. The output was EPSG:6677
-3D Multi Polygon, with required metadata, zero Z delta, and deterministic IDs
-all passing. This is acceptance of the current conversion for the Komae dataset,
-not general PLATEAU coverage or finalization of the provisional specification.
-The detailed record is in
-[`experiments/a1_e2e_pilot/README.md`](experiments/a1_e2e_pilot/README.md).
-
-```shell
-ouem-standardize-buildings data/native/building/komae.gpkg \
-  --output data/standard/building/komae.gpkg \
-  --study-area config/study_areas/komae_09LD3451.yaml \
-  --gis-runtime scripts/work/.runtime/plateau_komae_gis.json
-```
-
-This environment boundary also applies to future Tokyo LiDAR and CHM work:
-PDAL/GDAL/OGR execution belongs to the GIS environment, while reusable OUEM
-orchestration and domain logic belong to the project-local Python venv. See
-[`scripts/work/README.md`](scripts/work/README.md) for the complete local setup
-and acceptance commands.
-
-## Standard-to-VoxCity adapter
-
-[VoxCity](https://github.com/kunifujiwara/VoxCity) remains an external upstream
-engine; its source is not vendored. The A3 adapter targets exactly VoxCity
-1.7.0 commit `fa212656305328a9a657973bae26f352bfe813bc`, combines both accepted
-Standard inputs, and retains a deterministic `ouem_id`↔numeric-ID manifest.
-The output exposes both the OUEM audit field `voxcity_id` and VoxCity's actual
-consumer field `id` with equal positive values. Effective ground is computed
-from the raw pinned-VoxCity DEM cells selected by its `building_id_grid`, and
-the acceptance runner reaches `Voxelizer.generate_combined`. All A3 VoxCity and
-GeoPandas execution occurs in the OUEM virtual environment; VoxCity is not
-installed in or invoked through the captured QGIS/OSGeo4W runtime. The adapter
-constructs each engine footprint by topology-safe union of every positive-area
-XY projection in the canonical 3D surface geometry; collapsed wall projections
-are discarded without changing the Standard artifact. A3 uses VoxCity's precise
-geometry-intersection rasterization because the pinned fast/Rasterio path was
-observed to assign zero cells to a valid Komae footprint.
-See the [adapter contract and acceptance procedure](docs/OUEM_VoxCity_Adapter_v0.1.md).
-
-OUEM will focus on Japanese geospatial-data preparation, input adapters,
-scenario configuration, orchestration, OUEM metrics, comparative scenarios,
-post-processing, GIS output, and validation. Where reliable open-source
-upstream functionality exists, the project should use it rather than duplicate
-it.
-
-## Optional CHMv2 AOI acquisition PoC
-
-See the [CHMv2 acquisition guide](docs/Meta_CHMv2_AOI_Acquisition_PoC.md) for
-index-based tile downloads and a native-grid EPSG:3857 AOI crop. This opt-in
-path does not create Standard Canopy or connect to the existing canopy runner.
+Use the [Tama Terrain acquisition recipe](docs/Terrain_Acquisition_PoC_v0.1.md)
+and [CHMv2 acquisition guide](docs/Meta_CHMv2_AOI_Acquisition_PoC.md) for source
+preparation. The historical `tokyo_23ku_dem_050m` path remains in old records;
+consult the [Terrain provenance correction](docs/acceptance/OUEM_A2_Terrain_Source_Provenance_Correction_20261026.md)
+for its Tama source identity. EPSG:6677 is horizontal; vertical declarations
+and numerical H retention do not independently prove surveyed datum accuracy.
 
 ## Development
 
-The package skeleton uses a `src` layout and requires Python 3.10 or later.
-After installing the project in editable mode, run the smoke test with:
+Use Python 3.10+ and the repository OUEM virtual environment. VoxCity 1.7.0 remains
+pinned in [pyproject.toml](pyproject.toml); its source is not vendored.
 
 ```shell
 python -m pip install -e .
-python -m pytest
+python -m pytest -q -ra
 ```
 
-On Windows, do not run the repository virtual environment from OSGeo4W Shell.
-Native GIS tools and OUEM use separate processes and Python installations; see
-the [runtime architecture](docs/architecture.md) and the reproducible
-[local acceptance procedure](scripts/work/README.md).
+On Windows, use `.venv/Scripts/python.exe` from an ordinary terminal. Keep
+OUEM/VoxCity separate from QGIS/OSGeo4W Python; see the
+[runtime architecture](docs/architecture.md), [execution runbook](scripts/work/README.md)
+and [recorded Windows setup](docs/development/OUEM_Windows_Development_and_Remote_Setup_20261025.md).
+The runbook and contracts own the accepted v0.1 CLI procedures.
 
-For the observed GEEKOM A6 Windows development setup, GIS runtime verification,
-Codex sandbox behavior, and iPhone Codex Remote acceptance, see the
-[2026-10-25 development and remote setup record](docs/development/OUEM_Windows_Development_and_Remote_Setup_20261025.md).
-This workstation record is not a real-data acceptance.
-
-No OUEM repository license has yet been selected. See [`LICENSE`](LICENSE) for
-the current licensing notice.
+No repository license has yet been selected; see [LICENSE](LICENSE).
