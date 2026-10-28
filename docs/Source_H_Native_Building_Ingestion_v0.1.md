@@ -200,6 +200,10 @@ reverify files/receipt/manifest. COMPLETED is technical execution, not acceptanc
 
 ## Tests, limits and next Step
 
+Step 3 adds an [independent experimental horizontal-only Standardizer](Source_H_Standard_Building_v0.1.md)
+with candidate v0.2 output; qualification, formal contract/acceptance and Adapter
+migration remain separate gates. It does not alter the legacy Standardizer.
+
 Follow-up [actual Converter-output integration smoke test](experiments/plateau_converter/SOURCE_H_NATIVE_INTEGRATION_20261028.md)
 passed using PR #87's saved EPSG:6697 output from the **synthetic** two-building
 CityGML. This is separate from the 34 synthetic WKB unit cases below, and is not

@@ -1,10 +1,24 @@
 # Building Current State
 
-Last checked: **2026-10-27**. Main baseline:
-`66f262f1e9d0d22d01b25ae73ce5a4a7fd9057e2` (PRs #75 and #76 merged).
+Last checked: **2026-10-28**, main baseline `4602b928dfddd95b9a9ef5b392b5355d76585529` (PR #90 merged).
 This is an informational entry point under the [documentation governance](../OUEM_Documentation_Governance_v0.1.md).
 It does not amend contracts, historical acceptance or source Z. Code/record and
-explicit path checks were performed; no new Building processing or acceptance run.
+explicit path checks were performed. The legacy inventory below was originally
+checked against `66f262f1e9d0d22d01b25ae73ce5a4a7fd9057e2` on 2026-10-27;
+it does not imply that historical Accepted files are currently available.
+
+## Experimental source-H lane (Step 3; review pending)
+
+[Step 1 foundation](../Source_H_Building_Provenance_Foundation_v0.1.md) and
+[Step 2 Native ingestion](../Source_H_Native_Building_Ingestion_v0.1.md) now have
+an independent [Step 3 Standardizer](../Source_H_Standard_Building_v0.1.md):
+explicit source-H profile, 6697 Native → horizontal-only 6668→6677, exact all-H
+retention, candidate v0.2 manifest/receipt. Synthetic tests and saved actual
+Converter-output-derived **synthetic** Native integration are recorded there.
+This is implemented/technically tested, not a new accepted path or verified
+real-municipality datum. Existing 4979 lane, formal Standard and Adapter are
+unchanged. The Adapter does not accept v0.2. Eligibility NOT_ESTABLISHED;
+human review/Formal Acceptance NOT_VERIFIED; Phase 5 A1–A4 remain OPEN.
 
 ## Contracts, implementation and bounded evidence
 
