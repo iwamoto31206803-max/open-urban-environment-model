@@ -1,124 +1,88 @@
 # Building Current State
 
-Last checked: **2026-10-28**, main baseline `9f01631c5c5a06b3dcafa8ead6d210d34aefff23` (PR #95 merged).
-This is an informational entry point under the [documentation governance](../OUEM_Documentation_Governance_v0.1.md).
-It does not amend contracts, historical acceptance or source Z. Code/record and
-explicit path checks were performed. The legacy inventory below was originally
-checked against `66f262f1e9d0d22d01b25ae73ce5a4a7fd9057e2` on 2026-10-27;
-it does not imply that historical Accepted files are currently available.
+Last checked: **2026-10-28**, main baseline
+`3d767f039b6542edf37b01025f92084daf3ed6e9` (PR #99 merged).
+This [informational entry point](../OUEM_Documentation_Governance_v0.1.md)
+reflects code and existing execution records, not a new run or acceptance decision.
 
-## Experimental source-H lane (Step 3; review pending)
+## Current milestone: real source-H End-to-End PoC
 
-[Step 1 foundation](../Source_H_Building_Provenance_Foundation_v0.1.md) and
-[Step 2 Native ingestion](../Source_H_Native_Building_Ingestion_v0.1.md) now have
-an independent [Step 3 Standardizer](../Source_H_Standard_Building_v0.1.md):
-explicit source-H profile, 6697 Native → horizontal-only 6668→6677, exact all-H
-retention, candidate v0.2 manifest/receipt. Synthetic tests and saved actual
-Converter-output-derived **synthetic** Native integration are recorded there.
-This is implemented/technically tested, not a new accepted path or verified
-real-municipality datum. Existing 4979 lane, formal Standard and Adapter are
-unchanged. The Adapter does not accept v0.2. Eligibility NOT_ESTABLISHED;
-human review/Formal Acceptance NOT_VERIFIED; Phase 5 A1–A4 remain OPEN.
+A small-area Komae experiment now reaches real Building + Terrain + estimated
+Canopy voxels and Current / No-Canopy direct solar through public VoxCity APIs.
+The three stages retain separate procedures and evidence:
 
-[Step 4B-1 Consumer Validator](../Source_H_Standard_Consumer_Validation_v0.1.md)
-adds independent read-only candidate Standard/provenance/all-vertex validation,
-including a saved Converter-derived synthetic Standard smoke test. This does
-not connect the Adapter, establish real-data eligibility or change those gates.
+| Stage / implementation | Procedure and evidence |
+|---|---|
+| [PR #97 source-H preparation](../../src/ouem/real_komae_source_h.py): real CityGML, fixed Converter, Native / Standard, independent Consumer | [Procedure](../experiments/real_komae_source_h/README.md); [geometry, all-H retention and Terrain checks](../experiments/real_komae_source_h/RESULTS.md) |
+| [PR #98 voxelization](../../src/ouem/real_komae_voxel.py): Building + Terrain on the actual engine grid | [Procedure](../experiments/real_komae_voxel/README.md); [IDs, ground and voxel diagnostics](../experiments/real_komae_voxel/RESULTS.md) |
+| [PR #99 mixed direct solar](../../src/ouem/real_komae_solar.py): estimated Canopy added with Building priority and common observers | [Procedure](../experiments/real_komae_solar/README.md); [paired results and limits](../experiments/real_komae_solar/RESULTS.md) |
 
-[Step 4B-2 synthetic 2.5D Adapter](../Source_H_Synthetic_25D_Adapter_v0.1.md)
-adds a separate flat-ground, synthetic-only lane after Consumer PASS. Two-box
-height/ID/footprint preparation and pinned public building-raster API input
-were executed; no voxelization, real-data fusion or acceptance. Adapter v0.1
-remains unchanged; eligibility and Phase5 gates above remain unchanged.
+Source-H Native uses compound EPSG:6697. Standardization transforms only XY
+from EPSG:6668 to EPSG:6677 and retains every H without passing it to PROJ or
+using EPSG:4979. Original Standard geometry remains complete; the engine uses
+a derived 2.5D footprint/roof proxy. Source H, conditioned engine ground/D0 and
+voxel discretization are distinct quantities. Exact engine centres and orientation
+are reused downstream; geographic GeoTIFF indices are not the older projected
+north-up grid. Methods and numerical budgets belong to the linked records.
 
-[Step 4B-3 synthetic voxelization](../Source_H_Synthetic_Voxelization_v0.1.md)
-executes the pinned building raster and Voxelizer on the same two authored boxes
-and flat ground. Actual saved 3D arrays, ID/ground QA and sections are recorded;
-the +1 surface layer and height rounding are retained explicitly. This is not
-physical roof alignment, real-data acceptance or a solar result; gates remain OPEN.
+## Accepted v0.1 remains a separate path
 
-[Step 4B-4 synthetic direct solar](../Source_H_Synthetic_Solar_v0.1.md) now
-executes actual CPU A/B solar calls on that synthetic Building/flat-ground
-model with common geometry, observers and ground mask. Building shade was
-detected and saved; observer discretization and finite-domain clipping remain
-explicit. No real-data/scientific or formal acceptance; gates remain OPEN.
+[Standard Building](../OUEM_Standard_Building_v0.1.md) and
+[Standard Terrain](../OUEM_Standard_Terrain_v0.1.md) remain **PROVISIONAL**.
+The existing path uses Converter GeoPackage ingestion via
+[plateau.py](../../src/ouem/native/building/plateau.py), the
+[Building standardizer](../../src/ouem/standardize/building/__init__.py) and the
+[v0.1 Adapter](../OUEM_VoxCity_Adapter_v0.1.md). Its accepted Native CRS label
+is EPSG:4979; the Standardizer transforms the horizontal component while retaining
+numeric Z interpreted as T.P. The label alone does not resolve the source datum.
+The source-H candidate v0.2 manifests do not enter that Adapter's whitelist.
 
-## Contracts, implementation and bounded evidence
+The [A1 Building record](../../experiments/a1_e2e_pilot/README.md),
+[A3 Adapter record](../acceptance/OUEM_A3_VoxCity_Komae_Acceptance_20261005.md)
+and [contained E2E record](../acceptance/OUEM_Komae_Contained_E2E_Acceptance_20261018.md)
+retain their dataset-specific scope. They do not accept the new mixed solar lane.
+Existing Building/Standard/Adapter regressions remain necessary alongside the
+[source-H](../../tests/test_source_h_consumer.py) and
+[real-city](../../tests/test_real_komae_solar.py) tests.
 
-[Concept v0.2](../OUEM_Concept_Architecture_v0.2.md) is the upper design;
-[Standard Building v0.1](../OUEM_Standard_Building_v0.1.md) remains **PROVISIONAL**
-with bounded Komae acceptance. The [VoxCity Building Adapter v0.1](../OUEM_VoxCity_Adapter_v0.1.md)
-is the accepted engine-specific conversion boundary, not the canonical Building
-representation or a Canopy contract. Read the current-status note in the
-[Phase A implementation design](../Phase_A_Implementation_Design_v0.1.md) before
-using its historical pending statements.
+## Open issues and approval boundaries
 
-| Path / implemented responsibility | Inputs and outputs / boundary | Evidence and tests |
-|---|---|---|
-| PLATEAU → converter output → Native: [plateau.py](../../src/ouem/native/building/plateau.py), `ingest_converter_geopackage`, CLI `ouem-plateau-buildings` | PLATEAU GIS Converter is an external/manual prerequisite. Its GeoPackage is not already OUEM Native; OUEM registers source identity, retained geometry/Z and Native metadata | [A1 pilot/acceptance procedure](../../experiments/a1_e2e_pilot/README.md), [Native tests](../../tests/test_plateau_building.py) |
-| Native → Standard: [building standardizer](../../src/ouem/standardize/building/__init__.py), `standardize_native_buildings`, CLI `ouem-standardize-buildings` | Native GeoPackage to canonical EPSG:6677 3D Building and manifest; horizontal transform with retained Z, stable identity and AOI intersection selection without clipping full geometry | [Building contract](../OUEM_Standard_Building_v0.1.md), [Standard tests](../../tests/test_standard_building.py), same bounded A1 record |
-| Standard → VoxCity: [adapter](../../src/ouem/adapters/voxcity/__init__.py), `adapt_standard_to_voxcity`, CLI `ouem-adapt-voxcity` | Manifest-backed Standard Building and Terrain to EPSG:4326 2D footprints, engine IDs, relative heights and Adapter provenance | [A3 acceptance](../acceptance/OUEM_A3_VoxCity_Komae_Acceptance_20261005.md), [Adapter tests](../../tests/test_voxcity_adapter.py), [post-CRS repair tests](../../tests/test_voxcity_post_crs_repair.py) |
+Source-H eligibility is **NOT_ESTABLISHED**, human review / Formal Acceptance
+of the experimental lane **NOT_VERIFIED**, and Phase 5 A1–A4 remain **OPEN**.
+The [Completion Gate](../experiments/voxcity_canopy_shadow/PHASE4_COMPLETION_GATE_REVIEW_20261027.md)
+and [Phase 5 draft plan](../experiments/voxcity_canopy_shadow/PHASE5_INTEGRATION_PLAN_v0.1_Draft.md)
+are unchanged. Common-grid, ground, ID, overlap and observer checks have now
+been implemented and executed in the bounded PoC; their technical success does
+not supply gate approval or complete the plan's acceptance requirements.
 
-The A1 record covers its recorded Komae Native/Standard pilot; A3 covers the
-recorded local Building Adapter through VoxCity voxel generation. They establish
-neither nationwide applicability nor mixed Building/canopy solar acceptance.
-The later [contained E2E record](../acceptance/OUEM_Komae_Contained_E2E_Acceptance_20261018.md)
-has its own subset and review scope; it does not replace A1/A3 or prove every
-historical artifact remains available. Existing tests exercise defined properties;
-their presence alone is not a fresh execution result.
+Independent vertical-datum realization, surveyed geometry/height accuracy and
+observation-date alignment remain unverified. The earlier
+[Building vertical diagnosis](../research/OUEM_Komae_Building_Vertical_Geometry_Diagnosis.md)
+is **UNRESOLVED** for its historical data chain. The new source-H correspondence
+does not retrospectively explain that diagnosis or justify a constant Z offset.
+See [Canopy Current State](CANOPY_CURRENT_STATE.md) for presence, optical,
+observer and finite-domain limitations of mixed solar.
 
-## Coordinates and unresolved source Z
+## Reproduction and historical context
 
-The Building contract declares canonical Komae horizontal CRS **EPSG:6677**, Z
-as absolute metres under T.P., and source-profile/converter interpretation
-separately. The accepted Native path preserves converter numeric Z; the
-Standardizer preserves it while transforming horizontal coordinates. Neither
-EPSG:6677 nor retained numbers independently proves vertical datum accuracy.
-The contract's PLATEAU profile declares EPSG:6697; the converter/Native layer
-uses EPSG:4979. That CRS formally has ellipsoidal height, whereas OUEM interprets
-retained Z as T.P. This unresolved semantic boundary requires actual converter
-operation and matched-coordinate evidence, not inference from a CRS label.
-[Terrain](../OUEM_Standard_Terrain_v0.1.md) uses source-declared T.P., also without
-independent survey validation.
+Follow the stage procedures above with actual source files, manifests, receipts,
+hashes and the pinned engine identified in the results. Missing/mismatched inputs
+must stop processing; new upstream identities need review. Keep the
+[OUEM and GIS runtimes separate](../architecture.md); use the
+[runbook](../../scripts/work/README.md) for accepted-path operations.
 
-The Adapter derives relative height from canonical maximum Z minus the mean
-VoxCity raw DEM under assigned Building IDs, with the profile's `min_height=0`.
-Engine per-ID ground conditioning and D0 re-origin must be audited separately;
-canonical absolute Z and voxel index are not interchangeable. The accepted
-geographic Adapter grid is not automatically the experimental projected 1m grid.
-See [Adapter contract](../OUEM_VoxCity_Adapter_v0.1.md) and
-[Phase 4A coordinate analysis](../experiments/voxcity_canopy_shadow/PHASE4A_OBSERVER_GEOMETRY_AND_VERTICAL_CONTRACT.md).
+Earlier absence checks for `data/native/building/komae.gpkg` and
+`data/standard/building/komae.gpkg` described those historical paths only.
+PR #97–#99 records identify separate experimental run artifacts; neither a
+historical acceptance nor this summary guarantees current local availability.
+This refresh did not rerun processing or revalidate local artifact hashes.
 
-The [Building vertical diagnosis](../research/OUEM_Komae_Building_Vertical_Geometry_Diagnosis.md)
-is **UNRESOLVED**. The roughly 37m difference is a reported source/converter/geometry
-hypothesis, not a proven matched-vertex datum shift. Full geometry/LoD and
-conversion history require evidence. Do not subtract an offset or treat a T.P.
-label as measured accuracy. The read-only [provenance diagnostic](../../src/ouem/komae_vertical_provenance.py)
-and [tests](../../tests/test_komae_vertical_provenance.py) support investigation;
-this update does not claim that the missing source chain has been reconstructed.
-
-## Availability, reproduction and next gate
-
-On the check date, these specific local paths were **absent**:
-`data/native/building/komae.gpkg`, `data/standard/building/komae.gpkg`, and
-`data/standard/building/komae.gpkg.manifest.json`. This is a path-specific check,
-not a whole-PC search or proof that no alternative Building dataset exists.
-Historical A3 paths alone do not identify selected bytes or supply their hashes.
-Reproduction needs the actual source/converter/Native/Standard chain and adjacent
-manifests, recorded AOI/profile and the pinned VoxCity 1.7.0 commit
-`fa212656305328a9a657973bae26f352bfe813bc`; follow the
-[runtime architecture](../architecture.md) and [runbook](../../scripts/work/README.md)
-to keep OUEM and GIS environments separate.
-
-Before Phase 5, identify the chosen Building file/manifest by SHA-256, source
-release and IDs; obtain height/LoD and converter-operation evidence, compare
-matched source/Native/Standard Z, and resolve the selected-data implications of
-the diagnosis or demonstrate an unaffected subset. Approval of common grid,
-ground conditioning, observers and masks is also required by the
-[Completion Gate class A items](../experiments/voxcity_canopy_shadow/PHASE4_COMPLETION_GATE_REVIEW_20261027.md).
-The [Phase 5 plan](../experiments/voxcity_canopy_shadow/PHASE5_INTEGRATION_PLAN_v0.1_Draft.md)
-is **Draft, not implemented**: common raw/effective DEM and D0, Building-over-TREE
-audit, IDs/heights and paired masks must be tested during implementation.
-The canopy-only milestone's CONDITIONAL PASS does not close these Building gates.
-See [Canopy Current State](CANOPY_CURRENT_STATE.md) for source validity and presence
-limits; no new acceptance or coordinate correction is declared here.
+The [source-H foundation](../Source_H_Building_Provenance_Foundation_v0.1.md),
+[Native ingestion](../Source_H_Native_Building_Ingestion_v0.1.md),
+[Standardizer](../Source_H_Standard_Building_v0.1.md) and
+[Consumer](../Source_H_Standard_Consumer_Validation_v0.1.md) own their interfaces.
+Earlier [synthetic 2.5D](../Source_H_Synthetic_25D_Adapter_v0.1.md),
+[voxel](../Source_H_Synthetic_Voxelization_v0.1.md) and
+[solar](../Source_H_Synthetic_Solar_v0.1.md) results remain regression evidence.
+Their synthetic-only scope and older pending statements describe those stages,
+not the limit of today's experimental implementation.
