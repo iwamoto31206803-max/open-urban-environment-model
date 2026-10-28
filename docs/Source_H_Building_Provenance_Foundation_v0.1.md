@@ -1,5 +1,10 @@
 # Source-H Building provenance foundation (Step 1)
 
+Step 2 adds [independent experimental Native ingestion](Source_H_Native_Building_Ingestion_v0.1.md)
+and `validate_source_h_inputs` for a planned Native artifact without size/hash.
+Completed-record validation below remains strict and unchanged; the new helper
+does not change the existing accepted ingestion/Standardizer/Adapter routes.
+
 Status: **Experimental implementation boundary**, 2026-10-28. Candidate profile
 and schema names are not formally accepted by this implementation. Phase 5
 A1–A4 remain OPEN. No Native ingestion, Standardization or Adapter integration
