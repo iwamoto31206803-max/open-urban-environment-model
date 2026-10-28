@@ -1,7 +1,8 @@
 # Source-H Native Building ingestion (Step 2)
 
 Status: **Experimental, not an accepted data path**, 2026-10-28.
-Phase 5 A1–A4 remain OPEN. No Standardizer or VoxCity Adapter integration.
+Phase 5 A1–A4 remain OPEN. The experimental source-H Standardizer is linked
+below; no production VoxCity Adapter integration is established.
 
 Baseline main `6899cd72549617ac6dc79f6b1330f469d8f83f81` includes merged PR #89. This implements a bounded
 Converter-to-Native processing step under the candidate
@@ -145,10 +146,19 @@ must correspond. Raw→Converter matching allows only polygon order and cyclic
 ring starts/reversal; **Converter→Native** remains strictly order-preserving.
 
 No-source-LoD2 buildings are explicitly inventoried as excluded, not silently
-lost. BuildingPart, xlink, lod2Solid, uninspected selected geometry constructs,
+lost. The [real Komae experiment](experiments/real_komae_source_h/RESULTS.md)
+adds one bounded compatibility case: a direct `lod2Solid/Solid/exterior/CompositeSurface`
+whose reference-only `surfaceMember xlink:href="#ID"` children resolve to the
+same Building's inline LoD2 boundary Polygons. Every referenced ID must exist,
+be unique, and cover exactly those boundary Polygons. Solid references select
+each face once; boundary definitions are not appended a second time. External,
+cross-building, unknown, repeated, mixed inline/reference and other reference
+forms fail explicitly. XML IDs are unique per member. `srsDimension="3"` may
+be inherited from a geometry ancestor; contradictory dimensions fail.
+BuildingPart, other xlink/lod2Solid forms, uninspected selected geometry constructs,
 missing/conflicting CRS, duplicate parent IDs, DTD/entities and unsupported
 encodings fail closed. It is not a full CityGML schema/solid parser or a claim
-that the existing real2025 tile fits this subset. It does not convert Raw data.
+of general CityGML compatibility. It does not convert Raw data.
 
 Resource guards are implementation budgets, not national Standard requirements:
 Raw member ≤256 MiB, WKB BLOB ≤64 MiB, ≤1,000,000 vertices per decoded geometry,
