@@ -114,3 +114,115 @@ distance. Directional sufficiency is conditional on known source heights;
 unknown taller exterior objects/different suns remain unverified. Cropping
 shows effects of outside-ROI objects, not expanded-domain convergence.
 No QGIS/formal acceptance, survey accuracy or ecological validation is claimed.
+
+## Phase 3 real-data reuse verification — 2026-10-29 JST
+
+**A reproduced the historical result exactly; B completed Voxel but failed
+Canopy integration on the retained Z-capacity check, before solar calculation.**
+This establishes baseline reproducibility and configurable horizontal reuse,
+but does not establish a completed adjacent-rectangle three-element E2E.
+No implementation, model condition, input or historical RESULTS was changed.
+
+Executed from merged PR #106 main
+[`77f95f05`](https://github.com/iwamoto31206803-max/open-urban-environment-model/tree/77f95f05eb1a9b8e99f2d550abb7c987f2000e30),
+ordinary Windows OUEM venv Python 3.11.9. VoxCity 1.7.0 / pinned commit above
+passed PEP 610 and installed-source RECORD checks (136 sources). Both runs had
+the same environment, prepared inputs, source-H/ground/TREE rules, 1 m nominal
+resolution, CR/optics and fixed sun/observer conditions. Only analysis bounds
+and Run ID differed between A/B configurations; context was 32 m.
+
+| Item | A | B (64 m west) |
+|---|---|---|
+| Analysis bounds, EPSG:6677 | [-23320,-40760,-23256,-40696] | [-23384,-40760,-23320,-40696] |
+| Context reference bounds | [-23352,-40792,-23224,-40664] | [-23416,-40792,-23288,-40664] |
+| Voxel / Solar status | COMPLETED / COMPLETED | COMPLETED / FAILED at Canopy.Z |
+| Stage elapsed seconds, Voxel / Solar | 46.07 / 44.71 | 44.99 / 40.95 to failure |
+| Saved base shape / ROI cells | 128×128×27 / 4,096 | 128×128×18 / 4,096 |
+| Selected Buildings / owner cells | 41 / 3,746 | 22 / 2,461 |
+| Building / ground / surface voxels | 34,802 / 46,882 / 16,384 | 21,641 / 46,223 / 16,384 |
+| Raw Terrain H range, m | 19.586–24.505 | 20.120–25.263 |
+| Envelope candidate columns, domain | 11,741 | 11,547 |
+| Saved TREE voxels | 95,735 | Not produced |
+| ROI observers / reduction cells | 3,722 / 3,471 | Not calculated |
+| ROI mean Current / No-Canopy / reduction, W/m² | 2.251779 / 427.916993 / 425.665214 | Not calculated |
+
+Before model execution, fresh Consumer PASS and 178 watched identities were
+checked, including source chains, Envelope/raw CHM/evidence, historical outputs
+and current implementation snapshots. Both domains fit the unchanged Study Area;
+all 16,384 actual cell centres per domain had valid Terrain and Envelope samples.
+Full boundary footprints were retained: 4 selected in A and 2 in B extend beyond
+the DEM bounds, as separately recorded diagnostics. DEM is required at actual
+computation centres; no outside sample was filled or extrapolated. This retains
+the original boundary policy, including the same 4 A footprints recorded in PR #98.
+Historical implementation identities were checked against preserved original
+bytes, without replacing hashes/locators in old reports.
+
+A versus PR #98/#99: all **12 Voxel + 20 Solar NPY arrays** matched exactly in
+shape, dtype and values (NaNs included). Grid metadata values, centre/ROI/ID/
+ground/class/TREE/observer arrays agreed. All **5 Voxel + 15 Solar GeoTIFFs**
+matched in values, CRS, affine, shape, dtype, NoData and masks. This is numeric
+and spatial equality, not a claim of identical timestamps/report hashes or TIFF
+container bytes. Independent post-B preflight and all recorded input/output
+hashes passed; A's complete 68-file run inventory was unchanged after B.
+
+B's fresh Consumer, ID/contributor, scalar voxel, roof/ground, actual-centre and
+Envelope coverage checks passed. Its building-derived base upper edge is
+H=38.120001 m (D0=20.120001 m, 18 layers). Existing scalar TREE placement rules
+require up to index 26 / H=46.120001 m; source canopy top reaches 44.955002 m.
+Read-only diagnosis found **5,804 overflow columns**, including 2,691 in ROI,
+and 18,663 potential TREE voxels above the base. These are scalar diagnostics,
+not saved API TREE results. The public API generation was stopped by
+`Canopy.Z: occupied voxel exceeds fixed PR98 Z extent; no clipping`; no occupied
+voxel was clipped, no Z correction/expansion or relaxed gate was attempted.
+This is a scene-triggered implementation capacity failure, not a missing-input,
+XY-grid, empty-scene or zero-solar-effect result. B has no Current/No-Canopy maps
+or Solar/TREE statistics; its failed report and partial artifacts are retained.
+
+GIS validation against every saved cell centre passed for A's 20 rasters and
+B's 5 Voxel rasters: exact EPSG:4326 affine, reversed-u rows, v columns and
+excluded-observer NaN masks. B Solar GIS was not generated. A retains the halo
+diagnosis: isotropic 32 m bound insufficient (known-height reach 39.1801 m plus
+2 m margin); conditional directional bound passes (45.8419 m minimum exit).
+ROI-only cropping increases irradiance in 861 cells. Exterior sufficiency is
+still UNVERIFIED; B's solar/halo calculation was not reached.
+
+Local evidence is ignored under
+`data/work/e2e-reuse-verification/phase3-20261029-01/`:
+
+- `A.json`, `B.json`: submitted configurations based on the existing
+  [input-binding example](../../../config/experiments/komae_e2e.json).
+- `outputs/komae-a-20261029-01/` and `outputs/komae-b-20261029-01/`: exact
+  submitted bytes, runnable `run-config.json`, Voxel receipt and stage reports;
+  successful stages also retain arrays, GeoTIFFs and plan/section PNGs.
+- `preflight-04.json`, `baseline-comparison.json`, `A-validation.json`,
+  `a-preservation-before-b.json`, `verification.json` and logs: identities,
+  comparisons, independent post-run checks and B Z diagnosis. Earlier preflight
+  helper attempts are retained; their duplicate-watch-key, UTF-8 decoding and
+  overly strict whole-footprint containment checks were corrected only in the
+  ignored audit helper, before any model run.
+
+`verification.json` SHA-256:
+`1b4643a4749e305ce26201835a2ac0b7d01ae73f65ac2af74de3d335b1ba8e1c`.
+The recorded CLI sequence was, for each label A then B:
+
+```powershell
+$work = 'data/work/e2e-reuse-verification/phase3-20261029-01'
+# Set $label to A or B and $id to the corresponding run ID above.
+.venv\Scripts\python.exe -m ouem.real_komae_voxel --config "$work/$label.json"
+.venv\Scripts\python.exe -m ouem.real_komae_solar --config "$work/outputs/$id/run-config.json"
+```
+
+For repetition, preserve these directories and choose a new output parent/Run ID
+with the same reviewed input bindings and bounds; do not rerun into them. Saved
+settings, implementation snapshots and reports retain the actual identities.
+Related configuration/Voxel/Solar synthetic regressions: **62 passed, 37 warnings**
+(Rasterio/Affine pending deprecation). Full pytest was not repeated: tracked
+changes are this execution record only, with no implementation change.
+
+Next priority is a separately reviewed shared vertical-domain policy covering
+both Building and Canopy while preserving D0, existing occupied voxels, source H
+and paired-case invariants, followed by a newly authorized B run. No claim is
+made that 26 layers alone resolves every condition or that B would then pass.
+CHMv2 presence/height/age/CR/optics, physical observer height, survey datum accuracy
+and expanded-domain convergence remain unvalidated. Acceptance, source-H
+eligibility and Phase 5 gates remain unchanged.
