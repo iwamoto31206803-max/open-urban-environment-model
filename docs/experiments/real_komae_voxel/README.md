@@ -104,3 +104,7 @@ and vertical semantics after integration. A 32 m halo is not a promise of solar
 boundary sufficiency. Do not reuse the older projected-grid canopy arrays by
 index, assume the class voxels retain building identity, or call this run solar
 validation. Source declarations are not independently surveyed datum accuracy.
+
+The [three-element solar PoC](../real_komae_solar/README.md) reuses these exact
+artifacts with fresh input validation and estimated Canopy. It is a separate
+exploratory experiment; this Building/Terrain run remains unchanged.
