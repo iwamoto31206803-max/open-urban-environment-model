@@ -45,44 +45,83 @@ def sample_canopy(paths, x, y):
 
 
 def integrate_canopy(base, a, segments, sampled, d0, *, numba):
-    """Public API creates trees before Building; crop only unoccupied allocation air."""
-    from voxcity.generator.voxelizer import Voxelizer
+    """Public API placement on a shared Z domain; base positions/origin stay fixed."""
+    from voxcity.generator.voxelizer import Voxelizer, NUMBA_AVAILABLE
+    require(numba == NUMBA_AVAILABLE, 'Canopy.kernel', 'rounding mode differs from installed API')
+    require(base.ndim == 3 and base.dtype.kind in 'iu' and base.shape[:2] == segments.shape,
+            'Canopy.shape', 'integer 3D base and matching segment grid required')
     ground = a['effective_ground_H']
+    require(all(np.asarray(v).shape == base.shape[:2] for v in
+            (ground, a['building_ids'], a['building_heights'], a['terrain_H'], a['effective_dem'],
+             a['ground_indices'], sampled['top'], sampled['bottom'], sampled['candidate'], sampled['valid'])),
+            'Canopy.shape', 'all canopy/ground grids must match base XY')
+    require(a['building_ids'].dtype.kind in 'iu' and np.all(a['building_ids'] >= 0)
+            and np.isfinite(a['building_heights']).all() and np.all(a['building_heights'] >= 0),
+            'Canopy.building', 'finite nonnegative heights and integer IDs required')
+    require(np.isfinite(d0) and np.isfinite(ground).all(), 'Canopy.ground', 'finite H required')
+    conditioned, fresh_d0 = effective_ground(a['building_ids'], a['terrain_H'])
+    require(d0 == fresh_d0 and np.array_equal(ground, conditioned)
+            and np.allclose(ground-d0, a['effective_dem'], atol=1e-10, rtol=0),
+            'Canopy.ground', 'D0/effective ground changed')
+    _, fresh_indices = audit_voxels(base, a['building_ids'], a['terrain_H'], segments,
+                                    a['effective_dem'], d0, numba=numba)
+    require(np.array_equal(fresh_indices, a['ground_indices']), 'Canopy.ground', 'ground indices changed')
     candidate = sampled['candidate']
+    require(candidate.dtype == bool and sampled['valid'].dtype == bool
+            and np.isfinite(sampled['top'][sampled['valid']]).all()
+            and np.isfinite(sampled['bottom'][sampled['valid']]).all()
+            and not np.any(sampled['valid'] & (sampled['bottom'] > sampled['top']))
+            and np.array_equal(candidate, sampled['valid'] & (sampled['top'] > sampled['bottom'])),
+            'Canopy.input', 'finite valid ordered envelope and exact candidate mask required')
     below = candidate & (sampled['bottom'] < ground)
     active = candidate & ~below
     high = np.where(active, sampled['top']-ground, 0.)
     low = np.where(active, sampled['bottom']-ground, 0.)
     require(np.all((0 <= low) & (low <= high)), 'Canopy.relative', 'unsupported relative interval')
+    dtype = np.float32 if numba else np.float64
+    with np.errstate(over='ignore'):
+        require(np.isfinite(high.astype(dtype)).all() and np.isfinite(low.astype(dtype)).all(),
+                'Canopy.relative', 'interval cannot be represented by installed kernel')
+    intervals = []
+    expanded, vanished = 0, 0
+    for i, j in np.argwhere(active):
+        g = int(a['ground_indices'][i, j])
+        lo, hi = (int(float(dtype(v))+.5) for v in (low[i,j], high[i,j]))
+        if lo == hi and lo > 0: lo -= 1; expanded += 1
+        if hi <= lo: vanished += 1; continue
+        intervals.append((i, j, g+lo, g+hi))
+    tree_end = max((end for _,_,_,end in intervals), default=0)
+    observers = a['ground_indices'][a['building_ids'] == 0]+1
+    observer_size = int(observers.max())+1 if observers.size else 0
+    nz = max(base.shape[2], tree_end, observer_size)
+    require(nz <= np.iinfo(np.intp).max//(base.shape[0]*base.shape[1]*base.dtype.itemsize),
+            'Canopy.Z', 'shared array exceeds addressable capacity')
     generated = Voxelizer(1., 'Standard').generate_combined(
         a['building_heights'].copy(), segments.copy(), a['building_ids'].copy(),
         np.ones(ground.shape, dtype=int), a['terrain_H'].copy(), high, low, print_class_info=False)
     allocated = list(generated.shape)
-    nz = base.shape[2]
-    require(not np.any(generated[:, :, nz:] != 0), 'Canopy.Z', 'occupied voxel exceeds fixed PR98 Z extent; no clipping')
+    require(generated.shape[:2] == base.shape[:2] and generated.shape[2] >= tree_end,
+            'Canopy.Z', 'public allocation cannot contain required TREE intervals; no repair of clipped output')
+    require(not np.any(generated[:, :, nz:] != 0), 'Canopy.Z', 'unexpected occupied voxel outside shared domain; no clipping')
     if generated.shape[2] < nz:
         generated = np.pad(generated, ((0,0),(0,0),(0,nz-generated.shape[2])))
     current = generated[:, :, :nz].copy()
     tree = current == -2
     no_canopy = current.copy(); no_canopy[tree] = 0
-    require(np.array_equal(no_canopy, base), 'case_pair', 'non-TREE voxels differ from PR98 base')
-    expected = np.zeros(base.shape, dtype=bool)
-    removed_building, expanded, vanished = 0, 0, 0
+    reference = np.pad(base, ((0,0),(0,0),(0,nz-base.shape[2])))
+    require(np.array_equal(no_canopy, reference), 'case_pair', 'non-TREE voxels differ from base plus upper air')
+    expected = np.zeros(current.shape, dtype=bool)
+    removed_building = 0
     top_error, bottom_error = [], []
-    dtype = np.float32 if numba else np.float64
-    for i, j in np.argwhere(active):
-        g = int(a['ground_indices'][i, j])
-        lo, hi = (int(float(dtype(v))+.5) for v in (low[i,j], high[i,j]))
-        if lo == hi and lo > 0: lo -= 1; expanded += 1
-        require(g+hi <= nz, 'Canopy.Z', 'tree interval exceeds fixed grid')
-        if hi <= lo: vanished += 1; continue
-        expected[i,j,g+lo:g+hi] = True
-        removed_building += int(np.count_nonzero(base[i,j,g+lo:g+hi] == -3))
-        bottom_error.append(d0+g+lo-sampled['bottom'][i,j])
-        top_error.append(d0+g+hi-sampled['top'][i,j])
-    expected[base == -3] = False
+    for i, j, start, end in intervals:
+        require(0 <= start < end <= nz, 'Canopy.Z', 'tree interval exceeds shared grid')
+        expected[i,j,start:end] = True
+        removed_building += int(np.count_nonzero(reference[i,j,start:end] == -3))
+        bottom_error.append(d0+start-sampled['bottom'][i,j])
+        top_error.append(d0+end-sampled['top'][i,j])
+    expected[reference == -3] = False
     require(np.array_equal(expected, tree), 'TREE.scalar_qa', 'public TREE placement differs from scalar interval oracle')
-    require(not np.any(tree & (base != 0)), 'TREE.overlap', 'TREE inside Building/ground/surface')
+    require(not np.any(tree & (reference != 0)), 'TREE.overlap', 'TREE inside Building/ground/surface')
     require(tree.any(), 'TREE', 'no candidate produced TREE voxels')
     return current, no_canopy, tree, high, low, dict(
         status='PASS', candidate_columns=int(candidate.sum()), zero_depth_valid_columns=int((sampled['valid'] & ~candidate).sum()),
@@ -91,9 +130,20 @@ def integrate_canopy(base, a, segments, sampled, d0, *, numba):
         building_priority_removed_tree_voxels=removed_building, thin_crown_expanded_columns=expanded,
         zero_after_rounding_columns=vanished, public_api_allocated_shape=allocated, saved_shape=list(current.shape),
         bottom_edge_minus_envelope_H_m=distribution(bottom_error), top_edge_minus_envelope_H_m=distribution(top_error),
-        building_and_ground_unchanged=True, no_canopy_equals_PR98=True,
-        method='Public generate_combined with unchanged Building/DEM; remove unused allocation air only; no occupied Z clipping or H offset.',
+        building_and_ground_unchanged=True, no_canopy_equals_base_plus_upper_air=True,
+        vertical_domain=dict(policy='max(base_Z, nonempty_TREE_end, nonbuilding_observer_index+1)',
+            base_shape=list(base.shape), shared_shape=list(current.shape), D0_H_m=d0,
+            required_TREE_end_index=tree_end, required_observer_layers=observer_size,
+            added_upper_air_layers=nz-base.shape[2], base_prefix_equal=True),
+        method='Public generate_combined; shared upper Z from actual placement rules; base plus upper air, no occupied clipping or H offset.',
         presence_rule='state1 AND unmasked/inside/finite AND top>bottom; positive estimated crown depth, not verified tree presence; exclude below-effective-ground intervals without adjusting H')
+
+
+def shared_grid(grid, tree_qa):
+    domain = tree_qa['vertical_domain']
+    require(grid['shape'] == domain['base_shape'] and grid['D0_effective_H_m'] == domain['D0_H_m'],
+            'grid.Z', 'base shape/origin differs from integration')
+    return dict(grid, shape=domain['shared_shape'], vertical_domain=domain)
 
 
 def solar_pair(current, no_canopy, a, grid, high, low, *, maximum_source_H=None):
@@ -102,6 +152,11 @@ def solar_pair(current, no_canopy, a, grid, high, low, *, maximum_source_H=None)
     from voxcity.utils.orientation import direction_to_axis_vector
     ids = a['building_ids']; valid = ids == 0
     origin_k = a['ground_indices']+1  # int(1.5 / 1m) added to first walkable transition
+    require(current.ndim == 3 and current.shape == no_canopy.shape and current.shape[:2] == ids.shape
+            and ('shape' not in grid or list(current.shape) == grid['shape']), 'solar.grid', 'different case/metadata shapes')
+    require(np.array_equal(np.where(current == -2, 0, current), no_canopy), 'solar.pair', 'non-TREE voxels differ')
+    require(np.all((origin_k[valid] >= 0) & (origin_k[valid] < current.shape[2])),
+            'solar.observer', 'original observer outside shared Z domain')
     rotation = grid['axis0_true_azimuth_deg']
     rectangle = grid['rectangle_vertices_lonlat']
     bounds = (min(p[0] for p in rectangle), min(p[1] for p in rectangle), max(p[0] for p in rectangle), max(p[1] for p in rectangle))
@@ -379,6 +434,7 @@ def run(args):
         from voxcity.generator.voxelizer import NUMBA_AVAILABLE
         current,absent,tree,high,low,tree_qa=integrate_canopy(a['voxels'],a,segments,canopy,grid['D0_effective_H_m'],numba=NUMBA_AVAILABLE)
         report['tree']=tree_qa
+        grid=shared_grid(grid, tree_qa)
         solar,solar_qa=solar_pair(current,absent,a,grid,high,low,maximum_source_H=checks['maximum_source_H']);report['solar']=solar_qa
         arrays=dict(current_voxels=current,no_canopy_voxels=absent,tree_mask=tree,
                     canopy_top_H=canopy['top'],canopy_bottom_H=canopy['bottom'],envelope_state=canopy['state'],

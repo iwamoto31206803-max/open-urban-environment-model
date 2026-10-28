@@ -56,7 +56,10 @@ def test_absolute_h_building_priority_and_unchanged_pair(case):
     if case=='below': sampled['bottom'][0,0]=9.
     if case=='too_high': sampled['top'][:]=40.
     if case=='too_high':
-        with pytest.raises(GeometryValidationError,match='Z'): m.integrate_canopy(base,a,segments,sampled,10.,numba=NUMBA_AVAILABLE)
+        current,absent,mask,high,low,qa=m.integrate_canopy(base,a,segments,sampled,10.,numba=NUMBA_AVAILABLE)
+        assert current.shape==absent.shape==(16,16,31)
+        assert np.array_equal(absent[:,:,:base.shape[2]],base) and not absent[:,:,base.shape[2]:].any()
+        assert qa['vertical_domain']['added_upper_air_layers']==17
     else:
         current,absent,mask,high,low,qa=m.integrate_canopy(base,a,segments,sampled,10.,numba=NUMBA_AVAILABLE)
         assert np.array_equal(absent,base) and np.array_equal(current[base==-3],base[base==-3])
