@@ -41,8 +41,9 @@ directory with a past PASS. All input-chain/Consumer/engine checks remain requir
 Grid dimensions, Envelope source dimensions, exact-affine TIFFs and sections now
 derive from validated metadata/arrays. The engine grid is still uv_m/SOUTH_UP,
 1 m nominal, with source EPSG:6677 and exact-affine EPSG:4326 GIS delivery. NaN
-continues to identify excluded observers. Both cases retain one base Z extent;
-occupied TREE beyond it still fails rather than being clipped or expanding Z.
+continues to identify excluded observers. Both cases use one shared Z extent
+under the [Phase 3B policy](#shared-vertical-domain-phase-3b); D0 and all base
+occupied indices stay unchanged. Occupied clipping remains an error.
 
 The same fixed sun, DNI, CR, k/LAD, observer and ground rules apply. Successful
 reports distinguish technical calculation and detected canopy effect. This change
@@ -71,13 +72,15 @@ QGZ automation, physical-observer correction or formal acceptance is claimed.
 4. Subtract unchanged engine-conditioned absolute ground from crown H for the
    public API. Below-ground intervals are excluded/counted, never shifted or
    clamped. `Voxelizer.generate_combined` generates TREE before BUILDING
-   priority. Its allocation can add Building+tree heights; remove unused air
-   only to preserve the base shape (128×128×27 in the recorded PoC), and fail
-   if any occupied voxel would be lost.
+   priority. Its allocation can add Building+tree heights. Determine the shared
+   vertical size from actual placement rules, retain the base as a prefix, and
+   remove only unused allocator air above that size. Reject insufficient public
+   allocation or any unexpected occupied voxel outside the shared domain.
    No custom voxel generator is presented as VoxCity.
 5. Independently audit every TREE interval and thin-crown expansion. Require
    no TREE in original Building/ground/surface and Current with TREE replaced
-   by air to equal the bound base (PR #98 in legacy mode). Keep IDs, DEM, D0, origin, rotation and ROI.
+   by air to equal the bound base plus upper air (PR #98 in legacy mode).
+   Keep IDs, DEM, D0, origin, rotation and ROI.
 6. Use actual public solar API with PR #96's artificial azimuth 135°, elevation
    35°, DNI 800 W/m², requested height 1.5 m, roofs excluded, tree k=0.6 and
    LAD=1.0. Both primary cases share observers and geometry; difference is
@@ -115,7 +118,57 @@ unknown taller exterior objects/different suns remain unverified. Cropping
 shows effects of outside-ROI objects, not expanded-domain convergence.
 No QGIS/formal acceptance, survey accuracy or ecological validation is claimed.
 
+## Shared vertical domain (Phase 3B)
+
+Building-only generation is unchanged. Solar integration determines
+`n_z = max(base_n_z, nonempty_TREE_end, max_nonbuilding_observer_index + 1)`.
+TREE endpoints use the installed kernel's existing rules: `g=round(D_eff)+1`,
+`lo/hi=int(kernel_precision(relative_H)+0.5)`, including thin-crown expansion,
+then occupy `[g+lo,g+hi)`. Empty rounded intervals do not enlarge the domain.
+The observer remains `g+int(1.5)=g+1`; any extra observer layer contains air,
+not a moved surface or a new physical observation-height definition. No fixed
+height margin, regional constant, D0 change or source-H correction is applied.
+
+The public Voxelizer still creates all occupied classes. Its allocator uses
+`ceil(max(building_height+D_eff+tree_height))+1`, which can both overallocate and,
+at rounding ties, underallocate relative to actual placement endpoints. Reject
+underallocation rather than padding already clipped TREE. Pad only unoccupied
+upper air as needed; crop only verified unoccupied allocator air. Independently
+check every TREE interval and require No-Canopy to equal the complete base plus
+upper air, Current with TREE removed to equal No-Canopy, and no TREE in original
+Building/Ground/Surface. Invalid inputs, absent TREE/effect, capacity failures
+and unexpected occupied output remain fail-closed.
+
+Solar `grid.json` records the shared shape and `vertical_domain` with the base
+shape, unchanged D0, required TREE/observer endpoints and added layer count;
+Voxel `grid.json` and its receipt remain untouched. The QA field
+`no_canopy_equals_base_plus_upper_air` replaces the historical PR98-specific name.
+XY centres/affine/ROI/IDs and all ground indices stay fixed. Both full and cropped
+solar cases use the same shared Z and existing observer/optics/sun rules.
+
+Compare new 3D outputs to history over `:base_n_z`, then verify that the new
+No-Canopy tail is all air and Current's additional occupancy is TREE only.
+Unexpanded synthetic scenes retain exact arrays, including 2D solar results;
+expanded synthetic scenes preserve occupied prefixes and GIS/observer invariants.
+No Phase 3B real-data A/B run has been performed; the dated verification below
+retains its original success/failure. Replaying historical implementation watch
+sets requires original source bytes, available at pre-change
+[`ac9a6ae`](https://github.com/iwamoto31206803-max/open-urban-environment-model/tree/ac9a6ae9502955808d4a1621abead3beaa36d58a),
+or retained local snapshots; do not rewrite old hashes. Scientific/Acceptance
+and context-sufficiency limitations above are unchanged. A new real B run needs
+separate authorization; the synthetic tests do not establish its success.
+
+Windows OUEM venv verification: **90 related tests passed**; full pytest
+**968 passed, 5 skipped, 293 warnings** (Windows symlink privileges;
+Rasterio/Affine pending deprecation and existing stat/fstat diagnostic).
+Fifteen fitting-scene synthetic arrays, including paired solar/observer maps,
+matched the pre-change implementation exactly. Original PR #107 run files and
+source bytes were preserved; ignored evidence/snapshots are under
+`data/work/shared-vertical-domain/phase3b-20261029-01/`.
+
 ## Phase 3 real-data reuse verification — 2026-10-29 JST
+
+Historical verification before Phase 3B; the following results are not a new run.
 
 **A reproduced the historical result exactly; B completed Voxel but failed
 Canopy integration on the retained Z-capacity check, before solar calculation.**

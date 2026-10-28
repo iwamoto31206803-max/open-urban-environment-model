@@ -194,7 +194,7 @@ def test_zero_effect_is_not_silently_reclassified_as_poc_success():
 
 
 @pytest.fixture
-def complete_scene(tmp_path,native,monkeypatch):
+def complete_scene(tmp_path,native,monkeypatch,request):
     """Actual authored source-H/DEM/evidence chain; engine and validators are real."""
     pts=[p for f in source_faces()['synthetic_tokyo'] for r in f for p in r]
     x,y=Transformer.from_crs(6668,6677,always_xy=True).transform(*pts[0][:2]);x,y=math.floor(x),math.floor(y)
@@ -208,7 +208,7 @@ def complete_scene(tmp_path,native,monkeypatch):
         vertical_reference_source='synthetic test statement')
     standardize_native_terrain(native_dem,dem,study_area_config=area)
     dem_meta=json.loads(dem.with_suffix('.tif.manifest.json').read_text())
-    chm=tmp_path/'chm.tif';terrain(chm,np.full((128,128),7.),(x-64,y-64,x+64,y+64))
+    chm=tmp_path/'chm.tif';terrain(chm,np.full((128,128),getattr(request,'param',7.)),(x-64,y-64,x+64,y+64))
     acq=tmp_path/'acquisition.json';snapshot=tmp_path/'statement.txt';snapshot.write_text('SYNTHETIC height above local ground in metres')
     review=tmp_path/'review.json';save(review,{'scope':'SYNTHETIC fixture only'})
     evidence=tmp_path/'evidence.json';acceptance=tmp_path/'synthetic-acceptance.md'
@@ -321,3 +321,31 @@ def test_saved_configuration_tampering_is_rejected(complete_scene,name):
     with pytest.raises(GeometryValidationError):
         cfg=config.RunConfig.load(saved)
         solar.preflight(cfg.arguments('solar'),Watch(cfg.root))
+
+
+@pytest.mark.parametrize('complete_scene',[40.],indirect=True)
+def test_complete_configured_chain_exports_shared_vertical_domain(complete_scene):
+    path,_=complete_scene;cfg=config.RunConfig.load(path)
+    model=voxel.run(cfg.arguments('voxel'))
+    base=np.load(cfg.run_root/'voxel/voxels.npy',allow_pickle=False)
+    base_grid=json.loads((cfg.run_root/'voxel/grid.json').read_text())
+    report=solar.run(cfg.arguments('solar'))
+    grid=json.loads((cfg.run_root/'solar/grid.json').read_text())
+    current=np.load(cfg.run_root/'solar/current_voxels.npy',allow_pickle=False)
+    absent=np.load(cfg.run_root/'solar/no_canopy_voxels.npy',allow_pickle=False)
+    assert grid['shape']==list(current.shape)==list(absent.shape)
+    assert current.shape[2]>base.shape[2]
+    assert grid==solar.shared_grid(base_grid,report['tree'])
+    assert grid['D0_effective_H_m']==base_grid['D0_effective_H_m']
+    assert np.array_equal(absent[:,:,:base.shape[2]],base)
+    assert not absent[:,:,base.shape[2]:].any()
+    assert np.array_equal(np.where(current==-2,0,current),absent)
+    assert np.array_equal(np.load(cfg.run_root/'voxel/voxels.npy'),base)
+    assert json.loads((cfg.run_root/'voxel/grid.json').read_text())==base_grid
+    with rasterio.open(cfg.run_root/'solar/solar_difference.tif') as ds:
+        assert list(ds.transform)[:6]==model['model']['GeoTIFF']['affine']
+        assert ds.shape==base.shape[:2] and ds.crs.to_epsg()==4326 and np.isnan(ds.nodata)
+    observer=np.load(cfg.run_root/'solar/observer_index_k.npy')
+    ground=np.load(cfg.run_root/'voxel/ground_indices.npy')
+    assert np.array_equal(observer,ground+1)
+    assert report['solar']['invariants']['non_TREE_voxels_equal']=='PASS'
