@@ -4,8 +4,9 @@ Bounded exploratory integration on the actual PR #98 grid.
 [Executed results](RESULTS.md). No new Standard, eligibility, acceptance,
 Phase 5 gate or generic model framework.
 
-For the proposed next reuse step, see the [E2E architecture audit](../../planning/OUEM_E2E_Reuse_Audit_v0.1.md).
-It is a static plan; the reproduction procedure below remains unchanged.
+The [E2E architecture audit](../../planning/OUEM_E2E_Reuse_Audit_v0.1.md) records
+the preceding static plan. Configurable reuse is implemented below; the legacy
+invocation remains available with its historical input bindings.
 
 Run in an ordinary Windows terminal using the repository OUEM venv:
 
@@ -19,15 +20,42 @@ Run in an ordinary Windows terminal using the repository OUEM venv:
 ```
 
 Create the output parent first. Outputs require a new directory; no overwrite,
-resume, download or reconstruction fallback. The exact PR #98 report and
-existing Envelope manifest are SHA-pinned. Missing/mismatched inputs stop.
+resume, download or reconstruction fallback. In this legacy invocation the exact
+PR #98 report and existing Envelope manifest are SHA-pinned. Missing/mismatched inputs stop.
 See [upstream reproduction](../real_komae_voxel/README.md) if prerequisites
 need regeneration: a new upstream identity requires explicit review and a new
 pin, not relabeling old artifacts as successful.
 
 ## Reuse and quality gates
 
-1. Verify PR #98 COMPLETED report, all recorded source/output hashes and engine
+### Configurable reuse
+
+Use `python -m ouem.real_komae_solar --config PATH.json` with the exact JSON used
+by the new Voxel stage. The [Voxel procedure](../real_komae_voxel/README.md#configurable-reuse-v02-phase-2)
+defines its fields, path base, expected input hashes, new run directories and
+locally produced report receipt. No code edit or new fixed report SHA is needed
+for a different covered rectangle. Legacy CLI arguments retain the old pins;
+config mode accepts only its own completed Voxel handoff, not an arbitrary base
+directory with a past PASS. All input-chain/Consumer/engine checks remain required.
+
+Grid dimensions, Envelope source dimensions, exact-affine TIFFs and sections now
+derive from validated metadata/arrays. The engine grid is still uv_m/SOUTH_UP,
+1 m nominal, with source EPSG:6677 and exact-affine EPSG:4326 GIS delivery. NaN
+continues to identify excluded observers. Both cases retain one base Z extent;
+occupied TREE beyond it still fails rather than being clipped or expanding Z.
+
+The same fixed sun, DNI, CR, k/LAD, observer and ground rules apply. Successful
+reports distinguish technical calculation and detected canopy effect. This change
+does **not** admit empty Buildings/TREE or zero ROI effect as PoC success; existing
+scene-eligibility assertions remain strict and need separate review to broaden.
+Context sufficiency uses the configured buffer plus the existing directional
+bound/crop diagnostics; the old 32 m comparison is retained as a labeled reference.
+General exterior sufficiency remains UNVERIFIED. No new real-data Voxel/Solar run,
+QGZ automation, physical-observer correction or formal acceptance is claimed.
+
+### Retained validation
+
+1. Verify the bound Voxel COMPLETED report (PR #98 in legacy mode), all recorded source/output hashes and engine
    PEP 610/RECORD provenance. Rerun Consumer and bind the same source identities.
    Recheck saved centres/CRS, ROI, source DEM samples, conditioned ground/D0,
    ground indices, Building segments and saved voxels using PR #98 helpers.
@@ -44,11 +72,12 @@ pin, not relabeling old artifacts as successful.
    public API. Below-ground intervals are excluded/counted, never shifted or
    clamped. `Voxelizer.generate_combined` generates TREE before BUILDING
    priority. Its allocation can add Building+tree heights; remove unused air
-   only to preserve 128×128×27, and fail if any occupied voxel would be lost.
+   only to preserve the base shape (128×128×27 in the recorded PoC), and fail
+   if any occupied voxel would be lost.
    No custom voxel generator is presented as VoxCity.
 5. Independently audit every TREE interval and thin-crown expansion. Require
    no TREE in original Building/ground/surface and Current with TREE replaced
-   by air to be exactly PR #98. Keep IDs, DEM, D0, origin, rotation and ROI.
+   by air to equal the bound base (PR #98 in legacy mode). Keep IDs, DEM, D0, origin, rotation and ROI.
 6. Use actual public solar API with PR #96's artificial azimuth 135°, elevation
    35°, DNI 800 W/m², requested height 1.5 m, roofs excluded, tree k=0.6 and
    LAD=1.0. Both primary cases share observers and geometry; difference is
@@ -63,7 +92,7 @@ outside masks; sampled H; direct solar/difference and Building obstruction
 control; common observer mask/indices; cropped boundary controls; ROI mask;
 unchanged grid; statistics/report JSON; PNG plan/section and local results.
 NPYs have exact pickle-disabled readback. NaN denotes excluded Building
-observers, not zero irradiance. Full 128×128 2D arrays also have exact-affine
+observers, not zero irradiance. Full-domain 2D arrays also have exact-affine
 EPSG:4326 GeoTIFFs, reversed-u rows and v columns, for QGIS. No false regular
 EPSG:6677 affine or older projected-array index alignment is used.
 
