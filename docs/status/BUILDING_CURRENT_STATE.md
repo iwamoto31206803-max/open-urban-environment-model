@@ -1,6 +1,6 @@
 # Building Current State
 
-Last checked: **2026-10-28**, main baseline `4ba899e493adf056e2dbb445df81730adc6f61bf` (PR #93 merged).
+Last checked: **2026-10-28**, main baseline `36942f0dba1f37916a0e3be2015d0c0932e32906` (PR #94 merged).
 This is an informational entry point under the [documentation governance](../OUEM_Documentation_Governance_v0.1.md).
 It does not amend contracts, historical acceptance or source Z. Code/record and
 explicit path checks were performed. The legacy inventory below was originally
@@ -30,6 +30,12 @@ adds a separate flat-ground, synthetic-only lane after Consumer PASS. Two-box
 height/ID/footprint preparation and pinned public building-raster API input
 were executed; no voxelization, real-data fusion or acceptance. Adapter v0.1
 remains unchanged; eligibility and Phase5 gates above remain unchanged.
+
+[Step 4B-3 synthetic voxelization](../Source_H_Synthetic_Voxelization_v0.1.md)
+executes the pinned building raster and Voxelizer on the same two authored boxes
+and flat ground. Actual saved 3D arrays, ID/ground QA and sections are recorded;
+the +1 surface layer and height rounding are retained explicitly. This is not
+physical roof alignment, real-data acceptance or a solar result; gates remain OPEN.
 
 ## Contracts, implementation and bounded evidence
 
