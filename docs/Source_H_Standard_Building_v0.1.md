@@ -5,6 +5,11 @@ Not a revised Standard, qualified data path, Formal Acceptance or Phase 5 gate
 closure. Baseline main `4602b928dfddd95b9a9ef5b392b5355d76585529` includes merged PR #90; exact baseline and
 executed implementation hashes are in the integration evidence below.
 
+The [real Komae source-H experiment](experiments/real_komae_source_h/RESULTS.md)
+uses this same Standardizer and Consumer Validator after bounded Raw reference
+resolution. It leaves the horizontal-only operation, exact H checks, candidate
+schema, source-H eligibility and Phase 5 gates unchanged.
+
 ## Compatibility decisions before implementation
 
 Owning sources: [Standard Building v0.1](OUEM_Standard_Building_v0.1.md),
