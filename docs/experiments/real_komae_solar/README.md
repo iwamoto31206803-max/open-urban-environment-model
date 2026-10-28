@@ -4,6 +4,9 @@ Bounded exploratory integration on the actual PR #98 grid.
 [Executed results](RESULTS.md). No new Standard, eligibility, acceptance,
 Phase 5 gate or generic model framework.
 
+For the proposed next reuse step, see the [E2E architecture audit](../../planning/OUEM_E2E_Reuse_Audit_v0.1.md).
+It is a static plan; the reproduction procedure below remains unchanged.
+
 Run in an ordinary Windows terminal using the repository OUEM venv:
 
 ```powershell
