@@ -1,6 +1,6 @@
 # Building Current State
 
-Last checked: **2026-10-28**, main baseline `a5fb05d4d8eb44c00dc056b0855c5f7b57390e76` (PR #92 merged).
+Last checked: **2026-10-28**, main baseline `4ba899e493adf056e2dbb445df81730adc6f61bf` (PR #93 merged).
 This is an informational entry point under the [documentation governance](../OUEM_Documentation_Governance_v0.1.md).
 It does not amend contracts, historical acceptance or source Z. Code/record and
 explicit path checks were performed. The legacy inventory below was originally
@@ -24,6 +24,12 @@ human review/Formal Acceptance NOT_VERIFIED; Phase 5 A1–A4 remain OPEN.
 adds independent read-only candidate Standard/provenance/all-vertex validation,
 including a saved Converter-derived synthetic Standard smoke test. This does
 not connect the Adapter, establish real-data eligibility or change those gates.
+
+[Step 4B-2 synthetic 2.5D Adapter](../Source_H_Synthetic_25D_Adapter_v0.1.md)
+adds a separate flat-ground, synthetic-only lane after Consumer PASS. Two-box
+height/ID/footprint preparation and pinned public building-raster API input
+were executed; no voxelization, real-data fusion or acceptance. Adapter v0.1
+remains unchanged; eligibility and Phase5 gates above remain unchanged.
 
 ## Contracts, implementation and bounded evidence
 
