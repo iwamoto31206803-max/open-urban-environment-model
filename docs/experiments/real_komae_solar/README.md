@@ -279,3 +279,97 @@ made that 26 layers alone resolves every condition or that B would then pass.
 CHMv2 presence/height/age/CR/optics, physical observer height, survey datum accuracy
 and expanded-domain convergence remain unvalidated. Acceptance, source-H
 eligibility and Phase 5 gates remain unchanged.
+
+## Phase 3C shared-Z real-data verification — 2026-10-29 JST
+
+**A historical compatibility PASS; B technical E2E COMPLETED; scientific validity
+and Formal Acceptance not established.** Executed merged PR #108 main
+[`a2c2bd0`](https://github.com/iwamoto31206803-max/open-urban-environment-model/tree/a2c2bd0954a2afdda79dbc75a4661cae09f4809b).
+No implementation or historical result was changed. PR #107's B failure above
+remains a failure of that recorded run, rather than being relabeled successful.
+
+Same PR #107 Building/Terrain/Envelope bindings and parameters: A bounds
+`[-23320,-40760,-23256,-40696]`, B `[-23384,-40760,-23320,-40696]`, EPSG:6677;
+32 m context, nominal 1 m resolution. Preflight checked 281 watched identities,
+fresh Consumer PASS, fixed VoxCity 1.7.0 commit/136 source RECORD checks and the
+ordinary Windows OUEM venv Python 3.11.9. All four stage environment records
+agree. Both domains fit the Study Area and have 16,384 valid actual-centre DEM
+and Envelope samples; boundary footprints follow the unchanged policy above.
+Historical source identities use preserved original bytes, not rewritten hashes.
+
+| Quantity | A | B |
+|---|---:|---:|
+| Voxel / Solar status | COMPLETED / COMPLETED | COMPLETED / COMPLETED |
+| Base shape → shared shape | 128×128×27 → 128×128×27 | 128×128×18 → 128×128×26 |
+| Added upper layers | 0 | 8 |
+| Public allocator layers / required TREE end index | 35 / 27 | 35 / 26 |
+| D0 H, m (unchanged from PR #107 base) | 19.586000 | 20.120001 |
+| Selected Buildings / owner cells | 41 / 3,746 | 22 / 2,461 |
+| TREE voxels / TREE above old base Z | 95,735 / 0 | 87,384 / 18,663 |
+| Domain / ROI valid observers | 12,638 / 3,722 | 13,923 / 3,930 |
+| ROI mean Current / No-Canopy, W/m² | 2.251779 / 427.916993 | 37.427839 / 412.624758 |
+| ROI mean reduction, W/m² | 425.665214 | 375.196919 |
+| ROI reduction cells / Building-shadow cells | 3,471 / 251 | 3,355 / 396 |
+| Elapsed Voxel / Solar seconds | 46.08 / 44.93 | 45.03 / 44.55 |
+
+A versus PR #107 A: **12 Voxel + 20 Solar NPY arrays** match exactly in shape,
+dtype and values, including TREE, observers and all 2D/cropped/control solar
+maps (NaNs included). There is no 2D irradiance difference or Z extension.
+All **5 Voxel + 15 Solar GeoTIFFs** match values, CRS, affine, dimensions, dtype,
+NoData and masks. Original grid fields agree; Solar metadata additionally
+records `vertical_domain`. New reports/timestamps/hashes are distinct evidence.
+
+B's Building-only **12 NPY arrays and 5 GeoTIFFs** match PR #107 B exactly.
+No-Canopy's first 18 layers equal that base; its extra 8 layers are all air.
+Current with TREE removed equals No-Canopy over the complete 26-layer domain;
+additional occupancy is TREE only. Independent scalar interval checks match
+every saved TREE voxel, including the 18,663 formerly out-of-base voxels.
+Required TREE end is 26, within the actual allocator's 35 layers; only verified
+unoccupied allocator air is removed. No TREE clipping or missing interval was
+accepted. B retained 3 below-effective-ground exclusions and 40 thin-crown
+expansions under the existing rules, without height correction.
+
+Post-run verification reloaded saved configs, checked all recorded input/output
+hashes and fresh Consumer, reconstructed base ground/ID/voxel rules, and checked
+the first walkable transition in both cases against original ground indices.
+Observer indices remain `g+1`, with identical finite masks and difference signs;
+irradiance increase cells are zero in both runs. All **40 delivered GeoTIFFs**
+match the authoritative cell centres and reversed-u/v mapping in EPSG:4326;
+they are not regular EPSG:6677 north-up arrays. A's complete 68-file inventory
+is unchanged after B; all 97 PR #107 run files remain hash-identical.
+
+Context diagnostics remain limited: A/B known-height horizontal reach is
+39.1801/36.9893 m plus the existing 2 m margin, so the isotropic 32 m test fails.
+Conditional directional tests pass (minimum exits 45.8419/45.8416 m); ROI-only
+cropping increases irradiance in 861/875 cells. Exterior shadow sufficiency is
+**UNVERIFIED**, with no enlarged-domain run. B's different statistics reflect a
+different scene under the same true sun/optics rules, not a requirement to match
+A. Estimated CHMv2/CR/height/age, uncalibrated optics, physical observer height
+and survey datum accuracy remain unvalidated. Formal status is unchanged.
+
+Ignored evidence root:
+`data/work/shared-vertical-domain/phase3c-20261029-01/`.
+Submitted configs are `A.json`/`B.json`; run IDs are
+`komae-a-3c-20261029-01` / `komae-b-3c-20261029-01` beneath `outputs/`.
+Each run retains submitted bytes, runnable `run-config.json`, receipt, reports,
+arrays, TIFFs and plan/section PNGs. `preflight.json`,
+`A-historical-comparison.json`, `A-validation.json`, `A-inventory-before-B.json`,
+`historical-inventory-before.json`, `verification.json`, logs and implementation
+snapshots retain the bindings and independent checks. `verification.json` SHA-256:
+`db0b833ee0fe889035ac92b6feb5987184fa7503c02db2475e0878686c26bac9`.
+
+Recorded commands (A then B, with the matching `$label` and `$id` above):
+
+```powershell
+$work = 'data/work/shared-vertical-domain/phase3c-20261029-01'
+.venv\Scripts\python.exe -m ouem.real_komae_voxel --config "$work/$label.json"
+.venv\Scripts\python.exe -m ouem.real_komae_solar --config "$work/outputs/$id/run-config.json"
+```
+
+These directories are occupied evidence: repetition needs new reviewed Run IDs
+and output paths, never overwrite. Related shared-Z/configuration/Voxel/Solar
+synthetic regressions: **90 passed, 39 warnings** (Rasterio/Affine pending
+deprecation). Full pytest was not repeated because this PR changes only this
+verification record and main's implementation was unchanged. No acquisition,
+Converter, Standard generation, parameter adjustment or additional model scene
+was executed. This establishes technical compatibility/containment for A/B only.
