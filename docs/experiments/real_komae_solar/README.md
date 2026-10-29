@@ -546,3 +546,72 @@ GUI verification JSON SHA-256:
 `336b00bcea5d5b76f4b8132e396d479e9e940bb6cf1e8226e3aaf6281866e6e0`.
 Basic GUI usability is now observed; exact-cell display acceptance and scientific
 validation are not established. Production QGZ generation remains deferred.
+
+### Raster provider investigation — 2026-10-29
+
+**The change occurs during QGIS GDAL-provider initialization, before QML or
+project reprojection.** Additional read-only tests on A/B Current (Float64/NaN)
+and candidate (Byte/no NoData) reproduced the provider view with
+`GDALAutoCreateWarpedVRT(source, None, None, GRA_NearestNeighbour, 0.2)`.
+Both direct rasterio and direct GDAL retain 128×128, one band, EPSG:4326 and
+the original rotated affine, with exact NPY correspondence. The in-memory GDAL
+VRT has 115 rows × 141 columns and the same bounds as QGIS; its band-1 values
+at **all 65,536 original centres** match QGIS Identify, including missing values.
+This experimentally localizes the change to the provider's virtual north-up
+sampling path; it does not establish a line-by-line audit of installed QGIS C++.
+
+For A, original longitude/latitude pixel steps are approximately
+`1.10408753e-5` / `-9.01369867e-6` degrees, with nonzero off-diagonal terms.
+The VRT uses square angular pixels `1.00837351e-5` degrees and zero off-diagonal
+terms. Suggested bounds/resolution therefore produce 141×115 rather than
+128×128. Choosing project CRS EPSG:6677 cannot undo this earlier provider warp.
+Nearest-neighbour on that new grid can select adjacent source cells; this is
+not confined to the outer boundary or caused solely by NaN:
+
+| Case/layer | Mismatch within outer two source rows/columns | Interior mismatch |
+|---|---:|---:|
+| A Current | 14 | 201 |
+| B Current | 19 | 298 |
+| A candidate | 21 | 25 |
+| B candidate | 1 | 62 |
+
+An exact reference method is now verified: use saved lon/lat centres, apply the
+**inverse original GDAL geotransform**, take containing pixel `(floor(row),
+floor(col))`, and read original band 1. Every centre maps to original raster
+`[127-i,j]` and hence NPY `[i,j]` in these runs. For a projected query, first
+transform EPSG:6677 XY to lon/lat with explicit axis order; reject points outside
+the original inverse-transform bounds and retain NaN separately from zero.
+Do not use provider width/height/extent to infer original indices. This can be a
+small GIS-side inspection action referencing original files, without model changes.
+
+| Option | Accuracy / usability | Scope, reproducibility and QGZ |
+|---|---|---|
+| A: change loading | No verified standard GDAL-provider switch preserving this rotated source grid was found; merely omitting QML does not help. | A custom provider would add disproportionate maintenance/version risk; defer. |
+| B: explicit display derivative | Predictable documented display grid, but resampling cannot preserve every original cell/value. | Additional files, transform/resampling/mask hashes and tests; compatible with QGZ, unnecessary initially. Never overwrite originals. |
+| C: separate display and exact inspection | Keep current visual layers; original-file lookup gives exact source values and indices. Users must see which grid a value refers to. | **Recommend first.** One narrow GIS-side lookup plus provenance links; QGZ can attach it later. No new analysis or universal output framework. |
+
+Alpha investigation confirms one physical Byte band versus two provider bands;
+before/after QML alpha remains 2→−1. Float64/NaN remains one band and −1→−1.
+The previous in-memory alpha restoration proves the fringe fix independently
+of source-cell mismatch. Proposed GIS loading sequence: capture the provider's
+valid default alpha band (verify its alpha interpretation), load QML, then restore
+that band if appropriate. For a genuine single-band/no-alpha provider retain −1.
+Do not hard-code 2 or mark numeric class 0 NoData. This is verified only with
+QGIS 4.2.3/GDAL 3.13.3; other releases require their own smoke test.
+
+Recommended next scope: GIS-side style application and exact-source inspection;
+keep `gis_visualization.py`'s numerical outputs/manifest identities intact unless
+a narrowly reviewed metadata reference is needed. Leave RunConfig, Voxel/Solar,
+Standard/Adapter and original QML unchanged in this investigation. Tests should
+cover rotated/non-square grids, translated bounds, source versus provider
+indices, NaN/zero, outside points, and provider alpha present/absent. A/B acceptance:
+all original-centre exact lookups equal original NPY, loaded styles retain intended
+alpha without fringe, and source hashes remain unchanged. QGZ can proceed after
+these checks plus actual GUI lookup/legend checks, with provider Identify clearly
+labeled as display-grid sampling rather than original-cell truth.
+
+Ignored evidence: `data/work/gis-visualization/provider-investigation.py`,
+`investigation.json` (GIS child), `investigation-direct.json` (OUEM rasterio
+cross-check). No derivative was written: the diagnostic VRT existed in memory.
+All 152 protected files remain unchanged. No product code, dependencies, model
+runs or environments changed; documentation checks replace pytest for this PR.
