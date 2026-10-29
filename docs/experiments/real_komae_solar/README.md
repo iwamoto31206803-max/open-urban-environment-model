@@ -629,7 +629,9 @@ QML/manifests, `gis_visualization.py` and numerical producers remain unchanged.
 ```
 
 Substitute the actual raster/coordinate. JSON gives original row/col, value,
-`status` (`valid`, `nan`, `nodata`) and `is_nodata`. Valid zero remains 0;
+`status` is `nodata` for a NoData match (including a NaN NoData value) or
+invalid mask, `nan` for other NaN, and `valid` for valid numbers.
+`is_nodata` is exactly `status == 'nodata'`. Valid zero remains 0;
 NaN is JSON null with explicit status. EPSG:6677 takes easting X/northing Y
 with traditional GIS axis order. `--ouem-uv` explicitly opts into reversed-u
 mapping; omit it for other rasters. Bounds are half-open containing-pixel bounds;

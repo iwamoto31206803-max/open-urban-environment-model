@@ -34,6 +34,29 @@ class Checks(unittest.TestCase):
      x,y=gdal.ApplyGeoTransform(gt,c+.5,r+.5);v=m.lookup(path,x,y,uv=True)
      self.assertEqual((v['row'],v['col']),(r,c));self.assertEqual(v['uv'],[2-r,c])
      self.assertEqual(v['status'],'nan' if np.isnan(a[r,c]) else 'nodata' if a[r,c]==-9999 else 'valid')
+     self.assertEqual(v['is_nodata'],v['status']=='nodata')
    src=osr.SpatialReference();src.ImportFromEPSG(4326);src.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER);dst=osr.SpatialReference();dst.ImportFromEPSG(6677);dst.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
    x,y=gdal.ApplyGeoTransform(gt,4.5,2.5);x,y,_=osr.CoordinateTransformation(src,dst).TransformPoint(x,y);self.assertEqual(m.lookup(path,x,y,epsg=6677)['value'],14)
+ @unittest.skipUnless(GIS,'Requires isolated existing GIS Python')
+ def test_nodata_and_nan_status(self):
+  from osgeo import gdal,osr
+  import numpy as np
+  with tempfile.TemporaryDirectory() as folder:
+   for name,nodata,mask,expected in [
+    ('plain',None,None,['valid','nan','valid']),
+    ('nan_nodata',np.nan,None,['valid','nodata','valid']),
+    ('numeric_nodata',-9999,None,['valid','nan','nodata']),
+    ('masked',None,[0,0,255],['nodata','nodata','valid'])]:
+    with self.subTest(name=name):
+     path=Path(folder)/(name+'.tif');ds=gdal.GetDriverByName('GTiff').Create(str(path),3,1,1,gdal.GDT_Float64)
+     ds.SetGeoTransform((139,.001,0,35,0,-.001));crs=osr.SpatialReference();crs.ImportFromEPSG(4326);ds.SetProjection(crs.ExportToWkt())
+     band=ds.GetRasterBand(1);band.WriteArray(np.array([[0,np.nan,-9999]]))
+     if nodata is not None:band.SetNoDataValue(nodata)
+     if mask is not None:
+      band.CreateMaskBand(gdal.GMF_PER_DATASET);band.GetMaskBand().WriteArray(np.array([mask],dtype=np.uint8))
+     band=None;ds=None
+     for col,status in enumerate(expected):
+      result=m.lookup(path,139+(col+.5)*.001,35-.0005)
+      self.assertEqual(result['status'],status);self.assertEqual(result['is_nodata'],status=='nodata')
+      self.assertEqual(result['value'],None if col==1 else 0 if col==0 else -9999)
 if __name__=='__main__':unittest.main()

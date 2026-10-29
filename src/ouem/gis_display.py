@@ -56,6 +56,8 @@ def lookup(path, x, y, *, epsg=4326, uv=False):
 
     Never called through the QGIS provider. Pixel boundaries use floor in the
     original grid; projected round trips at exact edges can have floating error.
+    Status is nodata for a NoData match or invalid mask, otherwise nan for
+    unmasked NaN, otherwise valid. is_nodata is exactly status == 'nodata'.
     """
     from osgeo import gdal, osr
     if epsg not in (4326, 6677) or not all(math.isfinite(v) for v in (x,y)):
@@ -77,9 +79,10 @@ def lookup(path, x, y, *, epsg=4326, uv=False):
         nodata = band.GetNoDataValue()
         nan = isinstance(value,float) and math.isnan(value)
         masked = int(band.GetMaskBand().ReadAsArray(col,row,1,1)[0,0]) == 0
-        status = 'nan' if nan else 'nodata' if masked or (nodata is not None and value == nodata) else 'valid'
+        missing = masked or (nodata is not None and (nan if math.isnan(nodata) else value == nodata))
+        status = 'nodata' if missing else 'nan' if nan else 'valid'
         result = dict(row=row,col=col,value=None if nan else value,status=status,
-                      is_nodata=masked or (nodata is not None and (nan if math.isnan(nodata) else value==nodata)),
+                      is_nodata=status == 'nodata',
                       reference='original GeoTIFF band 1; not QGIS Identify')
         if uv:
             result['uv'] = [ds.RasterYSize-1-row,col]
