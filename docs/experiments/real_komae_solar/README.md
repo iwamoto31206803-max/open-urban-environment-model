@@ -679,3 +679,55 @@ automated lookup testing; prior PR #114 GUI checks did not exercise this helper.
 Other QGIS versions remain unverified. No Voxel/Solar run or new display TIFF
 was made. Production QGZ generation remains out of scope; perform the helper's
 actual GUI style/lookup smoke before proceeding to that next increment.
+
+### GIS helper GUI smoke (2026-10-29, after PR #116)
+
+This follow-up closes the helper GUI gap above for **QGIS 4.2.3 only**.
+Main `4a9ab1c` includes the NoData-precedence review fix. Existing isolated
+OSGeo4W QGIS Python 3.12.15 opened the previous temporary A/B `inspection.qgz`
+projects under `qgis-display-20261029-01/complete-api/`; no project was saved over.
+Inputs were the same `komae-{a,b}-3c-20261029-01` Solar runs and the original
+`phase1-20261029-02/{a,b}` QML/manifests identified above.
+
+**GUI observed:** `gis_display.py` was loaded by file in each QGIS Python Console;
+`apply_qml()` applied all seven styles. Both maps showed no opaque outside fringe
+for `shadow_categories` or `observer_valid`. Current / No-Canopy used the same
+dark-to-light scale and 0–458.861149 W/m² legends; Difference used white-to-purple
+and the same numeric bounds. Candidate and ROI overlays remained translucent.
+The project status bar showed EPSG:6677. Seventeen screenshots include the
+Console results, seven map views per site and the temporary startup error below.
+
+**API checks inside the GUI Console:** all 14 renderer stop/color/alpha/label
+lists matched their manifests; continuous maxima and unit suffixes matched.
+Integer layers detected provider alpha band 2: plain QML set −1 and the helper
+restored 2 (initial A renderer −1; fresh B renderer 2). Float layers had no alpha
+candidate and stayed −1. This records detected bands, not a fixed-band policy.
+Six `lookup(..., uv=True)` samples matched original NPY values and reversed-u
+indices; the following are physical TIFF `(row,col)`:
+
+| Site | Valid zero | Positive value (W/m²) | NaN-designated NoData |
+|---|---|---|---|
+| A | (126,18): 0 | (127,0): 458.86114908083687 | (127,19): null |
+| B | (126,82): 0 | (127,0): 273.73844040037994 | (127,83): null |
+
+Numeric samples returned `valid`/`is_nodata=false`; missing samples returned
+`nodata`/`true`. Provider Identify agreed at these six points, which does not
+remove the [previously measured virtual-grid mismatch](#raster-provider-investigation--2026-10-29).
+The helper is a separate original-file query, not a replacement for GUI Identify.
+The all-cell comparison remains the earlier API evidence, not a new GUI test.
+
+All **152 protected run/QML/manifest files** still matched recorded SHA-256.
+No analysis, dependency, environment integration or product code change occurred.
+The original A window stopped responding during toggling; separate temporary
+profiles allowed completion without force-closing it. A temporary B startup
+harness raised `NameError: iface is not defined` outside the Console; explicit
+Console execution passed. The error screenshot is retained, not counted as a
+helper success. Other versions and production QGZ generation/reopen remain
+**NOT_VERIFIED**. A small QGZ implementation can now be considered, with separate
+saved-alpha, path portability and reopen checks; this is no scientific acceptance.
+
+Ignored evidence: `data/work/gis-helper-gui-smoke-20261029-01/` contains the
+temporary script, A/B Console JSON, PNGs and `verification.json` (SHA-256
+`a38014b201a15502f23a0082d233c9c5a9ccbccd269d1400f3437f5b065fcee0`).
+This PR only records the smoke: Markdown/diff checks replace pytest; the code
+and synthetic/full-suite results of PR #116 remain separate historical evidence.
