@@ -438,7 +438,8 @@ was executed. This establishes technical compatibility/containment for A/B only.
 
 ## Phase 1 QGIS display verification — 2026-10-29 JST
 
-**QML loading/settings PASS; exact source-cell Identify FAIL; GUI NOT_VERIFIED.
+**QML loading/settings PASS; exact source-cell Identify FAIL; basic GUI display
+confirmed in the unlocked follow-up below.
 Defer production QGZ generation pending the display issues below.** Verified
 PR #113 on merged main `a5e2e3b98dc34f8bdc564c11a288496ddb07cdf9`.
 Reused existing A/B QML/manifests under
@@ -517,7 +518,31 @@ original-QML renders. `complete-api/{a,b}/overview-labelled.png` are API-rendere
 comparisons, **not GUI screenshots**; `inspection.qgz` files are temporary
 verification projects, not a new export feature. QGIS GUI started, but Windows
 was locked; UI input stopped and no usable GUI map screenshot was obtained.
-GUI legend interaction/Identify and human GUI review remain unverified.
+At that point GUI legend interaction/Identify remained unverified; the unlocked
+follow-up below records the subsequent GUI checks. No human acceptance is claimed.
 All **152 protected files** (136 A/B run files + 16 QML/manifest files) remained
 SHA-256 identical; no new source sidecars. `summary.json` SHA-256:
 `c4de7e03ec96d5a747f8fdd717920c183ff25fc4663d38a6ef34fb4a08b12dfd`.
+
+### Unlocked GUI follow-up — 2026-10-29 JST
+
+After the user unlocked Windows, actual QGIS GUI display was checked using the
+same temporary A/B projects and original loaded styles. Current, No-Canopy and
+Difference were switched in both cases; Difference legends showed
+0–458.861149 W/m². The A category legend retained five discrete entries, and B
+candidate/ROI overlays were visibly translucent. Project status showed EPSG:6677.
+Representative B GUI Identify returned **0** for a black valid cell and
+**No data** for a gray Building-excluded cell. Nearest saved NPY cells at the
+rounded GUI coordinates were respectively `[64,67]` = 0 and `[110,82]` = NaN.
+This limited GUI spot check does not replace or overturn the full source-centre
+API mismatch counts above, nor resolve the provider-alpha issue.
+
+Twelve actual GUI screenshots and `verification.json` are saved under
+`qgis-display-20261029-01/gui-unlocked/`, separate from the API previews. The
+earlier locked-state evidence/summary is retained unchanged. All 152 protected
+original files were rehashed and remain unchanged; temporary view toggles were
+not saved over the inspection projects. No product fix or model run was made.
+GUI verification JSON SHA-256:
+`336b00bcea5d5b76f4b8132e396d479e9e940bb6cf1e8226e3aaf6281866e6e0`.
+Basic GUI usability is now observed; exact-cell display acceptance and scientific
+validation are not established. Production QGZ generation remains deferred.
