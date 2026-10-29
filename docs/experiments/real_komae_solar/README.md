@@ -54,6 +54,66 @@ bound/crop diagnostics; the old 32 m comparison is retained as a labeled referen
 General exterior sufficiency remains UNVERIFIED. No new real-data Voxel/Solar run,
 QGZ automation, physical-observer correction or formal acceptance is claimed.
 
+### QML + manifest visualization
+
+After both **configured** stages complete, use the ordinary OUEM venv to create
+presentation files separately from immutable run evidence:
+
+```powershell
+New-Item -ItemType Directory -Force data/work/gis-visualization
+.venv\Scripts\python.exe -m ouem.gis_visualization `
+  --run-root data/work/configurable-e2e/komae-baseline-01 `
+  --output data/work/gis-visualization/komae-baseline-01
+```
+
+Substitute your actual run root and a new output directory; create its parent
+first. There is no overwrite/resume. Output must be outside the run. Required:
+saved `run-config.json`, `submitted-config.json`, `voxel-receipt.json`, both
+completed reports/grids, Solar statistics and Building reduction NPY,
+seven layer NPY/TIFF pairs, and Voxel
+centre lon/lat, ROI and Building ID arrays. These must remain at their recorded
+run/artifact-root location. Original Raw, Converter and engine installation are
+not needed just to view saved results. Missing/mismatched consumed files stop;
+there is no reconstruction or fresh Consumer/model execution. This entry point
+does not accept legacy PR #98/#99 run directories without configured handoff.
+
+Output: seven `.qml` files (`solar_current`, `solar_no_canopy`,
+`solar_difference`, `shadow_categories`, `observer_valid`, `canopy_candidate`,
+`roi_mask`) and `manifest.json`. The manifest maps source keys to relative
+paths/hashes and records meanings, units, scenarios, exact color stops, QML hashes,
+grid references and generator/runtime identities. Keep the directory topology
+with its referenced run. A partial failed export has no completed manifest;
+retry in a new directory. Local hashes detect mismatches, not coordinated
+rewriting or authenticated execution. Source report validation claims remain
+historical; presentation validation is not new Acceptance.
+
+In QGIS, add the referenced **original Solar GeoTIFFs**, then for each layer use
+**Layer Properties → Symbology → Style → Load Style…** and select the matching
+QML (from the separate output directory). Use project CRS EPSG:6677 for metric
+display; keep TIFF CRS EPSG:4326 and its exact affine unchanged. QML styles do not
+load data, set project extent or generate QGZ. Use a common extent/scale manually.
+Show `observer_valid` above irradiance to mark excluded Building columns gray;
+NaN remains transparent and valid zero opaque. ROI is a translucent cell fill,
+not a vector boundary. Candidate green is estimated positive crown depth,
+not final TREE occupancy or confirmed tree presence.
+
+Current/No-Canopy share the recorded horizontal irradiance bound and dark-to-light
+five-stop ramp; Difference is **No-Canopy − Current**, white-to-purple, W/m².
+Categories 0–4 use exact colors; no interpolation between category codes.
+Nearest-neighbour cell display and fixed stops prevent dynamic auto-stretch.
+Colors are display choices, not scientific thresholds. This command never
+rewrites, reprojects or resamples TIFFs. Existing
+[raster/observer and boundary limits](#outputs-and-limits) still apply.
+
+**QML/XML generation and synthetic validation are implemented; QGIS loading and
+display are NOT_VERIFIED by this implementation's tests.** The manifest records
+that state explicitly. Existing QGIS may be used separately for a load/Identify/
+visual comparison check, recording version and evidence outside the frozen run.
+No QGIS/OSGeo4W imports, installation or child process is needed by this command;
+the [runtime separation](../../architecture.md) remains unchanged. See
+[visualization source](../../../src/ouem/gis_visualization.py) and
+[tests](../../../tests/test_gis_visualization.py) for ownership and checks.
+
 ### Retained validation
 
 1. Verify the bound Voxel COMPLETED report (PR #98 in legacy mode), all recorded source/output hashes and engine
