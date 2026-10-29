@@ -615,3 +615,67 @@ Ignored evidence: `data/work/gis-visualization/provider-investigation.py`,
 cross-check). No derivative was written: the diagnostic VRT existed in memory.
 All 152 protected files remain unchanged. No product code, dependencies, model
 runs or environments changed; documentation checks replace pytest for this PR.
+
+### GIS display compatibility and exact lookup
+
+The standalone [gis_display.py](../../../src/ouem/gis_display.py) runs in existing
+GIS Python, without OUEM package installation or QGIS in the OUEM venv. Existing
+QML/manifests, `gis_visualization.py` and numerical producers remain unchanged.
+
+```powershell
+& 'C:/Users/iwahi/AppData/Local/Programs/OSGeo4W/bin/python-qgis.bat' `
+  src/ouem/gis_display.py --raster PATH_TO_ORIGINAL_TIFF `
+  --x 139.5758 --y 35.6325 --epsg 4326 --ouem-uv
+```
+
+Substitute the actual raster/coordinate. JSON gives original row/col, value,
+`status` is `nodata` for a NoData match (including a NaN NoData value) or
+invalid mask, `nan` for other NaN, and `valid` for valid numbers.
+`is_nodata` is exactly `status == 'nodata'`. Valid zero remains 0;
+NaN is JSON null with explicit status. EPSG:6677 takes easting X/northing Y
+with traditional GIS axis order. `--ouem-uv` explicitly opts into reversed-u
+mapping; omit it for other rasters. Bounds are half-open containing-pixel bounds;
+outside coordinates fail, with no tolerance snapping. Projected round trips at
+exact cell edges can have floating-point error. This is **not QGIS Identify**.
+
+In initialized QGIS, load this file through `importlib.util.spec_from_file_location`
+and `exec_module` (not an OUEM package import), then call
+`apply_qml(layer, qml_path)`. It verifies provider alpha interpretation, loads QML
+and restores the detected valid alpha if needed. No band number is fixed; no
+alpha is invented for a single-band provider; ambiguous alpha candidates fail.
+The return record shows before/QML/after bands. `loadNamedStyle` alone retains
+the old limitation. Colors/classes/opacity remain from QML; no QML is rewritten.
+The helper does not initialize QGIS or generate a project.
+
+`lookup(path, x, y, epsg=4326, uv=False)` is the original-file API. It lazily uses
+GDAL/OSR in GIS Python, disables PAM writes during read-only access, and never
+uses provider dimensions. [Tests](../../../tests/test_gis_display.py) run pure
+geometry/alpha policy in OUEM pytest; direct execution with `python-qgis.bat`
+also tests actual GDAL/OSR. Report the two runtime results separately.
+
+Implementation verification (2026-10-29): existing QGIS 4.2.3/GDAL 3.13.3 GIS
+Python tested all seven A/B layers. **229,376 original-cell lookups** matched
+NPY values and reversed-u indices exactly. Loaded color stops, labels and legend
+units matched the existing manifests. Helper-applied renders matched the
+provider-default-alpha-preserved reference pixel-for-pixel for all layers,
+including category/observer masks with the previous opaque fringe removed.
+Float/no-alpha providers retained −1; integer providers restored the detected
+alpha. All 152 original run/QML/manifest files remained SHA-256 unchanged.
+
+OUEM focused tests: 3 passed / 1 GIS-only skip. Direct GIS test execution: all
+4 passed, with one GDAL future-default exception-mode warning. Full OUEM pytest:
+**1002 passed / 6 skipped / 295 warnings**, 333.83 s. Skips are five existing
+Windows symlink privilege cases plus the isolated-GIS test; warnings are existing
+rasterio/Affine deprecations and stat-clock diagnostics. An earlier full run had
+one existing fixture error because concurrent documentation edits changed its
+Git-state snapshot; the stable rerun above passed without weakening that check.
+
+Ignored evidence: `data/work/gis-compatibility-20261029-01/report.json`, rendered
+PNGs, `data/work/gis-compatibility-verify.py`, GIS log and full pytest logs.
+Report SHA-256:
+`d28e499e352b45c09f3e09eb57a771d1c6dca94361d5077c6fc6921a2fa03e5b`.
+**New helper GUI workflow NOT_VERIFIED**: this acceptance is API rendering and
+automated lookup testing; prior PR #114 GUI checks did not exercise this helper.
+Other QGIS versions remain unverified. No Voxel/Solar run or new display TIFF
+was made. Production QGZ generation remains out of scope; perform the helper's
+actual GUI style/lookup smoke before proceeding to that next increment.
