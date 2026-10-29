@@ -89,6 +89,8 @@ without rerunning analysis: `python -m ouem.gis_visualization --run-root PATH --
 See [QML generation and application](docs/experiments/real_komae_solar/README.md#qml--manifest-visualization)
 for required evidence, seven layers and manual QGIS loading. Generation validates
 saved results; QGIS load/display remains **NOT_VERIFIED** until separately checked.
+For GIS-side alpha-safe styling and exact original-cell inspection, see
+[GIS display helpers](docs/experiments/real_komae_solar/README.md#gis-display-compatibility-and-exact-lookup).
 
 For input preparation, follow PR #97 → #98 → #99 procedures above. Actual inputs,
 adjacent manifests, source evidence and matching hashes are required; a past PASS
