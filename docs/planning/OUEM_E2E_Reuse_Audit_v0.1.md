@@ -5,6 +5,10 @@ Status: **static audit and implementation proposal**, 2026-10-28; baseline main
 Apply the [Development Principles](../OUEM_Development_Principles_v0.1.md).
 No refactoring, model run, new dependency, environment repair or acceptance decision.
 
+> The Phase 1 proposal below is historical. See the
+> [Final Refactoring Audit](#final-refactoring-audit--v02-completion) for the
+> post-PR #109 implementation and completion recommendation.
+
 ## Recommendation and first reuse target
 
 First move the evaluation rectangle to an adjacent area **within the same existing
@@ -175,3 +179,88 @@ its referenced executable now exists (unlike the PR104 observation), but import,
 engine metadata and actual interpreter health were not tested. No environment
 repair or model/test execution occurred. This document records a plan, not a new
 execution or Acceptance result.
+
+## Final Refactoring Audit — v0.2 completion
+
+Static review, 2026-10-29; main
+`d8e480692d4457a7a0b6dacf30144ed1c635c6c6` (PR #109 merged).
+**No Must finding: no refactoring is required before v0.2 completion for the
+demonstrated existing-input/rectangle-reuse scope.** This is not a claim of
+general input support, scientific validation or formal acceptance. Apply P3/P4/P5:
+retain useful trust boundaries; avoid a cleanup campaign after successful reuse.
+
+Inspected current source/imports/callers, CLI branches, tests, CI and the owning
+[real-data verification record](../experiments/real_komae_solar/README.md#phase-3c-shared-z-real-data-verification--2026-10-29-jst).
+Earlier Phase 1 P0 gaps are now implemented/verified there: strict JSON and saved
+settings/receipt, dynamic horizontal dimensions, and separately approved shared Z.
+No runtime test/model, dataset rehash, dependency installation or code change was
+performed by this final audit; execution results belong to their dated records.
+
+### Current ownership and dependency assessment
+
+| Owner | Actual responsibility / boundary |
+|---|---|
+| [e2e_config.py](../../src/ouem/e2e_config.py): `RunConfig`, `Extent`, `configured_arguments` | Strict settings/input bindings and contained reference extent; per-run submitted/runnable copies; exclusive run reservation and exact-config Voxel receipt. Persistence here serves the same reproducibility boundary, not a model orchestrator. |
+| [real_komae_voxel.py](../../src/ouem/real_komae_voxel.py): `execute_model`, `run`, `export_outputs` | Fresh source-H Consumer, actual engine grid/centres, whole Building supports, DEM/ground/D0 and public voxelization; scalar QA; base artifacts/report. It does not integrate Canopy or change Standard. |
+| [real_komae_solar.py](../../src/ouem/real_komae_solar.py): `preflight`, `integrate_canopy`, `shared_grid`, `solar_pair`, `run`, `export` | Rebind/revalidate base and Envelope; public TREE generation plus scalar interval/case invariants; shared upper Z; paired direct solar/controls/observers; own artifacts/report. Base files/receipt stay immutable. |
+| Existing consumers / adapters / evidence helpers | `Watch` and strict JSON belong to source-H validation; footprint/ID/relative-height helpers come from the existing adapter; Envelope sampling/semantics stay in `height_envelope`. Reuse does not bypass the accepted adapter's v0.1 manifest gate. |
+
+The current Voxel runner no longer imports `canopy_shadow_poc` for ROI/domain.
+Configured extents belong to `e2e_config`; retained legacy defaults are explicit.
+Remaining avoidable coupling is utility ownership: config/Voxel/Solar import
+`digest/write/distribution` from the Building runner (digest is itself re-exported
+from the source-H Standardizer). Voxel/Solar import `environment/voxcity_provenance`
+from broad `komae_integration`, whose imports include `komae_contained.PocBlocked`.
+These imports do not execute Converter or contained E2E, but make current imports
+depend on historical runner organization. No import-time performance claim was measured.
+
+### Candidate evaluation
+
+Must = completion blocker; Should = preferred next relevant maintenance, not a
+v0.2 gate; Defer = act only when a concrete change justifies it; No change = retain.
+Targets below name the current functions; no extraction is authorized by this audit.
+
+| Priority / target | Concrete issue and minimal proposal | Benefit, scope and regression risk |
+|---|---|---|
+| **Should** — `e2e_config`/Voxel/Solar utility imports; `real_komae_source_h.write/distribution`, Standardizer `digest`, `komae_integration.environment/voxcity_provenance` | Non-model helpers pull in Building ingestion/Standardization and historical contained-runner dependencies. On the next support-code change, give only these helpers a narrow neutral owner; assess existing leaves before adding one. Move definitions, do not copy them or introduce a runner base class. Preserve old public imports by aliases if compatibility requires them. | Reduces unrelated import/change blast radius. Small helper bodies but several importers, pin constants and watched source identities: **moderate** integration/provenance risk. Inventory legacy callers, bind the new helper owner in implementation watches, preserve exact formatting/exclusive-write and PEP 610/RECORD semantics, then run affected tests and full pytest. Do not combine with physics changes. |
+| **Defer** — Voxel `export_outputs`, Solar `export` | Same geographic affine (`origin+n_u*u`, reversed-u rows, v columns), NPY save/readback and 2D TIFF plumbing are implemented twice. If either exporter needs modification, extract only the common calculation/write primitive. | One XY convention reduces future drift; **moderate** GIS risk. Preserve distinct Voxel tags/finite-value expectations and Solar NaN/NoData policy. Test non-square/translated centres, dtype, mask, affine/readback and shared-Z sections; do not build a generic exporter or change container identities gratuitously. |
+| **Defer** — Solar `preflight`, `integrate_canopy`, `solar_pair` | These are long but ordered domain operations: source binding → grid/ground → Envelope; intervals → public API → scalar QA; paired solar → controls. Split a named subphase only when changing that subphase makes the boundary useful. | May ease focused edits; **moderate/high** validation-order risk. No scene-manager/context hierarchy or broad movement of algorithms now. Keep public generation separate from its scalar oracle; retain explicit shape/D0/observer and case checks. |
+| **Defer** — both `run` functions; `RunConfig.prepare/seal_voxel` | Stage preparation precedes runner try/finally; Voxel receipt sealing follows the completed report write. A preparation/write/seal failure can leave a partial run or completed model report without a receipt. Solar still rejects missing/mismatched receipts; this is an observability gap, not a fail-open route. Before changing lifecycle code, add failure-injection tests, then improve only exception context/failure recording if needed. | Clearer failure diagnosis without weakening exclusive no-resume behavior. **Moderate** evidence/status risk; test preparation, export, report write, engine recheck and seal failure ordering. Do not merge both runners into a generic lifecycle framework merely because finally blocks look alike. |
+| **Defer** — Voxel imports `json`/`ROI`; Solar legacy `PR98_report`/message labels; `real_komae_*` names | AST confirms the two imports have no internal loaded use; repository caller search found no need for the Voxel ROI re-export. Some configured-mode diagnostics still say PR98. Remove tiny dead imports or clarify human-readable labels when touching the owner; retain machine keys/module CLI names unless compatibility is reviewed. | Minor clarity gain, **low** code but nonzero source-hash/import compatibility risk. No standalone cosmetic PR or mass rename. Lack of an in-repository caller alone does not justify deleting public paths. |
+| **No change** — Consumer/`Watch`; Voxel `audit_voxels`; Solar `preflight/integrate_canopy` scalar/identity rechecks | Re-reading at generation, consumption and public-function boundaries serves freshness and independent engine verification. Shared ground/DEM/base oracle calls are deliberate producer-consumer reuse; TREE oracle stays distinct from public API generation. | Preserves P5 reliability. Removing passes, caching away hashes or deriving expected masks from the generated mask would hide corruption. Keep coherent rehash/tamper and allocation/rounding tests; do not count intentional verification as waste to eliminate. |
+| **No change** — `RunConfig.load/capture/prepare/model_sha`, `confined`, `Watch.resolve` | Saved settings and receipt fix mutable-source-config loss. Path checks differ intentionally: output/config locators can name not-yet-created paths, while watched inputs must exist and be frozen. Keep the small explicit two-stage handoff and strict branches. | Clear reproducibility ownership. Blindly merging validators could alter path/existence semantics; no optional hashes, global config singleton, new orchestrator or alternate parser is needed. Preserve saved-config-after-delete and exact-binding tests. |
+| **No change** — legacy CLI branches, old canopy PoCs, accepted Adapter entry | Legacy fixed pins/shape checks apply to their historical invocation, not configured reuse. Older canopy modules still have tests/sensitivity callers. Experimental source-H uses the explicit candidate Consumer and selected pure adapter helpers; `adapt_standard_to_voxcity` still rejects non-v0.1 manifests. | These are compatibility/evidence and formal boundaries, not proven dead routes. Keep source-H eligibility, Standard/Adapter/Acceptance and scientific constants unchanged. No removal/whitelist expansion or regional-copy replacement is warranted for v0.2 completion. |
+| **Defer** — `tests/test_e2e_config.complete_scene`, test-module helper imports | E2E/vertical tests import authored scene/source-chain helpers from other test modules; a test-file reorganization can break fixture discovery. Use a small test-only fixture owner only when several tests actually need to move; keep independent expected geometry/placement definitions independent of production. | Improves test organization when needed; **low/moderate** fixture-discovery risk. Do not consolidate all fixtures or rewrite tests during a runtime helper move. Add fresh-process CLI help/dispatch smoke before moving entrypoint imports. |
+
+### Regression sufficiency and remaining gaps
+
+The four focused suites protect invalid/duplicate settings and every input hash,
+saved settings after source-file editing/deletion, exclusive IDs/receipt binding,
+translated/non-square grids and affine/NoData, actual Consumer/source-chain E2E,
+ID/ground/rounding, coherently rehashed grid/occupancy tampering, shared-Z prefixes,
+TREE priority, public allocator undercapacity, injected bad API output, paired
+solar masks/sign/crop and saved shared metadata. See
+[config tests](../../tests/test_e2e_config.py),
+[Voxel tests](../../tests/test_real_komae_voxel.py),
+[Solar tests](../../tests/test_real_komae_solar.py) and
+[shared-Z tests](../../tests/test_shared_vertical_domain.py).
+This is a useful regression net for bounded helper/extraction work, not proof of
+complete coverage. Success integration mostly calls Python `run` directly; failure
+injection for the complete persistence/finalization chain is the main uncovered
+area before a lifecycle refactor. CI's [pytest workflow](../../.github/workflows/pytest.yml)
+is configured for the full suite on Windows/Ubuntu Python 3.12; it does not replace the local
+Windows Python 3.11.9/QGIS/real-input evidence or establish scientific accuracy.
+
+For any later code refactor: freeze original source bytes/locators first; keep
+input hashes, receipts and independent oracles; run the focused suites and full
+OUEM-venv pytest plus affected legacy/accepted-lane tests. For GIS/physics/lifecycle
+changes, require their specific failure/coordinate checks and semantic array
+comparison. A new real A/B replay needs separate authorization, new Run IDs and
+prefix/upper-air/2D comparison under the existing procedure; never rewrite old
+hashes after moving a helper. This audit did not rerun tests or revalidate datasets.
+
+**Completion recommendation:** accept the current bounded execution structure;
+no pre-completion cleanup PR is necessary. If subsequent maintenance warrants a
+first refactor, address only the utility-dependency row, preserving compatibility
+imports and evidence; leave exporter/lifecycle/test reorganization for their own
+demonstrated need. No large architecture, new settings or dependencies are proposed.
