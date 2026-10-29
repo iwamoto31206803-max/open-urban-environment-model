@@ -113,6 +113,8 @@ No QGIS/OSGeo4W imports, installation or child process is needed by this command
 the [runtime separation](../../architecture.md) remains unchanged. See
 [visualization source](../../../src/ouem/gis_visualization.py) and
 [tests](../../../tests/test_gis_visualization.py) for ownership and checks.
+Subsequent [QGIS verification](#phase-1-qgis-display-verification--2026-10-29-jst)
+loaded the styles but found provider-grid/alpha issues; it is not full display acceptance.
 
 ### Retained validation
 
@@ -433,3 +435,89 @@ deprecation). Full pytest was not repeated because this PR changes only this
 verification record and main's implementation was unchanged. No acquisition,
 Converter, Standard generation, parameter adjustment or additional model scene
 was executed. This establishes technical compatibility/containment for A/B only.
+
+## Phase 1 QGIS display verification — 2026-10-29 JST
+
+**QML loading/settings PASS; exact source-cell Identify FAIL; GUI NOT_VERIFIED.
+Defer production QGZ generation pending the display issues below.** Verified
+PR #113 on merged main `a5e2e3b98dc34f8bdc564c11a288496ddb07cdf9`.
+Reused existing A/B QML/manifests under
+`data/work/gis-visualization/phase1-20261029-02/{a,b}/`; no regeneration, model
+execution, scientific changes or product-code fixes. Source model results remain
+unchanged; these are presentation-path findings.
+
+Environment: existing OSGeo4W **QGIS 4.2.3, GDAL 3.13.3, Qt 6.11.0,
+GIS Python 3.12.15 / NumPy 2.5.4**. Executable:
+`C:/Users/iwahi/AppData/Local/Programs/OSGeo4W/bin/python3.exe`, launched through
+existing `bin/python-qgis.bat`. GIS child imports no OUEM; repository venv
+Python 3.11.9 only orchestrated evidence/hash checks. No environment was installed
+or merged. Child-local `GDAL_PAM_ENABLED=NO` prevented source-side metadata writes.
+
+Both cases loaded all seven original QML files. Loaded renderer stops, numeric
+bounds, labels and per-class alpha exactly matched their manifests. Current and
+No-Canopy share 0–458.86114908083687 W/m²; Difference has the same range,
+white-to-purple ramp and W/m² legend suffix. Original arrays satisfy
+`Difference = No-Canopy − Current` exactly, with common NaN masks. API renders
+show opaque valid zero and transparent irradiance NoData, with the separate gray
+observer overlay. These checks concern presentation of returned values;
+provider/source substitutions below prevent a universal cell-validity PASS.
+Candidate and ROI alpha are 96/255 and 64/255. The category renderer retains all
+five discrete entries; A/B data contain 0,1,2,4, so code 3 was checked
+in the loaded palette/legend, not as an observed scene cell. EPSG:6677 temporary
+projects reopened with seven valid EPSG:4326 layers each. All original TIFF
+affines and full TIFF↔reversed-u NPY values remained exact.
+
+### Display issues and proposed minimum follow-up (not applied)
+
+1. **Provider grid differs from source grid.** For both 128×128 source rasters,
+   QGIS exposes a 115-row × 141-column provider view. At all 16,384 saved original
+   centres per layer, band-1 Identify gave the following mismatches (numeric
+   differences or source-finite versus provider-missing). Thus ordinary QGIS
+   Identify cannot be advertised as exact original-cell inspection. The observed
+   view is consistent with a north-up virtual warp; GDAL documents that behavior
+   for [automatic warped VRTs](https://gdal.org/en/stable/api/gdalwarp_cpp.html).
+   This is display/provider sampling, not modified source H or Solar arrays.
+
+   | Layer | A mismatches | B mismatches |
+   |---|---:|---:|
+   | solar_current | 215 | 317 |
+   | solar_no_canopy | 115 | 47 |
+   | solar_difference | 221 | 321 |
+   | shadow_categories | 125 | 88 |
+   | observer_valid | 73 | 30 |
+   | canopy_candidate | 46 | 63 |
+   | roi_mask | 0 | 0 |
+
+   Keep source-cell validation against original affine/NPY/GDAL reads; document
+   the distinction from QGIS provider/render cells. Decide how exact-cell
+   inspection should be exposed before extending the user-facing claim. Do not
+   relabel TIFF CRS, silently warp original evidence or change model geometry.
+
+2. **QML clears provider alpha for integer layers.** QGIS adds an alpha band to
+   its integer provider view (two bands versus one physical TIFF band). Before
+   styling, renderer alpha is band 2; original QML sets it to −1. Categories and
+   observer masks consequently render an opaque fringe outside valid provider
+   coverage. Diagnostic-only in-memory restoration of the detected default alpha
+   removed 22,162 A / 22,160 B pixels per affected 1600² render. Candidate/ROI
+   previews did not change because their zero class is already transparent.
+   Minimum candidate: preserve the detected valid provider alpha when applying
+   styles in a GIS-aware loading step; do not globally hard-code band 2 for
+   genuine single-band providers. Standalone-QML handling needs a compatibility
+   test/explicit alpha-selection instruction. This does not fix issue 1.
+
+No production QML/generator/analysis code was changed. Follow up with the narrow
+alpha-handling change and a defined source-cell inspection policy, then recheck
+both cases before treating QGZ delivery as ready. Neither finding establishes
+scientific error or scientific validity of the modeled results.
+
+Evidence (ignored): `data/work/gis-visualization/qgis-display-20261029-01/`.
+`complete-api/api-verification.json` holds 229,376 Identify comparisons and render
+samples; `alpha-diagnostic.json` separates the uninstalled diagnostic from the
+original-QML renders. `complete-api/{a,b}/overview-labelled.png` are API-rendered
+comparisons, **not GUI screenshots**; `inspection.qgz` files are temporary
+verification projects, not a new export feature. QGIS GUI started, but Windows
+was locked; UI input stopped and no usable GUI map screenshot was obtained.
+GUI legend interaction/Identify and human GUI review remain unverified.
+All **152 protected files** (136 A/B run files + 16 QML/manifest files) remained
+SHA-256 identical; no new source sidecars. `summary.json` SHA-256:
+`c4de7e03ec96d5a747f8fdd717920c183ff25fc4663d38a6ef34fb4a08b12dfd`.
