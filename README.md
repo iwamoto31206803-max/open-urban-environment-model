@@ -10,16 +10,24 @@ these phases and their variants.
 
 ## Current milestone
 
-An **exploratory real-city End-to-End PoC is complete for a small Komae area**:
-real PLATEAU source-H Building and Standard Terrain were integrated with an
-estimated Meta CHMv2 Height Envelope on one actual VoxCity grid, followed by
-Current / No-Canopy direct-solar comparison using public VoxCity APIs.
+**OUEM v0.2 supports configuration-driven experimental Voxel / Solar E2E reuse
+within existing Komae input coverage.** Reuse the prepared source-H Building,
+Standard Terrain and estimated Meta CHMv2 Height Envelope; change the analysis
+rectangle and Run ID in JSON without editing Python. The actual VoxCity grid
+supports Current / No-Canopy direct-solar comparison and georeferenced outputs.
 
 | Experimental step | Procedure | Executed evidence |
 |---|---|---|
 | PR #97: CityGML → fixed Converter → source-H Native / Standard / Consumer | [Building preparation](docs/experiments/real_komae_source_h/README.md) | [H retention and Terrain checks](docs/experiments/real_komae_source_h/RESULTS.md) |
 | PR #98: Building + Terrain → actual VoxCity voxels | [Voxel integration](docs/experiments/real_komae_voxel/README.md) | [Grid, IDs and vertical diagnostics](docs/experiments/real_komae_voxel/RESULTS.md) |
 | PR #99: estimated Canopy + paired direct solar | [Three-element PoC](docs/experiments/real_komae_solar/README.md) | [Solar comparison and limitations](docs/experiments/real_komae_solar/RESULTS.md) |
+
+PR #97–99 above establish the original exploratory PoC. PR #106–109 add
+configuration-driven reuse and a shared Building/Canopy vertical domain:
+[A compatibility and adjacent B technical completion](docs/experiments/real_komae_solar/README.md#phase-3c-shared-z-real-data-verification--2026-10-29-jst)
+are recorded separately from the original results and PR #107's historical B
+capacity failure. The [final audit](docs/planning/OUEM_E2E_Reuse_Audit_v0.1.md#final-refactoring-audit--v02-completion)
+found no mandatory refactoring before v0.2 completion.
 
 These are bounded technical results. Formal acceptance of this source-H / mixed
 solar lane is **NOT_VERIFIED**, source-H eligibility **NOT_ESTABLISHED**, and
@@ -65,7 +73,18 @@ experiments; Converter output there is not already OUEM Native. Real datasets,
 run artifacts and runtime snapshots remain outside Git. The shared study area
 is [komae_09LD3451.yaml](config/study_areas/komae_09LD3451.yaml).
 
-For the real-city PoC, follow PR #97 → #98 → #99 procedures above. Actual inputs,
+For prepared inputs, start with the experimental
+[JSON example](config/experiments/komae_e2e.json) and
+[configuration and Voxel procedure](docs/experiments/real_komae_voxel/README.md#configurable-reuse-v02-phase-2),
+then the [Solar procedure](docs/experiments/real_komae_solar/README.md#configurable-reuse).
+Run `python -m ouem.real_komae_voxel --config PATH.json`, then
+`python -m ouem.real_komae_solar --config <run-root>/run-config.json` in the OUEM
+venv below. Use a new Run ID and output directory; retain the saved configuration
+and receipt. The guides own path resolution, hashes, coverage and failure rules.
+CRS, resolution and scientific conditions remain fixed; configuration is not
+support for arbitrary regions, data sources or model conditions.
+
+For input preparation, follow PR #97 → #98 → #99 procedures above. Actual inputs,
 adjacent manifests, source evidence and matching hashes are required; a past PASS
 or cloned repository does not supply missing data. New upstream artifacts require
 the identity review described in those procedures.
@@ -82,6 +101,15 @@ and numerical H retention do not independently prove surveyed datum accuracy.
 Use the [Development Principles](docs/OUEM_Development_Principles_v0.1.md) for
 shared development decisions and collaboration; [AGENTS.md](AGENTS.md) contains
 daily Codex instructions. These do not change data contracts or acceptance.
+
+For errors or changes in the experimental E2E, start with these owners; imports
+show dependencies and the linked tests provide the corresponding regression checks.
+
+| Processing responsibility | Owning module | Related tests |
+|---|---|---|
+| JSON validation, extents, saved configuration and stage handoff | [e2e_config](src/ouem/e2e_config.py) | [Configuration](tests/test_e2e_config.py) |
+| Building/Terrain validation, actual grid, base voxels and GIS export | [real_komae_voxel](src/ouem/real_komae_voxel.py) | [Voxel](tests/test_real_komae_voxel.py) |
+| Envelope sampling, shared Z, TREE integration, paired solar and GIS export | [real_komae_solar](src/ouem/real_komae_solar.py) | [Solar](tests/test_real_komae_solar.py), [shared vertical domain](tests/test_shared_vertical_domain.py) |
 
 Use Python 3.10+ and the repository OUEM virtual environment. VoxCity 1.7.0 remains
 pinned in [pyproject.toml](pyproject.toml); its source is not vendored.
