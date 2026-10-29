@@ -84,6 +84,12 @@ and receipt. The guides own path resolution, hashes, coverage and failure rules.
 CRS, resolution and scientific conditions remain fixed; configuration is not
 support for arbitrary regions, data sources or model conditions.
 
+For completed configured runs, generate QGIS styles and a presentation manifest
+without rerunning analysis: `python -m ouem.gis_visualization --run-root PATH --output NEW_DIRECTORY`.
+See [QML generation and application](docs/experiments/real_komae_solar/README.md#qml--manifest-visualization)
+for required evidence, seven layers and manual QGIS loading. Generation validates
+saved results; QGIS load/display remains **NOT_VERIFIED** until separately checked.
+
 For input preparation, follow PR #97 → #98 → #99 procedures above. Actual inputs,
 adjacent manifests, source evidence and matching hashes are required; a past PASS
 or cloned repository does not supply missing data. New upstream artifacts require
@@ -110,6 +116,7 @@ show dependencies and the linked tests provide the corresponding regression chec
 | JSON validation, extents, saved configuration and stage handoff | [e2e_config](src/ouem/e2e_config.py) | [Configuration](tests/test_e2e_config.py) |
 | Building/Terrain validation, actual grid, base voxels and GIS export | [real_komae_voxel](src/ouem/real_komae_voxel.py) | [Voxel](tests/test_real_komae_voxel.py) |
 | Envelope sampling, shared Z, TREE integration, paired solar and GIS export | [real_komae_solar](src/ouem/real_komae_solar.py) | [Solar](tests/test_real_komae_solar.py), [shared vertical domain](tests/test_shared_vertical_domain.py) |
+| Read-only saved-run verification, QML styles and presentation manifest | [gis_visualization](src/ouem/gis_visualization.py) | [Visualization](tests/test_gis_visualization.py) |
 
 Use Python 3.10+ and the repository OUEM virtual environment. VoxCity 1.7.0 remains
 pinned in [pyproject.toml](pyproject.toml); its source is not vendored.
