@@ -91,6 +91,9 @@ for required evidence, seven layers and manual QGIS loading. Generation validate
 saved results; QGIS load/display remains **NOT_VERIFIED** until separately checked.
 For GIS-side alpha-safe styling and exact original-cell inspection, see
 [GIS display helpers](docs/experiments/real_komae_solar/README.md#gis-display-compatibility-and-exact-lookup).
+To open the saved comparison as a project, use the standalone GIS-Python
+[QGZ generator and reopen check](docs/experiments/real_komae_solar/README.md#qgz-project-generation)
+in `src/ouem/gis_project.py`; QGIS remains separate from the OUEM venv.
 
 For input preparation, follow PR #97 → #98 → #99 procedures above. Actual inputs,
 adjacent manifests, source evidence and matching hashes are required; a past PASS
