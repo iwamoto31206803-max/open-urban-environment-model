@@ -22,3 +22,10 @@ error reporting. It must never activate OSGeo4W in the OUEM parent process or
 reinterpret the GIS Python as OUEM's interpreter. This policy applies equally
 to PLATEAU, CHM, LiDAR, GDAL, and PDAL providers and does not alter Standard
 Building or any other provider-independent data contract.
+
+## CI evidence boundary
+
+The ordinary-Python CI reports bounded installed metadata before its existing
+pytest command. See [CI/runtime evidence](development/OUEM_CI_Runtime_Evidence.md)
+for fields, failure visibility, dependency observations and coverage/skip limits.
+CI logs are separate from the dated B1/B2 run evidence and Formal Acceptance.
