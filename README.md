@@ -22,6 +22,9 @@ view, which is **not implemented or started by this closeout**; its shared
 geometry/observer uncertainties remain in the
 [deferred validation backlog](docs/planning/OUEM_B1_Deferred_Validation_Backlog.md).
 
+B2 remains design-only: [VoxCity GVI API audit](docs/planning/OUEM_B2_VoxCity_GVI_API_Audit_v0.1.md)
+and [minimal Technical E2E proposal](docs/planning/OUEM_B2_Minimal_Technical_E2E_Design_v0.1.md).
+
 | Available experimental workflow | Start here |
 |---|---|
 | Existing-input rectangle/Run-ID reuse, Voxel then Solar | [JSON example](config/experiments/komae_e2e.json), [Voxel procedure](docs/experiments/real_komae_voxel/README.md#configurable-reuse-v02-phase-2), [Solar procedure](docs/experiments/real_komae_solar/README.md#configurable-reuse) |
