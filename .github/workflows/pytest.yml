@@ -22,5 +22,8 @@ jobs:
           python-version: '3.12'
       - name: Install package and test dependencies
         run: python -m pip install . pytest
+      - name: Report bounded runtime evidence
+        continue-on-error: true
+        run: python -m ouem.runtime_evidence
       - name: Run synthetic and unit tests
         run: python -m pytest -q -ra
