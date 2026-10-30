@@ -731,3 +731,83 @@ temporary script, A/B Console JSON, PNGs and `verification.json` (SHA-256
 `a38014b201a15502f23a0082d233c9c5a9ccbccd269d1400f3437f5b065fcee0`).
 This PR only records the smoke: Markdown/diff checks replace pytest; the code
 and synthetic/full-suite results of PR #116 remain separate historical evidence.
+
+### QGZ project generation
+
+The standalone [gis_project.py](../../../src/ouem/gis_project.py) consumes an
+existing visualization `manifest.json`, its GeoTIFF/QML references and saved
+grid. Use the existing **QGIS Python**, not the OUEM venv; no OUEM installation
+in GIS Python is needed. Create the output parent first, then use a new directory
+outside the run and QML directories:
+
+```powershell
+$gisPython = 'C:/Users/iwahi/AppData/Local/Programs/OSGeo4W/bin/python-qgis.bat'
+& $gisPython src/ouem/gis_project.py --manifest PATH/manifest.json --output NEW_DIRECTORY
+# A separate process checks that saved settings survive reopening:
+& $gisPython src/ouem/gis_project.py --manifest PATH/manifest.json --verify NEW_DIRECTORY/project.qgz
+```
+
+Generation verifies all manifest file references (relative local paths, sizes,
+SHA-256), exactly seven distinct layers and the saved EPSG:6677 ROI. It reuses
+`gis_display.apply_qml()`, checks QML presentation against the manifest and
+disables GDAL PAM writes. Missing or changed inputs fail; existing output
+directories are rejected. `project.qgz` stores the layer references/styles;
+`project.json` records manifest/project identities and the actual GIS runtime.
+Generation alone records reopen/GUI as NOT_VERIFIED; the separate check prints
+its own result without rewriting that receipt or source evidence.
+
+The project uses EPSG:6677 and starts at the saved analysis ROI (the GUI may
+expand it to fit the canvas aspect ratio). Top-to-bottom order is ROI, Candidate,
+Observer, Categories, Difference, No-Canopy, Current. Only Current and gray
+excluded-Building observers start visible. Other layers can be toggled in QGIS.
+Reopen checks validity, sources, order, names, visibility, exact stored ROI,
+relative-path policy, colors/labels/opacity and detected alpha settings.
+
+**QGZ does not contain the GeoTIFF data.** Sources are saved as relative paths;
+moving only QGZ can break them. Retaining the same relative directory topology
+with the referenced data preserves them. QGIS opening a broken project may show
+a missing-layer repair dialog; the `--verify` command instead fails explicitly.
+Keep the original manifest/QML and its referenced evidence available for that
+verification. This command does not bundle, relocate, reproject or resample data.
+Ordinary QGIS Identify still samples the provider's virtual display grid; use
+[exact lookup](#gis-display-compatibility-and-exact-lookup) for original cells.
+QGIS project usability, analytical QA and scientific validity remain separate.
+
+[Project tests](../../../tests/test_gis_project.py) run reference checks in OUEM
+pytest and actual synthetic save/reopen/relocation checks when executed directly
+with `$gisPython`. The latter uses a rotated, translated 5-column × 3-row raster,
+zero/NaN and category values 0–4; a child GIS process performs the reopen check.
+
+Phase 2 verification used main `ff6f9e6` inputs and **QGIS 4.2.3 / GIS Python
+3.12.15**. A/B generation and separate-process reopen both passed for all seven
+sources, styles (including bands/alpha), order, visibility, CRS and stored ROI.
+Both QGZs contain seven relative TIFF paths. In the synthetic bundle, moving the
+entire reference topology preserved validity; moving only QGZ failed. Missing
+files and saved alpha/opacity/band/CRS/order/visibility/extent changes were rejected.
+
+**GUI observed separately:** both generated A/B projects opened without layer
+repair, with Current and excluded observers initially visible, the intended
+layer order, and EPSG:6677. Current / No-Canopy / Difference and category toggles
+rendered; Candidate/ROI retained translucency. Category/observer overlays had no
+opaque outer fringe. Fourteen screenshots record initial/legend/wide views and
+toggles. GUI view changes were not saved: both QGZ hashes still match their
+generation receipts. All 152 protected original run/QML/manifest files remained
+unchanged. No Voxel/Solar run or source raster export was performed.
+
+Validation: focused OUEM tests **36 passed / 4 GIS-only skipped / 2 warnings**;
+final full pytest **1004 passed / 9 skipped / 295 warnings**, 373.39 s.
+Four GIS-only skips were separately covered: new QGZ tests **4 passed**, existing
+helper tests **5 passed** in GIS Python. Five remaining skips require Windows
+symlink privileges. Full-suite warnings are existing rasterio/Affine deprecations
+and stat-clock diagnostics; GIS tests emit GDAL's future exception-default warning.
+Authored-test output placement, open-file cleanup and band-setter assumptions
+were corrected during development; failed/interrupted intermediate logs remain
+local and are not counted as final passes.
+
+Ignored outputs/evidence: `data/work/gis-project-phase2-20261029-01/`, including
+`a/project.qgz`, `b/project.qgz`, receipts, reopen logs, PNGs and
+`verification-final.json` (SHA-256
+`faf1ed45a77e802dbb91a256d566bfb537d7c8ee71a57266970767a152e9b841`).
+Other QGIS versions and GUI opening of a relocated real A/B data bundle remain
+NOT_VERIFIED; relocation acceptance here is synthetic/API only. No new scientific
+or Formal Acceptance claim is made.
