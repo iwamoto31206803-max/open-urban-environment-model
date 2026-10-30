@@ -40,12 +40,13 @@ def test_distribution_rejects_nonfinite():
     with pytest.raises(GeometryValidationError): k.distribution([float('nan')])
 
 
-def test_runner_keeps_zip_layout_and_passes_explicit_config(tmp_path, monkeypatch):
+@pytest.mark.parametrize("members", [k.MEMBERS, tuple(f"533934{n}_bldg_6697_op.gml" for n in (55,56,65,66))])
+def test_runner_keeps_zip_layout_and_passes_explicit_config(tmp_path, monkeypatch, members):
     archive = tmp_path/'raw.zip'
     with zipfile.ZipFile(archive, 'w') as z:
         z.writestr('codelists/', '')
         z.writestr('codelists/example.xml', '<list/>')
-        for name in k.MEMBERS: z.writestr('udx/bldg/'+name, '<synthetic/>')
+        for name in members: z.writestr('udx/bldg/'+name, '<synthetic/>')
     cli = tmp_path/'cli.exe'
     cli.write_bytes(b'authored-placeholder')
     monkeypatch.setattr(k, 'CLI_SHA', k.digest(cli))
@@ -57,7 +58,7 @@ def test_runner_keeps_zip_layout_and_passes_explicit_config(tmp_path, monkeypatc
     run_dir = tmp_path/'new-run'
     def converter(argv, **kwargs):
         assert (run_dir/'extracted/codelists/example.xml').exists()
-        assert all((run_dir/'extracted/udx/bldg'/name).exists() for name in k.MEMBERS)
+        assert all((run_dir/'extracted/udx/bldg'/name).exists() for name in members)
         Path(argv[argv.index('--output')+1]).write_bytes(b'placeholder')
         return SimpleNamespace(returncode=0)
     monkeypatch.setattr(k.subprocess, 'run', converter)
@@ -71,9 +72,9 @@ def test_runner_keeps_zip_layout_and_passes_explicit_config(tmp_path, monkeypatc
     monkeypatch.setattr(k, 'compare_terrain', lambda *a: {'synthetic': True})
     monkeypatch.chdir(tmp_path)
     result = k.run(SimpleNamespace(artifact_root=tmp_path, run_dir=run_dir, zip=archive,
-                                  converter=cli, terrain=terrain, study_area=Path('area.yaml')))
+                                  converter=cli, terrain=terrain, study_area=Path('area.yaml')), members=members)
     assert result['status'] == 'COMPLETED' and result['input_unchanged']
     assert 'Standard buildings: 2' in (run_dir/'RESULTS.md').read_text()
     with pytest.raises(FileExistsError):
         k.run(SimpleNamespace(artifact_root=tmp_path, run_dir=run_dir, zip=archive,
-                             converter=cli, terrain=terrain, study_area=area))
+                             converter=cli, terrain=terrain, study_area=area), members=members)

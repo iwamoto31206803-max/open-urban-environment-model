@@ -4,6 +4,11 @@ This opt-in Windows experiment uses the existing fixed Converter and experimenta
 source-H Native → Standard → Consumer path. Results are in [RESULTS.md](RESULTS.md).
 It adds no VoxCity, canopy or solar processing and changes no acceptance or gate.
 
+The separate [four-mesh representative-height PoC](FOUR_MESH_REPRESENTATIVE_HEIGHT_POC.md)
+uses `python -m ouem.komae_four_mesh_poc` for the full 400 × 300 m AOI and
+exploratory VoxCity execution. The original two-member procedure below retains
+its scope and does not execute VoxCity.
+
 Run from an ordinary terminal at the repository root with the OUEM venv. The
 artifact root is the common ancestor of the repository and fixed binary; the
 output must be a new directory with an existing parent. Preserve failed runs.
