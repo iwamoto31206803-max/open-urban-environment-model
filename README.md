@@ -10,24 +10,23 @@ these phases and their variants.
 
 ## Current milestone
 
-**OUEM v0.2 supports configuration-driven experimental Voxel / Solar E2E reuse
-within existing Komae input coverage.** Reuse the prepared source-H Building,
-Standard Terrain and estimated Meta CHMv2 Height Envelope; change the analysis
-rectangle and Run ID in JSON without editing Python. The actual VoxCity grid
-supports Current / No-Canopy direct-solar comparison and georeferenced outputs.
+**B1 Technical E2E Milestone reached for the bounded Komae A/B experiments.**
+Prepared Building, Terrain and estimated Canopy reach configuration-driven
+VoxCity voxels, Current / No-Canopy / Difference direct irradiance and QGIS-ready
+styles/projects. The [closeout](docs/status/B1_TECHNICAL_MILESTONE_CLOSEOUT.md)
+distinguishes the original PR #97–99 PoC, v0.2 reuse/shared Z, v0.3 GIS/GUI work,
+and PR #119–121 parameter, synthetic-physics and real-geometry diagnostics.
 
-| Experimental step | Procedure | Executed evidence |
-|---|---|---|
-| PR #97: CityGML → fixed Converter → source-H Native / Standard / Consumer | [Building preparation](docs/experiments/real_komae_source_h/README.md) | [H retention and Terrain checks](docs/experiments/real_komae_source_h/RESULTS.md) |
-| PR #98: Building + Terrain → actual VoxCity voxels | [Voxel integration](docs/experiments/real_komae_voxel/README.md) | [Grid, IDs and vertical diagnostics](docs/experiments/real_komae_voxel/RESULTS.md) |
-| PR #99: estimated Canopy + paired direct solar | [Three-element PoC](docs/experiments/real_komae_solar/README.md) | [Solar comparison and limitations](docs/experiments/real_komae_solar/RESULTS.md) |
+B1's full scientific validation is **deferred**. Next development is B2 green
+view, which is **not implemented or started by this closeout**; its shared
+geometry/observer uncertainties remain in the
+[deferred validation backlog](docs/planning/OUEM_B1_Deferred_Validation_Backlog.md).
 
-PR #97–99 above establish the original exploratory PoC. PR #106–109 add
-configuration-driven reuse and a shared Building/Canopy vertical domain:
-[A compatibility and adjacent B technical completion](docs/experiments/real_komae_solar/README.md#phase-3c-shared-z-real-data-verification--2026-10-29-jst)
-are recorded separately from the original results and PR #107's historical B
-capacity failure. The [final audit](docs/planning/OUEM_E2E_Reuse_Audit_v0.1.md#final-refactoring-audit--v02-completion)
-found no mandatory refactoring before v0.2 completion.
+| Available experimental workflow | Start here |
+|---|---|
+| Existing-input rectangle/Run-ID reuse, Voxel then Solar | [JSON example](config/experiments/komae_e2e.json), [Voxel procedure](docs/experiments/real_komae_voxel/README.md#configurable-reuse-v02-phase-2), [Solar procedure](docs/experiments/real_komae_solar/README.md#configurable-reuse) |
+| Completed-run QML/manifest, exact-cell inspection, QGZ generation | [GIS procedures and recorded A/B verification](docs/experiments/real_komae_solar/README.md#qml--manifest-visualization) |
+| Saved-model observer/geometry diagnostics, without model execution | [Phase 2 diagnostic CLI and report](docs/experiments/real_komae_solar/B1_GEOMETRY_OBSERVER_PHASE2.md) |
 
 These are bounded technical results. Formal acceptance of this source-H / mixed
 solar lane is **NOT_VERIFIED**, source-H eligibility **NOT_ESTABLISHED**, and
@@ -88,14 +87,19 @@ For completed configured runs, generate QGIS styles and a presentation manifest
 without rerunning analysis: `python -m ouem.gis_visualization --run-root PATH --output NEW_DIRECTORY`.
 See [QML generation and application](docs/experiments/real_komae_solar/README.md#qml--manifest-visualization)
 for required evidence, seven layers and manual QGIS loading. Generation validates
-saved results; QGIS load/display remains **NOT_VERIFIED** until separately checked.
+saved results; generation alone leaves GUI verification **NOT_VERIFIED**.
+Separate A/B [helper GUI checks](docs/experiments/real_komae_solar/README.md#gis-helper-gui-smoke-2026-10-29-after-pr-116)
+and [QGZ generation/reopen/GUI evidence](docs/experiments/real_komae_solar/README.md#qgz-project-generation)
+are recorded for **QGIS 4.2.3**, not arbitrary QGIS versions or scientific accuracy.
 For GIS-side alpha-safe styling and exact original-cell inspection, see
 [GIS display helpers](docs/experiments/real_komae_solar/README.md#gis-display-compatibility-and-exact-lookup).
 To open the saved comparison as a project, use the standalone GIS-Python
 [QGZ generator and reopen check](docs/experiments/real_komae_solar/README.md#qgz-project-generation)
 in `src/ouem/gis_project.py`; QGIS remains separate from the OUEM venv.
 
-For input preparation, follow PR #97 → #98 → #99 procedures above. Actual inputs,
+For input preparation, follow [source-H Building](docs/experiments/real_komae_source_h/README.md),
+[Voxel](docs/experiments/real_komae_voxel/README.md) and [Solar](docs/experiments/real_komae_solar/README.md)
+procedures in order. Actual inputs,
 adjacent manifests, source evidence and matching hashes are required; a past PASS
 or cloned repository does not supply missing data. New upstream artifacts require
 the identity review described in those procedures.
@@ -122,6 +126,13 @@ show dependencies and the linked tests provide the corresponding regression chec
 | Building/Terrain validation, actual grid, base voxels and GIS export | [real_komae_voxel](src/ouem/real_komae_voxel.py) | [Voxel](tests/test_real_komae_voxel.py) |
 | Envelope sampling, shared Z, TREE integration, paired solar and GIS export | [real_komae_solar](src/ouem/real_komae_solar.py) | [Solar](tests/test_real_komae_solar.py), [shared vertical domain](tests/test_shared_vertical_domain.py) |
 | Read-only saved-run verification, QML styles and presentation manifest | [gis_visualization](src/ouem/gis_visualization.py) | [Visualization](tests/test_gis_visualization.py) |
+| GIS-runtime alpha-safe styling and exact source-cell lookup | [gis_display](src/ouem/gis_display.py) | [Display helper](tests/test_gis_display.py) |
+| GIS-runtime QGZ creation and separate-process reopen check | [gis_project](src/ouem/gis_project.py) | [Project](tests/test_gis_project.py) |
+| Read-only saved Building/TREE/ground/observer diagnostics | [b1_geometry_diagnostics](src/ouem/b1_geometry_diagnostics.py) | [Diagnostics](tests/test_b1_geometry_diagnostics.py) |
+
+The [closeout housekeeping audit](docs/planning/OUEM_B1_Closeout_Housekeeping_Audit_20261030.md)
+records retained historical paths and future maintenance candidates; no cleanup
+or prerequisite refactor is required to declare this bounded technical milestone.
 
 Use Python 3.10+ and the repository OUEM virtual environment. VoxCity 1.7.0 remains
 pinned in [pyproject.toml](pyproject.toml); its source is not vendored.
