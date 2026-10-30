@@ -8,6 +8,10 @@ The [E2E architecture audit](../../planning/OUEM_E2E_Reuse_Audit_v0.1.md) record
 the preceding static plan. Configurable reuse is implemented below; the legacy
 invocation remains available with its historical input bindings.
 
+[B1 physical sanity Phase 1](B1_PHYSICAL_SANITY_PHASE1.md) records independent
+synthetic geometry/formula checks at unchanged default optics and fixed sun;
+it is separate from real-city scientific validation and Acceptance.
+
 Run in an ordinary Windows terminal using the repository OUEM venv:
 
 ```powershell
