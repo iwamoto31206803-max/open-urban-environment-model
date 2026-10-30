@@ -1,0 +1,17 @@
+study_area:
+  id: kunitachi_2km
+  name: Kunitachi Generalization Pilot
+  phase: Geographic_Generalization_Exploratory
+
+crs:
+  epsg: 6677
+
+extent:
+  xmin: -36000.0
+  ymin: -34700.0
+  xmax: -34000.0
+  ymax: -32700.0
+
+size:
+  width_m: 2000
+  height_m: 2000
