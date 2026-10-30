@@ -12,6 +12,10 @@ invocation remains available with its historical input bindings.
 synthetic geometry/formula checks at unchanged default optics and fixed sun;
 it is separate from real-city scientific validation and Acceptance.
 
+[B1 geometry/observer Phase 2](B1_GEOMETRY_OBSERVER_PHASE2.md) diagnoses saved A/B
+geometry, actual observer heights and discretization without rerunning the model;
+it includes the read-only diagnostic CLI and local map/section evidence locations.
+
 Run in an ordinary Windows terminal using the repository OUEM venv:
 
 ```powershell
