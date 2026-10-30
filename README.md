@@ -17,16 +17,17 @@ styles/projects. The [closeout](docs/status/B1_TECHNICAL_MILESTONE_CLOSEOUT.md)
 distinguishes the original PR #97–99 PoC, v0.2 reuse/shared Z, v0.3 GIS/GUI work,
 and PR #119–121 parameter, synthetic-physics and real-geometry diagnostics.
 
-B1's full scientific validation is **deferred**. Next development is B2 green
-view, which is **not implemented or started by this closeout**; its shared
-geometry/observer uncertainties remain in the
+B1's full scientific validation is **deferred**; its shared geometry/observer
+uncertainties remain in the
 [deferred validation backlog](docs/planning/OUEM_B1_Deferred_Validation_Backlog.md).
 
 B2 has [CPU synthetic characterization](docs/experiments/b2_gvi/B2_CPU_GVI_Synthetic_Characterization_v0.1.md)
 following the [VoxCity GVI API audit](docs/planning/OUEM_B2_VoxCity_GVI_API_Audit_v0.1.md).
 The [Komae A/B CPU Technical E2E](docs/experiments/b2_gvi/RESULTS.md) now has bounded
 execution/GIS evidence using the provisional CPU weighted first-TREE view index;
-scientific validation remains unverified. The original
+the [B2 Technical Closeout](docs/status/B2_TECHNICAL_MILESTONE_CLOSEOUT.md)
+records completion of this bounded milestone and the unresolved handoff.
+Scientific validation remains unverified. The original
 [minimal proposal](docs/planning/OUEM_B2_Minimal_Technical_E2E_Design_v0.1.md)
 retains its dated design context. See the
 [B2 deferred backlog](docs/planning/OUEM_B2_Deferred_Validation_Backlog.md).
