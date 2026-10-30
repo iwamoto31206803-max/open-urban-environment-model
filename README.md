@@ -61,6 +61,19 @@ Terrain/Adapter, distinct from the conceptual National Baseline/GSI-LiDAR varian
 
 ## Documentation Guide
 
+Use the routes below for the bounded B1/B2 Technical E2E milestones and their
+unverified scientific questions. Each linked record retains its own status and
+scope; this guide adds no Acceptance or validation criteria.
+
+| Information owner | Start here / responsibility |
+|---|---|
+| Architecture / Standards | [Concept and Architecture v0.2](docs/OUEM_Concept_Architecture_v0.2.md), [runtime architecture](docs/architecture.md) and the Standards below own design and contracts, subject to their stated status. [Development Principles](docs/OUEM_Development_Principles_v0.1.md) own development decisions. |
+| Status / Closeout | [B1 Technical Closeout](docs/status/B1_TECHNICAL_MILESTONE_CLOSEOUT.md) and [B2 Technical Closeout](docs/status/B2_TECHNICAL_MILESTONE_CLOSEOUT.md) summarize milestone scope and link its evidence. Technical completion does not establish scientific validity. |
+| Backlog | [B1 deferred validation](docs/planning/OUEM_B1_Deferred_Validation_Backlog.md) and [B2 deferred validation](docs/planning/OUEM_B2_Deferred_Validation_Backlog.md) own unresolved verification questions; these remain open within their recorded scope. |
+| Experiments / RESULTS | [B1 Solar usage and evidence](docs/experiments/real_komae_solar/README.md), [B1 original results](docs/experiments/real_komae_solar/RESULTS.md), and [B2 usage](docs/experiments/b2_gvi/README.md) / [results](docs/experiments/b2_gvi/RESULTS.md) own execution conditions, numbers and provenance. Use the workflow table above and [Windows runbook](scripts/work/README.md) for operational entry points. |
+| Planning | [Repository Inventory](docs/planning/OUEM_Repository_Inventory_v0.1.md) and [Cleanup Plan](docs/planning/OUEM_Repository_Cleanup_Plan_v0.1.md) record the reviewed baseline and proposed work. [GIS Output Visualization Audit](docs/planning/OUEM_GIS_Output_Visualization_Audit_v0.1.md) is a dated design proposal; implemented GIS procedures and evidence are in the Solar guide. |
+| Acceptance | [Building pilot](experiments/a1_e2e_pilot/README.md) and [acceptance records](docs/acceptance/) own existing formal acceptance evidence and its limits. Closeouts and planning summaries do not extend that scope. |
+
 Start with the [Building Current State](docs/status/BUILDING_CURRENT_STATE.md)
 or [Canopy Current State](docs/status/CANOPY_CURRENT_STATE.md), then follow its
 implementation, verification and acceptance links. Detailed metrics, hashes and

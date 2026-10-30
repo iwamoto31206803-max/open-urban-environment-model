@@ -16,6 +16,44 @@ it is separate from real-city scientific validation and Acceptance.
 geometry, actual observer heights and discretization without rerunning the model;
 it includes the read-only diagnostic CLI and local map/section evidence locations.
 
+## Navigation for current use
+
+This guide owns Solar usage and its execution records. The
+[B1 Technical Closeout](../../status/B1_TECHNICAL_MILESTONE_CLOSEOUT.md) owns the
+bounded milestone summary; the [B1 backlog](../../planning/OUEM_B1_Deferred_Validation_Backlog.md)
+owns deferred scientific questions. Technical E2E completion does not establish
+scientific validity or extend Formal Acceptance.
+
+| Task | Entry |
+|---|---|
+| Reuse prepared inputs with saved configuration | [Configurable reuse](#configurable-reuse), [retained validation](#retained-validation), [outputs and limits](#outputs-and-limits) |
+| Understand shared vertical-domain handling | [Shared vertical domain](#shared-vertical-domain-phase-3b) |
+| Style or inspect completed results | [QML / manifest](#qml--manifest-visualization), [GIS display and exact lookup](#gis-display-compatibility-and-exact-lookup), [QGZ generation](#qgz-project-generation) |
+| Select the execution environment | [Windows runbook](../../../scripts/work/README.md#runtime-boundary), [runtime architecture](../../architecture.md) |
+| Find related B2 usage and limits | [B2 usage](../b2_gvi/README.md), [B2 Technical Closeout](../../status/B2_TECHNICAL_MILESTONE_CLOSEOUT.md) |
+
+### Execution history and verification records
+
+These links preserve the distinction between procedures and dated evidence.
+The legacy invocation immediately below remains available with its recorded
+bindings; navigation does not deprecate it or change its prerequisites.
+
+- [Original PoC results](RESULTS.md),
+  [Phase 3 reuse verification](#phase-3-real-data-reuse-verification--2026-10-29-jst),
+  [Phase 3C shared-Z verification](#phase-3c-shared-z-real-data-verification--2026-10-29-jst).
+- [Initial QGIS display verification](#phase-1-qgis-display-verification--2026-10-29-jst),
+  [unlocked GUI follow-up](#unlocked-gui-follow-up--2026-10-29-jst),
+  [raster-provider investigation](#raster-provider-investigation--2026-10-29),
+  [helper GUI smoke](#gis-helper-gui-smoke-2026-10-29-after-pr-116).
+- [Synthetic physical sanity](B1_PHYSICAL_SANITY_PHASE1.md),
+  [saved geometry/observer diagnostics](B1_GEOMETRY_OBSERVER_PHASE2.md).
+
+The [GIS Output Visualization Audit](../../planning/OUEM_GIS_Output_Visualization_Audit_v0.1.md)
+retains its dated design-proposal role; the sections linked above own subsequent
+implementation usage and execution evidence. The
+[repository documentation guide](../../../README.md#documentation-guide) links
+the design/contracts, status, planning, backlog and Acceptance owners.
+
 Run in an ordinary Windows terminal using the repository OUEM venv:
 
 ```powershell

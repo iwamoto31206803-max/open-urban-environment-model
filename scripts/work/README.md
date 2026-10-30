@@ -8,6 +8,47 @@ For the current configured B1/GIS path, start at the
 [B1 technical closeout](../../docs/status/B1_TECHNICAL_MILESTONE_CLOSEOUT.md).
 The accepted-path and historical diagnostics below retain their separate scope.
 
+## Navigation for current use
+
+Choose the entry matching the intended task and its prerequisites; the links
+do not authorize new runs or replace the conditions in the owning procedure.
+
+| Task | Entry |
+|---|---|
+| Select the OUEM or separate GIS runtime | [Runtime boundary](#runtime-boundary), [runtime architecture](../../docs/architecture.md) |
+| Use prepared inputs for configured B1 Voxel / Solar | [Voxel configuration procedure](../../docs/experiments/real_komae_voxel/README.md#configurable-reuse-v02-phase-2), [Solar configuration procedure](../../docs/experiments/real_komae_solar/README.md#configurable-reuse) |
+| Inspect saved B1 GIS outputs | [Solar QML / manifest](../../docs/experiments/real_komae_solar/README.md#qml--manifest-visualization), [exact-cell display helpers](../../docs/experiments/real_komae_solar/README.md#gis-display-compatibility-and-exact-lookup), [QGZ generation](../../docs/experiments/real_komae_solar/README.md#qgz-project-generation) |
+| Use saved Current Voxel for the bounded B2 CPU workflow | [B2 usage](../../docs/experiments/b2_gvi/README.md), [B2 Technical Closeout](../../docs/status/B2_TECHNICAL_MILESTONE_CLOSEOUT.md) |
+| Diagnose saved Building geometry | [Tall-building diagnosis](#diagnose-unusually-tall-komae-adapter-buildings), [CityGML vertical trace](#trace-a-buildings-vertical-coordinates-from-citygml), [saved B1 observer/geometry diagnostics](../../docs/experiments/real_komae_solar/B1_GEOMETRY_OBSERVER_PHASE2.md) |
+
+### Accepted-path procedures and experiment records
+
+The following sections retain their original scope, commands and evidence.
+Dated results describe those executions; consult the
+[B1](../../docs/status/B1_TECHNICAL_MILESTONE_CLOSEOUT.md) /
+[B2](../../docs/status/B2_TECHNICAL_MILESTONE_CLOSEOUT.md) closeouts for milestone
+status and their linked backlogs for unverified science. These procedures are
+not deprecated by this navigation.
+
+- [Komae PLATEAU acceptance workflow](#komae-plateau-acceptance-workflow),
+  [manual QGIS acceptance](#manual-qgis-acceptance),
+  [Native to Standard Building](#native-to-standard-building-acceptance),
+  [Terrain local acceptance](#komae-terrain-local-acceptance).
+- [Isolated A1/A2/A3 integration](#isolated-komae-a1a2a3-integration-demonstration),
+  [opt-in canopy PoC](#meta-chm-canopy-scenario-poc-opt-in),
+  [saved-canopy QGIS review](#qgis-review-of-a-saved-canopy-run).
+- [Adapter failure diagnosis](#read-only-adapter-content-failure-diagnosis),
+  [geometry provenance](#read-only-geometry-provenance-diagnosis),
+  [intermediate geometry](#read-only-adapter-intermediate-geometry-diagnosis),
+  [memory-only CRS candidate](#memory-only-crs-repair-candidate-evaluation).
+- [Contained E2E PoC](#opt-in-92-building-contained-e2e-poc),
+  [read-only preflight](#read-only-preflight-before-authorizing-a-real-data-run),
+  [recorded evidence/report](#evidence-and-report-v01).
+
+See the [repository documentation guide](../../README.md#documentation-guide)
+for design/contracts, execution evidence, status, backlog, planning and existing
+Acceptance owners. This runbook owns local operational instructions.
+
 ## Runtime boundary
 
 The Komae workflow keeps two independently managed runtimes:
