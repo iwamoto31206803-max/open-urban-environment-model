@@ -1,15 +1,18 @@
 # Building Current State
 
-Last checked: **2026-10-28**, main baseline
-`3d767f039b6542edf37b01025f92084daf3ed6e9` (PR #99 merged).
+Last checked: **2026-10-30**, main baseline
+`53c5067d72c62631fdbfd949077faedaab604316` (PR #121 merged).
 This [informational entry point](../OUEM_Documentation_Governance_v0.1.md)
 reflects code and existing execution records, not a new run or acceptance decision.
 
-## Current milestone: real source-H End-to-End PoC
+## Current milestone: B1 technical E2E closeout
 
-A small-area Komae experiment now reaches real Building + Terrain + estimated
-Canopy voxels and Current / No-Canopy direct solar through public VoxCity APIs.
-The three stages retain separate procedures and evidence:
+A small-area Komae path reaches Building + Terrain + estimated Canopy voxels,
+configured A/B reuse, paired direct solar and QGIS projects. The
+[B1 technical closeout](B1_TECHNICAL_MILESTONE_CLOSEOUT.md) links implementation,
+execution and GIS/GUI verification; full scientific validation is deferred in the
+[backlog](../planning/OUEM_B1_Deferred_Validation_Backlog.md). B2 is not yet implemented.
+The original three PoC stages retain separate historical evidence:
 
 | Stage / implementation | Procedure and evidence |
 |---|---|

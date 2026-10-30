@@ -4,6 +4,10 @@ Files in this directory are temporary, user-facing operational helpers for
 local experiments and acceptance runs. Stable reusable logic belongs under
 `src/ouem`, and accepted conclusions belong under `docs`.
 
+For the current configured B1/GIS path, start at the
+[B1 technical closeout](../../docs/status/B1_TECHNICAL_MILESTONE_CLOSEOUT.md).
+The accepted-path and historical diagnostics below retain their separate scope.
+
 ## Runtime boundary
 
 The Komae workflow keeps two independently managed runtimes:

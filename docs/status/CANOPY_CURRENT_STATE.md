@@ -1,16 +1,19 @@
 # Canopy Current State
 
-Last checked: **2026-10-28**, main baseline
-`3d767f039b6542edf37b01025f92084daf3ed6e9` (PR #99 merged).
+Last checked: **2026-10-30**, main baseline
+`53c5067d72c62631fdbfd949077faedaab604316` (PR #121 merged).
 This [informational entry point](../OUEM_Documentation_Governance_v0.1.md)
 reflects code and existing records; no new processing, accuracy validation or
 acceptance is declared.
 
-## Current milestone: mixed real-city PoC
+## Current milestone: B1 technical E2E closeout
 
-The exploratory Komae path now combines real source-H Building, Standard Terrain
-and an estimated Meta CHMv2 Height Envelope on the actual VoxCity grid, then
-compares Current / No-Canopy direct irradiance using public engine APIs.
+The exploratory Komae path combines source-H Building, Standard Terrain and an
+estimated Meta CHMv2 Height Envelope on the actual VoxCity grid, then compares
+Current / No-Canopy direct irradiance. Configured A/B reuse, shared upper Z and
+GIS/QGZ/GUI verification are recorded in the [B1 technical closeout](B1_TECHNICAL_MILESTONE_CLOSEOUT.md).
+Full scientific validation is deferred to the [backlog](../planning/OUEM_B1_Deferred_Validation_Backlog.md);
+B2 remains unimplemented. Original PoC
 [PR #99 procedure](../experiments/real_komae_solar/README.md) and
 [executed results](../experiments/real_komae_solar/RESULTS.md) own the methods,
 metrics, input/output identities and boundary diagnostics.
@@ -39,8 +42,9 @@ and [tests](../../tests/test_canopy_presence_semantics.py) retain this distincti
 
 Canopy is sampled at PR #98's saved actual centres, not matched by array index
 to the older EPSG:6677 north-up grid. Public voxelization gives BUILDING priority;
-Current with TREE removed equals No-Canopy and the saved Building/Terrain base.
-Grid, D0, Building occupancy, ground, ROI and observations remain common.
+Current with TREE removed equals No-Canopy and the saved Building/Terrain base
+plus verified shared upper AIR. Grid, D0, Building occupancy, ground, ROI and
+observations remain common **within each pair**, not across different A/B runs.
 Numerical placement and pair checks do not validate estimated crowns above roofs.
 
 ## Unresolved validation and acceptance
@@ -65,6 +69,9 @@ Strong modeled attenuation is not measured canopy benefit. The
 [observer audit](../experiments/voxcity_canopy_shadow/PHASE4A_OBSERVER_GEOMETRY_AND_VERTICAL_CONTRACT.md)
 explains why shared API ray origins do not establish exact physical DEM+1.5m
 observations. Voxel surface/rounding errors are distinct from source-H conversion.
+The [PR #121 saved-geometry diagnosis](../experiments/real_komae_solar/B1_GEOMETRY_OBSERVER_PHASE2.md)
+quantifies actual observer offsets and cross-extent D0 rounding; its consistency
+checks are not physical crown or observer-height validation.
 General halo sufficiency remains unverified: PR #99's known-height directional
 check and cropped controls do not establish expanded-domain convergence or
 coverage of unknown exterior objects. No annual/global solar or heat result is
@@ -72,8 +79,9 @@ established. Detailed limits belong to the linked RESULTS.
 
 ## Reproduction and earlier experiments
 
-Use the PR #99 procedure after its upstream Building/Terrain and Envelope
-prerequisites. It requires actual files and provenance, not a historical PASS;
+Use the [configured Solar procedure](../experiments/real_komae_solar/README.md#configurable-reuse)
+after its upstream Building/Terrain and Envelope prerequisites. The original
+PR #99 invocation remains historical. Reuse requires files and provenance, not a historical PASS;
 source hashes, engine identity and runtime requirements are in the owning records.
 This documentation refresh did not rerun models or recheck local artifact hashes.
 
