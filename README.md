@@ -22,8 +22,11 @@ view, which is **not implemented or started by this closeout**; its shared
 geometry/observer uncertainties remain in the
 [deferred validation backlog](docs/planning/OUEM_B1_Deferred_Validation_Backlog.md).
 
-B2 remains design-only: [VoxCity GVI API audit](docs/planning/OUEM_B2_VoxCity_GVI_API_Audit_v0.1.md)
-and [minimal Technical E2E proposal](docs/planning/OUEM_B2_Minimal_Technical_E2E_Design_v0.1.md).
+B2 has [CPU synthetic characterization](docs/experiments/b2_gvi/B2_CPU_GVI_Synthetic_Characterization_v0.1.md)
+following the [VoxCity GVI API audit](docs/planning/OUEM_B2_VoxCity_GVI_API_Audit_v0.1.md).
+The [minimal Technical E2E](docs/planning/OUEM_B2_Minimal_Technical_E2E_Design_v0.1.md)
+remains proposed; real-data GVI has not started. See the
+[B2 deferred backlog](docs/planning/OUEM_B2_Deferred_Validation_Backlog.md).
 
 | Available experimental workflow | Start here |
 |---|---|
