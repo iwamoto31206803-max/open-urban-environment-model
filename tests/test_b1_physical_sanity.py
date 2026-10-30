@@ -17,9 +17,12 @@ D0 = 20.0
 AZIMUTH, ELEVATION, DNI = 135.0, 35.0, 800.0
 ATOL = 1e-9  # Absolute W/m2; no relative tolerance.
 FLAT = DNI * math.sin(math.radians(ELEVATION))
-# Independent north/east/up formula, not VoxCity's direction helper.
-SUN = np.array([math.cos(math.radians(ELEVATION)) * math.cos(math.radians(AZIMUTH)),
-                math.cos(math.radians(ELEVATION)) * math.sin(math.radians(AZIMUTH)),
+# Independent north/east/up formula, not VoxCity's direction helper. At exactly
+# 135 degrees, cos(az)=-sin(az)=-1/sqrt(2). Preserve that analytic identity so
+# corner tangencies are zero-length, rather than ~1e-15m false intersections
+# from separate floating-point evaluations of sin(135) and cos(135).
+HORIZONTAL_COMPONENT = math.cos(math.radians(ELEVATION))/math.sqrt(2.)
+SUN = np.array([-HORIZONTAL_COMPONENT, HORIZONTAL_COMPONENT,
                 math.sin(math.radians(ELEVATION))])
 BUILDING_XY = (12, 16, 12, 16)
 TREE_XY = (8, 24, 8, 24)
@@ -109,6 +112,14 @@ def tree_oracle(top):
     transmission = np.exp(-.6 * 1. * lengths)
     expected = FLAT * np.where(transmission < .01, 0., transmission)
     return lengths, transmission, expected
+
+
+def test_analytic_box_oracle_distinguishes_corner_touch_from_positive_path():
+    box = ((12., 12., 1.), (16., 16., 9.))
+    # These rays have constant u+v=24, touching only the SW corner (12,12).
+    for i in range(12, 19):
+        assert box_length((i, 23-i), box) == 0.
+    assert box_length((16, 11), box) > 0.
 
 
 def test_unobstructed_flat_horizontal_irradiance():
@@ -217,7 +228,7 @@ def test_ouem_pair_matches_independent_geometry_and_difference():
     np.testing.assert_array_equal(arrays['observer_index_k'], np.full(SHAPE[:2], 2))
     np.testing.assert_array_equal(arrays['solar_difference'], arrays['solar_no_canopy']-arrays['solar_current'])
     assert np.all(arrays['solar_difference'][valid] >= -ATOL)
-    assert np.all(arrays['solar_difference'][~valid] != arrays['solar_difference'][~valid])
+    assert np.isnan(arrays['solar_difference'][~valid]).all()
     assert np.array_equal(classes, before[0]) and np.array_equal(absent, before[1])
     assert qa['invariants']['non_TREE_voxels_equal'] == 'PASS'
     assert qa['actual_api_calls'] == 5
