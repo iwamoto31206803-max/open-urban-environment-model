@@ -24,12 +24,16 @@ geometry/observer uncertainties remain in the
 
 B2 has [CPU synthetic characterization](docs/experiments/b2_gvi/B2_CPU_GVI_Synthetic_Characterization_v0.1.md)
 following the [VoxCity GVI API audit](docs/planning/OUEM_B2_VoxCity_GVI_API_Audit_v0.1.md).
-The [minimal Technical E2E](docs/planning/OUEM_B2_Minimal_Technical_E2E_Design_v0.1.md)
-remains proposed; real-data GVI has not started. See the
+The [Komae A/B CPU Technical E2E](docs/experiments/b2_gvi/RESULTS.md) now has bounded
+execution/GIS evidence using the provisional CPU weighted first-TREE view index;
+scientific validation remains unverified. The original
+[minimal proposal](docs/planning/OUEM_B2_Minimal_Technical_E2E_Design_v0.1.md)
+retains its dated design context. See the
 [B2 deferred backlog](docs/planning/OUEM_B2_Deferred_Validation_Backlog.md).
 
 | Available experimental workflow | Start here |
 |---|---|
+| Saved B1 Current → CPU weighted first-TREE view index → GeoTIFF/QGIS | [B2 usage and actual ROI/context](docs/experiments/b2_gvi/README.md), [A/B results](docs/experiments/b2_gvi/RESULTS.md) |
 | Existing-input rectangle/Run-ID reuse, Voxel then Solar | [JSON example](config/experiments/komae_e2e.json), [Voxel procedure](docs/experiments/real_komae_voxel/README.md#configurable-reuse-v02-phase-2), [Solar procedure](docs/experiments/real_komae_solar/README.md#configurable-reuse) |
 | Completed-run QML/manifest, exact-cell inspection, QGZ generation | [GIS procedures and recorded A/B verification](docs/experiments/real_komae_solar/README.md#qml--manifest-visualization) |
 | Saved-model observer/geometry diagnostics, without model execution | [Phase 2 diagnostic CLI and report](docs/experiments/real_komae_solar/B1_GEOMETRY_OBSERVER_PHASE2.md) |

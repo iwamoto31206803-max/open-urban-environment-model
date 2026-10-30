@@ -27,3 +27,21 @@ Keep execution facts distinct from source inference and scientific validity.
 No GPU/Taichi installation or execution, real-data GVI, or B1 evidence change
 is authorized by this backlog. The current synthetic task does not decide the
 transition to real-data Technical E2E.
+
+## Phase 3 evidence, 2026-10-30
+
+The separately user-authorized [Komae A/B CPU Technical E2E](../experiments/b2_gvi/RESULTS.md)
+uses the provisional **CPU weighted first-TREE view index**, generic only,
+fixed sampling/optics and saved geometry. This authorizes that bounded technical
+execution, not GPU/scientific work or closure of any row above. Full 128×128
+domains include context; the actual saved evaluation ROI is 64×64, extracted
+after calculation. Inputs and B1 history remain unchanged.
+
+Real CPU observations add evidence to V02/V07: A/B have 333/716 valid origins
+inside TREE, no selected out-of-Z/opaque origins, zero canopy missing/outside
+cells and masks matching the saved B1 observers. These checks establish local
+index/capacity consistency, not physical observation-plane or vegetation accuracy.
+Overlapping A/B full domains, differing D0/grid phase and missing exterior rays
+still prevent assuming common physical-observer comparability; future fixed-
+coordinate/expanded-domain controls require their own scope. V01–V07 remain
+Deferred / Unverified for their stated unresolved questions.

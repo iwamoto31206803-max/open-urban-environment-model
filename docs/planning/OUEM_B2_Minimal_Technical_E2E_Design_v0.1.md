@@ -1,6 +1,12 @@
 # B2 Minimal Technical E2E Design v0.1
 
 Status: **Proposal for review; no implementation or model execution.**
+This is the status of the original proposal. **2026-10-30 Phase 3 follow-up:**
+the separately authorized provisional CPU generic profile now has
+[implementation/usage](../experiments/b2_gvi/README.md) and
+[Komae A/B execution evidence](../experiments/b2_gvi/RESULTS.md).
+Scientific questions and the dated proposal below retain their scope; no
+Concept/Acceptance decision is implied by the technical execution.
 2026-10-30; baseline main `c73ef78853d0be242686923e0a9d35e225c0a774`
 (PR #122 merged). Technical basis is the
 [installed GVI API audit](OUEM_B2_VoxCity_GVI_API_Audit_v0.1.md), not a claim
