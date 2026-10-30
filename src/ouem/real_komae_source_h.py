@@ -78,7 +78,11 @@ def compare_terrain(standard, terrain):
                     buildings=rows)
 
 
-def run(args):
+def run(args, *, members=MEMBERS):
+    """Run the existing LoD2 profile; callers may explicitly select ZIP members."""
+    require(len(members) > 0 and len(set(members)) == len(members)
+            and all(Path(n).name == n and n.endswith('_bldg_6697_op.gml') for n in members),
+            'members', 'unique explicit Building member basenames required')
     root = args.artifact_root.resolve(strict=True)
     run_dir = args.run_dir.resolve()
     require(run_dir.is_relative_to(root), 'run_dir', 'must be inside artifact root')
@@ -98,17 +102,17 @@ def run(args):
         archive_members = []
         with zipfile.ZipFile(args.zip) as archive:
             for name in archive.namelist():
-                if not name.endswith('/') and (Path(name).name in MEMBERS or name.startswith('codelists/')):
+                if not name.endswith('/') and (Path(name).name in members or name.startswith('codelists/')):
                     target = (extracted/name).resolve()
                     require(target.is_relative_to(extracted), 'ZIP', 'unsafe member path')
                     target.parent.mkdir(parents=True, exist_ok=True)
                     with archive.open(name) as source, target.open('xb') as dest:
                         while chunk := source.read(1024*1024): dest.write(chunk)
-                    if Path(name).name in MEMBERS:
+                    if Path(name).name in members:
                         raw.append(target)
                         archive_members.append(dict(member=name, sha256=digest(target)))
         raw.sort()
-        require(len(raw) == 2 and {p.name for p in raw} == set(MEMBERS), 'ZIP', 'exact target members required')
+        require(len(raw) == len(members) and {p.name for p in raw} == set(members), 'ZIP', 'exact target members required')
         output = run_dir/'converter.gpkg'
         argv = [str(args.converter.resolve()), *map(str, raw), '--sink', 'gpkg', '--output', str(output), '--epsg', '6697', '-t', 'use_lod=lod2']
         with (run_dir/'converter.stdout.log').open('xb') as out, (run_dir/'converter.stderr.log').open('xb') as err:
