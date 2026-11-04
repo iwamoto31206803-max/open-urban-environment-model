@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "OUEM Experimental Mixed-LoD Native run record",
+  "type": "object",
+  "required": ["schema", "profile", "execution_status"],
+  "properties": {
+    "schema": {"const": "ouem-mixed-lod-native-manifest/v0.1"},
+    "profile": {"const": "ouem-native-building/plateau-mixed-lod-source-h/v0.1"},
+    "execution_status": {"enum": ["COMPLETED", "FAILED"]},
+    "error": {"type": "string"},
+    "status": {"const": "EXPERIMENTAL"},
+    "formal_acceptance": {"const": "NOT_VERIFIED"},
+    "completed_at": {"type": "string", "format": "date-time"},
+    "python": {"type": "string"},
+    "platform": {"type": "string"},
+    "implementation": {"$ref": "#/$defs/artifact"},
+    "artifacts": {
+      "type": "object",
+      "required": ["bridge_receipt", "selector_manifest", "selector_geometry", "raw_zip", "bridge_implementation",
+                   "converter_binary", "extracted_member", "lod1_gpkg", "lod2_gpkg",
+                   "lod1_stdout", "lod1_stderr", "lod2_stdout", "lod2_stderr"],
+      "additionalProperties": {"$ref": "#/$defs/artifact"}
+    },
+    "raw_source": {"type": "object", "required": ["zip_path", "zip_sha256", "release", "members"]},
+    "aoi": {
+      "type": "object", "required": ["epsg", "bounds", "predicate"],
+      "properties": {"epsg": {"const": 6677}, "bounds": {"type": "array", "minItems": 4, "maxItems": 4,
+                      "items": {"type": "number"}}, "predicate": {"type": "string"}}
+    },
+    "crs": {"type": "object"},
+    "converter": {
+      "type": "object", "required": ["binary", "commit", "version"],
+      "properties": {"binary": {"$ref": "#/$defs/artifact"}, "version": {"const": "nusamai 0.1.19"},
+                     "commit": {"const": "ce7766df9788ce391b149c55df16d33082d0bc72"}}
+    },
+    "branches": {
+      "type": "object", "required": ["1", "2"], "additionalProperties": false,
+      "properties": {"1": {"$ref": "#/$defs/pass"}, "2": {"$ref": "#/$defs/pass"}}
+    },
+    "native": {
+      "$ref": "#/$defs/artifact", "required": ["layer"], "properties": {"layer": {"const": "bldg:Building"}}
+    },
+    "decisions": {"type": "array", "items": {"$ref": "#/$defs/decision"}},
+    "counts": {
+      "type": "object", "required": ["included", "by_lod", "excluded"],
+      "properties": {
+        "included": {"type": "integer", "minimum": 1}, "excluded": {"type": "integer", "minimum": 0},
+        "by_lod": {"type": "object", "propertyNames": {"enum": ["1", "2"]},
+                   "additionalProperties": {"type": "integer", "minimum": 1}}
+      }
+    },
+    "validation": {
+      "type": "object", "required": ["raw_selection", "converter_reconciliation", "native_attributes", "blob_bytes", "xyz"],
+      "additionalProperties": {"const": "PASS"}
+    }
+  },
+  "additionalProperties": false,
+  "if": {"properties": {"execution_status": {"const": "COMPLETED"}}},
+  "then": {"required": ["status", "formal_acceptance", "completed_at", "python", "platform", "implementation",
+                        "artifacts", "raw_source", "aoi", "crs", "converter", "branches", "native",
+                        "decisions", "counts", "validation"], "not": {"required": ["error"]}},
+  "else": {"required": ["error"], "not": {"required": ["native"]}},
+  "$defs": {
+    "sha": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "artifact": {
+      "type": "object", "required": ["path", "sha256", "size_bytes"],
+      "properties": {"path": {"type": "string", "minLength": 1}, "sha256": {"$ref": "#/$defs/sha"},
+                     "size_bytes": {"type": "integer", "minimum": 0}}
+    },
+    "pass": {
+      "type": "object", "required": ["argv", "exit_code", "started_at", "ended_at", "gpkg", "stdout", "stderr"],
+      "properties": {
+        "argv": {"type": "array", "items": {"type": "string"}}, "exit_code": {"const": 0},
+        "started_at": {"type": "string", "format": "date-time"}, "ended_at": {"type": "string", "format": "date-time"},
+        "gpkg": {"$ref": "#/$defs/artifact"}, "stdout": {"$ref": "#/$defs/artifact"},
+        "stderr": {"$ref": "#/$defs/artifact"}
+      }
+    },
+    "decision": {
+      "type": "object",
+      "required": ["source_id", "ouem_id", "selected_lod", "selection_reason", "source_member",
+                   "aoi_intersects", "disposition"],
+      "properties": {
+        "source_id": {"type": "string"}, "ouem_id": {"type": "string"},
+        "selected_lod": {"enum": [1, 2, null]}, "selection_reason": {"type": "string"},
+        "source_member": {"type": "string"}, "aoi_intersects": {"type": ["boolean", "null"]},
+        "disposition": {"enum": ["INCLUDED", "OUTSIDE_AOI", "NO_SUPPORTED_LOD"]},
+        "converter_pass": {"enum": ["lod1", "lod2"]},
+        "feature": {
+          "type": "object", "required": ["id", "layer", "blob_sha256", "result"],
+          "properties": {"id": {"type": "string"}, "layer": {"const": "bldg:Building"},
+                         "blob_sha256": {"$ref": "#/$defs/sha"}, "result": {"enum": ["EXACT", "ORDER_ONLY"]}}
+        },
+        "raw_branches": {"type": "array", "items": {"type": "string"}},
+        "raw_polygons": {"type": "array", "items": {"type": "object"}},
+        "raw_geometry_sha256": {"$ref": "#/$defs/sha"}
+      },
+      "additionalProperties": false,
+      "if": {"properties": {"disposition": {"const": "INCLUDED"}}},
+      "then": {
+        "required": ["converter_pass", "feature", "raw_branches", "raw_polygons", "raw_geometry_sha256"],
+        "properties": {"selected_lod": {"enum": [1, 2]}, "aoi_intersects": {"const": true}}
+      },
+      "else": {"properties": {"aoi_intersects": {"enum": [false, null]}}}
+    }
+  }
+}
