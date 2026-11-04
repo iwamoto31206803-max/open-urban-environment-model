@@ -34,6 +34,14 @@ New-Item -ItemType Directory -Path data/work/mixed-lod-selector -Force | Out-Nul
   --output-dir data/work/mixed-lod-selector/run-repro-01
 ```
 
+## PR #136 レビュー時の追加制約
+
+探索的profileでは、Buildingごとの `bldg:lod2MultiSurface` を単一branchに限定する。複数ある場合は `LOD2_INVALID` で停止し、LoD1へのfallbackや成功manifestの公開は行わない。同一Building内の任意の参照SolidとMultiSurfaceの面の照合は従来どおり行う。
+
+上のコマンドの出力先を `data/work/mixed-lod-selector/run-pr136-review-01` に変えて再実行したところ、終了コード1で停止し、`failure.json` のみを出力した。最初の拒否対象 `bldg_0f05a530-a57f-4cbf-96f3-0b4fed9a0386` は壁・地表・屋根の下に計7 branchを持ち、参照Solidを1個持つ。
+
+同じGMLの独立したXML集計では、親Building 3,778棟のうち487棟が0 branch、3,291棟が複数branch（5～138）、単一branchは0棟だった。この制約下では候補Bの31／32／63棟を再生成できない。以下の件数とハッシュは制約追加前の実測記録として残す。
+
 ## 実測
 
 最終版は2026-11-04 16:16 JSTに完了した。保存先は `data/work/mixed-lod-selector/run-20261104-01/`。実行時間は67.01秒。Python 3.11.9、Shapely 2.2.0、PyProj 3.7.2。schemaの読取検証には環境に既存のjsonschema 4.26.0を使用した。

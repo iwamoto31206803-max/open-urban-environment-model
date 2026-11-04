@@ -137,6 +137,26 @@ def test_invalid_present_geometry_never_falls_back_or_publishes(tmp_path,case):
         assert failure["failed_record"]["lod2_validation_status"]=="INVALID"
 
 
+def test_multiple_lod2_multisurface_branches_fail_closed(tmp_path):
+    node = building(refs=True)
+    surface = node.find(B+"lod2MultiSurface")[0]
+    second_surface = ET.SubElement(ET.SubElement(node, B+"lod2MultiSurface"), G+"MultiSurface")
+    member = surface[-1]
+    surface.remove(member)
+    second_surface.append(member)
+    path = archive(tmp_path, [node])
+    out = tmp_path/"failed"
+
+    with pytest.raises(m.SelectionError, match="multiple lod2MultiSurface branches"):
+        m.run(path, ["udx/bldg/a.gml"], release="fixture", bounds=BOUNDS, output_dir=out)
+
+    failure = json.loads((out/"failure.json").read_text())
+    assert failure["code"] == "LOD2_INVALID"
+    assert failure["failed_record"]["selected_lod"] is None
+    assert not (out/"manifest.json").exists()
+    assert not (out/"geometries.jsonl").exists()
+
+
 @pytest.mark.parametrize("separate",[False,True])
 def test_duplicate_building_ids_fail_across_members(tmp_path,separate):
     node=building()
