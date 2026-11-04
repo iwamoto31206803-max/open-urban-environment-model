@@ -1,0 +1,667 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ouem:schema:raw-mixed-lod-selector-manifest:0.1",
+  "title": "Exploratory Raw Mixed-LoD selector result; not an OUEM Native/Standard contract",
+  "description": "Structural schema only. IDs, archive/member hashes, branch locators, coordinate preservation, counts and cross-file correspondence require semantic verification. VALID is bounded numerical/structural validation, not XSD/manifold/survey validity.",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/completed"
+    },
+    {
+      "$ref": "#/$defs/failure"
+    }
+  ],
+  "$defs": {
+    "completed": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema": {
+          "const": "ouem-raw-mixed-lod-selector-manifest/v0.1"
+        },
+        "profile": {
+          "const": "experimental-raw-citygml2-lod2-else-lod1-source-h/v0.1"
+        },
+        "status": {
+          "const": "EXPERIMENTAL"
+        },
+        "execution_status": {
+          "const": "COMPLETED"
+        },
+        "formal_acceptance": {
+          "const": "NOT_VERIFIED"
+        },
+        "source": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "zip_path": {
+              "type": "string"
+            },
+            "zip_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "release": {
+              "type": "string",
+              "minLength": 1
+            },
+            "members": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "member": {
+                    "type": "string"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  },
+                  "size_bytes": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                },
+                "required": [
+                  "member",
+                  "sha256",
+                  "size_bytes"
+                ]
+              },
+              "minItems": 1
+            }
+          },
+          "required": [
+            "zip_path",
+            "zip_sha256",
+            "release",
+            "members"
+          ]
+        },
+        "crs": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "source_srs_name": {
+              "const": "http://www.opengis.net/def/crs/EPSG/0/6697"
+            },
+            "source_tuple_order": {
+              "const": [
+                "latitude",
+                "longitude",
+                "H"
+              ]
+            },
+            "geometry_tuple_order": {
+              "const": [
+                "longitude",
+                "latitude",
+                "H"
+              ]
+            },
+            "horizontal_epsg": {
+              "const": 6668
+            },
+            "vertical_epsg": {
+              "const": 6695
+            },
+            "quantity": {
+              "const": "gravity_related_height"
+            },
+            "unit": {
+              "const": "metre"
+            },
+            "vertical_operation": {
+              "const": "identity_H"
+            },
+            "status": {
+              "const": "source-declared-not-survey-verified"
+            }
+          },
+          "required": [
+            "source_srs_name",
+            "source_tuple_order",
+            "geometry_tuple_order",
+            "horizontal_epsg",
+            "vertical_epsg",
+            "quantity",
+            "unit",
+            "vertical_operation",
+            "status"
+          ]
+        },
+        "aoi": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "epsg": {
+              "const": 6677
+            },
+            "bounds": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 4,
+              "maxItems": 4
+            },
+            "predicate": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "epsg",
+            "bounds",
+            "predicate"
+          ]
+        },
+        "namespaces": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "bldg": {
+              "const": "http://www.opengis.net/citygml/building/2.0"
+            },
+            "gml": {
+              "const": "http://www.opengis.net/gml"
+            }
+          },
+          "required": [
+            "bldg",
+            "gml"
+          ]
+        },
+        "input_unchanged": {
+          "const": true
+        },
+        "counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "raw_buildings": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "selected_lods": {
+              "$ref": "#/$defs/lod_counts"
+            },
+            "aoi_selected_lods": {
+              "$ref": "#/$defs/lod_counts"
+            },
+            "excluded_no_lod": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "raw_buildings",
+            "selected_lods",
+            "aoi_selected_lods",
+            "excluded_no_lod"
+          ]
+        },
+        "records": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/record"
+          }
+        },
+        "geometry_output": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "path": {
+              "const": "geometries.jsonl"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "encoding": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "path",
+            "sha256",
+            "encoding"
+          ]
+        },
+        "implementation_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "python": {
+          "type": "string"
+        },
+        "completed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "elapsed_seconds": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "schema",
+        "profile",
+        "status",
+        "execution_status",
+        "formal_acceptance",
+        "source",
+        "crs",
+        "aoi",
+        "namespaces",
+        "input_unchanged",
+        "counts",
+        "records",
+        "geometry_output",
+        "implementation_sha256",
+        "python",
+        "completed_at",
+        "elapsed_seconds"
+      ]
+    },
+    "failure": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema": {
+          "const": "ouem-raw-mixed-lod-selector-manifest/v0.1"
+        },
+        "profile": {
+          "const": "experimental-raw-citygml2-lod2-else-lod1-source-h/v0.1"
+        },
+        "execution_status": {
+          "const": "FAILED"
+        },
+        "error": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        },
+        "failed_record": {
+          "type": [
+            "object",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "schema",
+        "profile",
+        "execution_status",
+        "error",
+        "code",
+        "failed_record"
+      ]
+    },
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ouem_id": {
+          "type": "string",
+          "pattern": "^oub-[0-9a-f-]{36}$"
+        },
+        "selected_lod": {
+          "enum": [
+            1,
+            2,
+            null
+          ]
+        },
+        "selection_reason": {
+          "enum": [
+            "LOD2_PRESENT_VALID",
+            "LOD2_ABSENT_USE_LOD1",
+            "NO_SUPPORTED_LOD1_OR_LOD2"
+          ]
+        },
+        "lod1_presence": {
+          "type": "boolean"
+        },
+        "lod2_presence": {
+          "type": "boolean"
+        },
+        "lod1_validation_status": {
+          "enum": [
+            "VALID",
+            "ABSENT"
+          ]
+        },
+        "lod2_validation_status": {
+          "enum": [
+            "VALID",
+            "ABSENT"
+          ]
+        },
+        "source_member": {
+          "type": "string"
+        },
+        "geometry_branch_locator": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "polygons": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/polygon"
+          }
+        },
+        "geometry_sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "aoi_intersects": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "other_lods_present": {
+          "type": "array",
+          "items": {
+            "enum": [
+              3,
+              4
+            ]
+          },
+          "uniqueItems": true
+        },
+        "city_attributes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "value": {
+                "type": "string"
+              },
+              "code_space": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "value",
+              "code_space"
+            ]
+          }
+        }
+      },
+      "required": [
+        "source_id",
+        "ouem_id",
+        "selected_lod",
+        "selection_reason",
+        "lod1_presence",
+        "lod2_presence",
+        "lod1_validation_status",
+        "lod2_validation_status",
+        "source_member",
+        "geometry_branch_locator",
+        "polygons",
+        "geometry_sha256",
+        "aoi_intersects",
+        "other_lods_present",
+        "city_attributes"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "lod1_presence": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "lod1_validation_status": {
+                "const": "VALID"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "lod1_validation_status": {
+                "const": "ABSENT"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "lod2_presence": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "lod2_validation_status": {
+                "const": "VALID"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "lod2_validation_status": {
+                "const": "ABSENT"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "lod2_presence": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "selected_lod": {
+                "const": 2
+              },
+              "selection_reason": {
+                "const": "LOD2_PRESENT_VALID"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "lod2_presence": {
+                "const": false
+              },
+              "lod1_presence": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "selected_lod": {
+                "const": 1
+              },
+              "selection_reason": {
+                "const": "LOD2_ABSENT_USE_LOD1"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "lod2_presence": {
+                "const": false
+              },
+              "lod1_presence": {
+                "const": false
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "selected_lod": {
+                "type": "null"
+              },
+              "selection_reason": {
+                "const": "NO_SUPPORTED_LOD1_OR_LOD2"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "selected_lod": {
+                "type": "null"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "aoi_intersects": {
+                "type": "null"
+              },
+              "geometry_sha256": {
+                "type": "null"
+              },
+              "geometry_branch_locator": {
+                "maxItems": 0
+              },
+              "polygons": {
+                "maxItems": 0
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "aoi_intersects": {
+                "type": "boolean"
+              },
+              "geometry_sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "geometry_branch_locator": {
+                "minItems": 1
+              },
+              "polygons": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "polygon": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "branch_locator": {
+          "type": "string"
+        },
+        "polygon_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "polygon_ordinal": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "branch_locator",
+        "polygon_id",
+        "polygon_ordinal"
+      ]
+    },
+    "lod_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "1": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "2": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "1",
+        "2"
+      ]
+    },
+    "geometry_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source_id": {
+          "type": "string"
+        },
+        "selected_lod": {
+          "enum": [
+            1,
+            2
+          ]
+        },
+        "faces": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 3,
+                "maxItems": 3
+              },
+              "minItems": 4
+            },
+            "minItems": 1
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "source_id",
+        "selected_lod",
+        "faces"
+      ]
+    }
+  }
+}
