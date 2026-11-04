@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "OUEM Experimental Mixed-LoD Standard run record",
+  "type": "object",
+  "required": ["schema", "profile", "execution_status"],
+  "properties": {
+    "schema": {"const": "ouem-mixed-lod-standard-manifest/v0.1"},
+    "profile": {"const": "ouem-standard-building/plateau-mixed-lod-source-h/v0.1"},
+    "execution_status": {"enum": ["COMPLETED", "FAILED"]},
+    "status": {"const": "EXPERIMENTAL"},
+    "formal_acceptance": {"const": "NOT_VERIFIED"},
+    "native_profile": {"const": "ouem-native-building/plateau-mixed-lod-source-h/v0.1"},
+    "completed_at": {"type": "string", "format": "date-time"},
+    "error": {"type": "string"},
+    "field": {"type": ["string", "null"]},
+    "inputs": {
+      "type": "object",
+      "required": ["native_manifest", "native_gpkg", "selector_manifest", "selector_geometry",
+                   "bridge_receipt", "raw_zip", "lod1_gpkg", "lod2_gpkg"],
+      "additionalProperties": {"$ref": "#/$defs/artifact"}
+    },
+    "implementation": {"$ref": "#/$defs/artifact"},
+    "output": {
+      "$ref": "#/$defs/artifact",
+      "required": ["layer"], "properties": {"layer": {"const": "building"}}
+    },
+    "raw_source": {"type": "object", "required": ["zip_sha256", "zip_path", "release", "members"]},
+    "aoi": {
+      "type": "object", "required": ["epsg", "bounds", "predicate"],
+      "properties": {"epsg": {"const": 6677}, "bounds": {"type": "array", "minItems": 4, "maxItems": 4,
+                      "items": {"type": "number"}}, "predicate": {"type": "string"}}
+    },
+    "crs": {
+      "type": "object", "required": ["input", "output_horizontal_epsg", "output_axes", "vertical_epsg", "vertical_operation"],
+      "properties": {
+        "input": {"type": "object", "required": ["source_srs_name", "geometry_tuple_order", "quantity", "unit"],
+                  "properties": {"geometry_tuple_order": {"const": ["longitude", "latitude", "H"]},
+                                 "quantity": {"const": "gravity_related_height"}, "unit": {"const": "metre"}}},
+        "output_horizontal_epsg": {"const": 6677}, "output_axes": {"const": ["X", "Y", "H"]},
+        "vertical_epsg": {"const": 6695}, "vertical_operation": {"const": "identity_H"}
+      }
+    },
+    "operation": {
+      "type": "object", "required": ["source_epsg", "target_epsg", "always_xy", "allow_ballpark", "only_best",
+                                    "arguments", "definition", "description", "accuracy_m"],
+      "properties": {
+        "source_epsg": {"const": 6668}, "target_epsg": {"const": 6677}, "always_xy": {"const": true},
+        "allow_ballpark": {"const": false}, "only_best": {"const": true},
+        "arguments": {"const": ["longitude", "latitude"]}, "definition": {"type": "string"},
+        "description": {"type": "string"}, "accuracy_m": {"type": "number"}
+      }
+    },
+    "environment": {"type": "object", "required": ["python", "platform", "pyproj", "proj"]},
+    "buildings": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/building"}},
+    "mapping": {"type": "object", "additionalProperties": {"type": "string"}},
+    "validation": {
+      "type": "object", "required": ["max_xy_error_m", "xy_tolerance_m", "h_exact", "aoi_intersecting",
+                                    "aoi_disagreement_ids", "by_lod"],
+      "properties": {
+        "max_xy_error_m": {"type": "number", "minimum": 0, "maximum": 0.0000001},
+        "xy_tolerance_m": {"const": 0.0000001}, "h_exact": {"const": true},
+        "aoi_intersecting": {"type": "integer", "minimum": 1},
+        "aoi_disagreement_ids": {"const": []},
+        "by_lod": {"type": "object", "propertyNames": {"enum": ["1", "2"]}, "additionalProperties": {"$ref": "#/$defs/counts"}}
+      }
+    },
+    "unverified": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false,
+  "if": {"properties": {"execution_status": {"const": "COMPLETED"}}},
+  "then": {"required": ["status", "formal_acceptance", "native_profile", "completed_at", "inputs", "implementation",
+                       "output", "raw_source", "aoi", "crs", "operation", "environment", "buildings", "mapping",
+                       "validation", "unverified"], "not": {"required": ["error"]}},
+  "else": {"required": ["error"], "not": {"required": ["output"]}},
+  "$defs": {
+    "artifact": {
+      "type": "object", "required": ["path", "sha256", "size_bytes"],
+      "properties": {"path": {"type": "string", "minLength": 1}, "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+                     "size_bytes": {"type": "integer", "minimum": 0}}
+    },
+    "counts": {
+      "type": "object", "required": ["features", "faces", "exterior_rings", "interior_rings", "vertices"],
+      "additionalProperties": {"type": "integer", "minimum": 0}
+    },
+    "building": {
+      "type": "object", "additionalProperties": false,
+      "required": ["source_id", "ouem_id", "source_dataset", "source_lod", "selection_reason", "source_member",
+                   "source_release", "converter_pass", "measured_height", "measured_height_raw"],
+      "properties": {
+        "source_id": {"type": "string", "minLength": 1}, "ouem_id": {"type": "string", "minLength": 1},
+        "source_dataset": {"const": "PLATEAU CityGML"}, "source_lod": {"enum": [1, 2]},
+        "selection_reason": {"type": "string"}, "source_member": {"type": "string"},
+        "source_release": {"type": "string"}, "converter_pass": {"enum": ["lod1", "lod2"]},
+        "measured_height": {"type": ["number", "null"], "not": {"const": -9999}},
+        "measured_height_raw": {"type": ["number", "null"]}
+      },
+      "if": {"properties": {"source_lod": {"const": 1}}},
+      "then": {"properties": {"converter_pass": {"const": "lod1"}}},
+      "else": {"properties": {"converter_pass": {"const": "lod2"}}}
+    }
+  }
+}
