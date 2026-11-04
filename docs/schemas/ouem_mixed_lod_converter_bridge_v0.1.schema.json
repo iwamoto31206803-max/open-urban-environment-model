@@ -1,0 +1,207 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "OUEM Experimental Mixed-LoD Converter Bridge receipt",
+  "type": "object",
+  "properties": {
+    "schema": {"const": "ouem-mixed-lod-converter-bridge/v0.1"},
+    "status": {"const": "EXPERIMENTAL"},
+    "execution_status": {"enum": ["COMPLETED", "FAILED"]},
+    "mixed_native_handoff": {"enum": ["ELIGIBLE", "BLOCKED"]},
+    "python": {"type": "string", "minLength": 1},
+    "platform": {"type": "string", "minLength": 1},
+    "implementation": {"$ref": "#/$defs/artifact"},
+    "selector_manifest": {"$ref": "#/$defs/artifact"},
+    "selector_geometry": {"$ref": "#/$defs/artifact"},
+    "raw_source": {
+      "type": "object",
+      "properties": {
+        "zip_path": {"type": "string", "minLength": 1},
+        "zip_sha256": {"$ref": "#/$defs/sha256"},
+        "release": {"type": "string", "minLength": 1},
+        "members": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["member", "sha256"],
+            "properties": {"member": {"type": "string", "minLength": 1}, "sha256": {"$ref": "#/$defs/sha256"}}
+          }
+        }
+      },
+      "required": ["zip_path", "zip_sha256", "release", "members"],
+      "additionalProperties": false
+    },
+    "crs": {"type": "object"},
+    "aoi": {"type": "object"},
+    "raw_counts": {"type": "object"},
+    "converter": {
+      "type": "object",
+      "properties": {
+        "binary": {"$ref": "#/$defs/artifact"},
+        "commit": {"const": "ce7766df9788ce391b149c55df16d33082d0bc72"},
+        "version": {"const": "nusamai 0.1.19"}
+      },
+      "required": ["binary", "commit"],
+      "additionalProperties": false
+    },
+    "extracted_member": {"$ref": "#/$defs/artifact"},
+    "branches": {
+      "type": "object",
+      "properties": {"1": {"$ref": "#/$defs/branch"}, "2": {"$ref": "#/$defs/branch"}},
+      "required": [],
+      "additionalProperties": false
+    },
+    "selection": {"type": "array", "items": {"$ref": "#/$defs/selection"}},
+    "candidate": {
+      "type": "object",
+      "properties": {
+        "selected": {"type": "integer", "minimum": 0},
+        "feature_eligible": {"type": "integer", "minimum": 0}
+      },
+      "required": ["selected", "feature_eligible"],
+      "additionalProperties": false
+    },
+    "error": {"type": "string", "minLength": 1}
+  },
+  "required": [
+    "schema",
+    "status",
+    "execution_status",
+    "mixed_native_handoff",
+    "python",
+    "platform",
+    "implementation"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {"properties": {"execution_status": {"const": "COMPLETED"}}},
+      "then": {
+        "required": [
+          "selector_manifest",
+          "selector_geometry",
+          "raw_source",
+          "crs",
+          "aoi",
+          "raw_counts",
+          "converter",
+          "extracted_member",
+          "branches",
+          "selection",
+          "candidate"
+        ],
+        "properties": {"converter": {"required": ["version"]}, "branches": {"required": ["1", "2"]}}
+      },
+      "else": {"required": ["error"], "properties": {"mixed_native_handoff": {"const": "BLOCKED"}}}
+    },
+    {
+      "if": {"properties": {"mixed_native_handoff": {"const": "ELIGIBLE"}}},
+      "then": {
+        "properties": {
+          "branches": {
+            "additionalProperties": {
+              "required": ["gpkg", "stdout", "stderr", "features", "results", "converter_features"],
+              "properties": {
+                "exit_code": {"const": 0},
+                "features": {
+                  "additionalProperties": {"properties": {"result": {"enum": ["EXACT", "ORDER_ONLY"]}}}
+                }
+              },
+              "not": {"required": ["error"]}
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "artifact": {
+      "type": "object",
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "size_bytes": {"type": "integer", "minimum": 0}
+      },
+      "required": ["path", "sha256", "size_bytes"],
+      "additionalProperties": false
+    },
+    "feature": {
+      "type": "object",
+      "properties": {
+        "result": {"enum": ["EXACT", "ORDER_ONLY", "MISSING", "UNEXPECTED", "GEOMETRY_MISMATCH"]},
+        "layer": {"const": "bldg:Building"},
+        "id": {"type": "string", "minLength": 1},
+        "blob_sha256": {"$ref": "#/$defs/sha256"},
+        "raw_faces": {"type": "integer", "minimum": 0},
+        "converter_faces": {"type": "integer", "minimum": 0},
+        "raw_interiors": {"type": "integer", "minimum": 0},
+        "converter_interiors": {"type": "integer", "minimum": 0},
+        "geometry_type": {"enum": ["Polygon", "MultiPolygon", "GeometryCollection"]}
+      },
+      "required": ["result"],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {"properties": {"result": {"enum": ["EXACT", "ORDER_ONLY", "GEOMETRY_MISMATCH"]}}},
+          "then": {
+            "required": [
+              "layer",
+              "id",
+              "blob_sha256",
+              "raw_faces",
+              "converter_faces",
+              "raw_interiors",
+              "converter_interiors",
+              "geometry_type"
+            ]
+          }
+        }
+      ]
+    },
+    "branch": {
+      "type": "object",
+      "properties": {
+        "argv": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 12},
+        "started_at": {"type": "string", "format": "date-time"},
+        "ended_at": {"type": "string", "format": "date-time"},
+        "expected_features": {"type": "integer", "minimum": 0},
+        "exit_code": {"type": ["integer", "null"]},
+        "stdout": {"$ref": "#/$defs/artifact"},
+        "stderr": {"$ref": "#/$defs/artifact"},
+        "gpkg": {"$ref": "#/$defs/artifact"},
+        "error": {"type": "string", "minLength": 1},
+        "converter_features": {"type": "integer", "minimum": 0},
+        "results": {
+          "type": "object",
+          "propertyNames": {"enum": ["EXACT", "ORDER_ONLY", "MISSING", "UNEXPECTED", "GEOMETRY_MISMATCH"]},
+          "additionalProperties": {"type": "integer", "minimum": 0}
+        },
+        "features": {"type": "object", "additionalProperties": {"$ref": "#/$defs/feature"}}
+      },
+      "required": ["argv", "started_at", "ended_at", "expected_features", "exit_code"],
+      "additionalProperties": false
+    },
+    "selection": {
+      "type": "object",
+      "properties": {
+        "source_id": {"type": "string", "minLength": 1},
+        "selected_lod": {"enum": [1, 2, null]},
+        "selection_reason": {"type": "string", "minLength": 1},
+        "aoi_intersects": {"type": ["boolean", "null"]},
+        "feature": {"anyOf": [{"$ref": "#/$defs/feature"}, {"type": "null"}]},
+        "feature_eligible": {"type": "boolean"}
+      },
+      "required": [
+        "source_id",
+        "selected_lod",
+        "selection_reason",
+        "aoi_intersects",
+        "feature",
+        "feature_eligible"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
