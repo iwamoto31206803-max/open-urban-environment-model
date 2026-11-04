@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "OUEM Experimental Mixed-LoD Independent Consumer receipt",
+  "type": "object",
+  "required": ["schema", "profile", "execution_status", "consumer_validation", "formal_acceptance"],
+  "properties": {
+    "schema": {"const": "ouem-mixed-lod-consumer-receipt/v0.1"},
+    "profile": {"const": "ouem-standard-building/plateau-mixed-lod-source-h/v0.1"},
+    "execution_status": {"enum": ["COMPLETED", "FAILED"]},
+    "consumer_validation": {"enum": ["PASS", "FAIL"]},
+    "formal_acceptance": {"const": "NOT_VERIFIED"},
+    "status": {"const": "EXPERIMENTAL"},
+    "error": {"type": "string", "minLength": 1},
+    "completed_at": {"type": "string", "format": "date-time"},
+    "artifacts": {
+      "type": "object",
+      "required": ["standard_manifest", "standard_gpkg", "native_manifest", "native_gpkg",
+                   "bridge_receipt", "selector_manifest", "selector_geometry", "raw_zip",
+                   "lod1_gpkg", "lod2_gpkg", "converter_binary"],
+      "additionalProperties": {"$ref": "#/$defs/identity"}
+    },
+    "raw_source": {"type": "object", "required": ["zip_path", "zip_sha256", "release", "members"]},
+    "converter": {"type": "object", "required": ["binary", "version", "commit"]},
+    "crs": {
+      "type": "object", "required": ["input", "output_axes", "output_horizontal_epsg", "vertical_operation", "vertical_epsg"],
+      "properties": {"output_axes": {"const": ["X", "Y", "H"]}, "output_horizontal_epsg": {"const": 6677},
+                     "vertical_operation": {"const": "identity_H"}, "vertical_epsg": {"const": 6695}}
+    },
+    "aoi": {
+      "type": "object", "required": ["epsg", "bounds", "predicate"],
+      "properties": {"epsg": {"const": 6677}, "bounds": {"type": "array", "items": {"type": "number"},
+                    "minItems": 4, "maxItems": 4}}
+    },
+    "environment": {"type": "object", "required": ["python", "platform", "pyproj", "proj"]},
+    "implementation": {
+      "type": "object", "required": ["mixed_lod.py", "_mixed_lod_raw.py"],
+      "additionalProperties": {"$ref": "#/$defs/sha"}
+    },
+    "xy_reference": {"type": "string", "minLength": 1},
+    "unverified": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "validation": {
+      "type": "object",
+      "required": ["by_lod", "max_xy_error_m", "xy_tolerance_m", "h_exact", "matched_ids",
+                   "mismatches", "provenance", "ordered_structure", "raw_buildings", "excluded"],
+      "properties": {
+        "by_lod": {"type": "object", "propertyNames": {"enum": ["1", "2"]}, "additionalProperties": {"$ref": "#/$defs/counts"}},
+        "max_xy_error_m": {"type": "number", "minimum": 0, "maximum": 0.0000001},
+        "xy_tolerance_m": {"const": 0.0000001},
+        "h_exact": {"const": true},
+        "matched_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+        "mismatches": {"const": {"ids": 0, "lod": 0, "xyz_h": 0, "attributes": 0, "aoi": 0}},
+        "provenance": {"const": "PASS"},
+        "ordered_structure": {"const": "PASS"},
+        "raw_buildings": {"type": "integer", "minimum": 1},
+        "excluded": {"type": "integer", "minimum": 0}
+      }
+    }
+  },
+  "additionalProperties": false,
+  "if": {"properties": {"execution_status": {"const": "COMPLETED"}}},
+  "then": {
+    "required": ["status", "completed_at", "artifacts", "raw_source", "converter", "aoi", "crs", "environment",
+                 "implementation", "xy_reference", "unverified", "validation"],
+    "properties": {"consumer_validation": {"const": "PASS"}},
+    "not": {"required": ["error"]}
+  },
+  "else": {
+    "required": ["error"], "properties": {"consumer_validation": {"const": "FAIL"}},
+    "not": {"required": ["validation"]}
+  },
+  "$defs": {
+    "sha": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "identity": {
+      "type": "object", "required": ["path", "resolved_path", "size_bytes", "sha256", "stamp", "path_stamp"],
+      "properties": {
+        "path": {"type": "string"}, "resolved_path": {"type": "string"},
+        "size_bytes": {"type": "integer", "minimum": 0}, "sha256": {"$ref": "#/$defs/sha"},
+        "stamp": {"$ref": "#/$defs/stamp"}, "path_stamp": {"$ref": "#/$defs/stamp"}
+      }
+    },
+    "stamp": {"type": "array", "items": {"type": "integer"}, "minItems": 5, "maxItems": 5},
+    "counts": {
+      "type": "object", "required": ["features", "faces", "exterior_rings", "interior_rings", "vertices"],
+      "additionalProperties": {"type": "integer", "minimum": 0}
+    }
+  }
+}
