@@ -108,16 +108,16 @@ def _lod2(building, locations):
     require(branches and all(n.tag in (B+"lod2MultiSurface",B+"lod2Solid")
             for n in building.iter() if n.tag.startswith(B+"lod2")),
             "Raw.LoD2", "LoD2 requires supported MultiSurface; unsupported/empty branch is not absent")
-    require(len(branches) == 1, "Raw.LoD2", "multiple lod2MultiSurface branches are unsupported")
-    branch = branches[0]
-    require(len(branch) == 1 and branch[0].tag == G+"MultiSurface", "Raw.LoD2", "one inline MultiSurface required")
-    members = list(branch[0])
-    require(members and all(n.tag == G+"surfaceMember" and len(n) == 1
-            and n[0].tag == G+"Polygon" for n in members), "Raw.LoD2", "nonempty inline polygon members required")
-    require(not any(X in n.attrib for n in branch.iter()), "Raw.LoD2", "MultiSurface xref unsupported")
-    polygons = [member[0] for member in members]
-    faces = [_face(polygon) for polygon in polygons]
-    metadata = [_metadata(branch, polygon, i, locations) for i, polygon in enumerate(polygons, 1)]
+    faces, metadata, polygons = [], [], []
+    for branch in branches:
+        require(len(branch) == 1 and branch[0].tag == G+"MultiSurface", "Raw.LoD2", "one inline MultiSurface required")
+        members = list(branch[0])
+        require(members and all(n.tag == G+"surfaceMember" and len(n) == 1
+                and n[0].tag == G+"Polygon" for n in members), "Raw.LoD2", "nonempty inline polygon members required")
+        require(not any(X in n.attrib for n in branch.iter()), "Raw.LoD2", "MultiSurface xref unsupported")
+        for i, member in enumerate(members):
+            polygons.append(member[0]); faces.append(_face(member[0]))
+            metadata.append(_metadata(branch,member[0],i+1,locations))
     refs = [n for branch in solids for n in branch.iter() if X in n.attrib]
     if solids:
         require(len(solids) == 1 and solids[0] in list(building), "Raw.LoD2", "one direct lod2Solid required")
@@ -172,8 +172,9 @@ def _building(node, member, bounds, project):
     if decoded:
         lod = 2 if presence[2] else 1
         faces, metadata = decoded[lod]
+        selected_branches = {p["branch_locator"] for p in metadata}
         record.update(selected_lod=lod, selection_reason="LOD2_PRESENT_VALID" if lod==2 else "LOD2_ABSENT_USE_LOD1",
-                      geometry_branch_locator=list(dict.fromkeys(p["branch_locator"] for p in metadata)),
+                      geometry_branch_locator=[locator for locator in locations.values() if locator in selected_branches],
                       polygons=metadata,geometry_sha256=hashlib.sha256(canonical(faces)).hexdigest(),
                       aoi_intersects=_intersects(faces, box(*bounds), project.transform))
         return record, faces

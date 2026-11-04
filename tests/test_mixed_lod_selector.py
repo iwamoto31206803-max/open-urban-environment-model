@@ -137,22 +137,64 @@ def test_invalid_present_geometry_never_falls_back_or_publishes(tmp_path,case):
         assert failure["failed_record"]["lod2_validation_status"]=="INVALID"
 
 
-def test_multiple_lod2_multisurface_branches_fail_closed(tmp_path):
-    node = building(refs=True)
+def split_lod2_surfaces(node):
     surface = node.find(B+"lod2MultiSurface")[0]
     second_surface = ET.SubElement(ET.SubElement(node, B+"lod2MultiSurface"), G+"MultiSurface")
     member = surface[-1]
     surface.remove(member)
     second_surface.append(member)
+    return member[0]
+
+
+@pytest.mark.parametrize("with_solid", [False, True])
+def test_multiple_lod2_branches_preserve_faces_and_provenance(tmp_path, with_solid):
+    node = building(refs=with_solid)
+    split_lod2_surfaces(node)
+    if with_solid:
+        members = node.find(B+"lod2Solid")[0][0][0]
+        members[:] = list(reversed(members))
+    result, geometry = select(archive(tmp_path, [node]))
+    row = result["records"][0]
+    first, second = "./bldg:lod2MultiSurface[1]", "./bldg:lod2MultiSurface[2]"
+    expected = [(first, f"authored_l2_p{i}", i+1) for i in range(5)]
+    expected.append((second, "authored_l2_p5", 1))
+    expected_faces = cube(top=20.75)
+    if with_solid:
+        expected.reverse()
+        expected_faces = expected_faces[::-1]
+    assert row["selected_lod"] == 2
+    assert row["geometry_branch_locator"] == [first, second]
+    assert [(p["branch_locator"], p["polygon_id"], p["polygon_ordinal"])
+            for p in row["polygons"]] == expected
+    assert geometry["authored"] == expected_faces
+
+
+@pytest.mark.parametrize(("case", "error"), [
+    ("missing_ref", "missing, duplicate or cross-building target"),
+    ("duplicate_ref", "missing, duplicate or cross-building target"),
+    ("duplicate_id", "empty/duplicate XML ID"),
+])
+def test_invalid_multiple_lod2_branches_fail_closed(tmp_path, case, error):
+    node = building(refs=True)
+    polygon = split_lod2_surfaces(node)
+    members = node.find(B+"lod2Solid")[0][0][0]
+    if case == "missing_ref":
+        members.remove(members[-1])
+    elif case == "duplicate_ref":
+        members[-1].set(X, members[0].get(X))
+    else:
+        polygon.set(G+"id", "authored_l2_p0")
     path = archive(tmp_path, [node])
     out = tmp_path/"failed"
 
-    with pytest.raises(m.SelectionError, match="multiple lod2MultiSurface branches"):
+    with pytest.raises(ValueError, match=error):
         m.run(path, ["udx/bldg/a.gml"], release="fixture", bounds=BOUNDS, output_dir=out)
 
     failure = json.loads((out/"failure.json").read_text())
-    assert failure["code"] == "LOD2_INVALID"
-    assert failure["failed_record"]["selected_lod"] is None
+    assert failure["execution_status"] == "FAILED"
+    if case != "duplicate_id":
+        assert failure["code"] == "LOD2_INVALID"
+        assert failure["failed_record"]["selected_lod"] is None
     assert not (out/"manifest.json").exists()
     assert not (out/"geometries.jsonl").exists()
 
