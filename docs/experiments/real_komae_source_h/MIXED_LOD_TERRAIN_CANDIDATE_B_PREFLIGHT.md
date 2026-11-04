@@ -58,6 +58,16 @@ AOIの2 m外周を含む検索範囲をEPSG:3857へ変換すると、z14のXYZ�
 
 ## 再現と次工程
 
+| Preflight状態 | 意味 |
+|---|---|
+| `PASS` | 両ソースの取得・検査・集計が完了し、有効セルの和集合がAOIを覆う。全対象TIFFの水平CRSを識別でき、両ソースの鉛直基準に提供元宣言がある |
+| `CONDITIONAL` | 両ソースの検査・集計は完了したが、有効未被覆または水平・鉛直メタデータの条件が残る |
+| `BLOCKED` | 必要な取得・検査・集計が完了しなかった。原因をソース別の `error` または `aggregation_error` に記録する |
+
+完了記録は一時ファイルから公開した `report.json`。記録の欠落や `BLOCKED` の場合、残存ZIP・TIFF・ソース別結果は診断用の証拠として扱う。集計が失敗した場合は結合結果を公開しない。
+
+`terrain_integration_ready` はPreflight状態とは独立し、このPreflightでは `PASS` でも `false`。水平・鉛直基準の適合性、採用ソースと接合方針を別工程で確認する必要がある。今回の実データは `CONDITIONAL` かつ `terrain_integration_ready=false`。既存runの取得バイトをSHAで確認して別の `run-04-review-replay` で再集計し、件数・標高差・タイル情報が `run-03` と一致することを確認した。
+
 ```powershell
 New-Item -ItemType Directory -Force data/work/terrain-candidate-b | Out-Null
 .venv/Scripts/python.exe -m ouem.terrain_candidate_b_preflight --output-dir data/work/terrain-candidate-b/run-repro-01
@@ -71,3 +81,5 @@ New-Item -ItemType Directory -Force data/work/terrain-candidate-b | Out-Null
 関連pytestは26件通過（新規6件、警告11件）。全体pytestは `.venv/Scripts/python.exe -m pytest -q -ra --basetemp data/work/terrain-candidate-b/pytest-full` で1,206件通過、10件skip、339件警告（679.04秒）。skipは専用GIS/QGIS Python 5件とWindows symlink権限5件。ログは `data/work/terrain-candidate-b/full.log`。
 
 ローカルの `audit.py`／`audit.log` では、AOI全セル中心を各TIFFの逆アフィンで行・列へ変換して有効マスクを再集計した。取得ファイルのSHA、最小4タイル集合、既存A2と同一SHAの再現Terrain、Mixed Standard GPKGの記録済みSHAも照合した。実測 `report.json` のSHA-256は `720c1d4b18a047b97bdc0d643bb2f7ad665ff23793f37ad89f01b0ae86ea5392`。
+
+レビュー対応後は、集計例外・非有限集計値・統合可否の分離を合成テストで確認した。関連pytestは30件通過、警告11件。全体pytestは1,210件通過、10件skip、339件警告（719.37秒）。skipの内訳は上記と同じ。ログは `data/work/terrain-candidate-b/full-review.log`。

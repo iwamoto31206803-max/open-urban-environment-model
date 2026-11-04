@@ -101,3 +101,36 @@ def test_download_size_failure_and_blocked_report(tmp_path,monkeypatch):
     assert json.loads((tmp_path/"run/report.json").read_bytes())["status"] == "BLOCKED"
     with pytest.raises(FileExistsError):
         p.run(tmp_path/"run")
+
+
+@pytest.mark.parametrize(("mode", "status"), [
+    ("raise", "BLOCKED"), ("nonfinite", "BLOCKED"),
+    ("complete", "PASS"), ("unresolved", "CONDITIONAL"),
+])
+def test_aggregation_and_integration_are_separate(tmp_path, monkeypatch, mode, status):
+    def inspect(source, directory, details):
+        (directory/"download.zip").write_bytes(b"partial run evidence")
+        details.update(vertical="UNRESOLVED" if mode == "unresolved" else "declared",
+                       tiles={"mesh": {"horizontal_status": "identified EPSG:6677"}})
+        return {"mesh": (np.ones((1, 1)), np.ones((1, 1), dtype=bool))}
+
+    def aggregate(rasters):
+        if mode == "raise":
+            raise RuntimeError("forced aggregation failure")
+        if mode == "nonfinite":
+            return {"combined": {"uncovered": 0, "invalid_stat": float("nan")}}
+        return {"combined": {"uncovered": 0}}
+
+    monkeypatch.setattr(p, "inspect_source", inspect)
+    monkeypatch.setattr(p, "summarize", aggregate)
+    out = tmp_path/"run"
+    report = p.run(out)
+    assert json.loads((out/"report.json").read_bytes()) == report | {"aoi": {"epsg": 6677, "bounds": list(p.AOI)}}
+    assert report["status"] == status
+    assert report["terrain_integration_ready"] is False
+    assert all((out/source/"download.zip").is_file() for source in p.SOURCES)
+    assert not (out/"report.pending.json").exists()
+    if status == "BLOCKED":
+        assert "combined" not in report
+        expected = "forced aggregation failure" if mode == "raise" else "Out of range float"
+        assert expected in report["aggregation_error"]

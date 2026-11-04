@@ -266,26 +266,37 @@ def run(out):
     out.mkdir()
     report = dict(scope="EXPERIMENTAL / NOT_FORMALLY_ACCEPTED", status="BLOCKED", aoi=dict(epsg=6677,bounds=AOI),
                   method="Aligned native 0.5 m pixel centres; mask and finite values; no interpolation or mosaic.",
+                  terrain_integration_ready=False,
+                  terrain_integration_reason="This preflight does not approve Terrain integration. "
+                                             "Confirm horizontal and vertical compatibility and review source selection and seams separately.",
                   sources={})
     rasters = {}
     for source in SOURCES:
         directory = out/source
-        directory.mkdir()
         details = report["sources"][source] = dict(downloads=[])
         try:
+            directory.mkdir()
             rasters[source] = inspect_source(source,directory,details)
         except Exception as exc:
             details["error"] = f"{type(exc).__name__}: {exc}"
     if rasters.keys() == SOURCES.keys():
-        report.update(summarize(rasters))
-        clear = all(s["vertical"] != "UNRESOLVED" and all(
-            t["horizontal_status"] == "identified EPSG:6677" for t in s["tiles"].values())
-            for s in report["sources"].values())
-        report["status"] = "PASS" if not report["combined"]["uncovered"] and clear else "CONDITIONAL"
+        try:
+            summary = summarize(rasters)
+            clear = all(s["vertical"] != "UNRESOLVED" and all(
+                t["horizontal_status"] == "identified EPSG:6677" for t in s["tiles"].values())
+                for s in report["sources"].values())
+            status = "PASS" if not summary["combined"]["uncovered"] and clear else "CONDITIONAL"
+            json.dumps(summary, allow_nan=False)
+        except Exception as exc:
+            report["aggregation_error"] = f"{type(exc).__name__}: {exc}"
+        else:
+            report.update(summary, status=status)
     report["vertical_compatibility"] = "Building EPSG:6697 / vertical EPSG:6695 source declaration; survey realization and epoch compatibility unverified."
     report["completed_at"] = datetime.now(timezone.utc).isoformat()
-    with (out/"report.json").open("x",encoding="utf-8") as stream:
+    pending = out/"report.pending.json"
+    with pending.open("x",encoding="utf-8") as stream:
         json.dump(report,stream,ensure_ascii=False,indent=2,allow_nan=False)
+    pending.rename(out/"report.json")
     return report
 
 
