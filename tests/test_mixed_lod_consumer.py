@@ -1,8 +1,8 @@
 """Authored Raw and WKB controls plus adversarial Mixed chain fixtures."""
 from hashlib import sha256
 import json
-import os
 from pathlib import Path
+import shutil
 import struct
 from xml.etree import ElementTree as ET
 from zipfile import ZipFile
@@ -19,7 +19,20 @@ from test_source_h_ingestion import db
 
 
 @pytest.fixture(autouse=True)
-def without_unselected_lod_fixture(monkeypatch):
+def authored_chain_environment(monkeypatch, tmp_path):
+    from ouem.standardize.building import mixed_lod as standard
+
+    native = standard.native
+    package = Path(consumer.__file__).resolve().parents[1]
+    # Use byte-identical implementation files within the fixture root, even
+    # when pytest's temporary directory and the checkout are on different drives.
+    for module in (consumer, native, native.raw, native.bridge, standard):
+        original = Path(module.__file__).resolve()
+        staged = tmp_path / "ouem" / original.relative_to(package)
+        staged.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(original, staged)
+        monkeypatch.setattr(module, "__file__", str(staged))
+
     # This Consumer rejects a parent with neither supported LoD; the writer can
     # retain a reason-coded exclusion. Test the stricter rule separately below.
     archive = native_fixture.archive
@@ -105,8 +118,7 @@ def chain(ready, monkeypatch, tmp_path):
     manifest = out/"manifest.json"
     data = json.loads(manifest.read_bytes())
     monkeypatch.setattr(consumer,"BINARY_SHA",data["inputs"]["converter_binary"]["sha256"])
-    root = Path(os.path.commonpath([tmp_path,Path(consumer.__file__).resolve()]))
-    return manifest, bounds, root, tmp_path/"consumer"
+    return manifest, bounds, tmp_path, tmp_path/"consumer"
 
 
 def verify(chain, pinned=None):
