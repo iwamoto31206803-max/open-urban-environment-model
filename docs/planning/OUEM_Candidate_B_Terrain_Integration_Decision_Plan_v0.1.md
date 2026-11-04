@@ -2,86 +2,65 @@
 
 **Status:** DESIGN PROPOSAL / EXPERIMENTAL / NOT_FORMALLY_ACCEPTED  
 **Updated:** 2026-11-04  
-**Scope:** Mixed-LoD Candidate B only, EPSG:6677 bounds `[-22575,-39925,-22475,-39825]` (100 m × 100 m). **No permission to publish a fused Standard Terrain**, change A2/A3 accepted artifacts, or run VoxCity with incompatible vertical semantics.
+**Scope:** Mixed-LoD Candidate B only, EPSG:6677, `[-22575,-39925,-22475,-39825]`, 100 m × 100 m on the aligned 0.5 m grid.
 
-## 1. Evidence baseline and what has actually passed
+## Evidence and gate status
 
-The source preflight in [PR #141](../../pull/141) is code-review PASS, but its actual data status is **CONDITIONAL** and `terrain_integration_ready=false`. Authoritative measured record: [MIXED_LOD_TERRAIN_CANDIDATE_B_PREFLIGHT.md](../experiments/real_komae_source_h/MIXED_LOD_TERRAIN_CANDIDATE_B_PREFLIGHT.md). The following are sourced from its real-data analysis, **not independently reconstructed in this document**:
+| Gate | Status | Basis and boundary |
+|---|---|---|
+| T0 Source semantics | **CONDITIONAL PASS** | Use ward T.P. as an inherited assumption for isolated Candidate B experimentation. The exact DEM datum realization and epoch remain unverified. |
+| T1 Spatial diagnostics | **PASS (diagnostics)** | Four original TIFFs were hash-verified, and the overlap and seam metrics were measured. |
+| T2 Source selection | **WARD_FIRST proposed for review** | Prefer original ward values where valid and fall back to original Tama values. The proposal awaits design review. |
+| T3 Experimental preparation | **Pending T2 review** | Separate fresh-run implementation and evidence review under the conditions below. |
+| T4 Model integration | **HOLD** | Building/terrain height semantics and model grid compatibility require independent validation. |
 
-- Existing Komae accepted tile `09LD3451` does not cover B.
-- 0.5m grid: 200 × 200 = 40,000 cell centres, aligned per Rasterio/GDAL report.
-- Tama 2023: 28,233 valid centres (70.5825%); 23-ku 2024: 16,103 (40.2575%).
-- Conditional valid-cell union: 40,000; 4,336 shared valid centres (10.84%); Tama-only 23,897, ward-only 11,767.
-- Four measured TIFFs: each source's `09LD3423` and `09LD3433`; the minimal complete set in this particular grid is all four.
-- Difference `ward minus Tama` on overlap: `09LD3423` min -0.656 m, max +0.183 m, mean -0.0472 m, median -0.0020 m (n=3,261); `09LD3433` min -0.227 m, max +0.129 m, mean -0.0167 m, median +0.0010 m (n=1,075).
-- No canonical mosaic, Terrain Native, Standard, voxel or VoxCity candidate-B integration was made.
+`terrain_integration_ready=false`. This decision update leaves the historical preflight and T1 receipts as recorded. The accepted Komae tile 09LD3451 does not cover B. The measured inputs are the four PR #141 TIFFs for 09LD3423 and 09LD3433, two per source. [PR #141 preflight](../experiments/real_komae_source_h/MIXED_LOD_TERRAIN_CANDIDATE_B_PREFLIGHT.md) · [PR #143 T1 report](https://github.com/iwamoto31206803-max/open-urban-environment-model/blob/757730b/docs/experiments/real_komae_source_h/MIXED_LOD_TERRAIN_CANDIDATE_B_DIAGNOSTICS.md)
 
-Code and tests of the preflight are exploratory and Candidate-B specific. Retain the original four ZIP/TIFF hashes and run-03 raw receipts; do not replace or mutate their bytes.
+## T0 conditional vertical assumption
 
-## 2. Follow-up external source review (2026-11-04)
+- The user supplied the official Tokyo Digital Twin 3D viewer citation for **世田谷区（ダウンロードメッシュ）**, where the airborne laser point-cloud elevation reference is stated as 東京湾平均海面 (T.P.). The viewer returned HTTP 403 from this session, so the layer wording is recorded as user-supplied official evidence. [Tokyo Digital Twin 3D viewer](https://3dview.tokyo-digitaltwin.metro.tokyo.lg.jp/)
+- The ward 2024 catalogue describes the 0.50 m GeoTIFF as derived from ground point data. The catalogue establishes the data lineage and names JGD2011 / Plane Rectangular CS IX. The exact ward TIFFs lack a direct vertical declaration. **T.P. is inferred to carry through from the official point-cloud description to the derived DEM** under this Candidate B decision. The basis is the ward point-cloud description and DEM lineage. [Tokyo ward catalogue API](https://catalog.data.metro.tokyo.lg.jp/api/3/action/package_show?id=t000029d0000000024) · [Public catalogue mirror](https://odm.bodik.jp/ja/dataset/t000029d00000000241)
+- Tama has a separate provider T.P. declaration. Mixed Building declares EPSG:6695 gravity-related H. Precise vertical datum realization, height epoch, treatment of any later revisions, and accuracy agreement between surveys and with Building remain unverified. Near-zero DEM overlap medians do not resolve those questions. [Tokyo Tama catalogue API](https://catalog.data.metro.tokyo.lg.jp/api/3/action/package_show?id=t000029d0000000020) · [Mixed Standard H declaration](../experiments/real_komae_source_h/MIXED_LOD_STANDARD_POC.md)
+- The ward WKT still has an unnamed embedded datum despite the projected EPSG:6677 authority. T1 verified that the raw `Point` tiepoints are the GDAL-normalized cell centres. Use the same conditional horizontal interpretation for B, with the recorded aligned affine and without a further half-cell shift, silent CRS relabeling, or reprojection. [PR #143 T1 report](https://github.com/iwamoto31206803-max/open-urban-environment-model/blob/757730b/docs/experiments/real_komae_source_h/MIXED_LOD_TERRAIN_CANDIDATE_B_DIAGNOSTICS.md)
 
-**Direct source evidence:**
-- [Tokyo ward dataset, G-Spatial](https://www.geospatial.jp/ckan/dataset/tokyopc-23ku-2024) and [Tokyo public mirror](https://odm.bodik.jp/ja/dataset/t000029d00000000241): JGD2011 / Plane Rectangular CS IX and 0.5m ground DEM; **no ward-specific vertical datum declaration was found on the catalogues checked**. The actual ward TIFF has unnamed embedded datum, trailing EPSG:6677 authority, and Rasterio `to_epsg() is None`, per PR #141. This supports **conditional horizontal grid comparison only**, not silent CRS rewriting.
-- [Tokyo Tama catalogue](https://catalog.data.metro.tokyo.lg.jp/dataset/t000029d0000000020): source-declares elevation relative to Tokyo Bay mean sea level (T.P.).
-- [Tokyo island catalogue mirror](https://odm.bodik.jp/ja/dataset/t000029d0000000019) **explicitly** declares Tokyo Bay mean sea level, unlike the ward catalogue. Island/Tama declarations must **not** be inherited by wards.
-- [Tokyo Bureau of Construction benchmark description](https://www.kensetsu.metro.tokyo.lg.jp/jimusho/tech/04-kijyun/kijyunsetu) and [GSI geodetic explanation](https://www.gsi.go.jp/sokuchikijun/datum-main.html) explain the ordinary T.P. height reference; neither attests that the exact ward source TIFFs use that datum/realization.
-- [EPSG:6695](https://epsg.io/6695) designates JGD2011 (vertical) gravity-related height. Mixed Building records vertical EPSG:6695 and copies source H unchanged. The source declaration, actual survey realization, epoch, height correction and joint usability with each DEM are separate checks.
-- The 2025-04-01 national elevation-revision context may affect *later* mixed-source work; it is **not** evidence of a particular correction to these 2023/2024 raw TIFFs and is not an instruction to shift their values. [GSI geodetic explanation](https://www.gsi.go.jp/sokuchikijun/datum-main.html).
+T0 permits work toward an isolated Candidate B experiment under those assumptions. Retain the original height values. A change to another vertical reference, a uniform offset, and a formal quality guarantee are outside this decision. Direct evidence for the precise DEM datum, realization and epoch remains valuable and should trigger review if it contradicts the assumption.
 
-**Review finding:** existing public references do **not** resolve the ward DEM's precise vertical datum, output epoch or projection-WKT mismatch. A numerical overlap median close to zero is a consistency clue, not provenance proof.
+## T2 comparison
 
-## 3. Decision framework (separate gates)
+Both source catalogues describe ground-derived products. The reported acquisition windows are July 2022–January 2023 for Tama 2023 and March–April 2023 for ward 2024. These are catalogue windows, with no tile-specific survey epoch or demonstrated accuracy ranking. Tama has broader valid coverage and stronger direct metadata for horizontal/vertical interpretation. Ward is the later acquisition window, with a smaller valid footprint and a conditional vertical interpretation. Both have the original per-tile hashes and validity masks in the preflight. [Tama distribution catalogue](https://www.geospatial.jp/ckan/api/3/action/package_show?id=tokyopc-tama-2023) · [Ward distribution catalogue](https://www.geospatial.jp/ckan/api/3/action/package_show?id=tokyopc-23ku-2024) · [PR #141 provenance](../experiments/real_komae_source_h/MIXED_LOD_TERRAIN_CANDIDATE_B_PREFLIGHT.md)
 
-| Gate | Evidence required | Allowed outcome | Not allowed |
-|---|---|---|---|
-| T0 Source semantics | Ward provider-specific metadata: vertical datum, unit, geodetic realization/epoch; actual TIFF `AREA_OR_POINT=Point` and raw GeoTIFF grid semantics; relation to PLATEAU EPSG:6695 H | `VERIFIED`, `SOURCE_DECLARED`, or `UNRESOLVED`; documented exact limitation | Assume ward T.P. from other Tokyo products or EPSG:6677 |
-| T1 Overlap & seam diagnostics | Replay original four hash-verified TIFFs, cell-based spatial distributions and simulated source-selection seam metrics | Diagnostic report with conditionally comparable values | Offset correction or fusion approval |
-| T2 Source-selection review | Explicit deterministic, supported policy, justification, outside-overlap fallbacks, residual seam limits and vertical compatibility decision | Approved experimental prototype policy or `HOLD` | Treat greater source recency as automatic priority |
-| T3 Terrain Native/Standard prototype | Fresh-run isolated preparation, consistent CRS/height semantics, 100% AOI coverage, full provenance and tests | Separate experimental prototype review | Silent reprojection, raster relabeling, old A2/A3 mutation, formal acceptance by implication |
-| T4 Model integration | Building Z / terrain height compatibility and consumer/VoxCity grid agreement independently confirmed | Separate model readiness decision | Infer model success from 100% DEM coverage |
+| T1 metric | TAMA_FIRST | WARD_FIRST |
+|---|---:|---:|
+| Chosen Tama / ward cells | 28,233 / 11,767 | 23,897 / 16,103 |
+| Source-switch edges, east / south | 200 / 83 | 200 / 84 |
+| Switch-edge MAE, east / south (m) | 0.0705 / 0.0690 | 0.0439 / 0.0308 |
+| Nearby same-source, same-tile edge MAE, east / south (m) | 0.0190 / 0.0192 | 0.0214 / 0.0151 |
+| Maximum absolute switch-edge jump (m) | 0.345 | 0.172 |
 
-T0 and T1 may proceed independently. **T2 and later cannot be approved solely by T1 numeric agreement.** Existing `OUEM_Standard_Terrain_v0.1.md` is provisional and standardizes one GeoTIFF without mosaic/reprojection; a multi-source preparation, if approved, must be an explicit upstream stage with independent provenance, not an undocumented modification to the standardizer.
+Both counterfactuals cover 40,000 cells from the same four tiles. Both have higher directional switch-edge MAE than the local same-source reference, so a residual interface warrants review. Local gradients differ between the switch locations. A jump between adjacent cell centres includes actual terrain variation and cannot be attributed solely to stitching. At the north/south mesh boundary, TAMA_FIRST has one edge that also changes source, while WARD_FIRST has zero. [PR #143 seam definitions and measurements](https://github.com/iwamoto31206803-max/open-urban-environment-model/blob/757730b/docs/experiments/real_komae_source_h/MIXED_LOD_TERRAIN_CANDIDATE_B_DIAGNOSTICS.md)
 
-## 4. T0: metadata investigation (read-only)
+The largest same-centre overlap difference (ward minus Tama) is −0.656 m at (−22512.75, −39870.75). All 47 cells exceeding 0.50 m absolute difference lie in the northern tile, within X −22515.25 to −22511.75 and Y −39872.25 to −39868.25. A read-only comparison of the saved T1 difference raster and the source-switch CSVs found **zero of those 47 cells at switch-edge endpoints** in either policy. The minimum Euclidean distance from those centres to any switch-edge midpoint was 4.70 m for TAMA_FIRST and 1.60 m for WARD_FIRST. The cluster is therefore an interior disagreement between source surfaces and is closer to the ward-first interface. It remains relevant to the selected surface even though it is separate from the measured switch-edge maxima. [PR #143 T1 output description](https://github.com/iwamoto31206803-max/open-urban-environment-model/blob/757730b/docs/experiments/real_komae_source_h/MIXED_LOD_TERRAIN_CANDIDATE_B_DIAGNOSTICS.md)
 
-1. Review the ward's dataset metadata, downloadable distribution documentation and any **small** relevant metadata sidecar of the source. Record original citation URLs, quotation/section and retrieval date.
-2. If feasible without bulk download, inspect source LAS/LAZ *header/VLR* or delivery metadata, separating horizontal EPSG from actual vertical datum. Do not download large point-cloud archives merely to infer datum silently.
-3. Assess `AREA_OR_POINT=Point`, raw tie point vs GDAL/Rasterio normalized affine, reference pixel centres and all four 0.5m grid origins. Do not shift any raster by half a pixel based on tag text alone.
-4. Compare source-declared vertical identity and epoch to Mixed Building compound EPSG:6697 / vertical EPSG:6695. Document which assertions are **direct declarations**, **derived implications**, and **unknown**.
-5. If ward provider-specific evidence remains missing, prepare a short precise inquiry to the Tokyo Digital Twin dataset owner. Request the exact vertical reference, height-generation method, any 2025 revision, horizontal WKT intent and applicable source metadata; **do not send without user approval**.
+### Proposed selection rule
 
-T0 is `UNRESOLVED` until direct ward evidence is obtained. Ordinary GSI/Tokyo benchmark conventions alone are insufficient.
+1. For each AOI centre, choose the ward tile sample if it is in bounds, valid by its mask and finite. Otherwise choose a valid, finite Tama sample at the same centre. Valid zero elevations are retained.
+2. If neither source is valid, stop the T3 attempt with a gap diagnostic. If multiple valid tiles from the same source supply a centre, stop and record the ambiguity. Do not resolve it by file order.
+3. Copy the selected source value exactly. Preserve source/tile identity per centre and the original input hashes. Use the existing aligned grid and the original masks. No interpolation, averaging, smoothing, vertical transformation or offset.
 
-## 5. T1: targeted real-data diagnostic (read-only)
+WARD_FIRST is the first candidate because it lowers the measured switch-edge MAE in both directions and the maximum observed jump, with essentially the same number of switches. The later ward acquisition window is context, and the stronger Tama metadata is a reason to retain TAMA_FIRST as the review comparator. The residual risks include the conditional ward datum and WKT, the localized 0.656 m disagreement, different survey conditions, and terrain variation along both interfaces. Revise or hold the proposal if design review finds those limitations unacceptable.
 
-Use existing candidate B raw TIFFs only; verify all four expected SHA-256 fingerprints from the PR #141 record. No new remote download is needed for this task.
+A simple priority rule preserves actual source values and makes each cell traceable. A mean or a feathered/smoothed join could reduce a visible step, but it would create synthetic values, risk blurring genuine microtopography and hide disagreement where datum or acquisition differences remain unresolved. It would require a separately reviewed blend width, mask handling and error evaluation. These approaches are deferred.
 
-**Overlap geometry and distribution:**
-- Recompute all 40,000 masks and the 4,336 shared centres; require exact count agreement or stop.
-- Produce georeferenced `ward-minus-Tama` diagnostic grid **with NoData outside overlaps**, source-validity map (Tama-only/ward-only/both/neither), and maps of differences by distance to source mask boundary. These are **diagnostic outputs**, not Terrain products.
-- For each mesh and total overlap, compute n, min/max, mean, median, MAE, RMSE, P01/P05/P25/P75/P95/P99 and counts exceeding absolute thresholds 0.05/0.10/0.20/0.50m. Record extreme-cell coordinates and nearby source-mask/geographic context. Document numerical precision.
-- Segment overlap spatially and assess whether differences are broadly constant, localized, or correlated with local slope. Do **not** interpret one extreme as a systematic datum offset.
+## Conditions for entering and reviewing T3
 
-**Selection-policy counterfactuals:**
-- `TAMA_FIRST`: use Tama when valid, otherwise ward; `WARD_FIRST`: reverse. Both use original cell values, without adjustments. Do not assign scientific superiority to either.
-- For each scenario, report counts by chosen source, number/location of source-switch edges, and adjacent-cell height jumps at every source-switch edge. Compare those jumps against local gradients in non-switch edges; distinguish natural slope from possible stitching artefacts.
-- Distinguish north/south mesh boundaries, intra-source tile edges, and cross-source switches; the prior exclusive-cell adjacency statistic of zero does **not** establish a seamless future mosaic because it excludes the overlapping selection interface.
-- In addition to absolute cross-source differences, calculate scenario differences and isolate maximum discontinuities. No universal 'acceptable height jump' threshold is to be invented for this PoC.
-- Optional visual overlays may help review; record exact CRS, raster affine, source labels and masks.
+Before implementation, obtain T2 review of the proposed priority, fallback and no-adjustment rules, the inferred T.P. and conditional horizontal interpretation, and the residual seam and local outlier evidence. Record the decision explicitly. A contradictory datum or grid finding returns the design to HOLD. No universal jump tolerance is adopted from these measurements.
 
-**Expected local artifacts** (all under a fresh ignored `data/work/terrain-candidate-b/diagnostics-*/`): `diagnostic_report.json`, optional diagnostic raster maps and PNG, and input fingerprint receipts. Publish a concise findings MD in `docs/experiments/real_komae_source_h/`, with aggregation code/tests as needed. Do not commit raw ZIP/TIFF/PBF, or the candidate mosaic as a purported Standard Terrain. Failure should be `BLOCKED` with cause and no accepted outputs.
+For the separately scoped T3 prototype review, require:
 
-## 6. Deferred alternatives and decision criteria
+- New isolated run and experimental profile, with the four pinned TIFF SHA-256 values, source releases, masks, CRS/vertical assumption, grid and policy recorded. Accepted inputs and prior runs stay read-only.
+- Exact 200×200 aligned grid with 40,000 finite covered centres, no extrapolation, and for the same WARD_FIRST inputs 16,103 ward and 23,897 Tama selections. Recompute the counts independently and report any mismatch. Preserve every selected value and its source/tile identity and verify both against the original data after reopening any prototype output.
+- Reproduce the T1 switch counts and jumps for unchanged inputs and rule. Inspect the localized 0.50 m exceedance cluster and the mesh boundary alongside same-source gradients. If metrics differ, document why and return to review before relying on the product.
+- Test fallback, valid zero, both missing, competing same-source tiles, CRS/grid/hash mismatch and publication failure. Require a fresh output, complete provenance and successful reopen audit before marking any prototype run complete.
+- Keep multi-source preparation explicit and separate from the existing single-TIFF Standard Terrain contract. An experimental T3 result requires its own review. Any use with Building/VoxCity requires the separate T4 decision.
 
-- A hard administrative-boundary clip may create unsupported discontinuities and is not assumed equivalent to the actual validity masks.
-- An overlap average or feather may smooth a visible join but produces *new* elevations with uncertain provenance; do not select before T0 and T1.
-- A uniform vertical offset based on means/medians assumes a constant datum difference unsupported by the present min/median/maximum pattern.
-- A higher-level DEM from another provider is a fallback to investigate only if T0/T1 cannot justify a bounded prototype. It requires its own source/accuracy/vertical audit.
-
-**T1 diagnostic acceptance:** exact input hashes and masks; reproducible values/plots; all scenarios explicitly hypothetical; no source reassignment or Standard generation.  
-**T2 readiness:** separate documented choice of source ranking/cutline and its scientific rationale; compatible vertical semantics and target year assessed; quantitative seam evidence and residual limitations; reviewed by a person.  
-**Formal status:** T1 PASS does not turn `terrain_integration_ready` true. `CONDITIONAL / HOLD` remains valid and preferable to silent coordinate repair.
-
-## 7. Next Codex task proposed
-
-Implement T1 **read-only spatial-overlap diagnostics** by reusing the locally available four verified GeoTIFFs from #141. Include synthetic regression tests, source mask/index sanity checks and exact replay instructions. Also perform the bounded T0 public metadata check (no costly LAS downloads). Submit code and real-data diagnostic memo in a *separate implementation PR* for independent review. **Do not auto-merge, do not build a Standard Terrain or run VoxCity.**
+This PR updates the design only. Formal mosaic preparation, Native/Standard Terrain generation, VoxCity execution and Accepted artifact changes remain outside its scope.
