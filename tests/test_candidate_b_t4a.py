@@ -2,13 +2,40 @@ import json
 
 import numpy as np
 import pytest
-from shapely.geometry import box
+from shapely.geometry import Polygon, box
 
 from ouem import candidate_b_t4a as t4
 
 
 def face(x0,y0,x1,y1,z):
     return (((x0,y0,z),(x1,y0,z),(x1,y1,z),(x0,y1,z),(x0,y0,z)),)
+
+
+@pytest.mark.parametrize(("east", "north"), [(0., 0.), (-22575., -39925.)])
+def test_lower_envelope_of_flat_and_sloped_planes(east, north):
+    flat = face(east, north, east+1, north+1, 25.)
+    # z = 24 + 2*x_local + y_local, crossing the horizontal plane.
+    slope = (((east,north,24.),(east+1,north,26.),(east+1,north+1,27.),
+              (east,north+1,25.),(east,north,24.)),)
+    shape = box(east,north,east+1,north+1)
+    low, skipped = t4.lower_envelope(
+        [(shape,flat),(shape,slope)],
+        east+np.array([.125,.875,1.5]),north+np.array([.125,.875,.5]))
+    np.testing.assert_allclose(low,[24.375,25.,np.inf],rtol=0,atol=1e-10)
+    assert skipped == 0
+
+
+def test_nonplanar_face_is_counted_without_contributing():
+    flat = face(-22575.,-39925.,-22574.,-39924.,25.)
+    a,b,c,d,_ = flat[0]
+    twisted = (((*a[:2],20.),(*b[:2],20.),(*c[:2],21.),(*d[:2],20.),(*a[:2],20.)),)
+    shape = Polygon([point[:2] for point in flat[0]])
+    x,y = np.array([-22574.75]),np.array([-39924.75])
+    low, skipped = t4.lower_envelope([(shape,twisted),(shape,flat)],x,y)
+    assert skipped == 1
+    np.testing.assert_allclose(low,[25.],rtol=0,atol=1e-10)
+    low, skipped = t4.lower_envelope([(shape,twisted)],x,y)
+    assert skipped == 1 and np.isposinf(low).all()
 
 
 def fixture(lod, faces, ground=None):

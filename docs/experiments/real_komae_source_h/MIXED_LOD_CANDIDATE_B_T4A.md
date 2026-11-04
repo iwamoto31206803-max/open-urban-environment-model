@@ -50,3 +50,5 @@ T4-Bでは別の実験profileでMixed Consumer・T3の固定SHAと条件付き�
 関連pytest 43件通過、警告2件。新規合成テスト8件で、LoD1/2、垂直面とZ最小の違い、AOI越境・中心欠如、無効地盤、上下異常、鉛直の矛盾・未解決、manifest欠落／SHA差、決定的な再実行を確認した。VoxCityやAcceptedの書込経路は呼び出さない。
 
 全体pytestは1,232件通過、10件skip（専用GIS/QGIS Python 5件、Windows symlink権限5件）、341件警告。ログは `data/work/terrain-candidate-b/full-t4a.log`。実データ再実行 `t4a-03` のJSONは `t4a-02` と同一バイト。A2再現TerrainとPR #134 VoxCity配列は記録済みハッシュと一致した。
+
+PR #145のレビュー時に、水平面と傾斜面の交差を原点付近と候補Bの座標規模で照合した。期待値との照合許容差は `1e-10 m`。垂直面は既存の合成テストでゼロ面積として除外され、Z最小値には含まれても包絡には寄与しないことを確認した。正面積面のうちサンプル中心を覆い、平面フィットのランクまたは残差条件を満たさない面は、補正せず `lower_shell_proxy.skipped_faces` に数える。非平面だけの場合に包絡値が得られないこともテストした。GEEKOM-A6の再診断 `t4a-review-01` は前回JSONと同一バイトで、フィット除外は全63棟で0面。診断アルゴリズムと数値条件は従来どおり。
