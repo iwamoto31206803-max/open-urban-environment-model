@@ -1,7 +1,9 @@
 # Building Current State
 
-Last checked: **2026-10-30**, main baseline
-`53c5067d72c62631fdbfd949077faedaab604316` (PR #121 merged).
+Current documentation review: **2026-11-05**, main
+`95b20001bbc7132a0a28fa9aa7b062d242d5a1ac` (PR #150 merged).
+The original B1 technical results remain the dated PR #121 evidence, not a
+new execution or acceptance decision.
 This [informational entry point](../OUEM_Documentation_Governance_v0.1.md)
 reflects code and existing execution records, not a new run or acceptance decision.
 
@@ -11,7 +13,9 @@ A small-area Komae path reaches Building + Terrain + estimated Canopy voxels,
 configured A/B reuse, paired direct solar and QGIS projects. The
 [B1 technical closeout](B1_TECHNICAL_MILESTONE_CLOSEOUT.md) links implementation,
 execution and GIS/GUI verification; full scientific validation is deferred in the
-[backlog](../planning/OUEM_B1_Deferred_Validation_Backlog.md). B2 is not yet implemented.
+[backlog](../planning/OUEM_B1_Deferred_Validation_Backlog.md). B2 had not yet
+been implemented at the PR #121 checkpoint; subsequent [B2 technical closeout](B2_TECHNICAL_MILESTONE_CLOSEOUT.md)
+records a bounded Komae CPU green-view E2E, not scientific validation.
 The original three PoC stages retain separate historical evidence:
 
 | Stage / implementation | Procedure and evidence |
@@ -27,6 +31,27 @@ a derived 2.5D footprint/roof proxy. Source H, conditioned engine ground/D0 and
 voxel discretization are distinct quantities. Exact engine centres and orientation
 are reused downstream; geographic GeoTIFF indices are not the older projected
 north-up grid. Methods and numerical budgets belong to the linked records.
+
+## Subsequent upstream experiments (2026-11-05 review)
+
+The [Kunitachi 2 km preflight](../planning/OUEM_Kunitachi_Data_Source_Preflight_v0.1.md)
+verified selected Raw Building and DEM/CHMv2 coverage, but did **not** create
+Kunitachi Native / Standard / VoxCity or B1/B2 runs. The preflight rectangle
+extends outside city boundaries, and building LoD/neighboring-provider coverage
+remains a separate transfer decision.
+
+The [Mixed-LoD Raw selection](../experiments/real_komae_source_h/MIXED_LOD_SELECTOR_POC.md)
+and [Candidate B T5 closeout](../experiments/real_komae_source_h/MIXED_LOD_CANDIDATE_B_T5_4_CLOSURE.md)
+record an independent experimental chain: 31 LoD1 Setagaya-attribute buildings
+and 32 LoD2 Komae-attribute buildings from the Komae distribution, with all 63
+represented in the expanded VoxCity domain. This is a **cross-municipality test**,
+not proof of a mixed-LoD sample wholly inside Komae, multi-provider integration,
+or a replacement for the existing Source-H B1/Canopy runners. The
+[Candidate B E0 test](../experiments/real_komae_source_h/MIXED_LOD_CANDIDATE_B_E0_SHADOW.md)
+used synthetic shadows only. The [E1 design](../planning/OUEM_Candidate_B_E1_Minimal_Shadow_Design.md)
+remains a proposal; a real Candidate B Solar/GVI result has not been recorded.
+The original accepted A2/A3 and all experimental vertical-source limitations
+remain unchanged.
 
 ## Accepted v0.1 remains a separate path
 

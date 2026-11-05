@@ -2,6 +2,12 @@
 
 **DESIGN / EXPERIMENTAL**。E0で検証した固定VoxCityのCPU核を使う。 `terrain_integration_ready=false`。 [E0](../experiments/real_komae_source_h/MIXED_LOD_CANDIDATE_B_E0_SHADOW.md) · [T5-4](../experiments/real_komae_source_h/MIXED_LOD_CANDIDATE_B_T5_4_CLOSURE.md)
 
+## 既存B1との関係・実装保留（2026-11-05文書照合）
+
+これはCandidate Bの新しい入力・格子に対する**限定的な追加検証案**であり、OUEM全体での日陰・日射解析の初実装案ではない。既に[狛江B1 Technical E2E](../status/B1_TECHNICAL_MILESTONE_CLOSEOUT.md)では、[実データSolar実装](../../src/ouem/real_komae_solar.py)を使ったCurrent / No-Canopy / Difference、GeoTIFFとQGIS確認を実施している。既存B1は樹冠の有無・直達日射量（W/m²）と、旧source-HのVoxCity格子を対象とする。本案は建物のみの二値日陰、別のMixed-LoD profile・Processing Domain・格子・評価点規則を対象とする。結果・精度・評価基準を同一とみなさない。
+
+**現在は全体レビューのためE1の実装を保留する。** 再開する場合は、既存B1 Solar/GIS/QAコードと本案の比較・再利用境界を確認し、重複したrunnerや汎用APIを作らず、必要な差分に限って別途承認する。本注記は過去のE0結果や本設計の技術条件を変更せず、正式な中止・Acceptance判定でもない。
+
 ## 入力と実行
 
 1. T5-2/T5-3の成功reportを既知SHA-256で照合し、両GateがPASSのrunから `t5-3/voxels.npy`、`t5-2/centres_xy.npy`、`t5-2/building_ids.npy`、保存済み評価域マスクを読み取り専用で開く。各SHAをreportと照合し、127×127×12、クラス集合 `{-3,-1,0,1}`、1 m、EPSG:6677、軸順、座標配列との対応、固定VoxCityバージョンとcommitを確認する。Terrain・建物・ボクセルの再生成は不要。 [固定入力とハッシュ](../experiments/real_komae_source_h/MIXED_LOD_CANDIDATE_B_T5_23.md)
