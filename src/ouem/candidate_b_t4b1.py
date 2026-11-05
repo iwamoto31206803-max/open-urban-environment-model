@@ -45,13 +45,13 @@ def selection(path, expected):
     return selected,excluded
 
 
-def sample_dem(path, centres, rectangle, raster_dem):
+def sample_dem(path, centres, rectangle, raster_dem, *, bounds=AOI):
     """Bound the engine's UTM nearest-neighbour lookup before it can extrapolate."""
     lons,lats = (np.asarray(centres[k]) for k in ("lons","lats"))
     x,y = Transformer.from_crs(4326,6677,always_xy=True).transform(lons,lats,errcheck=True)
     require(lons.shape==lats.shape==tuple(centres["grid_size"]) and np.isfinite(x).all() and np.isfinite(y).all(),
             "invalid VoxCity centre positions")
-    xmin,ymin,xmax,ymax = AOI
+    xmin,ymin,xmax,ymax = bounds
     require(((x>=xmin)&(x<xmax)&(y>=ymin)&(y<ymax)).all(),"VoxCity centre outside the T3 AOI")
     require((np.diff(y,axis=0)>0).all() and (np.diff(x,axis=1)>0).all(),"unexpected VoxCity axis orientation")
     with rasterio.open(path) as ds:
