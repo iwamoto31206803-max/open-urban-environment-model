@@ -6,6 +6,10 @@ Authority: [Concept v0.2](OUEM_Concept_Architecture_v0.2.md), [Canopy draft](OUE
 
 ## Usage
 
+Candidate Bの保存済み実験用Terrainに限定した別profile・生成CLI・実データQAは
+[STEP 2-C1](experiments/real_komae_source_h/STEP2C1_EXPERIMENTAL_HEIGHT_ENVELOPE.md) を参照する。
+下記の正式Accepted Terrain用validatorと条件は変更していない。
+
 Use the repository OUEM venv in ordinary Windows PowerShell, following the [workstation record](development/OUEM_Windows_Development_and_Remote_Setup_20261025.md). No new dependencies or GIS-runtime merge is needed.
 
 ```powershell
