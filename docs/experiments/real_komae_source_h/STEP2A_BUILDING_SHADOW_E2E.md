@@ -1,5 +1,7 @@
 # STEP 2-A Mixed-LoD Building-only Shadow E2E
 
+後続のCanopy入力監査と合成統合検証は別記録を参照する。 [STEP 2-B](STEP2B_CANOPY_FEASIBILITY.md)
+
 **COMPLETED / EXPERIMENTAL**。PR #153マージ後main `21a5f5a` を基点に、GEEKOM-A6のWindows OUEM venvで実施した。 `terrain_integration_ready=false`。 [E1設計](../../planning/OUEM_Candidate_B_E1_Minimal_Shadow_Design.md) · [STEP 1](STEP1_COMPATIBILITY_PROBE.md) · [保存T5モデル](MIXED_LOD_CANDIDATE_B_T5_23.md)
 
 ## 入力と接続
