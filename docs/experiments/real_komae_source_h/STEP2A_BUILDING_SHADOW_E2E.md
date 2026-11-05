@@ -55,4 +55,6 @@ GeoTIFFの再読込で値・マスク・CRS・Affine・dtype・NoDataと四隅�
 
 共通reader抽出後のSTEP 1 launcher出力は、保存済み `step1-probe-a-final.json` とバイト一致した。回帰pytestでは今回のGVI実行禁止を優先し、`tests/test_b2_gvi.py`・`tests/test_b2_gvi_synthetic.py`・`tests/test_b2_gvi_qgis.py` を除外する。実行ログは `data/work/terrain-candidate-b/full-step2a.log`。最終結果はPR本文に記録する。
 
+GVI専用3ファイルを除く回帰結果は **1,227件通過、9件skip、308件警告、失敗0**（1,126.53秒）。skipは専用GIS/QGIS Python 4件とWindows symlink権限5件。Markdownのローカル参照、`git diff --check`、2回の全出力ハッシュを確認した。保存T5のreport・ボクセルに加え、A2再現TerrainとPR #134の保存ボクセルも記録済みSHAと一致した。
+
 技術的E2Eの成立は、保存モデルから指定条件の分類と地理出力まで。Context Buildingsと領域外の遮蔽物、領域の十分性、1 m形状量子化、現実の日陰精度、鉛直基準のrealization・epoch・accuracy、正式Terrain統合は未検証。領域外へ抜けた光線はモデル内の遮蔽物がなければ日向となる。既存B1の樹冠差分・W/m²指標とは評価条件を区別する。
