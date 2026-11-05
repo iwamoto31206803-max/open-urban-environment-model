@@ -10,6 +10,8 @@ The accepted-path and historical diagnostics below retain their separate scope.
 
 ## Navigation for current use
 
+- [STEP 1 Compatibility Probe](../../docs/experiments/real_komae_source_h/STEP1_COMPATIBILITY_PROBE.md) provides read-only saved-B1/Candidate B checks and links to the compatibility and H0 design audits.
+
 Choose the entry matching the intended task and its prerequisites; the links
 do not authorize new runs or replace the conditions in the owning procedure.
 
