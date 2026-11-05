@@ -62,6 +62,9 @@ Currentの合成int8 C順バイトSHAは `f150c46875fa23ea34a61a027968647835224a
 
 ## STEP 2-Cへ必要な条件
 
+後続の [STEP 2-C1実験用Envelope生成・QA](STEP2C1_EXPERIMENTAL_HEIGHT_ENVELOPE.md) は条件1〜3の入力生成を扱う。
+以下はSTEP 2-B時点の引き継ぎであり、実TREE統合は引き続きNOT_VERIFIED。
+
 1. 保存Raw CHMを再利用候補とし、Candidate B全処理域のcrop・マスク・0 mの意味を保持する。Meta HAGと候補B DEMの組合せ、時点差、CR=.60等の推定モデルを明示的にレビューする。
 2. T5の拡張Terrain SHAに結び付く絶対top/bottom・stateを新規実験用Envelopeとして生成する。既存 `validate_sources` はAccepted Standard Terrainを要求するため、Experimental Terrainをそのschemaや受入記録に偽装しない。限定profileで既存計算・書込helperを利用する設計を別途承認する。
 3. 全モデル中心の被覆・validity・来歴を検証し、欠測の扱いを決める。不明セルを樹木不存在へ置き換えない。D0・地盤条件付けとEnvelope DEMの対応を再確認する。
