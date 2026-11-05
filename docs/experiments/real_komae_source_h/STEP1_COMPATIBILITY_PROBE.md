@@ -41,3 +41,5 @@ B側は `komae-b-3c-20261029-01` に置き換える。stdoutを新しいGit管�
 ```
 
 関連pytestは34件通過、2件警告（Matplotlibの非対話描画と将来の非推奨API）。既存B2回帰には小さい合成モデルでの公開CPU API呼出しが含まれる。実データ評価の再実行は含まれない。全体pytestの実行ログはGit管理外の `data/work/terrain-candidate-b/full-step1.log`、最終件数はPR本文に記録する。
+
+全体pytestは1,276件通過、10件skip、345件警告、1件失敗。失敗は既存の `test_zip_repack_is_recorded_not_mistaken_for_tiff_revision` で、開始時のGit識別情報が取得できた一方、終了時は取得失敗によりnullとなり、不変性ゲートが停止した。コードのSHAは前後で同一。Git subprocessの10秒制限と整合する一時的取得失敗として記録し、既存のゲートや取得コードは変更していない。該当ファイル `tests/test_tokyo_tama_dem_acquisition.py` を同じWindows venvで再実行し、44件すべて通過した（474.28秒）。再実行ログは `data/work/terrain-candidate-b/step1-dem-retry.log`。全体初回の失敗と限定再実行の成功を区別する。skipは専用GIS/QGIS Python 5件とWindows symlink権限5件。
