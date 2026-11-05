@@ -1,7 +1,9 @@
 # Canopy Current State
 
-Last checked: **2026-10-30**, main baseline
-`53c5067d72c62631fdbfd949077faedaab604316` (PR #121 merged).
+Current documentation review: **2026-11-05**, main
+`95b20001bbc7132a0a28fa9aa7b062d242d5a1ac` (PR #150 merged).
+The original B1 technical evidence remains historical; no new Canopy, Solar or
+GIS run was performed for this review.
 This [informational entry point](../OUEM_Documentation_Governance_v0.1.md)
 reflects code and existing records; no new processing, accuracy validation or
 acceptance is declared.
@@ -12,8 +14,10 @@ The exploratory Komae path combines source-H Building, Standard Terrain and an
 estimated Meta CHMv2 Height Envelope on the actual VoxCity grid, then compares
 Current / No-Canopy direct irradiance. Configured A/B reuse, shared upper Z and
 GIS/QGZ/GUI verification are recorded in the [B1 technical closeout](B1_TECHNICAL_MILESTONE_CLOSEOUT.md).
-Full scientific validation is deferred to the [backlog](../planning/OUEM_B1_Deferred_Validation_Backlog.md);
-B2 remains unimplemented. Original PoC
+Full scientific validation is deferred to the [backlog](../planning/OUEM_B1_Deferred_Validation_Backlog.md).
+At the PR #121 checkpoint B2 was not yet implemented; the later
+[B2 technical closeout](B2_TECHNICAL_MILESTONE_CLOSEOUT.md) confirms bounded
+Komae CPU green-view E2E, with scientific validation deferred. Original PoC
 [PR #99 procedure](../experiments/real_komae_solar/README.md) and
 [executed results](../experiments/real_komae_solar/RESULTS.md) own the methods,
 metrics, input/output identities and boundary diagnostics.
@@ -24,6 +28,16 @@ It reuses [PR #97 source-H Building](../experiments/real_komae_source_h/README.m
 ([results](../experiments/real_komae_voxel/RESULTS.md)). The
 [Building Current State](BUILDING_CURRENT_STATE.md) distinguishes this
 experimental lane from the accepted v0.1 path.
+
+## Relationship to later municipality and Mixed-LoD work
+
+The [Kunitachi source preflight](../planning/OUEM_Kunitachi_Data_Source_Preflight_v0.1.md)
+records CHMv2 coverage/reading only; no Kunitachi Height Envelope, TREE voxel,
+Solar or GVI execution is established. The [Candidate B Mixed-LoD T5 closeout](../experiments/real_komae_source_h/MIXED_LOD_CANDIDATE_B_T5_4_CLOSURE.md)
+is a Building + experimental Terrain model, **without Canopy**. Its synthetic
+[E0 shadow test](../experiments/real_komae_source_h/MIXED_LOD_CANDIDATE_B_E0_SHADOW.md)
+contains no real Canopy or solar/green-view run. Neither track supersedes the
+bounded B1/B2 evidence or changes the draft Standard Canopy/acceptance state.
 
 ## Implemented Canopy preparation and meaning
 
