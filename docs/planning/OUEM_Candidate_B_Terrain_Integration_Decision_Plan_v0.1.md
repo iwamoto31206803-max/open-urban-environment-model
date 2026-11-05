@@ -27,6 +27,53 @@
 
 T0 permits work toward an isolated Candidate B experiment under those assumptions. Retain the original height values. A change to another vertical reference, a uniform offset, and a formal quality guarantee are outside this decision. Direct evidence for the precise DEM datum, realization and epoch remains valuable and should trigger review if it contradicts the assumption.
 
+## 2026-11-05 clarification — working T.P. assumption versus formal readiness
+
+This section clarifies the existing T0/T4-B2/T5 decision; it does not replace
+their dated evidence or retroactively change any Gate.
+
+**For the isolated Candidate B experiment, interpreting ward 2024 DEM elevations
+as T.P.-referenced is a reasonable, adopted working assumption.** The evidence
+is cumulative: the official Tokyo 3D viewer's T.P. description of the
+Setagaya download-mesh point cloud (recorded as user-provided official evidence,
+not independently fetched in that session), the provider's derivation of the
+0.50 m ground DEM from that ground-point-cloud family, Tama's separate explicit
+T.P. declaration, and the measured near-zero median offset across 4,336 overlap
+centres. The overlap median is corroborating numerical context, **not** proof
+of geodetic identity. The localized 0.656 m disagreement and seam effects remain
+real uncertainties; they are not evidence for a uniform vertical correction.
+
+The [T4-B2 executed assessment](../experiments/real_komae_source_h/MIXED_LOD_CANDIDATE_B_T4B2.md)
+already proposed a Candidate-B-specific vertical eligibility PASS on this
+reasoning, while explicitly retaining `terrain_integration_ready=false`.
+The subsequent [T5-2/T5-3 results](../experiments/real_komae_source_h/MIXED_LOD_CANDIDATE_B_T5_23.md)
+record both experimental Gates PASS for 63 buildings on the expanded domain.
+These outcomes mean technical experimental processing proceeded successfully
+**under the stated assumption**. They do not establish a directly documented
+vertical declaration for each ward TIFF, precise datum realization, survey
+epoch or measured accuracy.
+
+**An independently worded T.P. declaration for each individual ward GeoTIFF is
+not a mandatory prerequisite to continue this bounded experimental lane.**
+Seeking such direct evidence is useful where practical; if authoritative
+contradictory evidence emerges, reopen the source-semantics decision. Do not
+describe the adopted inference as a source-certified fact.
+
+Keep `terrain_integration_ready=false`: it records that the Candidate B
+mosaic has **not been formally admitted into the existing Standard Terrain /
+Accepted integration lane**. It is not a finding that the working T.P.
+assumption is unacceptable, nor a retroactive reversal of T4-B2/T5 experimental
+success. Any future change to `true` requires a separately scoped integration
+decision: identify the target contract/profile and permitted use, assess
+source/Building vertical semantics and remaining realization/epoch/accuracy
+uncertainty at that use's required quality level, verify reproducible
+provenance/coverage/geometry and compatibility with consumers, and approve
+the relevant acceptance or migration steps explicitly. **Do not impose an
+unobtainable per-TIFF direct declaration as an automatic hard gate**; instead
+make the evidence standard proportionate to the proposed use and record the
+residual uncertainty. No implicit promotion, offset, height conversion,
+historic-run edit or existing acceptance change follows from this clarification.
+
 ## T2 comparison
 
 Both source catalogues describe ground-derived products. The reported acquisition windows are July 2022–January 2023 for Tama 2023 and March–April 2023 for ward 2024. These are catalogue windows, with no tile-specific survey epoch or demonstrated accuracy ranking. Tama has broader valid coverage and stronger direct metadata for horizontal/vertical interpretation. Ward is the later acquisition window, with a smaller valid footprint and a conditional vertical interpretation. Both have the original per-tile hashes and validity masks in the preflight. [Tama distribution catalogue](https://www.geospatial.jp/ckan/api/3/action/package_show?id=tokyopc-tama-2023) · [Ward distribution catalogue](https://www.geospatial.jp/ckan/api/3/action/package_show?id=tokyopc-23ku-2024) · [PR #141 provenance](../experiments/real_komae_source_h/MIXED_LOD_TERRAIN_CANDIDATE_B_PREFLIGHT.md)
