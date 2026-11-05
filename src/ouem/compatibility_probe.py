@@ -1,10 +1,49 @@
 """Read-only numerical handoff probe, not an analysis runner or Standard schema."""
+from pathlib import Path
+
 import numpy as np
 from pyproj import Transformer
 
 from ouem.b2_gvi import observers
 from ouem.native.building.source_h_geometry import require
 from ouem.real_komae_voxel import effective_ground
+from ouem.consumers.source_h_standard import Watch
+
+
+def load_candidate(root, report_sha256, *, observer_height=1.5):
+    """Bind a saved T5 snapshot and map it to the STEP 1 numerical probe."""
+    watch = Watch(Path(root).resolve())
+    report = watch.capture("report","report.json",report_sha256,json_data=True)
+    require(report["profile"]=="ouem-candidate-b-t5-23/v0.1" and report["gate1"]==report["gate2"]=="PASS",
+            "candidate","completed T5-2/T5-3 required")
+    for key,sha in report["outputs"].items():
+        watch.capture(key,key,sha)
+
+    def array(name):
+        require(name+".npy" in report["outputs"],"candidate.array","unbound input array")
+        return np.load(watch.resolve(name+".npy"),allow_pickle=False,mmap_mode="r")
+
+    voxels = array("t5-3/voxels")
+    xy = array("t5-2/centres_xy")
+    grid = report["grid"]["engine_grid"]
+    require(list(voxels.shape[:2])==grid["grid_size"],"candidate.shape","engine grid differs")
+    metadata = dict(shape=report["voxel_shape"],axes=["north","east","up"],mesh_m=grid["meshsize_m"],xy_epsg=6677,
+                    canopy="NONE",d0_effective_abs_m=report["voxels"]["z_reference_abs_m"],
+                    numba=report["voxels"]["numba"],origin_lonlat=grid["origin"],
+                    u_step_lonlat=(np.array(grid["u_vec"])*grid["adj_mesh"][0]).tolist(),
+                    v_step_lonlat=(np.array(grid["v_vec"])*grid["adj_mesh"][1]).tolist(),
+                    domain_bounds=report["domain"],evaluation_bounds=report["evaluation_aoi"],
+                    observer_height_m=observer_height,
+                    source_id_by_numeric_id={str(r["id"]):r["source_id"] for r in report["grid"]["buildings"]})
+    index,valid,_ = observers(voxels,height=observer_height)
+    xyz = np.concatenate((xy,(metadata["d0_effective_abs_m"]+index+.5)[...,None]),axis=-1)
+    arrays = dict(voxels=voxels,ids=array("t5-2/building_ids"),raw_dem=array("t5-2/dem"),
+                  ground_abs=array("t5-3/effective_dem_abs"),centres_xy=xy,roi=array("t5-2/evaluation_mask"),
+                  observer_index=index,observer_valid=valid,observer_xyz=xyz)
+    result = inspect(**arrays,metadata=metadata)
+    result["saved_observer_contract"] = "NOT_VERIFIED; recomputed using B2 observer definition"
+    watch.unchanged()
+    return arrays,metadata,result,report,watch
 
 
 def inspect(voxels, ids, raw_dem, ground_abs, centres_xy, roi, metadata,
