@@ -6,6 +6,8 @@
 
 ## 実装と入力の境界
 
+後続の [STEP 2-C2実データCanopy統合](STEP2C2_REAL_CANOPY_INTEGRATION.md) は保存実中心のA/B比較と別Derived profileによる統合を扱う。C1の成果物・値・QA記録は維持する。
+
 [candidate_b_envelope.py](../../../src/ouem/candidate_b_envelope.py) が限定profile
 `ouem-candidate-b-experimental-height-envelope/v0.1` を所有する。
 既存 `GridSpec`、`ConstantCR`、`sample_raster`、`calculate`、`write_verified`、
