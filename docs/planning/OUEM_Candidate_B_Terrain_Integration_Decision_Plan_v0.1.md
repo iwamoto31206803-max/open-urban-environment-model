@@ -6,6 +6,8 @@
 
 ## Evidence and gate status
 
+現在の実験到達点は、拡張域での63棟ボクセル化（T5-2/T5-3両Gate PASS）。以下の表は設計時点の判断履歴として保持する。実験の適用範囲と残課題は総括に記録した。 [T5-4総括](../experiments/real_komae_source_h/MIXED_LOD_CANDIDATE_B_T5_4_CLOSURE.md)
+
 | Gate | Status | Basis and boundary |
 |---|---|---|
 | T0 Source semantics | **CONDITIONAL PASS** | Use ward T.P. as an inherited assumption for isolated Candidate B experimentation. The exact DEM datum realization and epoch remain unverified. |
