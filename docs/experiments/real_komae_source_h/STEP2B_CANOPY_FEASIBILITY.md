@@ -67,3 +67,13 @@ Currentの合成int8 C順バイトSHAは `f150c46875fa23ea34a61a027968647835224a
 3. 全モデル中心の被覆・validity・来歴を検証し、欠測の扱いを決める。不明セルを樹木不存在へ置き換えない。D0・地盤条件付けとEnvelope DEMの対応を再確認する。
 4. 保存T5の高さ・セグメントを固定SHAで読み、上記adapterでCurrent/No-Canopyを新規出力して全占有・区間・共通Z容量を再監査する。state・missing・outsideも同時に保存して、未知セルが指標計算で不存在として集計されることを防ぐ。今回の実統合はNOT_VERIFIED。
 5. その成立後に観測点・Solar/GVI条件と評価域を決める。今回の検証にはSolar/GVI実行、正式Terrain統合、樹木の現地検証を含まない。
+
+## 回帰結果
+
+Solar/GVI計算を除く回帰は **1,106件通過、9件skip、3件deselect、286件警告、失敗0**（890.69秒）。ログは `data/work/terrain-candidate-b/full-step2b.log`。skipは専用GIS/QGIS Python 4件とWindows symlink権限5件。Markdownリンクと `git diff --check` も確認した。
+
+今回の選択は `--ignore-glob=tests/*gvi*`、`--ignore-glob=tests/*shadow*` に加え、`test_b1_physical_sanity.py`、`test_canopy_observer_geometry.py`、`test_e2e_config.py`、`test_synthetic_building_solar.py` をignoreした。次のSolar実行3件もdeselectした。したがって、この件数を全テスト無条件のPASSとは扱わない。
+
+- `tests/test_real_komae_solar.py::test_real_solar_common_observers_sign_and_crop_diagnostic`
+- `tests/test_shared_vertical_domain.py::test_expanded_solar_uses_same_observers_and_pair_grid`
+- `tests/test_gis_visualization.py::test_actual_synthetic_e2e_handoff`
