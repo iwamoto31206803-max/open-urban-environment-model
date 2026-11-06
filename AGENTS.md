@@ -41,10 +41,16 @@
 
 - Keep changes task-scoped. Put reusable logic in `src/ouem/` and keep launchers
   thin; assess reuse or retirement of existing paths before adding another one.
-- For code changes, add/update appropriate tests, run relevant tests and then
-  the full suite using the OS-specific OUEM venv above (`-m pytest -q -ra`).
-  For documentation-only changes, choose proportionate checks and explain any
-  omitted tests. Report actual failures, skips, warnings and checks not run.
+- For code changes, add/update appropriate tests and run focused affected tests
+  first using the OS-specific OUEM venv above. The existing GitHub Actions
+  Windows/Ubuntu pytest matrix (`python -m pytest -q -ra --durations=30`) is
+  the full-regression acceptance gate before merge; do not repeatedly run the
+  entire local suite as a routine Codex step. Run local full regression when
+  specifically needed for diagnosis or an explicitly scoped task. Never remove
+  tests, weaken assertions, or narrow the existing CI gate to save time.
+- For documentation-only changes, use proportionate scope/link checks and
+  explain omitted runtime tests. Report actual failures, skips, warnings,
+  CI outcomes and checks not run; do not claim a CI result before it finishes.
 - Run real-data processing only within explicitly authorized scope; record the
   actual environment, input identities, results and limitations. Never invent
   evidence or treat synthetic success as real-data acceptance.
