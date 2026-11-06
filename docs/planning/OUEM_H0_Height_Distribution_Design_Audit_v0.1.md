@@ -55,6 +55,17 @@ LoD1 Solidの上端は元の押出し表現に由来し、実屋根勾配の再�
 
 ## STEP 2 / STEP 3への引継ぎ
 
+**工程番号に関する履歴注記（2026-11-06）：** 以下の番号はH0設計監査時点の
+局所的な提案ラベルであり、後に実施したCandidate Bの現行STEP番号とは一致しない。
+実施済みの現行STEP 2-Aは[建物日陰](../experiments/real_komae_source_h/STEP2A_BUILDING_SHADOW_E2E.md)、
+STEP 2-Bは[Canopy成立性](../experiments/real_komae_source_h/STEP2B_CANOPY_FEASIBILITY.md)、
+STEP 2-C1〜C4は[Envelope](../experiments/real_komae_source_h/STEP2C1_EXPERIMENTAL_HEIGHT_ENVELOPE.md)、
+[実データTREE統合](../experiments/real_komae_source_h/STEP2C2_REAL_CANOPY_INTEGRATION.md)、
+[Solar](../experiments/real_komae_source_h/STEP2C3_REAL_SOLAR.md)、
+[GVI](../experiments/real_komae_source_h/STEP2C4_REAL_GVI.md)である。
+次の現行STEP 3は建物高さ分布の合成PoCであり、以下の古い提案行は実施済みの
+高さ分布実験を意味しない。設計上の論点を保持するため、元の表は変更しない。
+
 | 順序 | 最小PR単位 | 実施条件と受入候補 |
 |---|---|---|
 | STEP 2-A | 既存配列を扱う小さい数値handoff接続 | 既存readerは維持し、Candidate Bのgrid・D0・観測点を明示的に写像。source_id、出力affine、全域計算後のROI抽出、入力不変を検証。E1 runnerの保留解除と実データ計算の範囲は別に承認する。 |
