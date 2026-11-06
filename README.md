@@ -69,6 +69,9 @@ axis conversion and independent shadow geometry checks; scientific accuracy rema
 [STEP 4-0 read-only real LoD2 audit](docs/experiments/height_distribution/STEP4_0_REAL_LOD2_ACCEPTANCE_AUDIT.md)
 checks source roof semantics and face correspondence before real height-distribution
 processing. The existing LoD2 population remains CONDITIONAL, not formally accepted.
+[STEP 4-A absolute roof-top distribution](docs/experiments/height_distribution/STEP4A_REAL_LOD2_ROOF_DISTRIBUTION.md)
+derives centre/cell-max absolute source H for the four fixed audited samples under
+a provisional GroundSurface-footprint rule; HAG and engine connection remain unverified.
 
 | Available experimental workflow | Start here |
 |---|---|
