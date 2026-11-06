@@ -55,6 +55,11 @@ LoD1 Solidの上端は元の押出し表現に由来し、実屋根勾配の再�
 
 ## STEP 2 / STEP 3への引継ぎ
 
+現行STEP 3-Aの限定合成実装・検証は
+[Synthetic Building Height Distribution PoC](../experiments/height_distribution/STEP3A_SYNTHETIC_HEIGHT_DISTRIBUTION.md)
+を参照。中心／セル最大の正式採用、実データ処理、VoxCity接続は未確定・未実施。
+本設計監査の履歴上の候補・表を、その実装結果と混同しない。
+
 **工程番号に関する履歴注記（2026-11-06）：** 以下の番号はH0設計監査時点の
 局所的な提案ラベルであり、後に実施したCandidate Bの現行STEP番号とは一致しない。
 実施済みの現行STEP 2-Aは[建物日陰](../experiments/real_komae_source_h/STEP2A_BUILDING_SHADOW_E2E.md)、

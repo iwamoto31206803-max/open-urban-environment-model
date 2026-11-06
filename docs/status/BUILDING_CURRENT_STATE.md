@@ -8,6 +8,13 @@ new execution or acceptance decision.
 This [informational entry point](../OUEM_Documentation_Governance_v0.1.md)
 reflects code and existing execution records, not a new run or acceptance decision.
 
+Subsequent synthetic work, based on main
+`2864c61cfbf9fa0a993fdc67abe7cedf7a528be3` (PR #161 merged):
+[STEP 3-A height distribution](../experiments/height_distribution/STEP3A_SYNTHETIC_HEIGHT_DISTRIBUTION.md)
+compares per-cell centre and clipped-roof maximum absolute Z, retaining all face
+and building contributions. This is synthetic-only, before VoxCity; method
+adoption, STEP 3-B connection and scientific/formal acceptance remain unverified.
+
 ## Current milestone: B1 technical E2E closeout
 
 A small-area Komae path reaches Building + Terrain + estimated Canopy voxels,
