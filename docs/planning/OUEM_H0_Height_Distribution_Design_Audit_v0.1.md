@@ -4,6 +4,11 @@
 
 ## PLATEAU経路
 
+後続の保存実データ読取監査は
+[STEP 4-0 LoD2 Roof Geometry Audit](../experiments/height_distribution/STEP4_0_REAL_LOD2_ACCEPTANCE_AUDIT.md)
+を参照。固定成果物の外部face対応の確認は、Standardへの面意味情報追加や
+鉛直・科学精度・STEP 4-A入力の無条件受入を意味しない。
+
 既存Standardは3D face、外周・内周ring、頂点XYZ、ID、source_lod、selection_reason、measured_heightの原値とnullable解析値を保存する。`standardize/building/mixed_lod.py::run:173`・`audit:131`はXY変換とHの完全保持を分け、独立Consumer `consumers/mixed_lod.py::audit_standard:319`は元形状・順序・全H・XYを照合する。GPKGのPolygon集合だけから屋根種別、閉じたSolid、水密性を推定しない。Raw branchへの参照は出典の追跡に使えるが、全意味属性がStandardの各面に複製されているとは限らない。
 
 LoD1 Solidの上端は元の押出し表現に由来し、実屋根勾配の再現を保証しない。LoD2 MultiSurfaceは保持された屋根等の斜面情報を使える一方、ReaderがLOD2を選択したことだけで屋根面の完全性や測量精度を保証しない。`adapters/voxcity.build_normalized_footprint:131`は正面積のXY投影面を集めるため、屋根面の分類器としては使えない。

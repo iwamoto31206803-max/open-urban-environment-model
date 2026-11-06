@@ -29,6 +29,13 @@ observers and explicit north-up/API-axis conversion. Binary shadow and horizonta
 direct solar have separate synthetic evidence; real-data applicability and
 scientific/formal acceptance remain unverified. No STEP 2 saved data is changed.
 
+[STEP 4-0 real LoD2 audit](../experiments/height_distribution/STEP4_0_REAL_LOD2_ACCEPTANCE_AUDIT.md),
+based on main `3db0154d6d008f5d2f5487910beabea14b46f313`, rechecks existing
+Mixed-LoD source semantics and unique Raw/Native/Standard face correspondence
+read-only. Real-data audit execution is separate from STEP 4-A eligibility:
+footprint/vertical input conditions remain unresolved, with no real height
+distribution or environmental processing and no formal acceptance.
+
 ## Current milestone: B1 technical E2E closeout
 
 A small-area Komae path reaches Building + Terrain + estimated Canopy voxels,
