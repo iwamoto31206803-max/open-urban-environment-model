@@ -1,7 +1,8 @@
 # Building Current State
 
-Current documentation review: **2026-11-05**, main
-`95b20001bbc7132a0a28fa9aa7b062d242d5a1ac` (PR #150 merged).
+Current documentation review: **2026-11-06**, main
+`529d842dfc2af82843bdcd4bfa888e79dbff6328` (through PR #160 merged).
+This is a documentation/code/evidence review, not a new real-data execution.
 The original B1 technical results remain the dated PR #121 evidence, not a
 new execution or acceptance decision.
 This [informational entry point](../OUEM_Documentation_Governance_v0.1.md)
@@ -32,7 +33,7 @@ voxel discretization are distinct quantities. Exact engine centres and orientati
 are reused downstream; geographic GeoTIFF indices are not the older projected
 north-up grid. Methods and numerical budgets belong to the linked records.
 
-## Subsequent upstream experiments (2026-11-05 review)
+## Subsequent upstream experiments (2026-11-06 review)
 
 The [Kunitachi 2 km preflight](../planning/OUEM_Kunitachi_Data_Source_Preflight_v0.1.md)
 verified selected Raw Building and DEM/CHMv2 coverage, but did **not** create
@@ -48,10 +49,18 @@ represented in the expanded VoxCity domain. This is a **cross-municipality test*
 not proof of a mixed-LoD sample wholly inside Komae, multi-provider integration,
 or a replacement for the existing Source-H B1/Canopy runners. The
 [Candidate B E0 test](../experiments/real_komae_source_h/MIXED_LOD_CANDIDATE_B_E0_SHADOW.md)
-used synthetic shadows only. The [E1 design](../planning/OUEM_Candidate_B_E1_Minimal_Shadow_Design.md)
-remains a proposal; a real Candidate B Solar/GVI result has not been recorded.
-The original accepted A2/A3 and all experimental vertical-source limitations
-remain unchanged.
+used synthetic shadows only at that historical checkpoint. The subsequent
+[STEP 2-A real building-only shadow](../experiments/real_komae_source_h/STEP2A_BUILDING_SHADOW_E2E.md),
+[STEP 2-C2 real Canopy pair](../experiments/real_komae_source_h/STEP2C2_REAL_CANOPY_INTEGRATION.md),
+[STEP 2-C3 direct Solar](../experiments/real_komae_source_h/STEP2C3_REAL_SOLAR.md)
+and [STEP 2-C4 weighted first-TREE view index](../experiments/real_komae_source_h/STEP2C4_REAL_GVI.md)
+now establish a bounded **experimental technical E2E** using the same saved
+127x127 model and registered evaluation ROI. The earlier
+[E1 design](../planning/OUEM_Candidate_B_E1_Minimal_Shadow_Design.md)
+remains historical planning, not the current implementation gate.
+The representative building-height proxy, conditional T.P. inheritance,
+source eligibility, scientific accuracy and formal acceptance remain unresolved;
+the original accepted A2/A3 boundaries are unchanged.
 
 ## Accepted v0.1 remains a separate path
 
