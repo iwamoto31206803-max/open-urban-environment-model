@@ -178,7 +178,7 @@ def plot(path, item, result):
     figure.savefig(path, dpi=130, metadata={"Software": "OUEM STEP 4-B"})
 
 
-def save_building(path, item, result):
+def save_building(path, item, result, *, plotter=plot):
     require(result["input_identity"] == voxel.input_identity(result["inputs"])
             and result["voxels_identity"] == voxel.array_identity(result["voxels"]), "result changed before save")
     path.mkdir()
@@ -196,7 +196,7 @@ def save_building(path, item, result):
         source = item["source_dir"]/name
         shutil.copyfile(source, path/name)
         require(consumer.digest(source) == consumer.digest(path/name), "source reference copy differs")
-    plot(path/"diagnostic.png", item, result)
+    plotter(path/"diagnostic.png", item, result)
 
 
 def run(distribution_run, audit_run, output, artifact_root):

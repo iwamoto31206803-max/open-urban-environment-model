@@ -49,6 +49,13 @@ reproducibility. Sloped/stepped roofs produce varying column heights; full-cell
 boundary inflation and the surface-layer offset are quantified. Real DEM/HAG,
 scientific validation and formal acceptance remain unverified.
 
+[STEP 4-B2 saved-Terrain PoC](../experiments/height_distribution/STEP4B2_REAL_LOD2_TERRAIN_VOXELIZATION.md)
+replaces those numerical anchors with sampled Candidate B DEM and owner-conditioned
+ground for the same four roofs. Technical execution/oracle comparison passes;
+sub-0.5m local terrain relief rounds to a single surface layer at 1m resolution.
+Vertical status remains CONDITIONAL; HAG/scientific/formal gates stay unverified
+and terrain_integration_ready remains false.
+
 ## Current milestone: B1 technical E2E closeout
 
 A small-area Komae path reaches Building + Terrain + estimated Canopy voxels,

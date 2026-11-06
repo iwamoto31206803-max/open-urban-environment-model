@@ -75,6 +75,9 @@ a provisional GroundSurface-footprint rule; HAG and engine connection remain unv
 [STEP 4-B real LoD2 voxelization](docs/experiments/height_distribution/STEP4B_REAL_LOD2_VOXELIZATION.md)
 generates four actual 3D building volumes from saved cell-max H with constant
 numeric anchors; real DEM/HAG integration remains unverified.
+[STEP 4-B2 saved-Terrain voxelization](docs/experiments/height_distribution/STEP4B2_REAL_LOD2_TERRAIN_VOXELIZATION.md)
+places the same four roof distributions over saved Candidate B DEM in a conditional
+numerical experiment; 1m terrain quantization and roof/occupancy changes are recorded.
 
 | Available experimental workflow | Start here |
 |---|---|
