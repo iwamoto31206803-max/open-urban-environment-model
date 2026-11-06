@@ -63,6 +63,9 @@ current representative-height baseline. It establishes no real-data or formal ac
 [STEP 3-B synthetic voxelization](docs/experiments/height_distribution/STEP3B_SYNTHETIC_VOXELIZATION.md)
 connects that Derived to the pinned public Voxelizer with independent occupancy,
 owner-ground, rounding and capacity QA; unresolved inputs remain BLOCKED.
+[STEP 3-C synthetic Solar/Shadow](docs/experiments/height_distribution/STEP3C_SYNTHETIC_SOLAR_SHADOW.md)
+compares the three height models at common nonbuilding observers, with explicit
+axis conversion and independent shadow geometry checks; scientific accuracy remains unverified.
 
 | Available experimental workflow | Start here |
 |---|---|
