@@ -1,7 +1,8 @@
 # Canopy Current State
 
-Current documentation review: **2026-11-05**, main
-`95b20001bbc7132a0a28fa9aa7b062d242d5a1ac` (PR #150 merged).
+Current documentation review: **2026-11-06**, main
+`529d842dfc2af82843bdcd4bfa888e79dbff6328` (through PR #160 merged).
+This is a documentation/code/evidence review, not a new real-data execution.
 The original B1 technical evidence remains historical; no new Canopy, Solar or
 GIS run was performed for this review.
 This [informational entry point](../OUEM_Documentation_Governance_v0.1.md)
@@ -34,10 +35,20 @@ experimental lane from the accepted v0.1 path.
 The [Kunitachi source preflight](../planning/OUEM_Kunitachi_Data_Source_Preflight_v0.1.md)
 records CHMv2 coverage/reading only; no Kunitachi Height Envelope, TREE voxel,
 Solar or GVI execution is established. The [Candidate B Mixed-LoD T5 closeout](../experiments/real_komae_source_h/MIXED_LOD_CANDIDATE_B_T5_4_CLOSURE.md)
-is a Building + experimental Terrain model, **without Canopy**. Its synthetic
-[E0 shadow test](../experiments/real_komae_source_h/MIXED_LOD_CANDIDATE_B_E0_SHADOW.md)
-contains no real Canopy or solar/green-view run. Neither track supersedes the
-bounded B1/B2 evidence or changes the draft Standard Canopy/acceptance state.
+was a Building + experimental Terrain model **without Canopy at the T5 checkpoint**.
+Its [E0 shadow test](../experiments/real_komae_source_h/MIXED_LOD_CANDIDATE_B_E0_SHADOW.md)
+was synthetic-only at that earlier stage. Subsequently,
+[STEP 2-C1](../experiments/real_komae_source_h/STEP2C1_EXPERIMENTAL_HEIGHT_ENVELOPE.md)
+generated a Candidate B experimental Height Envelope and
+[STEP 2-C2](../experiments/real_komae_source_h/STEP2C2_REAL_CANOPY_INTEGRATION.md)
+created a real saved Current/No-Canopy pair. The same model reached
+[direct Solar](../experiments/real_komae_source_h/STEP2C3_REAL_SOLAR.md)
+and [CPU weighted first-TREE view index](../experiments/real_komae_source_h/STEP2C4_REAL_GVI.md)
+with common saved observer positions and EPSG:6677 registration.
+These are **experimental technical E2E** results, not verified crown presence,
+calibrated optics, field GVI, approved terrain integration or formal acceptance.
+Neither track supersedes the bounded B1/B2 evidence or changes the draft
+Standard Canopy/acceptance state.
 
 ## Implemented Canopy preparation and meaning
 
