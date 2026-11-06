@@ -45,6 +45,11 @@ LoD1 Solidの上端は元の押出し表現に由来し、実屋根勾配の再�
 
 ## 固定VoxCityの接続可能性と限界
 
+後続の限定実行検証は現行
+[STEP 3-B synthetic voxelization](../experiments/height_distribution/STEP3B_SYNTHETIC_VOXELIZATION.md)
+を参照。以下は監査時点の静的所見であり、合成の限定成立は実データや正式契約の
+適合性を意味しない。地表面indexと最上位層の上面／下面の区別も同記録に明示する。
+
 インストール済み1.7.0、commit `fa212656305328a9a657973bae26f352bfe813bc` の `generator/voxelizer.py::generate_combined:158–245` は、セルごとのheight配列と複数の[low,high]セグメントを受け取る。ループは各セルのセグメントを整数化して占有を書き込む。**静的な受け口は確認できるが、新しい高さ分布での実行適合性はNOT_VERIFIED**。
 
 - `height_grid` はZ容量確保に使われ、実占有はsegment配列が決める。各セルの最大highとheight_gridの不整合で上端を切り捨て得る。NaNの代替値設定があるため、OUEM側は渡す前に未解決欠測を拒否する。

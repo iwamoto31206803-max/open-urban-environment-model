@@ -60,6 +60,9 @@ source datum realization and formal acceptance remain **NOT_VERIFIED**.
 [STEP 3-A synthetic building-height distribution](docs/experiments/height_distribution/STEP3A_SYNTHETIC_HEIGHT_DISTRIBUTION.md)
 compares centre and cell-maximum roof Z before engine connection, preserving the
 current representative-height baseline. It establishes no real-data or formal acceptance.
+[STEP 3-B synthetic voxelization](docs/experiments/height_distribution/STEP3B_SYNTHETIC_VOXELIZATION.md)
+connects that Derived to the pinned public Voxelizer with independent occupancy,
+owner-ground, rounding and capacity QA; unresolved inputs remain BLOCKED.
 
 | Available experimental workflow | Start here |
 |---|---|

@@ -15,6 +15,13 @@ compares per-cell centre and clipped-roof maximum absolute Z, retaining all face
 and building contributions. This is synthetic-only, before VoxCity; method
 adoption, STEP 3-B connection and scientific/formal acceptance remain unverified.
 
+Following that checkpoint, [STEP 3-B synthetic voxelization](../experiments/height_distribution/STEP3B_SYNTHETIC_VOXELIZATION.md),
+based on main `2a0585dd821ca8c783f7565c83fb3b363b1611e5` (PR #162 merged),
+checks the pinned public Voxelizer against independent integer intervals for
+representative/centre/cell-max inputs. This remains synthetic-only: unresolved
+ownership, tops and capacity are rejected; real-data and environmental connections
+and scientific/formal acceptance are unverified. The linked record owns evidence.
+
 ## Current milestone: B1 technical E2E closeout
 
 A small-area Komae path reaches Building + Terrain + estimated Canopy voxels,
