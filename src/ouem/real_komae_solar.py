@@ -146,9 +146,30 @@ def shared_grid(grid, tree_qa):
     return dict(grid, shape=domain['shared_shape'], vertical_domain=domain)
 
 
-def solar_pair(current, no_canopy, a, grid, high, low, *, maximum_source_H=None):
+def direct_solar_at_saved_grid(vox, a, grid, high, low, *, azimuth=AZIMUTH, elevation=ELEVATION, dni=DNI):
+    """One B1 public-API calculation, also reusable by saved-model experiments."""
     from voxcity.models import VoxCity, VoxelGrid, GridMetadata, BuildingGrid, LandCoverGrid, DemGrid, CanopyGrid
     from voxcity.simulator.solar.radiation import get_direct_solar_irradiance_map
+
+    rectangle = grid['rectangle_vertices_lonlat']
+    bounds = (min(p[0] for p in rectangle), min(p[1] for p in rectangle), max(p[0] for p in rectangle), max(p[1] for p in rectangle))
+    meta = GridMetadata('EPSG:4326', bounds, 1.)
+    present = bool(np.any(vox == -2))
+    scene = VoxCity(VoxelGrid(vox, meta), BuildingGrid(a['building_heights'], a['building_segments'], a['building_ids'], meta),
+                    LandCoverGrid(np.ones(vox.shape[:2], dtype=int), meta), DemGrid(a['effective_dem'], meta),
+                    CanopyGrid(high if present else np.zeros(vox.shape[:2]), meta,
+                               bottom=low if present else np.zeros(vox.shape[:2])), extras={'rotation_angle':grid['axis0_true_azimuth_deg']})
+    before = vox.copy()
+    result = get_direct_solar_irradiance_map(scene, azimuth, elevation, dni, show_plot=False,
+                view_point_height=1.5, include_building_roofs=False, tree_k=.6, tree_lad=1.)
+    require(np.array_equal(vox, before), 'solar.inputs', 'API changed voxel input')
+    valid = a['building_ids'] == 0
+    require(np.array_equal(np.isfinite(result), valid), 'solar.mask', 'unexpected observer mask')
+    return np.where(valid, result, np.nan)
+
+
+def solar_pair(current, no_canopy, a, grid, high, low, *, maximum_source_H=None):
+    from voxcity.models import VoxCity, VoxelGrid, GridMetadata, BuildingGrid, LandCoverGrid, DemGrid, CanopyGrid
     from voxcity.utils.orientation import direction_to_axis_vector
     ids = a['building_ids']; valid = ids == 0
     origin_k = a['ground_indices']+1  # int(1.5 / 1m) added to first walkable transition
@@ -163,17 +184,8 @@ def solar_pair(current, no_canopy, a, grid, high, low, *, maximum_source_H=None)
     meta = GridMetadata('EPSG:4326', bounds, 1.)
     def calculate(vox, *, offset=(0,0)):
         sl = np.s_[offset[0]:offset[0]+vox.shape[0], offset[1]:offset[1]+vox.shape[1]]
-        present = bool(np.any(vox == -2))
-        scene = VoxCity(VoxelGrid(vox, meta), BuildingGrid(a['building_heights'][sl], a['building_segments'][sl], ids[sl], meta),
-                        LandCoverGrid(np.ones(vox.shape[:2], dtype=int), meta), DemGrid(a['effective_dem'][sl], meta),
-                        CanopyGrid(high[sl] if present else np.zeros(vox.shape[:2]), meta,
-                                   bottom=low[sl] if present else np.zeros(vox.shape[:2])), extras={'rotation_angle':rotation})
-        before = vox.copy()
-        result = get_direct_solar_irradiance_map(scene, AZIMUTH, ELEVATION, DNI, show_plot=False,
-                    view_point_height=1.5, include_building_roofs=False, tree_k=.6, tree_lad=1.)
-        require(np.array_equal(vox, before), 'solar.inputs', 'API changed voxel input')
-        require(np.array_equal(np.isfinite(result), valid[sl]), 'solar.mask', 'unexpected observer mask')
-        return np.where(valid[sl], result, np.nan)
+        subset = {key:a[key][sl] for key in ('building_heights','building_segments','building_ids','effective_dem')}
+        return direct_solar_at_saved_grid(vox, subset, grid, high[sl], low[sl], azimuth=AZIMUTH, elevation=ELEVATION, dni=DNI)
     now, absent = calculate(current), calculate(no_canopy)
     terrain_only = no_canopy.copy(); terrain_only[terrain_only == -3] = 0
     # Diagnostic only: same original non-building observers, retained conditioned
