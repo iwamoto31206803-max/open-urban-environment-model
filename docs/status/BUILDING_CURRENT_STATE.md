@@ -22,6 +22,13 @@ representative/centre/cell-max inputs. This remains synthetic-only: unresolved
 ownership, tops and capacity are rejected; real-data and environmental connections
 and scientific/formal acceptance are unverified. The linked record owns evidence.
 
+[STEP 3-C synthetic Solar/Shadow](../experiments/height_distribution/STEP3C_SYNTHETIC_SOLAR_SHADOW.md)
+follows main `e15dba7f45147eb8d23f48959c28e79a417666be` (PR #163 merged).
+It compares representative/centre/cell-max roofs using common nonbuilding
+observers and explicit north-up/API-axis conversion. Binary shadow and horizontal
+direct solar have separate synthetic evidence; real-data applicability and
+scientific/formal acceptance remain unverified. No STEP 2 saved data is changed.
+
 ## Current milestone: B1 technical E2E closeout
 
 A small-area Komae path reaches Building + Terrain + estimated Canopy voxels,
