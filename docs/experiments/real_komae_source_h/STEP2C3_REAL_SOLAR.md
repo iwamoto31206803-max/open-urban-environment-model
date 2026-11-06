@@ -5,6 +5,8 @@
 GVI、建物・Terrain・Canopyの再生成は行っていない。
 [STEP 2-A baseline](STEP2A_BUILDING_SHADOW_E2E.md) · [STEP 2-C2入力](STEP2C2_REAL_CANOPY_INTEGRATION.md)
 
+後続GVIの共通観測点・座標・負荷確認は [STEP 2-C4](STEP2C4_REAL_GVI.md)。以下はC3完了時点の記録として維持する。
+
 ## 実装とAPI監査
 
 [candidate_b_solar.py](../../../src/ouem/candidate_b_solar.py) が保存ペアの監査・共通観測点QA・2ケース計算・座標出力を所有する。

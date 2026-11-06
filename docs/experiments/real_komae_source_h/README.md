@@ -3,6 +3,10 @@
 The Mixed-LoD Raw selector records branch selection and uncut source XYZ for
 candidate B. See the [selector PoC and run procedure](MIXED_LOD_SELECTOR_POC.md).
 
+The saved Mixed-LoD model's later environmental handoffs are recorded separately:
+[STEP 2-C3 Solar](STEP2C3_REAL_SOLAR.md) and [STEP 2-C4 GVI](STEP2C4_REAL_GVI.md).
+They do not change the original two-member experiment below.
+
 This opt-in Windows experiment uses the existing fixed Converter and experimental
 source-H Native → Standard → Consumer path. Results are in [RESULTS.md](RESULTS.md).
 It adds no VoxCity, canopy or solar processing and changes no acceptance or gate.
