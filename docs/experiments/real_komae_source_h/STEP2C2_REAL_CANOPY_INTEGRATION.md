@@ -5,6 +5,8 @@
 Solar/GVI、PLATEAU/Terrainの再生成、高さ分布モデルは実行していない。
 [STEP 2-B](STEP2B_CANOPY_FEASIBILITY.md) · [STEP 2-C1](STEP2C1_EXPERIMENTAL_HEIGHT_ENVELOPE.md)
 
+後続Solar PoCは [STEP 2-C3](STEP2C3_REAL_SOLAR.md)。以下はSTEP 2-C2完了時点の記録として維持する。
+
 ## 実装と保存入力
 
 [candidate_b_canopy_run.py](../../../src/ouem/candidate_b_canopy_run.py) は保存入力の復元・A/B比較・QA・新規run公開を所有する。
