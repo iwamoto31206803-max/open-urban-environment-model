@@ -12,6 +12,10 @@ The authorized provisional name is **CPU weighted first-TREE view index**.
 It is dimensionless, not photograph-based green-view fraction, whole-crown
 transmission integration or scientifically validated GVI.
 
+For the separate saved Mixed-LoD Candidate B adapter, EPSG:6677 registration
+and shared Solar observers, see [STEP 2-C4](../real_komae_source_h/STEP2C4_REAL_GVI.md).
+It reuses this B2 calculation/settings without changing the A/B implementation or results below.
+
 ## Runtime and commands
 
 Use ordinary Windows PowerShell and the OUEM `.venv`; keep existing QGIS Python
