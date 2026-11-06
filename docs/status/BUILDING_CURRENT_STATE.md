@@ -56,6 +56,12 @@ sub-0.5m local terrain relief rounds to a single surface layer at 1m resolution.
 Vertical status remains CONDITIONAL; HAG/scientific/formal gates stay unverified
 and terrain_integration_ready remains false.
 
+[STEP 4-C real roof shadow comparison](../experiments/height_distribution/STEP4C_REAL_LOD2_SHADOW_COMPARISON.md)
+compares four isolated buildings with identical ground/observers and true south
+sun at 45°. Distributed roofs change shadow area by F/S/M/C = 0/−74/−45/−16 m²
+versus explicit max-roof representatives; this is sensitivity, not actual shadow
+accuracy or a change to formal representative-height/Terrain contracts.
+
 ## Current milestone: B1 technical E2E closeout
 
 A small-area Komae path reaches Building + Terrain + estimated Canopy voxels,
