@@ -57,8 +57,9 @@ and [CPU weighted first-TREE view index](docs/experiments/real_komae_source_h/ST
 at the same saved observer locations and EPSG:6677 ROI cells.
 `terrain_integration_ready=false`; scientific accuracy, observer eye height,
 source datum realization and formal acceptance remain **NOT_VERIFIED**.
-Next planned work is a separately reviewed synthetic building-height-distribution
-STEP 3, preserving the current representative-height baseline.
+[STEP 3-A synthetic building-height distribution](docs/experiments/height_distribution/STEP3A_SYNTHETIC_HEIGHT_DISTRIBUTION.md)
+compares centre and cell-maximum roof Z before engine connection, preserving the
+current representative-height baseline. It establishes no real-data or formal acceptance.
 
 | Available experimental workflow | Start here |
 |---|---|
