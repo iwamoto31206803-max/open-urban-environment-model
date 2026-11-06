@@ -66,6 +66,9 @@ owner-ground, rounding and capacity QA; unresolved inputs remain BLOCKED.
 [STEP 3-C synthetic Solar/Shadow](docs/experiments/height_distribution/STEP3C_SYNTHETIC_SOLAR_SHADOW.md)
 compares the three height models at common nonbuilding observers, with explicit
 axis conversion and independent shadow geometry checks; scientific accuracy remains unverified.
+[STEP 4-0 read-only real LoD2 audit](docs/experiments/height_distribution/STEP4_0_REAL_LOD2_ACCEPTANCE_AUDIT.md)
+checks source roof semantics and face correspondence before real height-distribution
+processing. The existing LoD2 population remains CONDITIONAL, not formally accepted.
 
 | Available experimental workflow | Start here |
 |---|---|
