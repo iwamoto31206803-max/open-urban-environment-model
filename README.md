@@ -8,24 +8,23 @@ Phase A covers model construction; Phase B covers solar/shade and green view.
 The [concept and architecture](docs/OUEM_Concept_Architecture_v0.2.md) defines
 these phases and their variants.
 
-## Project tracks (status review: 2026-11-05)
+## Project tracks (status review: 2026-11-06)
 
 The bounded **Komae B1/B2 technical E2E** is already implemented and recorded;
 scientific accuracy and full formal acceptance are separate questions. Recent
-upstream work belongs to two distinct tracks, not to a new B1/B2 implementation:
+upstream work follows distinct tracks, not a replacement for the existing B1/B2 implementation:
 
 | Track | Recorded evidence | Scope at this checkpoint |
 |---|---|---|
 | Komae B1/B2 environmental assessment | [B1 closeout](docs/status/B1_TECHNICAL_MILESTONE_CLOSEOUT.md), [B2 closeout](docs/status/B2_TECHNICAL_MILESTONE_CLOSEOUT.md) | Existing bounded real-data Solar and provisional CPU green-view outputs, GIS and checks; not field-calibrated results |
 | Kunitachi transfer preparation | [2 km source preflight](docs/planning/OUEM_Kunitachi_Data_Source_Preflight_v0.1.md), [study-area configuration](config/study_areas/kunitachi_2km.yaml) | Building/DEM/CHM coverage examined; no Kunitachi Native/Standard/Envelope/Voxel/Solar/GVI E2E yet; the rectangle includes areas outside Kunitachi |
-| Mixed-LoD Building experiment (Candidate B) | [Raw selection](docs/experiments/real_komae_source_h/MIXED_LOD_SELECTOR_POC.md), [T5-4 closeout](docs/experiments/real_komae_source_h/MIXED_LOD_CANDIDATE_B_T5_4_CLOSURE.md), [E0 synthetic shadow](docs/experiments/real_komae_source_h/MIXED_LOD_CANDIDATE_B_E0_SHADOW.md) | Cross-municipality area in the Komae 2025 distribution: 31 LoD1 buildings with Setagaya city attribute and 32 LoD2 with Komae city attribute; 63/63 voxelized, but no real Candidate B Solar/GVI execution |
+| Mixed-LoD Building experiment (Candidate B) | [T5-4 baseline](docs/experiments/real_komae_source_h/MIXED_LOD_CANDIDATE_B_T5_4_CLOSURE.md), [STEP 2-C2 canopy pair](docs/experiments/real_komae_source_h/STEP2C2_REAL_CANOPY_INTEGRATION.md), [STEP 2-C3 Solar](docs/experiments/real_komae_source_h/STEP2C3_REAL_SOLAR.md), [STEP 2-C4 GVI](docs/experiments/real_komae_source_h/STEP2C4_REAL_GVI.md) | Komae-distribution cross-municipality sample: 31 LoD1 Setagaya-attribute and 32 LoD2 Komae-attribute buildings; all 63 voxelized. Real saved-model Solar and weighted first-TREE view index have experimental technical E2E evidence, not scientific/formal acceptance. |
 
-The [Candidate B E1 design](docs/planning/OUEM_Candidate_B_E1_Minimal_Shadow_Design.md)
-is a proposed new-input experiment, **not** evidence that OUEM lacks an
-existing Solar implementation. Assess reuse of the current
-[real Komae Solar module](src/ouem/real_komae_solar.py) and its distinct
-input/profile/solar-physics contracts before authorizing E1. This navigation
-review changes no accepted contract, historical execution result or project gate.
+The earlier [Candidate B E1 design](docs/planning/OUEM_Candidate_B_E1_Minimal_Shadow_Design.md)
+is historical planning, not the current execution status. Subsequent
+[STEP 2-A building-only shadow](docs/experiments/real_komae_source_h/STEP2A_BUILDING_SHADOW_E2E.md)
+and STEP 2-C2/C3/C4 reused existing VoxCity and B1/B2 calculation kernels.
+The candidate remains experimental and does not expand Accepted v0.1.
 
 ## Current milestone
 
@@ -51,6 +50,16 @@ Scientific validation remains unverified. The original
 retains its dated design context. See the
 [B2 deferred backlog](docs/planning/OUEM_B2_Deferred_Validation_Backlog.md).
 
+**Candidate B STEP 2 technical E2E is also complete within its experimental scope.**
+The saved 63-building Mixed-LoD voxel model and derived Canopy pair feed
+[real direct Solar comparison](docs/experiments/real_komae_source_h/STEP2C3_REAL_SOLAR.md)
+and [CPU weighted first-TREE view index](docs/experiments/real_komae_source_h/STEP2C4_REAL_GVI.md)
+at the same saved observer locations and EPSG:6677 ROI cells.
+`terrain_integration_ready=false`; scientific accuracy, observer eye height,
+source datum realization and formal acceptance remain **NOT_VERIFIED**.
+Next planned work is a separately reviewed synthetic building-height-distribution
+STEP 3, preserving the current representative-height baseline.
+
 | Available experimental workflow | Start here |
 |---|---|
 | Saved B1 Current → CPU weighted first-TREE view index → GeoTIFF/QGIS | [B2 usage and actual ROI/context](docs/experiments/b2_gvi/README.md), [A/B results](docs/experiments/b2_gvi/RESULTS.md) |
@@ -70,7 +79,7 @@ and direct irradiance is modeled with assumed optics, not measured exposure.
 |---|---|
 | Accepted v0.1 Komae path | Converter GeoPackage → Native → Standard Building + Terrain → versioned VoxCity Building Adapter and voxel generation. Acceptance is limited to the recorded datasets and conditions. |
 | Experimental source-H path | Fixed Converter retains source H; separate Native / Standard / Consumer and real-city runners reach mixed voxels and direct solar. It does not extend the accepted Adapter's manifest whitelist or acceptance scope. |
-| Experimental Mixed-LoD Candidate B | Separate Raw selector / Converter bridge / Native / Standard / independent Consumer, experimental WARD_FIRST Terrain and 63-building VoxCity grid. City-border test using Komae distributed data; no real Candidate B Solar/GVI, source eligibility or formal acceptance claimed. |
+| Experimental Mixed-LoD Candidate B | Separate Raw selector / Converter bridge / Native / Standard / independent Consumer, experimental WARD_FIRST Terrain, 63-building VoxCity grid, derived Canopy, and same-observer Solar/GVI technical E2E. City-border sample using Komae distributed data; scientific validity, source eligibility and formal acceptance not established. |
 
 The [Building acceptance record](experiments/a1_e2e_pilot/README.md),
 [A2 Terrain record](docs/acceptance/OUEM_A2_Standard_Terrain_Komae_Acceptance_20261006.md)
@@ -90,7 +99,7 @@ scope; this guide adds no Acceptance or validation criteria.
 | Architecture / Standards | [Concept and Architecture v0.2](docs/OUEM_Concept_Architecture_v0.2.md), [runtime architecture](docs/architecture.md) and the Standards below own design and contracts, subject to their stated status. [Development Principles](docs/OUEM_Development_Principles_v0.1.md) own development decisions. |
 | Status / Closeout | [B1 Technical Closeout](docs/status/B1_TECHNICAL_MILESTONE_CLOSEOUT.md) and [B2 Technical Closeout](docs/status/B2_TECHNICAL_MILESTONE_CLOSEOUT.md) summarize milestone scope and link its evidence. Technical completion does not establish scientific validity. |
 | Backlog | [B1 deferred validation](docs/planning/OUEM_B1_Deferred_Validation_Backlog.md) and [B2 deferred validation](docs/planning/OUEM_B2_Deferred_Validation_Backlog.md) own unresolved verification questions; these remain open within their recorded scope. |
-| Experiments / RESULTS | [B1 Solar usage and evidence](docs/experiments/real_komae_solar/README.md), [B1 original results](docs/experiments/real_komae_solar/RESULTS.md), and [B2 usage](docs/experiments/b2_gvi/README.md) / [results](docs/experiments/b2_gvi/RESULTS.md) own execution conditions, numbers and provenance. Use the workflow table above and [Windows runbook](scripts/work/README.md) for operational entry points. |
+| Experiments / RESULTS | [B1 Solar usage and evidence](docs/experiments/real_komae_solar/README.md), [B1 original results](docs/experiments/real_komae_solar/RESULTS.md), [B2 usage](docs/experiments/b2_gvi/README.md) / [results](docs/experiments/b2_gvi/RESULTS.md), and [Candidate B STEP 2 experiments](docs/experiments/real_komae_source_h/README.md) own execution conditions, numbers and provenance. Use the workflow table above and [Windows runbook](scripts/work/README.md) for operational entry points. |
 | Planning | [Repository Inventory](docs/planning/OUEM_Repository_Inventory_v0.1.md) and [Cleanup Plan](docs/planning/OUEM_Repository_Cleanup_Plan_v0.1.md) record the reviewed baseline and proposed work. [GIS Output Visualization Audit](docs/planning/OUEM_GIS_Output_Visualization_Audit_v0.1.md) is a dated design proposal; implemented GIS procedures and evidence are in the Solar guide. |
 | Acceptance | [Building pilot](experiments/a1_e2e_pilot/README.md) and [acceptance records](docs/acceptance/) own existing formal acceptance evidence and its limits. Closeouts and planning summaries do not extend that scope. |
 
