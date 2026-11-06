@@ -120,10 +120,10 @@ def shared_models(results):
     return models,qa
 
 
-def common_observers(models, grid, d0, effective_ground):
+def common_observers(models, grid, d0, effective_ground, *, experiments=(("binary",0.),("solar",1.5))):
     xy=np.stack(grid.centres(),axis=-1)
     output={}
-    for experiment,height in (("binary",0.),("solar",1.5)):
+    for experiment,height in experiments:
         common=None
         for vox in models.values():
             index,valid,origin=observers(vox,height=height)
@@ -170,14 +170,16 @@ def direct_solar(voxels, inputs, grid, *, azimuth=180., elevation=45.):
     return flip(values)
 
 
-def evaluate(voxels,inputs,grid,*,azimuth=180.,binary_only=False):
+def evaluate(voxels,inputs,grid,*,azimuth=180.,binary_only=False,binary_direction=None):
     import numba
     before=v.array_identity(voxels),v.input_identity(inputs)
+    v.require(binary_direction is None or binary_only, "explicit binary direction requires binary-only evaluation")
     valid=inputs["ids"]==0
     prior=numba.get_num_threads()
     try:
         numba.set_num_threads(2)
-        binary=flip(shadow.calculate(flip(voxels),flip(valid),solar_direction(azimuth)))
+        direction=solar_direction(azimuth) if binary_direction is None else binary_direction
+        binary=flip(shadow.calculate(flip(voxels),flip(valid),direction))
         solar=None if binary_only else direct_solar(voxels,inputs,grid,azimuth=azimuth)
     finally:
         numba.set_num_threads(prior)

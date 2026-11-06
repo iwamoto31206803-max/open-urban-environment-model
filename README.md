@@ -78,6 +78,9 @@ numeric anchors; real DEM/HAG integration remains unverified.
 [STEP 4-B2 saved-Terrain voxelization](docs/experiments/height_distribution/STEP4B2_REAL_LOD2_TERRAIN_VOXELIZATION.md)
 places the same four roof distributions over saved Candidate B DEM in a conditional
 numerical experiment; 1m terrain quantization and roof/occupancy changes are recorded.
+[STEP 4-C real roof shadow comparison](docs/experiments/height_distribution/STEP4C_REAL_LOD2_SHADOW_COMPARISON.md)
+compares max-roof representative versus distributed roofs under shared Terrain,
+observers and sun; the four isolated-building sensitivity results remain experimental.
 
 | Available experimental workflow | Start here |
 |---|---|
