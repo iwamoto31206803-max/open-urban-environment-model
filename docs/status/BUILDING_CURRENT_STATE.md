@@ -36,6 +36,12 @@ read-only. Real-data audit execution is separate from STEP 4-A eligibility:
 footprint/vertical input conditions remain unresolved, with no real height
 distribution or environmental processing and no formal acceptance.
 
+The subsequent [STEP 4-A four-sample PoC](../experiments/height_distribution/STEP4A_REAL_LOD2_ROOF_DISTRIBUTION.md),
+based on main `171f2afcef50405597465dfe2a91cf2c731b5ff1`, adopts GroundSurface XY
+only as a local provisional presence rule and derives absolute source-H tops.
+Centre-unsupported cells remain unknown; raw projections and all face contributions
+are retained. This does not verify HAG, engine integration or scientific/formal acceptance.
+
 ## Current milestone: B1 technical E2E closeout
 
 A small-area Komae path reaches Building + Terrain + estimated Canopy voxels,

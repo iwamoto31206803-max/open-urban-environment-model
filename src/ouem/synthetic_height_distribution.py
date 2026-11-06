@@ -106,8 +106,8 @@ def _vertices(geometry):
             yield from _vertices(part)
 
 
-def derive(grid: GridSpec, buildings, *, method):
-    """Keep every building/face contribution; do not choose a single owner.
+def sample_roofs(grid: GridSpec, buildings, *, method):
+    """Geometry-only sampling; no dataset profile, datum or environment identity.
 
     Presence requires positive footprint-cell area. Boundary-only roof touches
     do not contribute. Centre uses closed-set covers, so a seam can yield two
@@ -187,6 +187,13 @@ def derive(grid: GridSpec, buildings, *, method):
                               building_count=len(records),
                               contribution_count=sum(r["contribution_count"] for r in records),
                               buildings=records))
+    return cells, sources, excluded
+
+
+def derive(grid: GridSpec, buildings, *, method):
+    """Synthetic-only Derived wrapper around the unchanged geometric sampler."""
+    cells, sources, excluded = sample_roofs(grid, buildings, method=method)
+    resolution = grid.resolution
     metadata = grid.metadata()
     metadata.update(origin_xy=[grid.bounds[0], grid.bounds[3]],
                     column_axis=[resolution, 0.], row_axis=[0., -resolution],
