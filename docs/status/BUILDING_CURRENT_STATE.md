@@ -42,6 +42,13 @@ only as a local provisional presence rule and derives absolute source-H tops.
 Centre-unsupported cells remain unknown; raw projections and all face contributions
 are retained. This does not verify HAG, engine integration or scientific/formal acceptance.
 
+[STEP 4-B real LoD2 voxelization](../experiments/height_distribution/STEP4B_REAL_LOD2_VOXELIZATION.md)
+connects those four saved cell-max distributions to the pinned public Voxelizer
+using per-building numerical anchors, with exact independent occupancy QA and
+reproducibility. Sloped/stepped roofs produce varying column heights; full-cell
+boundary inflation and the surface-layer offset are quantified. Real DEM/HAG,
+scientific validation and formal acceptance remain unverified.
+
 ## Current milestone: B1 technical E2E closeout
 
 A small-area Komae path reaches Building + Terrain + estimated Canopy voxels,

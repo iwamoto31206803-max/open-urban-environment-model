@@ -141,8 +141,14 @@ def occupancy_oracle(inputs, *, numba, max_levels=512):
             and segments.dtype == object, "invalid input dtype")
     require(np.isfinite(dem).all() and np.isfinite(height).all() and (height >= 0).all()
             and (ids >= 0).all(), "nonfinite/invalid input values")
-    require(dem.size <= 4096 and np.max(ids) <= 4096, "synthetic profile size exceeded")
-    effective, d0 = effective_ground(ids, dem)
+    require(dem.size <= 4096 and np.max(ids) <= 4096, "bounded experimental size exceeded")
+    if np.all(dem == dem.flat[0]):
+        # Exact constant-ground invariant. Averaging repeated absolute decimal
+        # H values can invent an ulp-sized relief; the engine first subtracts
+        # raw min, so its constant DEM is exactly zero before owner averaging.
+        effective, d0 = dem.copy(), float(dem.flat[0])
+    else:
+        effective, d0 = effective_ground(ids, dem)
     relative = effective-d0
     ground = np.empty(ids.shape, dtype=int)
     intervals, errors = [], []
@@ -184,13 +190,7 @@ def occupancy_oracle(inputs, *, numba, max_levels=512):
 
 
 def execute(inputs, *, max_levels=512):
-    """Pinned public API + independent oracle, immutable copied API arguments."""
-    from voxcity.generator import voxelizer as engine
-    from voxcity.geoprocessor.raster import process_grid
-    import numba
-
-    provenance = voxcity_provenance()
-    require(provenance["verified"] and engine.NUMBA_AVAILABLE, "pinned Numba engine not established")
+    """Synthetic profile validation, then shared public API/occupancy execution."""
     require(inputs["metadata"]["profile"] == PROFILE, "unknown experimental profile")
     metadata = inputs["metadata"]
     if metadata.get("input_kind") == "derived":
@@ -201,6 +201,19 @@ def execute(inputs, *, max_levels=512):
     else:
         require(metadata.get("input_kind") == "explicit_interval_fixture"
                 and metadata.get("provenance"), "unknown input state/provenance")
+    result = execute_arrays(inputs, max_levels=max_levels)
+    result["qa"]["status"] = "PASS_SYNTHETIC_ONLY"
+    return result
+
+
+def execute_arrays(inputs, *, max_levels=512):
+    """Profile-neutral numeric API/oracle core; caller owns source validation."""
+    from voxcity.generator import voxelizer as engine
+    from voxcity.geoprocessor.raster import process_grid
+    import numba
+
+    provenance = voxcity_provenance()
+    require(provenance["verified"] and engine.NUMBA_AVAILABLE, "pinned Numba engine not established")
     expected, qa = occupancy_oracle(inputs, numba=True, max_levels=max_levels)
     before = input_identity(inputs)
     ids, dem = inputs["ids"], inputs["dem"]
@@ -225,7 +238,7 @@ def execute(inputs, *, max_levels=512):
             "Voxelizer mutated its input arrays")
     require(voxels.dtype == np.int8 and np.array_equal(voxels,expected), "public Voxelizer/oracle mismatch")
     require((voxels == -3).any(), "no building voxels generated")
-    qa.update(status="PASS_SYNTHETIC_ONLY", shape=list(voxels.shape),
+    qa.update(status="PASS_API_ORACLE", shape=list(voxels.shape),
               class_counts={str(v):int((voxels==v).sum()) for v in (-3,-1,0,1)},
               input_unchanged=True, public_api_arguments_unchanged=True)
     return dict(voxels=voxels, qa=qa, inputs=inputs, input_identity=before,
