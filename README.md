@@ -72,6 +72,9 @@ processing. The existing LoD2 population remains CONDITIONAL, not formally accep
 [STEP 4-A absolute roof-top distribution](docs/experiments/height_distribution/STEP4A_REAL_LOD2_ROOF_DISTRIBUTION.md)
 derives centre/cell-max absolute source H for the four fixed audited samples under
 a provisional GroundSurface-footprint rule; HAG and engine connection remain unverified.
+[STEP 4-B real LoD2 voxelization](docs/experiments/height_distribution/STEP4B_REAL_LOD2_VOXELIZATION.md)
+generates four actual 3D building volumes from saved cell-max H with constant
+numeric anchors; real DEM/HAG integration remains unverified.
 
 | Available experimental workflow | Start here |
 |---|---|

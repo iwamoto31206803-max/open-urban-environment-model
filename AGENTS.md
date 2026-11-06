@@ -54,6 +54,11 @@
 - Run real-data processing only within explicitly authorized scope; record the
   actual environment, input identities, results and limitations. Never invent
   evidence or treat synthetic success as real-data acceptance.
+- For authorized staged work, continue automatically when mandatory conditions
+  pass; record permitted limitations. Stop downstream execution when a required
+  condition fails, distinguishing BLOCKED from unavailable-data NOT_EXECUTED.
+  Fix routine implementation errors and retest, without changing assumptions,
+  filling missing data, altering contracts or weakening checks to pass a gate.
 - Do not commit local datasets, generated artifacts, runtime snapshots, secrets
   or caches. Follow `.gitignore` and the data layout; keep fixtures small/synthetic.
 
