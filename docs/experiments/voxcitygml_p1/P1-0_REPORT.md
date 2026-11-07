@@ -7,11 +7,13 @@
 
 | 判定項目 | 結果 | 根拠・境界 |
 |---|---|---|
-| P1-0_INPUT_CHAIN | **PASS** | 4-C文書のmanifest SHAから実際のinputsを逆追跡し、4-0→4-A→4-B1→4-B2→4-Cの429ファイルを照合。不一致0。Run名だけで採用していない。 |
+| P1-0_INPUT_CHAIN | **PASS** | 4-C文書のmanifest SHAから実際のinputsを逆追跡し、4-0→4-A→4-B1→4-B2→4-Cのユニーク428ファイルを照合。不一致0。Run名だけで採用していない。 |
 | P1-0_SOURCE_IDENTITY | **PASS（保存監査との同一性）** | 4棟の元XML建物・全監査polygon ID、Native/StandardのID・LoD・ouem_idが一致。3D形状の変換対応はSHA同一の既存一意対応VERIFIED記録を継承。今回、水密性や三角形化は解析していない。 |
 | P1-0_ENVIRONMENT | **CONDITIONAL** | ソースcommit一致。既存VoxCity 1.7.0の15 import箇所が静的に解決し、assemble引数も対応。136 PythonソースのRECORD一致。独立venvはPython 3.11.9だがpip/setuptoolsのみで、実行依存は未導入。ABI・実行互換は未検証。 |
 | P1-0_LICENSE | **CONDITIONAL（一次監査）** | 211候補、license/classifier両欠落67を再現。うち47は既存同一版METADATAの追加SPDX表記を確認。VoxCityGML本体LICENSE/pyprojectはMIT。全wheelの同梱第三者条件・データ利用条件の最終確認は未完。UNKNOWNは商用利用禁止を意味しない。 |
 | P1-1a_READY | **BLOCKED（準備・レビュー待ち）** | データ不足ではない。独立venvへの未導入と、F限定・無外部取得・原H保持・MeshLibなし補修の許容条件が未確定。今回は承認や導入・実験へ進まず停止する。 |
+
+件数訂正：元監査の保存済み連鎖一覧も428件で、公開版の全エントリ・SHAと一致する。これとは別にdependency-plan.jsonのSHAを1件記録しており、合計429件を連鎖のユニーク件数と記載した誤りを訂正した。公開整形による除外・重複統合はない。別記SHAは[監査集計](evidence/audit_summary.json)の `licensing.plan_sha256` に保持され、連鎖一覧には含まれない。照合結果と判定は変更していない。
 
 ## 重要な発見
 
@@ -48,7 +50,7 @@ Concept v0.2は詳細3DをPrimary、エンジン固有水密処理をAdapter責�
 
 本PRは完了済み監査の公開整形であり、新規調査・再判定ではない。元ローカル報告は変更していない。絶対パス、環境の全量スナップショット、長いライセンス本文、元XYZは省略し、確認結果・SHA・ID・未確認事項を残した。データlocatorは識別情報であり、GitHubにデータ本体を置くリンクではない。
 
-- [入力連鎖・429件のSHA](evidence/input_chain.json) / [4棟のID対応](evidence/source_identity.json)
+- [入力連鎖・ユニーク428件のSHA](evidence/input_chain.json) / [4棟のID対応](evidence/source_identity.json)
 - [静的API・ソース証拠](evidence/static_compatibility.json)
 - [211候補のライセンス一次監査CSV](evidence/dependency_licenses.csv) / [環境・ライセンス集計・原報告SHA](evidence/audit_summary.json)
 - [詳細監査ログ](audit_log.md)
