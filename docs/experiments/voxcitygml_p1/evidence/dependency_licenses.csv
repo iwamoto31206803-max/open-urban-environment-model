@@ -1,0 +1,212 @@
+name,version,requested,dry_license_metadata_present,dry_short_license_or_text_status,dry_license_classifiers,same_version_installed_spdx,same_version_installed_notice_count
+voxcitygml,0.3.0,True,False,,,,0
+voxcity,1.7.0,True,True,MIT,License :: OSI Approved :: MIT License,,2
+ezdxf,1.4.5,False,True,,License :: OSI Approved :: MIT License,,1
+fiona,1.10.1,False,True,BSD 3-Clause,License :: OSI Approved :: BSD License,,1
+geopandas,1.2.0,False,False,,,BSD-3-Clause,1
+ipywidgets,7.8.5,False,True,BSD,License :: OSI Approved :: BSD License,,1
+ipython,9.18.1,False,False,,,,0
+numba,0.68.1,False,True,BSD,License :: OSI Approved :: BSD License,,0
+numpy,2.4.6,False,False,,,BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0,17
+pandas,2.3.3,False,True,LICENSE_TEXT_PRESENT (not redistributed),License :: OSI Approved :: BSD License,,0
+pyproj,3.7.2,False,False,,,MIT,2
+rasterio,1.4.4,False,True,BSD,License :: OSI Approved :: BSD License,,2
+scikit-learn,1.9.1,False,False,,,BSD-3-Clause,1
+joblib,1.6.0,False,False,,,BSD-3-Clause,1
+scipy,1.17.1,False,True,LICENSE_TEXT_PRESENT (not redistributed),License :: OSI Approved :: BSD License,,0
+shapely,2.2.0,False,False,,,BSD-3-Clause,3
+affine,3.0.1,False,False,,,BSD-3-Clause,2
+astral,3.2,False,True,Apache-2.0,License :: OSI Approved :: Apache Software License,,0
+contextily,1.7.1,False,False,,,BSD-3-Clause,1
+earthengine-api,1.7.51,False,True,Apache-2.0,License :: OSI Approved :: Apache Software License,,0
+geemap,0.37.2,False,True,MIT,License :: OSI Approved :: MIT License,,1
+ipyleaflet,0.20.0,False,True,LICENSE_TEXT_PRESENT (not redistributed),License :: OSI Approved :: MIT License,,1
+geopy,2.5.0,False,True,MIT,License :: OSI Approved :: MIT License,,2
+h5py,3.16.0,False,False,,,BSD-3-Clause,7
+lxml,6.1.3,False,True,BSD-3-Clause,,,2
+mapbox_earcut,2.1.0,False,True,,License :: OSI Approved :: ISC License (ISCL),,0
+matplotlib,3.11.2,False,True,LICENSE_TEXT_PRESENT (not redistributed),License :: OSI Approved :: Python Software Foundation License,,0
+netCDF4,1.7.5.1.post1,False,False,,,MIT,1
+osmnx,2.1.1,False,False,,,MIT,1
+requests,2.34.2,False,True,Apache-2.0,License :: OSI Approved :: Apache Software License,,2
+overturemaps,2.1.0,False,False,,,,0
+tqdm,4.70.1,False,True,MPL-2.0 AND MIT,,,1
+plotly,7.1.0,False,True,,License :: OSI Approved :: MIT License,MIT,1
+protobuf,7.36.2,False,True,3-Clause BSD License,,,0
+py-vox-io,0.1,False,True,BSD,,,0
+pycountry,26.2.16,False,True,,License :: OSI Approved :: GNU Lesser General Public License v2 (LGPLv2),LGPL-2.1-only,1
+pyvista,0.49.2,False,False,,,,0
+pyvista-validation,0.2.2,False,False,,,MIT,1
+reverse_geocoder,1.5.1,False,True,lgpl,,,0
+rio-cogeo,7.0.4,False,True,LICENSE_TEXT_PRESENT (not redistributed),License :: OSI Approved :: BSD License,,1
+rtree,1.4.1,False,False,,,MIT,1
+seaborn,0.13.2,False,True,,License :: OSI Approved :: BSD License,,0
+timezonefinder,9.0.0,False,True,LICENSE_TEXT_PRESENT (not redistributed),,,1
+trimesh,5.2.0,False,True,LICENSE_TEXT_PRESENT (not redistributed),License :: OSI Approved :: MIT License,,1
+xarray,2026.9.0,False,False,,,Apache-2.0,1
+attrs,26.1.0,False,False,,,MIT,1
+branca,0.8.2,False,True,MIT,License :: OSI Approved :: MIT License,,1
+certifi,2026.10.23,False,True,MPL-2.0,License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0),,1
+cffi,2.1.1,False,False,,,MIT-0,1
+charset-normalizer,3.5.2,False,True,MIT,,,1
+click,8.5.1,False,False,,,,0
+click-plugins,1.1.1.2,False,True,New BSD,License :: OSI Approved :: BSD License,,2
+cligj,0.7.2,False,True,BSD,,,1
+cloudpickle,3.1.2,False,True,BSD-3-Clause,License :: OSI Approved :: BSD License,,1
+colorama,0.4.6,False,True,,License :: OSI Approved :: BSD License,,1
+comm,0.2.3,False,True,LICENSE_TEXT_PRESENT (not redistributed),License :: OSI Approved :: BSD License,,1
+contourpy,1.3.3,False,True,LICENSE_TEXT_PRESENT (not redistributed),License :: OSI Approved :: BSD License,,0
+cycler,0.12.1,False,True,LICENSE_TEXT_PRESENT (not redistributed),License :: OSI Approved :: BSD License,,1
+cyclopts,5.3.3,False,True,,License :: OSI Approved :: Apache Software License,,0
+eerepr,0.1.4,False,True,LICENSE_TEXT_PRESENT (not redistributed),,,0
+flatbuffers,25.12.19,False,True,Apache 2.0,License :: OSI Approved :: Apache Software License,,0
+folium,0.20.0,False,True,MIT,License :: OSI Approved :: MIT License,,1
+fonttools,4.68.0,False,True,MIT,,,0
+geographiclib,2.1,False,True,MIT,,,1
+google-api-python-client,2.201.0,False,True,Apache 2.0,License :: OSI Approved :: Apache Software License,,1
+google-auth,2.62.1,False,True,Apache 2.0,License :: OSI Approved :: Apache Software License,,0
+google-auth-httplib2,0.4.4,False,True,Apache 2.0,License :: OSI Approved :: Apache Software License,,1
+h3,4.5.0,False,True,LICENSE_TEXT_PRESENT (not redistributed),License :: OSI Approved :: Apache Software License,,0
+httplib2,0.32.1,False,True,MIT,License :: OSI Approved :: MIT License,,0
+idna,3.20,False,False,,,BSD-3-Clause,1
+ipyfilechooser,0.6.0,False,True,MIT,License :: OSI Approved :: MIT License,,0
+ipython-genutils,0.2.0,False,True,BSD,License :: OSI Approved :: BSD License,,0
+ipython_pygments_lexers,1.1.1,False,True,,License :: OSI Approved :: BSD License,,0
+jedi,0.20.1,False,True,MIT,License :: OSI Approved :: MIT License,,2
+jupyter-leaflet,0.20.0,False,True,LICENSE_TEXT_PRESENT (not redistributed),License :: OSI Approved :: MIT License,,1
+jupyterlab_widgets,1.1.11,False,True,BSD-3-Clause,License :: OSI Approved :: BSD License,,1
+kiwisolver,1.5.1,False,True,LICENSE_TEXT_PRESENT (not redistributed),License :: OSI Approved :: BSD License,,1
+llvmlite,0.50.0,False,False,,,,2
+matplotlib-inline,0.2.2,False,False,,,BSD-3-Clause,1
+morecantile,7.1.0,False,True,LICENSE_TEXT_PRESENT (not redistributed),License :: OSI Approved :: MIT License,,1
+narwhals,2.28.0,False,False,,,,0
+networkx,3.6.1,False,False,,,BSD-3-Clause,1
+orjson,3.13.0,False,True,,License :: OSI Approved :: Apache Software License; License :: OSI Approved :: MIT License; License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0),MPL-2.0 AND (Apache-2.0 OR MIT),3
+packaging,26.3,False,False,,,Apache-2.0 OR BSD-2-Clause,3
+pillow,13.0.0,False,False,,,MIT-CMU,1
+prompt_toolkit,3.0.53,False,True,,License :: OSI Approved :: BSD License,,2
+psutil,7.2.2,False,True,BSD-3-Clause,,,1
+pyarrow,26.0.1,False,False,,,,0
+pydantic,2.14.3,False,False,,,,0
+pydantic_core,2.50.4,False,False,,,,0
+pyfiglet,1.0.4,False,True,MIT,License :: OSI Approved :: MIT License,,1
+Pygments,2.21.0,False,False,,,BSD-2-Clause,2
+pyogrio,0.13.0,False,True,LICENSE_TEXT_PRESENT (not redistributed),License :: OSI Approved :: MIT License,,1
+pyparsing,3.3.3,False,False,,,MIT,1
+pyshp,3.1.6,False,False,,,MIT,1
+python-dateutil,4.0.0,False,False,,,,0
+pytz,2026.6,False,True,MIT,License :: OSI Approved :: MIT License,,0
+scooby,0.12.1,False,False,,,,0
+stack-data,0.6.3,False,True,MIT,License :: OSI Approved :: MIT License,,1
+threadpoolctl,3.8.0,False,False,,,,0
+timezonefinder-data,3.2026.3.post1,False,True,LICENSE_TEXT_PRESENT (not redistributed),,,1
+traitlets,5.16.1,False,True,LICENSE_TEXT_PRESENT (not redistributed),License :: OSI Approved :: BSD License,,1
+traittypes,0.2.3,False,True,BSD,License :: OSI Approved :: BSD License,,1
+typing_extensions,4.16.0,False,False,,,PSF-2.0,1
+tzdata,2026.6,False,True,Apache-2.0,,,0
+urllib3,2.8.0,False,False,,,MIT,1
+vtk,9.7.2,False,True,BSD,License :: OSI Approved :: BSD License,,0
+widgetsnbextension,3.6.10,False,True,BSD,License :: OSI Approved :: BSD License,,1
+xyzservices,2026.9.1,False,False,,,BSD-3-Clause,1
+anywidget,0.11.0,False,True,,License :: OSI Approved :: MIT License,MIT,1
+bqplot,0.12.47,False,True,Apache,,,1
+ipyevents,2.0.4,False,True,BSD 3-clause,License :: OSI Approved :: BSD License,,1
+cftime,1.6.6.1,False,False,,,MIT,1
+geocoder,1.38.1,False,True,The MIT License,License :: OSI Approved :: Apache Software License,,0
+google-cloud-storage,3.17.1,False,True,Apache-2.0,License :: OSI Approved :: Apache Software License,,1
+mercantile,1.2.1,False,True,BSD,License :: OSI Approved :: BSD License,,0
+pooch,1.9.0,False,False,,,BSD-3-Clause,2
+pyperclip,1.11.0,False,True,BSD,License :: OSI Approved :: BSD License,,2
+python-box,8.0.0,False,False,,,,0
+annotated-types,0.8.0,False,True,,License :: OSI Approved :: MIT License,MIT,1
+asttokens,3.0.2,False,True,Apache 2.0,,,1
+cryptography,50.0.2,False,False,,,Apache-2.0 OR BSD-3-Clause,3
+docstring_parser,0.18.0,False,True,MIT,License :: OSI Approved :: MIT License,,1
+executing,2.3.0,False,True,MIT,License :: OSI Approved :: MIT License,,1
+google-api-core,2.44.0,False,True,Apache 2.0,License :: OSI Approved :: Apache Software License,,0
+google-cloud-core,2.8.0,False,True,Apache 2.0,License :: OSI Approved :: Apache Software License,,1
+google-crc32c,1.9.0,False,True,Apache-2.0,,,1
+google-resumable-media,2.11.0,False,True,Apache 2.0,License :: OSI Approved :: Apache Software License,,1
+Jinja2,3.1.6,False,True,,License :: OSI Approved :: BSD License,,1
+notebook,7.6.5,False,True,LICENSE_TEXT_PRESENT (not redistributed),License :: OSI Approved :: BSD License,,0
+parso,0.8.7,False,True,MIT,License :: OSI Approved :: MIT License,,2
+platformdirs,4.14.5,False,False,,,,0
+psygnal,0.16.1,False,True,BSD 3-Clause License,License :: OSI Approved :: BSD License,,1
+pyasn1_modules,0.4.2,False,True,BSD,License :: OSI Approved :: BSD License,,1
+rich,15.0.0,False,True,MIT,License :: OSI Approved :: MIT License,,1
+rich-rst,2.2.0,False,False,,,MIT,2
+typing-inspection,0.4.5,False,False,,,,0
+uritemplate,4.2.0,False,True,BSD 3-Clause OR Apache-2.0,,,1
+wcwidth,0.9.4,False,True,,License :: OSI Approved :: MIT License,,1
+future,1.0.0,False,True,MIT,License :: OSI Approved; License :: OSI Approved :: MIT License,,1
+pure_eval,0.2.4,False,True,MIT,License :: OSI Approved :: MIT License,,1
+pycparser,3.12,False,False,,,BSD-3-Clause,1
+ratelim,0.1.6,False,True,MIT,,,0
+six,1.17.0,False,True,MIT,License :: OSI Approved :: MIT License,,1
+googleapis-common-protos,1.76.0,False,False,,,Apache-2.0,1
+jupyter_builder,1.2.4,False,False,,,,0
+jupyter_server,2.21.1,False,True,LICENSE_TEXT_PRESENT (not redistributed),License :: OSI Approved :: BSD License,,1
+jupyterlab,4.6.6,False,True,LICENSE_TEXT_PRESENT (not redistributed),License :: OSI Approved :: BSD License,,0
+jupyterlab_server,2.28.1,False,True,LICENSE_TEXT_PRESENT (not redistributed),License :: OSI Approved :: BSD License,,1
+markdown-it-py,4.2.0,False,True,,License :: OSI Approved :: MIT License,,2
+MarkupSafe,3.0.4,False,False,,,BSD-3-Clause,1
+notebook_shim,0.2.4,False,True,LICENSE_TEXT_PRESENT (not redistributed),License :: OSI Approved :: BSD License,,1
+opentelemetry-api,1.45.2,False,False,,,,0
+proto-plus,1.29.0,False,True,Apache 2.0,License :: OSI Approved :: Apache Software License,,1
+pyasn1,0.6.5,False,True,BSD-2-Clause,,,0
+tornado,6.6,False,True,Apache-2.0,License :: OSI Approved :: Apache Software License,,1
+decorator,5.3.1,False,True,BSD-2-Clause,,,1
+anyio,4.16.0,False,False,,,,0
+argon2-cffi,25.1.0,False,False,,,MIT,1
+async-lru,2.4.0,False,True,MIT License,License :: OSI Approved :: MIT License,,1
+babel,2.18.0,False,True,BSD-3-Clause,License :: OSI Approved :: BSD License,,1
+httpx,0.28.1,False,True,BSD-3-Clause,License :: OSI Approved :: BSD License,,0
+httpcore,1.0.9,False,True,,License :: OSI Approved :: BSD License,BSD-3-Clause,1
+ipykernel,7.4.0,False,False,,,BSD-3-Clause,1
+json5,0.17.3,False,False,,,Apache-2.0,1
+jsonschema,4.26.0,False,False,,,MIT,1
+jupyter_client,8.10.0,False,True,LICENSE_TEXT_PRESENT (not redistributed),License :: OSI Approved :: BSD License,,1
+jupyter_core,5.9.1,False,False,,,BSD-3-Clause,1
+jupyter-events,0.12.1,False,True,LICENSE_TEXT_PRESENT (not redistributed),License :: OSI Approved :: BSD License,,1
+jupyter-lsp,2.3.1,False,True,BSD-3-Clause,License :: OSI Approved :: BSD License,,1
+jupyter_server_terminals,0.5.4,False,True,LICENSE_TEXT_PRESENT (not redistributed),License :: OSI Approved :: BSD License,,1
+mdurl,0.1.2,False,True,,License :: OSI Approved :: MIT License,,0
+nbconvert,7.17.2,False,True,LICENSE_TEXT_PRESENT (not redistributed),License :: OSI Approved :: BSD License,,1
+nbformat,5.11.1,False,True,LICENSE_TEXT_PRESENT (not redistributed),License :: OSI Approved :: BSD License,,1
+overrides,7.7.0,False,True,"Apache License, Version 2.0",,,1
+prometheus_client,0.26.0,False,False,,,Apache-2.0 AND BSD-2-Clause,2
+pywinpty,3.1.2,False,True,,License :: OSI Approved :: MIT License,,0
+pyzmq,27.3.0,False,False,,,,0
+Send2Trash,2.1.0,False,False,,,BSD-3-Clause,1
+terminado,0.18.1,False,True,LICENSE_TEXT_PRESENT (not redistributed),License :: OSI Approved :: BSD License,,1
+websocket-client,1.9.2,False,True,Apache-2.0,,,1
+bleach,6.4.0,False,True,Apache Software License,,,2
+debugpy,1.8.22,False,True,MIT,License :: OSI Approved :: MIT License,,1
+fastjsonschema,2.22.3,False,True,BSD-3-Clause,License :: OSI Approved :: BSD License,,0
+jsonschema-specifications,2025.9.1,False,False,,,MIT,1
+mistune,3.4.0,False,True,BSD-3-Clause,License :: OSI Approved :: BSD License,,1
+nbclient,0.11.0,False,True,LICENSE_TEXT_PRESENT (not redistributed),License :: OSI Approved :: BSD License,,1
+nest-asyncio2,1.7.4,False,True,BSD,License :: OSI Approved :: BSD License,,1
+pandocfilters,1.5.1,False,True,BSD-3-Clause,License :: OSI Approved :: BSD License,,1
+python-json-logger,4.2.0,False,False,,,BSD-2-Clause,1
+PyYAML,6.0.3,False,True,MIT,License :: OSI Approved :: MIT License,,1
+referencing,0.37.0,False,False,,,MIT,1
+rfc3986-validator,0.1.1,False,True,MIT license,License :: OSI Approved :: MIT License,,0
+rpds-py,2026.9.1,False,False,,,MIT,1
+argon2-cffi-bindings,26.1.0,False,False,,,MIT,1
+beautifulsoup4,4.15.0,False,True,MIT License,License :: OSI Approved :: MIT License,,2
+defusedxml,0.7.1,False,True,PSFL,License :: OSI Approved :: Python Software Foundation License,,0
+jupyterlab_pygments,0.3.0,False,True,LICENSE_TEXT_PRESENT (not redistributed),License :: OSI Approved :: BSD License,,1
+rfc3339-validator,0.1.4,False,True,MIT license,License :: OSI Approved :: MIT License,,0
+h11,0.16.0,False,True,MIT,License :: OSI Approved :: MIT License,,1
+jsonpointer,3.10,False,True,Modified BSD License,License :: OSI Approved :: BSD License,,0
+rfc3987-syntax,1.1.0,False,True,,License :: OSI Approved :: Apache Software License,MIT,1
+soupsieve,4.0.1,False,True,,License :: OSI Approved :: MIT License,,0
+tinycss2,1.5.1,False,True,,License :: OSI Approved :: BSD License,,1
+webcolors,25.10.0,False,True,BSD-3-Clause,License :: OSI Approved :: BSD License,,0
+webencodings,0.6.1,False,True,,License :: OSI Approved :: BSD License,,1
+fqdn,1.6.0,False,False,,,MPL-2.0,1
+isoduration,20.11.0,False,True,UNKNOWN,License :: OSI Approved :: ISC License (ISCL),,0
+uri-template,1.3.0,False,True,MIT License,License :: OSI Approved :: MIT License,,1
+arrow,1.4.0,False,True,,License :: OSI Approved :: Apache Software License,,1
+lark,1.3.1,False,True,MIT,License :: OSI Approved :: MIT License,,1

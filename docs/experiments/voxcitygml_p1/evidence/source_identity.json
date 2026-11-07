@@ -1,0 +1,303 @@
+{
+  "scope": "Identifiers, semantic labels, read-only database attributes and BLOB hashes only. No geometry interpretation/repair/triangulation/voxelization. Face XYZ transform validity inherits hash-identical archived audit.",
+  "srs_names": [
+    "http://www.opengis.net/def/crs/EPSG/0/6697"
+  ],
+  "samples": [
+    {
+      "label": "F",
+      "source_id": "bldg_09532951-4dab-457d-b1c6-56d509900d1b",
+      "ouem_id": "oub-c56cb020-c11c-5f9c-a37f-73018266a333",
+      "source_lod": 2,
+      "source_member": "udx/bldg/53393466_bldg_6697_op.gml",
+      "semantic_counts": {
+        "GroundSurface": 1,
+        "RoofSurface": 1,
+        "WallSurface": 4
+      },
+      "mapping_counts": {
+        "VERIFIED": 6
+      },
+      "audited_face_count": 6,
+      "roof_polygon_ids": [
+        "pol_2615e0b6-b772-4b9f-ab74-7c7c1fbed3e1"
+      ],
+      "raw_building_found": true,
+      "all_audited_polygon_ids_in_raw": true,
+      "native_rows": [
+        {
+          "source_id": "bldg_09532951-4dab-457d-b1c6-56d509900d1b",
+          "ouem_id": "oub-c56cb020-c11c-5f9c-a37f-73018266a333",
+          "lod": 2,
+          "source_member": "udx/bldg/53393466_bldg_6697_op.gml",
+          "geometry_blob_sha256": "b605d742f1d963b8030bdcc32dabc7aa03215692902e3907c1c3af9b9943be3b",
+          "geometry_bytes": 815
+        }
+      ],
+      "standard_rows": [
+        {
+          "source_id": "bldg_09532951-4dab-457d-b1c6-56d509900d1b",
+          "ouem_id": "oub-c56cb020-c11c-5f9c-a37f-73018266a333",
+          "lod": 2,
+          "source_member": "udx/bldg/53393466_bldg_6697_op.gml",
+          "geometry_blob_sha256": "def151be281c449d5ea712dcd17ec24c310aa6caadaeccb6c78022d27fed5ecf",
+          "geometry_bytes": 815
+        }
+      ]
+    },
+    {
+      "label": "S",
+      "source_id": "bldg_040379e5-dffb-40b6-a392-6396158211f5",
+      "ouem_id": "oub-664a9132-cf36-52a5-96f5-577e78c91e59",
+      "source_lod": 2,
+      "source_member": "udx/bldg/53393466_bldg_6697_op.gml",
+      "semantic_counts": {
+        "GroundSurface": 1,
+        "RoofSurface": 69,
+        "WallSurface": 61
+      },
+      "mapping_counts": {
+        "VERIFIED": 131
+      },
+      "audited_face_count": 131,
+      "roof_polygon_ids": [
+        "pol_1de987ff-96cf-45ed-9d99-471938e05e4b",
+        "pol_6b3399bd-2f87-4b00-b028-e673f8372323",
+        "pol_9cd856fa-1bf3-4ae4-a0b2-ca617ac6174a",
+        "pol_2e9c4d37-402b-4091-901e-5c6a859549bf",
+        "pol_33ddf93d-2950-4d51-b179-ae61eec29c5e",
+        "pol_7ee18dab-5815-413c-a606-4450ebc2512b",
+        "pol_cbf689c0-65d7-4178-8366-29cfbd88a09f",
+        "pol_5c4bd2af-70bc-4a88-9f0f-0f1c3ef5825c",
+        "pol_e6ec10a2-827d-42f9-ad81-54991d1100ea",
+        "pol_05e8b32b-b99e-49e4-87da-bb1623553ba2",
+        "pol_fc5cb874-314a-4fc9-9beb-fe2f2ea393e8",
+        "pol_633b1306-528e-4025-8bc0-5ce7b76bd316",
+        "pol_2dd643c6-0ced-4e14-8931-2f27e7f57393",
+        "pol_3bdc58e3-7979-45a7-a2f0-038e4fffb82c",
+        "pol_a466a9ae-54ac-49a3-bbc6-a56c8f3d98cf",
+        "pol_b60e4702-879c-4b06-8e76-a2fa9b66cce0",
+        "pol_95e483f3-be68-43ed-8ded-efe9fcac074c",
+        "pol_bebd95a7-db32-46cd-9e55-0de229cc6d03",
+        "pol_a4f4a183-3ebb-4bbb-9d85-42de0201db04",
+        "pol_3c7ce4b2-384b-483b-bb0f-50178b300af3",
+        "pol_fb7e8eac-2b66-4d59-aa38-6d2a82df595d",
+        "pol_d419f374-34ec-4cad-89a4-a80c8b5f497f",
+        "pol_e509df0b-b7b5-43d0-8198-8da11dc114fd",
+        "pol_75148834-64b8-4e80-ac83-47ab49a67df5",
+        "pol_1d775728-a9a0-42db-b71c-0d13ff8f7bfd",
+        "pol_8192f17b-2e63-4898-b2d7-8188005aca11",
+        "pol_5638f6a5-8777-4182-aee1-1e2de6a82339",
+        "pol_0d6fa945-b47e-4933-b4ae-bd9c5313b3af",
+        "pol_e328d250-3502-423b-b99d-f8876462a803",
+        "pol_a46ada76-c2eb-4aac-a61d-58526b50ee70",
+        "pol_89c3841d-92fd-46eb-be1c-b97449c6d5bf",
+        "pol_df7a1049-a768-4e57-976f-f93ce5b273fe",
+        "pol_079725a8-57a6-4a2d-b79f-9e392086ff8a",
+        "pol_eb730587-c47f-405e-a9f4-a00f300f043a",
+        "pol_c0b7517a-9d40-4824-877d-3487e9eb96e5",
+        "pol_979eac5c-676e-443c-bdb4-3e911747b070",
+        "pol_2d257c5c-783f-49b1-97b3-26c1da55c1af",
+        "pol_5f3adbe4-a5f8-48b8-a4ed-a6cc7d7adf7f",
+        "pol_8d5f3c83-a8bd-4d2e-b752-b098e2e0df22",
+        "pol_fcb2eac1-7162-4cb7-a8de-6a2b1f62776c",
+        "pol_35e117dd-0723-4d89-b73d-b25a3c0b0edc",
+        "pol_92fc6086-7440-4b1c-bc83-c606fdff12b2",
+        "pol_a9f3f588-12e0-4aba-9cf8-16a05c56bd50",
+        "pol_eaed2b06-b152-4e60-97dc-3ed52b0b7d3b",
+        "pol_b5ec9a33-1d6a-446f-8dbc-abca10770da8",
+        "pol_dbd3548b-935f-46f8-beca-e11f9eae48ea",
+        "pol_4304771e-35b2-4e3a-8864-4849fc76e5c2",
+        "pol_71893e56-c110-42cf-aaef-9056a310ca8a",
+        "pol_c45454a3-ff75-4667-9672-97dfc63a06b5",
+        "pol_416e546a-3d21-486a-a69f-6af34dc9d250",
+        "pol_0933450c-0adf-4a31-81cc-a7afe74824f7",
+        "pol_8feed72b-afdb-47d7-a06a-72f727b47cae",
+        "pol_9141aa05-221d-438c-913a-ba4e801010d2",
+        "pol_059c304f-0c54-4cf4-ae75-e368c02b3b20",
+        "pol_5ac774ae-b8b2-4215-ae33-6f5d024811d5",
+        "pol_d98c0e28-04e9-440e-93b8-c24e19f07083",
+        "pol_c7c7504a-4eed-4913-94c9-eb775782ce27",
+        "pol_28ac0f47-0831-4d16-8083-512cd5b8ee54",
+        "pol_9c89e467-250d-4599-b346-37b3c61e93ab",
+        "pol_6cdc49e4-d9f4-4e12-9dcf-fe6c9bf537d5",
+        "pol_2fc94ed1-ffec-402f-ac58-fe1306d33139",
+        "pol_f465795f-6487-4b15-a810-7dda8c81b3ba",
+        "pol_306c3363-7a97-4752-82aa-b54ff900e33b",
+        "pol_75bc864f-2139-4822-9725-d802b0023dc8",
+        "pol_0c6acfa4-8d5b-476f-a1cc-ab98412cd456",
+        "pol_60a1a814-50ca-4d72-8c6a-890d8244a428",
+        "pol_9ebf9333-872a-4fbd-a87d-15fccdf5b129",
+        "pol_8383dd5b-7b0e-43b8-9048-5d1fbe02981a",
+        "pol_5fa7579c-26bf-4659-94ec-6789b5471f73"
+      ],
+      "raw_building_found": true,
+      "all_audited_polygon_ids_in_raw": true,
+      "native_rows": [
+        {
+          "source_id": "bldg_040379e5-dffb-40b6-a392-6396158211f5",
+          "ouem_id": "oub-664a9132-cf36-52a5-96f5-577e78c91e59",
+          "lod": 2,
+          "source_member": "udx/bldg/53393466_bldg_6697_op.gml",
+          "geometry_blob_sha256": "087576e74dc9fbe10799e627b71732f47b2a0129dcce796a8401fb0dc2ecffc0",
+          "geometry_bytes": 14656
+        }
+      ],
+      "standard_rows": [
+        {
+          "source_id": "bldg_040379e5-dffb-40b6-a392-6396158211f5",
+          "ouem_id": "oub-664a9132-cf36-52a5-96f5-577e78c91e59",
+          "lod": 2,
+          "source_member": "udx/bldg/53393466_bldg_6697_op.gml",
+          "geometry_blob_sha256": "73939227edd8be7c66bc1ab2c852aae6b0f80bb0de5e06ac8a51c9e914a0a303",
+          "geometry_bytes": 14656
+        }
+      ]
+    },
+    {
+      "label": "M",
+      "source_id": "bldg_2bd71700-a145-46ff-b14f-ad60394ff253",
+      "ouem_id": "oub-cb250497-c12d-5fcc-9dca-e82c8b051398",
+      "source_lod": 2,
+      "source_member": "udx/bldg/53393466_bldg_6697_op.gml",
+      "semantic_counts": {
+        "GroundSurface": 1,
+        "RoofSurface": 30,
+        "WallSurface": 57
+      },
+      "mapping_counts": {
+        "VERIFIED": 88
+      },
+      "audited_face_count": 88,
+      "roof_polygon_ids": [
+        "pol_76995c57-f463-4c8a-8299-aecc76c0c5b4",
+        "pol_5b03aa45-8dea-4e57-88e8-dd64f4d44923",
+        "pol_c54625b5-dbc1-4c5a-bd4f-75e77250990a",
+        "pol_77e53e8d-a468-4f8b-911c-ce74358a3b4f",
+        "pol_73bec3b1-4166-4f23-a833-1b0ca6fb0c43",
+        "pol_a9c66e2e-26f5-4bf7-9eaf-a2ffbee24d1f",
+        "pol_050ff504-b131-4549-ae29-d758a43b1ea7",
+        "pol_1d9fae0e-6d00-4548-8f41-30518045e3e3",
+        "pol_694c6d85-1d55-46c6-bc3a-175a18d8ca51",
+        "pol_6b4cf6fb-d4cb-4fcf-9c2a-ca4dd39be467",
+        "pol_59cbc58a-c8f2-44c8-adac-118d9a736131",
+        "pol_6237d28c-991d-4cfe-9e8c-7d794c573961",
+        "pol_98dae481-977e-4e72-b178-9253d4c81c84",
+        "pol_766e565c-4d42-43d4-85de-d64d00e0a58d",
+        "pol_f79cfaff-d1da-4f84-8256-2a6928480420",
+        "pol_469c34a0-baf0-439b-8502-1cda75bde9c8",
+        "pol_9af5d995-7ce4-4cbe-ad22-af45a192906c",
+        "pol_9080ff9b-398b-4339-9f8a-5bc613eba63c",
+        "pol_9c44969d-43b8-4fd2-a1c7-249a39efcc3d",
+        "pol_27462859-7232-4203-9c14-694a7cd0348b",
+        "pol_45bec0ac-3121-4cf2-a289-401b8ca4a8c6",
+        "pol_5389c679-9ce5-4451-8fb4-ace97dd3b3d1",
+        "pol_36cebf7f-8996-4e38-8e8a-ba110c7fb89a",
+        "pol_8b3dfd86-9d90-4945-b5f9-216dc4e53dc5",
+        "pol_dda9c4aa-30aa-4e57-8820-6720bdaa287f",
+        "pol_f2c109dc-7a2a-40c1-8d8d-2699cc61f5e3",
+        "pol_a931d641-5fad-4843-a589-a27feaad7306",
+        "pol_8e4eb731-3c94-4da6-9baf-00945a668890",
+        "pol_69b212cd-bebd-4c39-8d18-f0258ecaa78f",
+        "pol_b25819e3-cf45-45dc-8d5c-33f1c3c756b6"
+      ],
+      "raw_building_found": true,
+      "all_audited_polygon_ids_in_raw": true,
+      "native_rows": [
+        {
+          "source_id": "bldg_2bd71700-a145-46ff-b14f-ad60394ff253",
+          "ouem_id": "oub-cb250497-c12d-5fcc-9dca-e82c8b051398",
+          "lod": 2,
+          "source_member": "udx/bldg/53393466_bldg_6697_op.gml",
+          "geometry_blob_sha256": "3c8d7aee80f53c5707ee2142ccbc5701daba9359325ad8a4134eef95a2bccc97",
+          "geometry_bytes": 10089
+        }
+      ],
+      "standard_rows": [
+        {
+          "source_id": "bldg_2bd71700-a145-46ff-b14f-ad60394ff253",
+          "ouem_id": "oub-cb250497-c12d-5fcc-9dca-e82c8b051398",
+          "lod": 2,
+          "source_member": "udx/bldg/53393466_bldg_6697_op.gml",
+          "geometry_blob_sha256": "95077ba969bb142d225308f84eee144d3389120ee2ecb0d32eb9bffbad2ae7a2",
+          "geometry_bytes": 10089
+        }
+      ]
+    },
+    {
+      "label": "C",
+      "source_id": "bldg_2d5a9713-b02f-4903-9164-c5653e03494d",
+      "ouem_id": "oub-10894413-4369-5131-ac0d-78ee9d234016",
+      "source_lod": 2,
+      "source_member": "udx/bldg/53393466_bldg_6697_op.gml",
+      "semantic_counts": {
+        "GroundSurface": 1,
+        "RoofSurface": 12,
+        "WallSurface": 25
+      },
+      "mapping_counts": {
+        "VERIFIED": 38
+      },
+      "audited_face_count": 38,
+      "roof_polygon_ids": [
+        "pol_33c69c48-bf30-4c4f-92ad-c4192095c5d0",
+        "pol_a033e781-8926-4907-972e-92188f3ad2c6",
+        "pol_d9834b80-f903-4229-8b16-d5b69ed6ffbd",
+        "pol_ce08fa27-5aad-454e-9147-fac7256a623e",
+        "pol_714aa1ed-4ab4-4350-9dd6-5c9f941b28dc",
+        "pol_d4cb49a8-5ddd-4040-b7ef-630ff5a1d21f",
+        "pol_218c5cce-1cee-4d9c-b386-b485ddf88577",
+        "pol_c514847d-5582-425a-a850-d487669bf6d3",
+        "pol_e48fd2f7-8f5c-48bd-978e-7ccdd8202389",
+        "pol_a0532e3a-a669-47c2-a62f-4e010ca40c37",
+        "pol_b784a3b4-e69f-4543-b50e-1c6b38459ea2",
+        "pol_d23d6ca2-e4a2-4a7f-ac98-87509c4162b3"
+      ],
+      "raw_building_found": true,
+      "all_audited_polygon_ids_in_raw": true,
+      "native_rows": [
+        {
+          "source_id": "bldg_2d5a9713-b02f-4903-9164-c5653e03494d",
+          "ouem_id": "oub-10894413-4369-5131-ac0d-78ee9d234016",
+          "lod": 2,
+          "source_member": "udx/bldg/53393466_bldg_6697_op.gml",
+          "geometry_blob_sha256": "02dc4b602c5ebd9e253d1a9a6afc451652575f81a197b0e1381a31ec264ef2a7",
+          "geometry_bytes": 4495
+        }
+      ],
+      "standard_rows": [
+        {
+          "source_id": "bldg_2d5a9713-b02f-4903-9164-c5653e03494d",
+          "ouem_id": "oub-10894413-4369-5131-ac0d-78ee9d234016",
+          "lod": 2,
+          "source_member": "udx/bldg/53393466_bldg_6697_op.gml",
+          "geometry_blob_sha256": "6d839ac3e8cd0de6364dbfd24e2945a00b4161284f7c9920980fc17c274001ad",
+          "geometry_bytes": 4495
+        }
+      ]
+    }
+  ],
+  "population": {
+    "standard_gpkg": [
+      [
+        1,
+        31
+      ],
+      [
+        2,
+        32
+      ]
+    ],
+    "native_gpkg": [
+      [
+        1,
+        31
+      ],
+      [
+        2,
+        32
+      ]
+    ]
+  },
+  "omitted": "Original XYZ/rings, full mesh geometry and raw XML are not redistributed; identity is bound by input_chain hashes and archived mapping."
+}

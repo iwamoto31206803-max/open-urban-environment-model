@@ -1,0 +1,315 @@
+{
+  "publication_scope": "Sanitized, minimized publication of the 2026-11-07 completed audit, not new checks or execution. Local absolute paths, inode/time stamps, full environments, download URLs, raw geometry and lengthy licence texts omitted. Original local reports unchanged.",
+  "audit_date": "2026-11-07",
+  "audited_ouem_commit": "b261f1d749b6fcda42f795e7052b73f26557ee2a",
+  "results": {
+    "P1-0_INPUT_CHAIN": "PASS",
+    "P1-0_SOURCE_IDENTITY": "PASS_HASH_BOUND_ARCHIVED_MAPPING",
+    "P1-0_ENVIRONMENT": "CONDITIONAL",
+    "P1-0_LICENSE": "CONDITIONAL",
+    "P1-1a_READY": "BLOCKED_PREPARATION_AND_REVIEW_PENDING"
+  },
+  "licensing": {
+    "plan_sha256": "b620d3bf18b80b6b9220404f8f480cbecaaf704a9d9f8a1b09a079d3686e06bf",
+    "candidate_count": 211,
+    "no_license_or_classifier_count": 67,
+    "meshlib_in_plan": false,
+    "same_version_installed_spdx_recovered": [
+      {
+        "name": "geopandas",
+        "version": "1.2.0",
+        "installed_spdx": "BSD-3-Clause"
+      },
+      {
+        "name": "numpy",
+        "version": "2.4.6",
+        "installed_spdx": "BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0"
+      },
+      {
+        "name": "pyproj",
+        "version": "3.7.2",
+        "installed_spdx": "MIT"
+      },
+      {
+        "name": "scikit-learn",
+        "version": "1.9.1",
+        "installed_spdx": "BSD-3-Clause"
+      },
+      {
+        "name": "joblib",
+        "version": "1.6.0",
+        "installed_spdx": "BSD-3-Clause"
+      },
+      {
+        "name": "shapely",
+        "version": "2.2.0",
+        "installed_spdx": "BSD-3-Clause"
+      },
+      {
+        "name": "affine",
+        "version": "3.0.1",
+        "installed_spdx": "BSD-3-Clause"
+      },
+      {
+        "name": "contextily",
+        "version": "1.7.1",
+        "installed_spdx": "BSD-3-Clause"
+      },
+      {
+        "name": "h5py",
+        "version": "3.16.0",
+        "installed_spdx": "BSD-3-Clause"
+      },
+      {
+        "name": "netCDF4",
+        "version": "1.7.5.1.post1",
+        "installed_spdx": "MIT"
+      },
+      {
+        "name": "osmnx",
+        "version": "2.1.1",
+        "installed_spdx": "MIT"
+      },
+      {
+        "name": "pyvista-validation",
+        "version": "0.2.2",
+        "installed_spdx": "MIT"
+      },
+      {
+        "name": "rtree",
+        "version": "1.4.1",
+        "installed_spdx": "MIT"
+      },
+      {
+        "name": "xarray",
+        "version": "2026.9.0",
+        "installed_spdx": "Apache-2.0"
+      },
+      {
+        "name": "attrs",
+        "version": "26.1.0",
+        "installed_spdx": "MIT"
+      },
+      {
+        "name": "cffi",
+        "version": "2.1.1",
+        "installed_spdx": "MIT-0"
+      },
+      {
+        "name": "idna",
+        "version": "3.20",
+        "installed_spdx": "BSD-3-Clause"
+      },
+      {
+        "name": "matplotlib-inline",
+        "version": "0.2.2",
+        "installed_spdx": "BSD-3-Clause"
+      },
+      {
+        "name": "networkx",
+        "version": "3.6.1",
+        "installed_spdx": "BSD-3-Clause"
+      },
+      {
+        "name": "packaging",
+        "version": "26.3",
+        "installed_spdx": "Apache-2.0 OR BSD-2-Clause"
+      },
+      {
+        "name": "pillow",
+        "version": "13.0.0",
+        "installed_spdx": "MIT-CMU"
+      },
+      {
+        "name": "Pygments",
+        "version": "2.21.0",
+        "installed_spdx": "BSD-2-Clause"
+      },
+      {
+        "name": "pyparsing",
+        "version": "3.3.3",
+        "installed_spdx": "MIT"
+      },
+      {
+        "name": "pyshp",
+        "version": "3.1.6",
+        "installed_spdx": "MIT"
+      },
+      {
+        "name": "typing_extensions",
+        "version": "4.16.0",
+        "installed_spdx": "PSF-2.0"
+      },
+      {
+        "name": "urllib3",
+        "version": "2.8.0",
+        "installed_spdx": "MIT"
+      },
+      {
+        "name": "xyzservices",
+        "version": "2026.9.1",
+        "installed_spdx": "BSD-3-Clause"
+      },
+      {
+        "name": "cftime",
+        "version": "1.6.6.1",
+        "installed_spdx": "MIT"
+      },
+      {
+        "name": "pooch",
+        "version": "1.9.0",
+        "installed_spdx": "BSD-3-Clause"
+      },
+      {
+        "name": "cryptography",
+        "version": "50.0.2",
+        "installed_spdx": "Apache-2.0 OR BSD-3-Clause"
+      },
+      {
+        "name": "rich-rst",
+        "version": "2.2.0",
+        "installed_spdx": "MIT"
+      },
+      {
+        "name": "pycparser",
+        "version": "3.12",
+        "installed_spdx": "BSD-3-Clause"
+      },
+      {
+        "name": "googleapis-common-protos",
+        "version": "1.76.0",
+        "installed_spdx": "Apache-2.0"
+      },
+      {
+        "name": "MarkupSafe",
+        "version": "3.0.4",
+        "installed_spdx": "BSD-3-Clause"
+      },
+      {
+        "name": "argon2-cffi",
+        "version": "25.1.0",
+        "installed_spdx": "MIT"
+      },
+      {
+        "name": "ipykernel",
+        "version": "7.4.0",
+        "installed_spdx": "BSD-3-Clause"
+      },
+      {
+        "name": "json5",
+        "version": "0.17.3",
+        "installed_spdx": "Apache-2.0"
+      },
+      {
+        "name": "jsonschema",
+        "version": "4.26.0",
+        "installed_spdx": "MIT"
+      },
+      {
+        "name": "jupyter_core",
+        "version": "5.9.1",
+        "installed_spdx": "BSD-3-Clause"
+      },
+      {
+        "name": "prometheus_client",
+        "version": "0.26.0",
+        "installed_spdx": "Apache-2.0 AND BSD-2-Clause"
+      },
+      {
+        "name": "Send2Trash",
+        "version": "2.1.0",
+        "installed_spdx": "BSD-3-Clause"
+      },
+      {
+        "name": "jsonschema-specifications",
+        "version": "2025.9.1",
+        "installed_spdx": "MIT"
+      },
+      {
+        "name": "python-json-logger",
+        "version": "4.2.0",
+        "installed_spdx": "BSD-2-Clause"
+      },
+      {
+        "name": "referencing",
+        "version": "0.37.0",
+        "installed_spdx": "MIT"
+      },
+      {
+        "name": "rpds-py",
+        "version": "2026.9.1",
+        "installed_spdx": "MIT"
+      },
+      {
+        "name": "argon2-cffi-bindings",
+        "version": "26.1.0",
+        "installed_spdx": "MIT"
+      },
+      {
+        "name": "fqdn",
+        "version": "1.6.0",
+        "installed_spdx": "MPL-2.0"
+      }
+    ],
+    "same_version_notice_packages": 173,
+    "limitation": "Dry-run metadata and same-version installed metadata only; not complete wheel bundled-license or legal clearance audit. UNKNOWN is not a commercial prohibition.",
+    "source_code_license": "VoxCityGML MIT in source LICENSE/pyproject; VoxCity MIT in installed primary metadata/notices",
+    "data_notice_difference": "Archived acquisition policy summary differs from ZIP README licence choices; not resolved as legal clearance.",
+    "zip_README_sha256": "c7362427da8af24c1b7d240b577e766058f789c5d6a3da1ca0f6a6f5a9c45497",
+    "resource_csv_sha256": "31171eabf2297493086189e7aa6518d5e6d374f3a8ea954b337f2d0dfb12fdd8"
+  },
+  "environment": {
+    "existing_python": "3.11.9",
+    "voxcity_version": "1.7.0",
+    "voxcity_commit": "fa212656305328a9a657973bae26f352bfe813bc",
+    "isolated_python": "3.11.9",
+    "isolated_packages": [
+      {
+        "name": "pip",
+        "version": "24.0"
+      },
+      {
+        "name": "setuptools",
+        "version": "65.5.0"
+      }
+    ],
+    "voxcitygml_installed": false,
+    "meshlib_installed": false,
+    "mapbox_earcut_in_existing_env": false,
+    "existing_inventory_unchanged": true
+  },
+  "draft_search": {
+    "scopes": [
+      "OUEM docs/",
+      "VoxCityGML source docs/",
+      "user-specified preflight directory"
+    ],
+    "status": "NOT_FOUND_IN_SCOPED_SEARCH",
+    "matches": []
+  },
+  "input_preservation": {
+    "size_mtime_changed": []
+  },
+  "formal_and_experiment_docs_sha256": {
+    "docs/OUEM_Concept_Architecture_v0.2.md": "6f0d28e527c41ca3b18c1e87fdccd366e82bfbfe5e78d48f8c72a6e0495bc569",
+    "docs/OUEM_Development_Principles_v0.1.md": "430eb41e604387b6515a240b62ee9a0791a3487ef585d5c7ea2ec34b71a2a800",
+    "docs/OUEM_Standard_Building_v0.1.md": "ee27096177e834e2db7f9622e3745b366c285ed13e5c255784176309dd2cb550",
+    "docs/OUEM_Standard_Terrain_v0.1.md": "2fce0d3b5db4975ac13bc4af587d915855929966e34f05696cd8b2b04a4f0e89",
+    "docs/OUEM_VoxCity_Adapter_v0.1.md": "733f77f75db6df57fd6ad840c4b8f9814651f5183126373577df41e69d270360",
+    "docs/experiments/height_distribution/STEP4A_REAL_LOD2_ROOF_DISTRIBUTION.md": "3d6e2df6182a3dff1afd48cdccd1205a3eefa2d0106d3e3c1fb36f3632378c87",
+    "docs/experiments/height_distribution/STEP4B2_REAL_LOD2_TERRAIN_VOXELIZATION.md": "841c63a9ba05d614e5aad9b47fc40576e913f3f78aabd0a7059bda245dcfa25d",
+    "docs/experiments/height_distribution/STEP4B_REAL_LOD2_VOXELIZATION.md": "25811e5ed8341e8095e0a00526cad3afa4b17b66fecb2f45912ec4b72a657ae6",
+    "docs/experiments/height_distribution/STEP4C_REAL_LOD2_SHADOW_COMPARISON.md": "835ab2e48e08e4a13ed54220451e8548c6fd662eb221a3d091f6157a53c7053a",
+    "docs/experiments/height_distribution/STEP4_0_REAL_LOD2_ACCEPTANCE_AUDIT.md": "9ebe45cbdff6bc2fe212f700405df7ad24e6bc43c740f8a8e52318ec3e6d2d2f"
+  },
+  "original_private_report_sha256": {
+    "P1-0_REPORT.md": "e0c2f41fd17dcc168d9094d03d36bab81e522dbe2e0c36a5a95df8a8829a7c88",
+    "audit_log.md": "040bcea3f11ce1acf07975e1fc671618be7148c78762fa24624ef3894a439339",
+    "input_chain.json": "1b1c1c27882281d9044ae625c6c556fb7b80e9726fd85d666e64b93299337a96",
+    "source_identity.json": "8c133aff82672f2e74cec9e05fb3c071abca7eeeedec263b634f5e647b20c37f",
+    "source_identity_crosscheck.json": "bd7152f40dbd7b615328aca97ed2bfd2df9d2dbdb23c7dadf86d0895bb30eeb6",
+    "static_compatibility.json": "001c945b24fbbb0bc6f7713ecb53e153f4a51f3d78967a82ed6ff3f9d7e41036",
+    "dependency_license_audit.json": "b4e2028739ffa380732918556590e8d982a23a58d8943eb8a287a1c7e8a6ce7f",
+    "dependency_licenses.csv": "335b0c4e1bcbae52e65791d62638e52c56d8e9e35e7a80d144e9511b9c67d20c"
+  }
+}

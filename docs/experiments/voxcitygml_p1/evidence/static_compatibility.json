@@ -1,0 +1,237 @@
+{
+  "scope": "AST/source inspection only; VoxCityGML not imported/executed, no binary ABI or runtime compatibility test",
+  "voxcitygml": {
+    "repository": "https://github.com/kunifujiwara/VoxCityGML",
+    "commit": "19628c033b1cbbbdee80fe781f516672765d1eee",
+    "source_sha256": {
+      "voxcitygml/cli.py": "e576691076e34fe65129c5df6d196e81c76a4d57031921eab526f32699c671d5",
+      "voxcitygml/export_obj.py": "9365a0e012ca678f4fce878fbb361f662c56ca4a5f7279b1b642573204c76235",
+      "voxcitygml/grid_utils.py": "4bb5ca9b3ec6bfdd0005f28d4c06a9bd1d05eb076d60316730c8059d88756947",
+      "voxcitygml/models.py": "d1d3557bea4eea97931a572f0d9c424dbb5c78945798c69a422d4e48c38f8b54",
+      "voxcitygml/pipeline.py": "7cdf5f56e4e2ef06fb80c290ca4d4ffe1b8f0a6290f2ec4026de5486347b772f",
+      "voxcitygml/pipeline_export.py": "4ec112645d0df5f7284f76d298e0da527848408e11ba9bcf18db7e136aa6b259",
+      "voxcitygml/reapply.py": "48428b242e80e5293e32f5049bc945755fce6741712625c74343f2a486896d34",
+      "voxcitygml/refine.py": "98e01410804b165a055ade00b15e2b1f033f4768d94a4470fd383de555b0d7be",
+      "voxcitygml/terrain_solid.py": "0ee83462ad856144a2415f6e4ec0f5855cccc707d2b795a5e31625d50b6f9032",
+      "voxcitygml/voxelizer3d.py": "3bc0e3cd113d93310de90afe74959d207e0d8d85fa596ce8139245a56e732730",
+      "voxcitygml/watertight.py": "6cca4a2661a1fc3a06f7967c875a7aa8fff5a4a82ed59a98170a3fb74525f025",
+      "voxcitygml/__init__.py": "9f04c134c049d625aead33b30dff82c51f2ef5d5eeaf1da05e4b7c37dddec315",
+      "voxcitygml/__main__.py": "fd347a84265980a60bef1e46a6af8a0d69667b40a13aa7d325efadfaad2236e9",
+      "voxcitygml/buildings/processor.py": "1c1c29efd2bd5ff36be2d5ce0f7e81e19f37d64328b5452979c9ffa302465ebd",
+      "voxcitygml/buildings/__init__.py": "52aacdd885dd4fb118b2d01f3f091a67ca6e18336cbd71f7fb7324ac90ccfc96",
+      "voxcitygml/canopy/processor.py": "bf4fc1d5097373255d1fb793ada9e84ee301ab76f95eeef055534f3971d73124",
+      "voxcitygml/canopy/__init__.py": "759cb2bc074792f567c2b3b271707cac9d4780ba46c806a682868b5914400c47",
+      "voxcitygml/citygml/coordinates.py": "7b084283a7c3feb08cee90dcef50a3d5c37bedbc6db66e89446331fe32b44b7d",
+      "voxcitygml/citygml/extractors.py": "65016a351fb6c59cee0f27ebc5c81804f810870bc989f239b8541dbafd0ea20a",
+      "voxcitygml/citygml/geometry.py": "b90d3d358b663e9b0f8e30b491c8e82788c4277d5ecbcd1315cd97aad7b044dd",
+      "voxcitygml/citygml/namespaces.py": "4aad91232667aeeaeb76aaec361637a89b3ed3dcd9eaedb17e0ec3002f74159d",
+      "voxcitygml/citygml/parser.py": "4fe58e4cc9e60842b733acad961746c8515283e0170d5e330f0c07a9d9eab861",
+      "voxcitygml/citygml/parse_cache.py": "151d29053d8cad4f8d48d6f664a4afd8f3119b3042d8cf21239b972f23d3991a",
+      "voxcitygml/citygml/__init__.py": "200ac3dab9cefd44d4ee8618c684c402d89fb60fb063f782713594a1de05c351",
+      "voxcitygml/landcover/citygml_landcover.py": "3b6594277d8151a192ab1d7df768e3740d8db0f9e17760f613e85650bdb205e0",
+      "voxcitygml/landcover/processor.py": "4c0bca2646ecea58e63866eac80b3f5fb9e68b443db80fa0aea47b5672b77e32",
+      "voxcitygml/landcover/__init__.py": "166262fd4ea0ef3920a5acb2ff14b3fe654fc45c92935c0eb25c9d118ff896df",
+      "voxcitygml/terrain/processor.py": "24c04ca17112c403b246509496114bb8b5c15a0ba2058408c346bebcd0b21bfa",
+      "voxcitygml/terrain/__init__.py": "fc9c516ca58cb152357a74f19bf75816d9b563df114fdac6492d78880f71c597"
+    }
+  },
+  "voxcity": {
+    "repository": "https://github.com/kunifujiwara/VoxCity",
+    "commit": "fa212656305328a9a657973bae26f352bfe813bc",
+    "source_record_checked": 136,
+    "source_record_matches": 136
+  },
+  "imports": [
+    {
+      "source_file": "voxcitygml/grid_utils.py",
+      "line": 44,
+      "module": "voxcity.geoprocessor.raster.core",
+      "names": [
+        "compute_grid_geometry"
+      ],
+      "target": "installed-module:voxcity.geoprocessor.raster.core",
+      "module_exists": true,
+      "unresolved_names": []
+    },
+    {
+      "source_file": "voxcitygml/pipeline.py",
+      "line": 149,
+      "module": "voxcity.utils.lc",
+      "names": [
+        "convert_land_cover"
+      ],
+      "target": "installed-module:voxcity.utils.lc",
+      "module_exists": true,
+      "unresolved_names": []
+    },
+    {
+      "source_file": "voxcitygml/pipeline.py",
+      "line": 192,
+      "module": "voxcity.generator.pipeline",
+      "names": [
+        "flatten_water_dem_by_component"
+      ],
+      "target": "installed-module:voxcity.generator.pipeline",
+      "module_exists": true,
+      "unresolved_names": []
+    },
+    {
+      "source_file": "voxcitygml/pipeline.py",
+      "line": 235,
+      "module": "voxcity.generator.pipeline",
+      "names": [
+        "VoxCityPipeline"
+      ],
+      "target": "installed-module:voxcity.generator.pipeline",
+      "module_exists": true,
+      "unresolved_names": []
+    },
+    {
+      "source_file": "voxcitygml/pipeline.py",
+      "line": 263,
+      "module": "voxcity.utils.classes",
+      "names": [
+        "summarize_voxel_grid"
+      ],
+      "target": "installed-module:voxcity.utils.classes",
+      "module_exists": true,
+      "unresolved_names": []
+    },
+    {
+      "source_file": "voxcitygml/pipeline.py",
+      "line": 418,
+      "module": "voxcity.downloader.gee",
+      "names": [
+        "initialize_earth_engine"
+      ],
+      "target": "installed-module:voxcity.downloader.gee",
+      "module_exists": true,
+      "unresolved_names": []
+    },
+    {
+      "source_file": "voxcitygml/pipeline.py",
+      "line": 424,
+      "module": "voxcity.generator.api",
+      "names": [
+        "auto_select_data_sources"
+      ],
+      "target": "installed-module:voxcity.generator.api",
+      "module_exists": true,
+      "unresolved_names": []
+    },
+    {
+      "source_file": "voxcitygml/pipeline.py",
+      "line": 605,
+      "module": "voxcity.generator.voxelizer",
+      "names": [
+        "Voxelizer"
+      ],
+      "target": "installed-module:voxcity.generator.voxelizer",
+      "module_exists": true,
+      "unresolved_names": []
+    },
+    {
+      "source_file": "voxcitygml/pipeline.py",
+      "line": 670,
+      "module": "voxcity.visualizer.grids",
+      "names": [
+        "visualize_numerical_grid"
+      ],
+      "target": "installed-module:voxcity.visualizer.grids",
+      "module_exists": true,
+      "unresolved_names": []
+    },
+    {
+      "source_file": "voxcitygml/pipeline.py",
+      "line": 255,
+      "module": "voxcity.generator.io",
+      "names": [
+        "save_voxcity"
+      ],
+      "target": "installed-module:voxcity.generator.io",
+      "module_exists": true,
+      "unresolved_names": []
+    },
+    {
+      "source_file": "voxcitygml/voxelizer3d.py",
+      "line": 2083,
+      "module": "voxcity.utils.lc",
+      "names": [
+        "convert_land_cover"
+      ],
+      "target": "installed-module:voxcity.utils.lc",
+      "module_exists": true,
+      "unresolved_names": []
+    },
+    {
+      "source_file": "voxcitygml/canopy/processor.py",
+      "line": 119,
+      "module": "voxcity.utils.lc",
+      "names": [
+        "get_land_cover_classes"
+      ],
+      "target": "installed-module:voxcity.utils.lc",
+      "module_exists": true,
+      "unresolved_names": []
+    },
+    {
+      "source_file": "voxcitygml/canopy/processor.py",
+      "line": 137,
+      "module": "voxcity.generator.grids",
+      "names": [
+        "get_canopy_height_grid"
+      ],
+      "target": "installed-module:voxcity.generator.grids",
+      "module_exists": true,
+      "unresolved_names": []
+    },
+    {
+      "source_file": "voxcitygml/landcover/processor.py",
+      "line": 76,
+      "module": "voxcity.generator.grids",
+      "names": [
+        "get_land_cover_grid"
+      ],
+      "target": "installed-module:voxcity.generator.grids",
+      "module_exists": true,
+      "unresolved_names": []
+    },
+    {
+      "source_file": "voxcitygml/terrain/processor.py",
+      "line": 107,
+      "module": "voxcity.generator.grids",
+      "names": [
+        "get_dem_grid"
+      ],
+      "target": "installed-module:voxcity.generator.grids",
+      "module_exists": true,
+      "unresolved_names": []
+    }
+  ],
+  "unresolved": [],
+  "assemble_voxcity_signature": {
+    "positional": [
+      "self",
+      "voxcity_grid",
+      "building_height_grid",
+      "building_min_height_grid",
+      "building_id_grid",
+      "land_cover_grid",
+      "dem_grid",
+      "canopy_height_top",
+      "canopy_height_bottom",
+      "extras"
+    ],
+    "keyword_only": [],
+    "var_kw": null
+  },
+  "source_evidence_lines": {
+    "meshlib_fallback": "voxcitygml/voxelizer3d.py:1184-1246",
+    "repair_auto": "voxcitygml/watertight.py:350-420",
+    "DEM_reanchor": "voxcitygml/terrain/processor.py:115-200",
+    "source_defaults": "voxcitygml/pipeline.py:414-432",
+    "LoD_fallback": "voxcitygml/citygml/extractors.py:239-280",
+    "hole_fallback": "voxcitygml/citygml/geometry.py:99-136",
+    "axes": "voxcitygml/pipeline.py:60-73"
+  }
+}
