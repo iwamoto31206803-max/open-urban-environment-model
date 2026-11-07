@@ -1,0 +1,67 @@
+{
+  "profile": "ouem-p1-1a-single-F/v0.1",
+  "status": "COMPLETED_EXPERIMENTAL",
+  "inputs": {
+    "53393466_bldg_6697_op.gml": "6128aa2a2bd637e51dbef89ee42bd54620eae6a2fab82b082149a4dc4924c0c9",
+    "standard.gpkg": "954d01aad3004a0d2d69586036ef9961071064a39db4215d45577dee2f996f60",
+    "report.json": "71de561a0644352654c4d30814259f3d42b1d31a18b9c1591652be88c1b3565e"
+  },
+  "commits": {
+    "voxcitygml": "19628c033b1cbbbdee80fe781f516672765d1eee",
+    "voxcity": "fa212656305328a9a657973bae26f352bfe813bc"
+  },
+  "implementation_sha256": "12025ff722e06eb46d393a143b5456efb0f2500a2c8c7cde7573c7527acd2456",
+  "stages": {
+    "ENVIRONMENT": "PASS",
+    "SOURCE_IDENTITY": "PASS",
+    "GEOMETRY": "PASS_WITH_DOCUMENTED_MERGE",
+    "VERTICAL": "PASS_SOURCE_H_PRESERVED",
+    "VOXEL": "PASS_MESH_ONLY"
+  },
+  "P1_1b_READY": "CONDITIONAL_REVIEW_REQUIRED",
+  "scientific_validation": "NOT_VERIFIED",
+  "formal_acceptance": "NOT_VERIFIED",
+  "terrain_integration_ready": false,
+  "publication_scope": "Local run manifest projected into Git; public diagnostics has a separate SHA, not the raw diagnostic SHA.",
+  "local_runs": [
+    "p1-1a-final-b",
+    "p1-1a-final-c"
+  ],
+  "local_manifest_sha256": "d140473154cc234a05fa42a55241fa59dee32e4c3e577da098a5ca5f5bf7052a",
+  "reproducibility": {
+    "independent_processes": 2,
+    "manifest_equal": true,
+    "all_seven_output_file_SHAs_equal": true
+  },
+  "existing_ouem_environment": {
+    "package_count": 215,
+    "P1_0_versions_unchanged": true,
+    "pre_geometry_metadata_and_pyvenv_cfg_unchanged": true,
+    "scope": "package inventory/METADATA/config; not a full bytewise venv audit",
+    "metadata_absent_policy": "empty bytes for OUEM editable egg-info"
+  },
+  "dependency_preparation": {
+    "original_plan_sha256": "b620d3bf18b80b6b9220404f8f480cbecaaf704a9d9f8a1b09a079d3686e06bf",
+    "runtime_plan_count": 211,
+    "ordinary_dependency_artifacts": 209,
+    "installed_distribution_count": 213,
+    "pip_check": "PASS: No broken requirements found",
+    "optional_extras": [],
+    "meshlib": false,
+    "primary_artifact_review_sha256": "df029f6de8a1468e99f7eb963e78f093fbf5dc95d197151004396f6cb49eacd3",
+    "licensing": "CONDITIONAL: limited local use; redistribution/data obligations not cleared"
+  },
+  "public_files": {
+    "geometry_diagnostics.json": "a664917f78e2e47481036aa74da4db295f611995712edd065f507581d3e77d0a",
+    "dependency_artifacts.csv": "f2ff2d26ad68c850e8d5b4720681de89a4e82c21f02988b24094c5ccce482642"
+  },
+  "archived_local_outputs": {
+    "F-only.xml": "06fa125f8cbbecbbbcbdc477421504a5bf31749acce05e1b39c89b87ec5b771f",
+    "geometry_diagnostics.json": "12d6cceae7b390c700b156cf465c08d604155150a5d7c1a859a07f9094e9ecab",
+    "repaired_faces.npy": "654c6fd8f3f74a2a026c3897f7a8ab9acc041ecb8ca3ef930174f40f8e2272e0",
+    "repaired_vertices.npy": "840ff8a385de338ad375f806210c2a0c38836b3cc5390e480adc3243ae617ebf",
+    "triangulated_faces.npy": "e7a110999cd204133b1f0c09bf922856f82085dde3cf98d2d19a11674929c66a",
+    "triangulated_vertices.npy": "8847fee59626b8a25b73d6ac515a578ad6f4ffe6100de01079f7c7f3710578ab",
+    "voxels.npy": "38c4e62b4c32f4936ff643b4d3803006048ea2140b4cb1dc52ae4bcf694ec2dd"
+  }
+}
