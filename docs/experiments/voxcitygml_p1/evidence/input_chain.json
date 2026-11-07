@@ -1,0 +1,1752 @@
+{
+  "scope": "Publication of completed P1-0 audit; no re-audit. Dataset locators are identities, not downloadable GitHub files. Raw datasets remain outside Git.",
+  "selection": "Document SHA -> actual manifest inputs -> earlier manifest/output SHA; not run-name selection",
+  "stages": [
+    {
+      "stage": "4-0",
+      "manifest_locator": "data/work/step4-0-roof-audit/audit-final-e/manifest.json",
+      "manifest_sha256": "14498ba34826c2b68c2a22c29da6fcbeb8bc696e20b68f799d8a8cca0a41a852",
+      "experiment_record": "docs/experiments/height_distribution/STEP4_0_REAL_LOD2_ACCEPTANCE_AUDIT.md"
+    },
+    {
+      "stage": "4-A",
+      "manifest_locator": "data/work/step4a-roof-distribution/final-c/manifest.json",
+      "manifest_sha256": "f73e65073ed823b9155cc75a93a4cfdbc314fb9a0f1859f4d635ec5e71a952bd",
+      "experiment_record": "docs/experiments/height_distribution/STEP4A_REAL_LOD2_ROOF_DISTRIBUTION.md"
+    },
+    {
+      "stage": "4-B1",
+      "manifest_locator": "data/work/step4b-roof-voxel/final-b/manifest.json",
+      "manifest_sha256": "5f1b0e1c11414889aa2ee305faf74989da65d590130bf85a0b61128ecf2662e9",
+      "experiment_record": "docs/experiments/height_distribution/STEP4B_REAL_LOD2_VOXELIZATION.md"
+    },
+    {
+      "stage": "4-B2",
+      "manifest_locator": "data/work/step4b2-roof-terrain/final-a/manifest.json",
+      "manifest_sha256": "9f564e7d2e06c74301fdcf3670d6f60e2a531e628cfb36de882d8dec6f286817",
+      "experiment_record": "docs/experiments/height_distribution/STEP4B2_REAL_LOD2_TERRAIN_VOXELIZATION.md"
+    },
+    {
+      "stage": "4-C",
+      "manifest_locator": "data/work/step4c-roof-shadow/final-c/manifest.json",
+      "manifest_sha256": "82488e2807a0cbc95cb528d25a38bc77a2e4a1c3181122a091f75c2ec7eb7c8e",
+      "experiment_record": "docs/experiments/height_distribution/STEP4C_REAL_LOD2_SHADOW_COMPARISON.md"
+    }
+  ],
+  "failures": [],
+  "verified_unique_files": 428,
+  "files": {
+    "data/work/step4c-roof-shadow/final-c/manifest.json": {
+      "sha256": "82488e2807a0cbc95cb528d25a38bc77a2e4a1c3181122a091f75c2ec7eb7c8e",
+      "size_bytes": 12879
+    },
+    "data/work/step4c-roof-shadow/final-c/C/comparison.png": {
+      "sha256": "46d493a4e2868a171b9c5276c372792726c03e4bc53dd0ba77adc23d961573d2",
+      "size_bytes": 117092
+    },
+    "data/work/step4c-roof-shadow/final-c/C/difference.npy": {
+      "sha256": "b460003ea7c3d55d34aecc9a002ed57f1f32b0ccff2d1dc9b2925294a67f4243",
+      "size_bytes": 1318
+    },
+    "data/work/step4c-roof-shadow/final-c/C/distributed/dem.npy": {
+      "sha256": "89e98ee866ce6e39c53f8cd1fe834918d16f5a7fc4a20d35c62bb6b736174639",
+      "size_bytes": 9648
+    },
+    "data/work/step4c-roof-shadow/final-c/C/distributed/engine.json": {
+      "sha256": "ab483bd8e9e11f2c1153882b85204970993bbb4cdfb556a7e3dce1255f07917a",
+      "size_bytes": 535
+    },
+    "data/work/step4c-roof-shadow/final-c/C/distributed/height.npy": {
+      "sha256": "283cec68675fa198408996348b39ed4cebdee9ed1e3d6f2a53cb1044becd03b3",
+      "size_bytes": 9648
+    },
+    "data/work/step4c-roof-shadow/final-c/C/distributed/ids.npy": {
+      "sha256": "f00dc5e5fbfd4888e898054978c6eb0f3d48742efc6f20f14ea9ababc9e1c4b9",
+      "size_bytes": 4888
+    },
+    "data/work/step4c-roof-shadow/final-c/C/distributed/metadata.json": {
+      "sha256": "482a5793ae7f131678d424376c75b12644af9dd77350bfc7276cf5338639dca4",
+      "size_bytes": 51369
+    },
+    "data/work/step4c-roof-shadow/final-c/C/distributed/qa.json": {
+      "sha256": "4b2c4cdefd80c44ebc29c5b8b57f3f3aa1a05a85ca0dd49955cf00de34a392e7",
+      "size_bytes": 72712
+    },
+    "data/work/step4c-roof-shadow/final-c/C/distributed/runtime.json": {
+      "sha256": "7984febfd89f24618f9748f7d88f04a7fdfcdfe8a0a0d8796abba61c5ab25e32",
+      "size_bytes": 247
+    },
+    "data/work/step4c-roof-shadow/final-c/C/distributed/segments.json": {
+      "sha256": "2756faef99ac8e83247926f618354c35d313be64c8aa8ef17cb4a0f6ef4fdbcc",
+      "size_bytes": 16384
+    },
+    "data/work/step4c-roof-shadow/final-c/C/distributed/shadow.npy": {
+      "sha256": "58783e91343c30afc1115216b18b193735c48cee658b3d8d7cf22db99400f082",
+      "size_bytes": 1318
+    },
+    "data/work/step4c-roof-shadow/final-c/C/distributed/shared_voxels.npy": {
+      "sha256": "533b6103be11de6909d5c5c9e738d8a23e95d31cb5e120cfcbbf734fc2fc047e",
+      "size_bytes": 10838
+    },
+    "data/work/step4c-roof-shadow/final-c/C/distributed/voxels.npy": {
+      "sha256": "533b6103be11de6909d5c5c9e738d8a23e95d31cb5e120cfcbbf734fc2fc047e",
+      "size_bytes": 10838
+    },
+    "data/work/step4c-roof-shadow/final-c/C/footprint_fraction.npy": {
+      "sha256": "d0e46962c0343524bd6d9eb014fa793a078a6ca8937d8bb5ebba26621f061098",
+      "size_bytes": 9648
+    },
+    "data/work/step4c-roof-shadow/final-c/C/observer_index.npy": {
+      "sha256": "609974fafcba7762eabe63be50765da19592dab472f28c4165f7a092aa94e0bc",
+      "size_bytes": 9648
+    },
+    "data/work/step4c-roof-shadow/final-c/C/observer_valid.npy": {
+      "sha256": "cffc908a914b744662f7bb5e4ae6a2dfbc92bcc56d9b6a0c99e065e8d5e255d5",
+      "size_bytes": 1318
+    },
+    "data/work/step4c-roof-shadow/final-c/C/observer_xyz.npy": {
+      "sha256": "68e3f390ae7b25385c622765f3ee08ef9269e7850bc9072ed092fe73b1603803",
+      "size_bytes": 28688
+    },
+    "data/work/step4c-roof-shadow/final-c/C/representative/dem.npy": {
+      "sha256": "89e98ee866ce6e39c53f8cd1fe834918d16f5a7fc4a20d35c62bb6b736174639",
+      "size_bytes": 9648
+    },
+    "data/work/step4c-roof-shadow/final-c/C/representative/engine.json": {
+      "sha256": "ab483bd8e9e11f2c1153882b85204970993bbb4cdfb556a7e3dce1255f07917a",
+      "size_bytes": 535
+    },
+    "data/work/step4c-roof-shadow/final-c/C/representative/height.npy": {
+      "sha256": "d82c89472d639e5e3fd4c545a9f55c9191c7438f3c6669163ac5fe46a1ac3bef",
+      "size_bytes": 9648
+    },
+    "data/work/step4c-roof-shadow/final-c/C/representative/ids.npy": {
+      "sha256": "f00dc5e5fbfd4888e898054978c6eb0f3d48742efc6f20f14ea9ababc9e1c4b9",
+      "size_bytes": 4888
+    },
+    "data/work/step4c-roof-shadow/final-c/C/representative/metadata.json": {
+      "sha256": "443261cb338a5ba3cda4941cfdc0491084157ba13c2729fab0f68719a40ec39e",
+      "size_bytes": 51372
+    },
+    "data/work/step4c-roof-shadow/final-c/C/representative/qa.json": {
+      "sha256": "cbf9898041c86d6a9c75fd6fd2c7f76bbd18372bbcd622c89aeae53dff5a826f",
+      "size_bytes": 72700
+    },
+    "data/work/step4c-roof-shadow/final-c/C/representative/runtime.json": {
+      "sha256": "7984febfd89f24618f9748f7d88f04a7fdfcdfe8a0a0d8796abba61c5ab25e32",
+      "size_bytes": 247
+    },
+    "data/work/step4c-roof-shadow/final-c/C/representative/segments.json": {
+      "sha256": "78f2f8e63fb6f978bd0bcd253a30a0f8a76403ce6d84ac07c2d1455e1d0dc4e0",
+      "size_bytes": 16385
+    },
+    "data/work/step4c-roof-shadow/final-c/C/representative/shadow.npy": {
+      "sha256": "0266785bd82fb0033c1cb1558dc0f2cb1fbec81c4a42894ca183a5ac94b2db45",
+      "size_bytes": 1318
+    },
+    "data/work/step4c-roof-shadow/final-c/C/representative/shared_voxels.npy": {
+      "sha256": "7e57b7f4b6a43431981035ab56511ca5feb6b4a0ad27244ec6fb6f361ed329df",
+      "size_bytes": 10838
+    },
+    "data/work/step4c-roof-shadow/final-c/C/representative/voxels.npy": {
+      "sha256": "7e57b7f4b6a43431981035ab56511ca5feb6b4a0ad27244ec6fb6f361ed329df",
+      "size_bytes": 10838
+    },
+    "data/work/step4c-roof-shadow/final-c/C/roof_coverage.npy": {
+      "sha256": "8bbc69831983da942ed1146511e05a74a9d4a5ed2524253d74babb40b72287fc",
+      "size_bytes": 9648
+    },
+    "data/work/step4c-roof-shadow/final-c/C/source_row_col.npy": {
+      "sha256": "70bb4a26b8450f431df63c0acb0dcbee1a07355658707f0fe75b4e152fac6ad3",
+      "size_bytes": 19168
+    },
+    "data/work/step4c-roof-shadow/final-c/C/source_top_H.npy": {
+      "sha256": "1577f916c291aa0e9f657c355836f609c0fef645e9aaf0858dae62e887f8a38a",
+      "size_bytes": 9648
+    },
+    "data/work/step4c-roof-shadow/final-c/F/comparison.png": {
+      "sha256": "2f9b63610c5db5385656cde0896718b18a6a4a033cb4c14796b481504595457e",
+      "size_bytes": 113721
+    },
+    "data/work/step4c-roof-shadow/final-c/F/difference.npy": {
+      "sha256": "b32bc4c681bc51da7736a675b0339a433a516a3d7d428148abb30504d3ad0a4c",
+      "size_bytes": 744
+    },
+    "data/work/step4c-roof-shadow/final-c/F/distributed/dem.npy": {
+      "sha256": "ce714194a9f7857cf3e8cbbc85f545ebfb4644e26decbe13f1f8994b973bfe21",
+      "size_bytes": 5056
+    },
+    "data/work/step4c-roof-shadow/final-c/F/distributed/engine.json": {
+      "sha256": "ab483bd8e9e11f2c1153882b85204970993bbb4cdfb556a7e3dce1255f07917a",
+      "size_bytes": 535
+    },
+    "data/work/step4c-roof-shadow/final-c/F/distributed/height.npy": {
+      "sha256": "cf98df6cb45f97fe5a86631f08e00268af3c05889e84fbf4881315dd384dcd7f",
+      "size_bytes": 5056
+    },
+    "data/work/step4c-roof-shadow/final-c/F/distributed/ids.npy": {
+      "sha256": "542e7f27d155a00ab1fd0c8ad8960c315e90573227fbfb24d544f2e3d5d62491",
+      "size_bytes": 2592
+    },
+    "data/work/step4c-roof-shadow/final-c/F/distributed/metadata.json": {
+      "sha256": "9d3036ca55c6ec5cf0e88315bc754724e7b8bd2186b7b52c012ad24109ae4d6b",
+      "size_bytes": 24019
+    },
+    "data/work/step4c-roof-shadow/final-c/F/distributed/qa.json": {
+      "sha256": "9061908182934a170130c1896ebacb72ab7a25eaa166aeb42e61f6120e1c0b83",
+      "size_bytes": 37406
+    },
+    "data/work/step4c-roof-shadow/final-c/F/distributed/runtime.json": {
+      "sha256": "7984febfd89f24618f9748f7d88f04a7fdfcdfe8a0a0d8796abba61c5ab25e32",
+      "size_bytes": 247
+    },
+    "data/work/step4c-roof-shadow/final-c/F/distributed/segments.json": {
+      "sha256": "e955acec2362817435ab529c1c9721277b42c70de3c2576bf6571f68f71e9dab",
+      "size_bytes": 8304
+    },
+    "data/work/step4c-roof-shadow/final-c/F/distributed/shadow.npy": {
+      "sha256": "ddfd0d2f92714b583018eb9368b7ade85d38343970313a403fdd592059e446dc",
+      "size_bytes": 744
+    },
+    "data/work/step4c-roof-shadow/final-c/F/distributed/shared_voxels.npy": {
+      "sha256": "a04c9567bcff442198e8b3b516404ea2abf317071f65eed911617ae7db55ad02",
+      "size_bytes": 2592
+    },
+    "data/work/step4c-roof-shadow/final-c/F/distributed/voxels.npy": {
+      "sha256": "a04c9567bcff442198e8b3b516404ea2abf317071f65eed911617ae7db55ad02",
+      "size_bytes": 2592
+    },
+    "data/work/step4c-roof-shadow/final-c/F/footprint_fraction.npy": {
+      "sha256": "0d24198abff32f389f72a210c293fb7a05baa9929713ca007e80a525345123a4",
+      "size_bytes": 5056
+    },
+    "data/work/step4c-roof-shadow/final-c/F/observer_index.npy": {
+      "sha256": "274e85cd97757228eb0b3b9d5f1aeb1f67e32cbde3e597065757a703c5e681ac",
+      "size_bytes": 5056
+    },
+    "data/work/step4c-roof-shadow/final-c/F/observer_valid.npy": {
+      "sha256": "84ff9a0333ef499ebd7880ada2c8fefd09bfe6552a8a4328b3ffcfeec8959a42",
+      "size_bytes": 744
+    },
+    "data/work/step4c-roof-shadow/final-c/F/observer_xyz.npy": {
+      "sha256": "a86cedddfc50567521c0eb1f90c246fac29d455e86db0e45314802d76603b8b6",
+      "size_bytes": 14912
+    },
+    "data/work/step4c-roof-shadow/final-c/F/representative/dem.npy": {
+      "sha256": "ce714194a9f7857cf3e8cbbc85f545ebfb4644e26decbe13f1f8994b973bfe21",
+      "size_bytes": 5056
+    },
+    "data/work/step4c-roof-shadow/final-c/F/representative/engine.json": {
+      "sha256": "ab483bd8e9e11f2c1153882b85204970993bbb4cdfb556a7e3dce1255f07917a",
+      "size_bytes": 535
+    },
+    "data/work/step4c-roof-shadow/final-c/F/representative/height.npy": {
+      "sha256": "cf98df6cb45f97fe5a86631f08e00268af3c05889e84fbf4881315dd384dcd7f",
+      "size_bytes": 5056
+    },
+    "data/work/step4c-roof-shadow/final-c/F/representative/ids.npy": {
+      "sha256": "542e7f27d155a00ab1fd0c8ad8960c315e90573227fbfb24d544f2e3d5d62491",
+      "size_bytes": 2592
+    },
+    "data/work/step4c-roof-shadow/final-c/F/representative/metadata.json": {
+      "sha256": "7347aea0dc3ecf0cc4837b7bcbd0108a4313fcd48cb92c5a9023a510144fca62",
+      "size_bytes": 24022
+    },
+    "data/work/step4c-roof-shadow/final-c/F/representative/qa.json": {
+      "sha256": "9061908182934a170130c1896ebacb72ab7a25eaa166aeb42e61f6120e1c0b83",
+      "size_bytes": 37406
+    },
+    "data/work/step4c-roof-shadow/final-c/F/representative/runtime.json": {
+      "sha256": "7984febfd89f24618f9748f7d88f04a7fdfcdfe8a0a0d8796abba61c5ab25e32",
+      "size_bytes": 247
+    },
+    "data/work/step4c-roof-shadow/final-c/F/representative/segments.json": {
+      "sha256": "e955acec2362817435ab529c1c9721277b42c70de3c2576bf6571f68f71e9dab",
+      "size_bytes": 8304
+    },
+    "data/work/step4c-roof-shadow/final-c/F/representative/shadow.npy": {
+      "sha256": "ddfd0d2f92714b583018eb9368b7ade85d38343970313a403fdd592059e446dc",
+      "size_bytes": 744
+    },
+    "data/work/step4c-roof-shadow/final-c/F/representative/shared_voxels.npy": {
+      "sha256": "a04c9567bcff442198e8b3b516404ea2abf317071f65eed911617ae7db55ad02",
+      "size_bytes": 2592
+    },
+    "data/work/step4c-roof-shadow/final-c/F/representative/voxels.npy": {
+      "sha256": "a04c9567bcff442198e8b3b516404ea2abf317071f65eed911617ae7db55ad02",
+      "size_bytes": 2592
+    },
+    "data/work/step4c-roof-shadow/final-c/F/roof_coverage.npy": {
+      "sha256": "0d24198abff32f389f72a210c293fb7a05baa9929713ca007e80a525345123a4",
+      "size_bytes": 5056
+    },
+    "data/work/step4c-roof-shadow/final-c/F/source_row_col.npy": {
+      "sha256": "fa710e0edfe14e0e6cda66d8e9af2c7e2b79abb726ea6e851a125837da9e4a5a",
+      "size_bytes": 9984
+    },
+    "data/work/step4c-roof-shadow/final-c/F/source_top_H.npy": {
+      "sha256": "f7f643c7144002cf599c4bc00e28c06b404bd1b7f11a6b9813ce51ae19ab4f95",
+      "size_bytes": 5056
+    },
+    "data/work/step4c-roof-shadow/final-c/M/comparison.png": {
+      "sha256": "8d75024b1a53c5687ad402a0061b5cb4a27f169557177975193c283e43ca3f32",
+      "size_bytes": 119942
+    },
+    "data/work/step4c-roof-shadow/final-c/M/difference.npy": {
+      "sha256": "487b8c75c7ef4ea474dce573511e4a3d3716d4d50da394ea77a9eb28e033848a",
+      "size_bytes": 1808
+    },
+    "data/work/step4c-roof-shadow/final-c/M/distributed/dem.npy": {
+      "sha256": "6ae0cff14b1c34fd6567c06c46dbe536020ee8d1d3ef94167b7a5fec153bbf30",
+      "size_bytes": 13568
+    },
+    "data/work/step4c-roof-shadow/final-c/M/distributed/engine.json": {
+      "sha256": "ab483bd8e9e11f2c1153882b85204970993bbb4cdfb556a7e3dce1255f07917a",
+      "size_bytes": 535
+    },
+    "data/work/step4c-roof-shadow/final-c/M/distributed/height.npy": {
+      "sha256": "af8f36e5d8319583115a87a6e0283d74fa9011dbfe2383091ddc91e58bf539e0",
+      "size_bytes": 13568
+    },
+    "data/work/step4c-roof-shadow/final-c/M/distributed/ids.npy": {
+      "sha256": "d91c07ce17acb62a9bd058539716aa4dbe42d185f159b9f38e4d52c7675b70f4",
+      "size_bytes": 6848
+    },
+    "data/work/step4c-roof-shadow/final-c/M/distributed/metadata.json": {
+      "sha256": "b3aaa0d4d269751a70e71369a54c3652f311043d80feba2062d991387a0999c0",
+      "size_bytes": 82230
+    },
+    "data/work/step4c-roof-shadow/final-c/M/distributed/qa.json": {
+      "sha256": "b464bd528f41b325f85ca6761fed3db3b236ccf2e8aafdbad72ad01288b5fece",
+      "size_bytes": 103137
+    },
+    "data/work/step4c-roof-shadow/final-c/M/distributed/runtime.json": {
+      "sha256": "7984febfd89f24618f9748f7d88f04a7fdfcdfe8a0a0d8796abba61c5ab25e32",
+      "size_bytes": 247
+    },
+    "data/work/step4c-roof-shadow/final-c/M/distributed/segments.json": {
+      "sha256": "ed6a326bb86703b22748ade5a878ee07110c46ba3d7b54107fcf3ff798b97f33",
+      "size_bytes": 23455
+    },
+    "data/work/step4c-roof-shadow/final-c/M/distributed/shadow.npy": {
+      "sha256": "d7b60f8c999f8024a1b2fd8141cd3773f443a87c87440f8da1d69810c250971a",
+      "size_bytes": 1808
+    },
+    "data/work/step4c-roof-shadow/final-c/M/distributed/shared_voxels.npy": {
+      "sha256": "db5afa9f43e3ee90edd58548a9d34df37f15539723e60ee1c09e9afe715dc2bd",
+      "size_bytes": 16928
+    },
+    "data/work/step4c-roof-shadow/final-c/M/distributed/voxels.npy": {
+      "sha256": "db5afa9f43e3ee90edd58548a9d34df37f15539723e60ee1c09e9afe715dc2bd",
+      "size_bytes": 16928
+    },
+    "data/work/step4c-roof-shadow/final-c/M/footprint_fraction.npy": {
+      "sha256": "6ac865c922afaef35ac5f52d37d78b6586d08514865098a29cb6fce8151a7ab7",
+      "size_bytes": 13568
+    },
+    "data/work/step4c-roof-shadow/final-c/M/observer_index.npy": {
+      "sha256": "10ce861a0c10726661dc3d6ed93aea72d20720735c766fb7fc1141b2b05021d4",
+      "size_bytes": 13568
+    },
+    "data/work/step4c-roof-shadow/final-c/M/observer_valid.npy": {
+      "sha256": "75dafbb0e928b41ada66ef3cf1298b9f3ec35b706a3428f2a9c00e283979715e",
+      "size_bytes": 1808
+    },
+    "data/work/step4c-roof-shadow/final-c/M/observer_xyz.npy": {
+      "sha256": "293501783158a15f98711f3bb2eb3b96431edd5cd2f8486dcdc398917468852e",
+      "size_bytes": 40448
+    },
+    "data/work/step4c-roof-shadow/final-c/M/representative/dem.npy": {
+      "sha256": "6ae0cff14b1c34fd6567c06c46dbe536020ee8d1d3ef94167b7a5fec153bbf30",
+      "size_bytes": 13568
+    },
+    "data/work/step4c-roof-shadow/final-c/M/representative/engine.json": {
+      "sha256": "ab483bd8e9e11f2c1153882b85204970993bbb4cdfb556a7e3dce1255f07917a",
+      "size_bytes": 535
+    },
+    "data/work/step4c-roof-shadow/final-c/M/representative/height.npy": {
+      "sha256": "503f07fc5fc8e2dffb555ab035b6fe9aadadc2937609ae066ab0841a6c84f693",
+      "size_bytes": 13568
+    },
+    "data/work/step4c-roof-shadow/final-c/M/representative/ids.npy": {
+      "sha256": "d91c07ce17acb62a9bd058539716aa4dbe42d185f159b9f38e4d52c7675b70f4",
+      "size_bytes": 6848
+    },
+    "data/work/step4c-roof-shadow/final-c/M/representative/metadata.json": {
+      "sha256": "7ee46264aee699865465c919dc3925a9cef659a995a915fb36e6a3f7ab23a4c5",
+      "size_bytes": 82233
+    },
+    "data/work/step4c-roof-shadow/final-c/M/representative/qa.json": {
+      "sha256": "92bf0578894eebf85d46eebac40591a28a6ee51bf333a523bbc57a8ed0ea3d5e",
+      "size_bytes": 103012
+    },
+    "data/work/step4c-roof-shadow/final-c/M/representative/runtime.json": {
+      "sha256": "7984febfd89f24618f9748f7d88f04a7fdfcdfe8a0a0d8796abba61c5ab25e32",
+      "size_bytes": 247
+    },
+    "data/work/step4c-roof-shadow/final-c/M/representative/segments.json": {
+      "sha256": "4f31dd27c94f92c452636bd9bca67ca8c188bbbc66165e9b92e8967c626510ec",
+      "size_bytes": 23333
+    },
+    "data/work/step4c-roof-shadow/final-c/M/representative/shadow.npy": {
+      "sha256": "315e2982b44531fd1259ba961a44b3e71dfe3bfe4c93a7b972858741c428b4d6",
+      "size_bytes": 1808
+    },
+    "data/work/step4c-roof-shadow/final-c/M/representative/shared_voxels.npy": {
+      "sha256": "cd0da74fb631f875d8351e1bec76b80ac7c4472ab7a92040998418e51dffce53",
+      "size_bytes": 16928
+    },
+    "data/work/step4c-roof-shadow/final-c/M/representative/voxels.npy": {
+      "sha256": "cd0da74fb631f875d8351e1bec76b80ac7c4472ab7a92040998418e51dffce53",
+      "size_bytes": 16928
+    },
+    "data/work/step4c-roof-shadow/final-c/M/roof_coverage.npy": {
+      "sha256": "d5bde965bf490d4e0beb640fc9c5767ac5047b20d7fa6a380733da15111fa9d4",
+      "size_bytes": 13568
+    },
+    "data/work/step4c-roof-shadow/final-c/M/source_row_col.npy": {
+      "sha256": "156827103d1997c0a56ddb1721c16b322bd57486b6d2f6e33d252829d9b43acc",
+      "size_bytes": 27008
+    },
+    "data/work/step4c-roof-shadow/final-c/M/source_top_H.npy": {
+      "sha256": "25fd2fafd28f4a3869c35943e0315885a619b627b94fbf94f434ec94b3107c3b",
+      "size_bytes": 13568
+    },
+    "data/work/step4c-roof-shadow/final-c/S/comparison.png": {
+      "sha256": "a172bed0e086bcf02072e8ba939ca9fdefbbd044dbeade4df86f0518570c1148",
+      "size_bytes": 122461
+    },
+    "data/work/step4c-roof-shadow/final-c/S/difference.npy": {
+      "sha256": "106dcc3472eea7ea787e66c72b3ff2d34829fdc63ad8938833342a6062209f01",
+      "size_bytes": 2234
+    },
+    "data/work/step4c-roof-shadow/final-c/S/distributed/dem.npy": {
+      "sha256": "8992946bfb5781a06038c2a535321a88c5153e46e10aad8744c1b47aa6d49cc0",
+      "size_bytes": 16976
+    },
+    "data/work/step4c-roof-shadow/final-c/S/distributed/engine.json": {
+      "sha256": "ab483bd8e9e11f2c1153882b85204970993bbb4cdfb556a7e3dce1255f07917a",
+      "size_bytes": 535
+    },
+    "data/work/step4c-roof-shadow/final-c/S/distributed/height.npy": {
+      "sha256": "ea2d1704d6cc80b759326e7d5d38603e7eef7a0466639b138c68f1af1b804a20",
+      "size_bytes": 16976
+    },
+    "data/work/step4c-roof-shadow/final-c/S/distributed/ids.npy": {
+      "sha256": "92527d68b5da69e6081af96e369a6b1413559aae61684342fe9e99775dcd5a9c",
+      "size_bytes": 8552
+    },
+    "data/work/step4c-roof-shadow/final-c/S/distributed/metadata.json": {
+      "sha256": "61f047d1730eb37e77aaf42175293bad70c14498bba76e35742df74bbf21714d",
+      "size_bytes": 132468
+    },
+    "data/work/step4c-roof-shadow/final-c/S/distributed/qa.json": {
+      "sha256": "a6b98e0b168595fb471d4ab14245f99337db097899f130cbafa2ca0323d2b82d",
+      "size_bytes": 149074
+    },
+    "data/work/step4c-roof-shadow/final-c/S/distributed/runtime.json": {
+      "sha256": "7984febfd89f24618f9748f7d88f04a7fdfcdfe8a0a0d8796abba61c5ab25e32",
+      "size_bytes": 247
+    },
+    "data/work/step4c-roof-shadow/final-c/S/distributed/segments.json": {
+      "sha256": "44b7037a4653c400c0c28575b9698af1f74d5872fc93692cb11728a189533397",
+      "size_bytes": 36324
+    },
+    "data/work/step4c-roof-shadow/final-c/S/distributed/shadow.npy": {
+      "sha256": "d0a9d08e149ed9027a31fefd0a61d485b30e3993513b06d2ae5150559ccb2c31",
+      "size_bytes": 2234
+    },
+    "data/work/step4c-roof-shadow/final-c/S/distributed/shared_voxels.npy": {
+      "sha256": "9cc5cf0bc629729509fbb408c283ddd2dd9c957e00a544a9b3c57c54d54630ca",
+      "size_bytes": 23294
+    },
+    "data/work/step4c-roof-shadow/final-c/S/distributed/voxels.npy": {
+      "sha256": "9cc5cf0bc629729509fbb408c283ddd2dd9c957e00a544a9b3c57c54d54630ca",
+      "size_bytes": 23294
+    },
+    "data/work/step4c-roof-shadow/final-c/S/footprint_fraction.npy": {
+      "sha256": "266834ab4b3a43e2a19e89576e5d832245493a782b4322b1ab2edd9337f42ebd",
+      "size_bytes": 16976
+    },
+    "data/work/step4c-roof-shadow/final-c/S/observer_index.npy": {
+      "sha256": "c8a22c0d2dfe56db22560336aba5a2487f29930c9e68d8b0296e5b7833f7755b",
+      "size_bytes": 16976
+    },
+    "data/work/step4c-roof-shadow/final-c/S/observer_valid.npy": {
+      "sha256": "ad4669b41199b21969f300e4082dc3b83c00d48a93c279ac320a2a9d2837a87e",
+      "size_bytes": 2234
+    },
+    "data/work/step4c-roof-shadow/final-c/S/observer_xyz.npy": {
+      "sha256": "28a09e1ab24d015856f3036b68943d54bf835abdcfa8fc11d4f90551fb4a9e19",
+      "size_bytes": 50672
+    },
+    "data/work/step4c-roof-shadow/final-c/S/representative/dem.npy": {
+      "sha256": "8992946bfb5781a06038c2a535321a88c5153e46e10aad8744c1b47aa6d49cc0",
+      "size_bytes": 16976
+    },
+    "data/work/step4c-roof-shadow/final-c/S/representative/engine.json": {
+      "sha256": "ab483bd8e9e11f2c1153882b85204970993bbb4cdfb556a7e3dce1255f07917a",
+      "size_bytes": 535
+    },
+    "data/work/step4c-roof-shadow/final-c/S/representative/height.npy": {
+      "sha256": "b4f58333fb70eaf0a75b43bdfbb22fd39a3d6ec5a4c72b25d806c9dce5410357",
+      "size_bytes": 16976
+    },
+    "data/work/step4c-roof-shadow/final-c/S/representative/ids.npy": {
+      "sha256": "92527d68b5da69e6081af96e369a6b1413559aae61684342fe9e99775dcd5a9c",
+      "size_bytes": 8552
+    },
+    "data/work/step4c-roof-shadow/final-c/S/representative/metadata.json": {
+      "sha256": "602e96f066df9cfd665834cbf3c05a783e5917237d546b0f6c97866c989de135",
+      "size_bytes": 132471
+    },
+    "data/work/step4c-roof-shadow/final-c/S/representative/qa.json": {
+      "sha256": "2ae427227ae488fdf6adf0ea2360ab8deaa661f34c0c3f72e156a6946ae32edd",
+      "size_bytes": 149242
+    },
+    "data/work/step4c-roof-shadow/final-c/S/representative/runtime.json": {
+      "sha256": "7984febfd89f24618f9748f7d88f04a7fdfcdfe8a0a0d8796abba61c5ab25e32",
+      "size_bytes": 247
+    },
+    "data/work/step4c-roof-shadow/final-c/S/representative/segments.json": {
+      "sha256": "fa9da1d5c6d8e4a38f58c4e041ced12cef941559f4700db460c36529647cf03a",
+      "size_bytes": 36314
+    },
+    "data/work/step4c-roof-shadow/final-c/S/representative/shadow.npy": {
+      "sha256": "2bd6c4bf230ad7dbedb76b4bdfe51a94fc0b12bfc9c5ba4d5209981e95555841",
+      "size_bytes": 2234
+    },
+    "data/work/step4c-roof-shadow/final-c/S/representative/shared_voxels.npy": {
+      "sha256": "1407ba580ccef241e7719946a09056013b417a03e472d32187b29e467fd4572b",
+      "size_bytes": 23294
+    },
+    "data/work/step4c-roof-shadow/final-c/S/representative/voxels.npy": {
+      "sha256": "1407ba580ccef241e7719946a09056013b417a03e472d32187b29e467fd4572b",
+      "size_bytes": 23294
+    },
+    "data/work/step4c-roof-shadow/final-c/S/roof_coverage.npy": {
+      "sha256": "8298776a3bbcd6ba37e90c98787678d821c46bb7cbd37b44387fcd0434f4d554",
+      "size_bytes": 16976
+    },
+    "data/work/step4c-roof-shadow/final-c/S/source_row_col.npy": {
+      "sha256": "dfb33b2d907646fd2478dc6e57dd63c4aba7d657ea6b76afef10cd1b80deab92",
+      "size_bytes": 33824
+    },
+    "data/work/step4c-roof-shadow/final-c/S/source_top_H.npy": {
+      "sha256": "9725757ac250d0f419cd7b32173543ace21af9151be1b0ab53be9c5f99d40488",
+      "size_bytes": 16976
+    },
+    "data/work/step4c-roof-shadow/final-c/report.json": {
+      "sha256": "c84599fdca7b20828702b314d1e1a863695567b30e3d670fcd23fddca4a4227e",
+      "size_bytes": 231530
+    },
+    "data/work/step4a-roof-distribution/final-c/manifest.json": {
+      "sha256": "f73e65073ed823b9155cc75a93a4cfdbc314fb9a0f1859f4d635ec5e71a952bd",
+      "size_bytes": 6672
+    },
+    "data/work/step4a-roof-distribution/final-c/C/cell_max_contributions.json": {
+      "sha256": "62def3839acfce2788c6800e49b8f83132f5455562b7beab51457277f1fd66ff",
+      "size_bytes": 165451
+    },
+    "data/work/step4a-roof-distribution/final-c/C/cell_max_footprint_fraction.tif": {
+      "sha256": "d006dbc6530e6a4c60847a84cab4fda201ce23db391cd9bef03ab8ee4d4622e2",
+      "size_bytes": 1973
+    },
+    "data/work/step4a-roof-distribution/final-c/C/cell_max_minus_centre.tif": {
+      "sha256": "7b547b8f5dab4f1949e1ce24a465d1bd1ed86f0676d03fce7424145886a25acb",
+      "size_bytes": 1988
+    },
+    "data/work/step4a-roof-distribution/final-c/C/cell_max_roof_coverage.tif": {
+      "sha256": "7013d6351e3c85a4031896efde5cd53865d7218b60f51bbdead3e35c6fe6e605",
+      "size_bytes": 1976
+    },
+    "data/work/step4a-roof-distribution/final-c/C/cell_max_state.tif": {
+      "sha256": "133807633b7d444732f2fb8b4e20fadb5e6941ec7e56f98dc98b4fa244a2b106",
+      "size_bytes": 1848
+    },
+    "data/work/step4a-roof-distribution/final-c/C/cell_max_top.tif": {
+      "sha256": "67d106adbd6fb2efe6f6ae5f6cde5a5ca863ea874b3d50636bdb79100f15fd27",
+      "size_bytes": 2337
+    },
+    "data/work/step4a-roof-distribution/final-c/C/centre_contributions.json": {
+      "sha256": "f015f4bbad1ac67d28655baf4bf5cce1a937d01f4d70a7b30173e0c9e8243517",
+      "size_bytes": 165541
+    },
+    "data/work/step4a-roof-distribution/final-c/C/centre_footprint_fraction.tif": {
+      "sha256": "d006dbc6530e6a4c60847a84cab4fda201ce23db391cd9bef03ab8ee4d4622e2",
+      "size_bytes": 1973
+    },
+    "data/work/step4a-roof-distribution/final-c/C/centre_roof_coverage.tif": {
+      "sha256": "7013d6351e3c85a4031896efde5cd53865d7218b60f51bbdead3e35c6fe6e605",
+      "size_bytes": 1976
+    },
+    "data/work/step4a-roof-distribution/final-c/C/centre_state.tif": {
+      "sha256": "53d653f47f9653173b0a0c9ca8ab3b2d5645ed0ed02c65ce1be88d3cc3627345",
+      "size_bytes": 1854
+    },
+    "data/work/step4a-roof-distribution/final-c/C/centre_top.tif": {
+      "sha256": "406dc6013a781c697132a6633b1e13531d80f8f3b8bd14cba9f1c1c36c3df3ce",
+      "size_bytes": 2225
+    },
+    "data/work/step4a-roof-distribution/final-c/C/diagnostic.png": {
+      "sha256": "e053e00b3d44be102cb9fb51d5dcb8ab574df1c2631ce533fa9dc29561ce1ec3",
+      "size_bytes": 93630
+    },
+    "data/work/step4a-roof-distribution/final-c/C/inputs.json": {
+      "sha256": "388a3d2c946ff72e040a20a9bd04ef0324b8fa919d8eac2137770d9327d19b8f",
+      "size_bytes": 15909
+    },
+    "data/work/step4a-roof-distribution/final-c/C/projections.json": {
+      "sha256": "00c6319ea1de445887c311bb139f6e4e88cd18b424840728e11bcdedc21d190c",
+      "size_bytes": 19431
+    },
+    "data/work/step4a-roof-distribution/final-c/C/qa.json": {
+      "sha256": "81388db1d80a6ba5e0763a9de025992da22d51beeeb80d481b07290561520ba5",
+      "size_bytes": 1154
+    },
+    "data/work/step4a-roof-distribution/final-c/C/source_faces.json": {
+      "sha256": "b9226b3b66d462ada34381df9703a990a70152479e76808b65c065da356e492c",
+      "size_bytes": 10771
+    },
+    "data/work/step4a-roof-distribution/final-c/F/cell_max_contributions.json": {
+      "sha256": "fa02944646ef2ef7b099b227b2a0093773035f6a16d6372a58be6d73c483e631",
+      "size_bytes": 68774
+    },
+    "data/work/step4a-roof-distribution/final-c/F/cell_max_footprint_fraction.tif": {
+      "sha256": "ad6eef31950d80713d3e93954bf89dfc9adbdfae50b0e8bff82f26350922a674",
+      "size_bytes": 1923
+    },
+    "data/work/step4a-roof-distribution/final-c/F/cell_max_minus_centre.tif": {
+      "sha256": "5052b80a75f095052c94fec67ed4ee985739687465765d92d7c4f9805c6a85ca",
+      "size_bytes": 1722
+    },
+    "data/work/step4a-roof-distribution/final-c/F/cell_max_roof_coverage.tif": {
+      "sha256": "d3945d0833ad9e08185469cb695e6497d5f61adb536d41adbc335a061e87ecb1",
+      "size_bytes": 1918
+    },
+    "data/work/step4a-roof-distribution/final-c/F/cell_max_state.tif": {
+      "sha256": "c5ba51432cd9418602407d9745a91641ab877a502230fd76230acb67eac06fa8",
+      "size_bytes": 1848
+    },
+    "data/work/step4a-roof-distribution/final-c/F/cell_max_top.tif": {
+      "sha256": "aa0e9bf897056e3c3efe9db66ddcff65ce4784ac4ce17b0dde0e47e8adf2f941",
+      "size_bytes": 1729
+    },
+    "data/work/step4a-roof-distribution/final-c/F/centre_contributions.json": {
+      "sha256": "42ba44f630d6f6f311f7018bef7b947712e61a53eeb2e8018bcef0a3c58f2811",
+      "size_bytes": 69059
+    },
+    "data/work/step4a-roof-distribution/final-c/F/centre_footprint_fraction.tif": {
+      "sha256": "ad6eef31950d80713d3e93954bf89dfc9adbdfae50b0e8bff82f26350922a674",
+      "size_bytes": 1923
+    },
+    "data/work/step4a-roof-distribution/final-c/F/centre_roof_coverage.tif": {
+      "sha256": "d3945d0833ad9e08185469cb695e6497d5f61adb536d41adbc335a061e87ecb1",
+      "size_bytes": 1918
+    },
+    "data/work/step4a-roof-distribution/final-c/F/centre_state.tif": {
+      "sha256": "be84595d869b2fceb228ca7a67281b7aa0865b1d9c2d53803c77e26786d8d1bc",
+      "size_bytes": 1848
+    },
+    "data/work/step4a-roof-distribution/final-c/F/centre_top.tif": {
+      "sha256": "9ea0aa066854c0e968426734884a5bbc1cddb17240e4e94c4942197267b8e8b5",
+      "size_bytes": 1719
+    },
+    "data/work/step4a-roof-distribution/final-c/F/diagnostic.png": {
+      "sha256": "d66decfe781bb260dfb321f6864dda2207e4448e3251437c6abb307d62651344",
+      "size_bytes": 68313
+    },
+    "data/work/step4a-roof-distribution/final-c/F/inputs.json": {
+      "sha256": "0ee46deefd42a09a84f1b7a906b334eaebb79f91250137d8a5f151456b58db9c",
+      "size_bytes": 4869
+    },
+    "data/work/step4a-roof-distribution/final-c/F/projections.json": {
+      "sha256": "c5c8fa363c07853f645937c1c5fa5a7065947d3bdffa31a4ce52358299c23cfd",
+      "size_bytes": 3731
+    },
+    "data/work/step4a-roof-distribution/final-c/F/qa.json": {
+      "sha256": "1870af8671681131021e5b706be852429560cd4442949d2bea0b806d4f7ee1af",
+      "size_bytes": 1081
+    },
+    "data/work/step4a-roof-distribution/final-c/F/source_faces.json": {
+      "sha256": "c4407712ec0181d7e88456774a2b50ccf2bd0be9a0a99f3d1b1311c653b83a4c",
+      "size_bytes": 988
+    },
+    "data/work/step4a-roof-distribution/final-c/M/cell_max_contributions.json": {
+      "sha256": "bdb36163b9a067580676b232ec0f8e58fd0b257592271c06f650e6e4261a949f",
+      "size_bytes": 266668
+    },
+    "data/work/step4a-roof-distribution/final-c/M/cell_max_footprint_fraction.tif": {
+      "sha256": "eb524aa5ab43514bd1e3126e943c8d2f865983212ab47aebe1b562b6e0263bf1",
+      "size_bytes": 2097
+    },
+    "data/work/step4a-roof-distribution/final-c/M/cell_max_minus_centre.tif": {
+      "sha256": "e31fee5e643daf4713e0a863978b6574abae127a69770db39cd4066795f4222e",
+      "size_bytes": 2280
+    },
+    "data/work/step4a-roof-distribution/final-c/M/cell_max_roof_coverage.tif": {
+      "sha256": "b0af2fb608cc5b9b7e6c511a084d7675c0c443152306a6f386a4bafc645eb168",
+      "size_bytes": 2096
+    },
+    "data/work/step4a-roof-distribution/final-c/M/cell_max_state.tif": {
+      "sha256": "ef72121f561a4621c2acdfd95813cafe8fde7434b6554dc5d9b4e36e269a7e4a",
+      "size_bytes": 1854
+    },
+    "data/work/step4a-roof-distribution/final-c/M/cell_max_top.tif": {
+      "sha256": "3f0d7042e8240c8e196dea753770803851c50cb7fa30da7886e28670a9561ba2",
+      "size_bytes": 2589
+    },
+    "data/work/step4a-roof-distribution/final-c/M/centre_contributions.json": {
+      "sha256": "e13150603c21549630428ad30a51b1720a4b13622cdcc461fc3fc34850b5a794",
+      "size_bytes": 267317
+    },
+    "data/work/step4a-roof-distribution/final-c/M/centre_footprint_fraction.tif": {
+      "sha256": "eb524aa5ab43514bd1e3126e943c8d2f865983212ab47aebe1b562b6e0263bf1",
+      "size_bytes": 2097
+    },
+    "data/work/step4a-roof-distribution/final-c/M/centre_roof_coverage.tif": {
+      "sha256": "b0af2fb608cc5b9b7e6c511a084d7675c0c443152306a6f386a4bafc645eb168",
+      "size_bytes": 2096
+    },
+    "data/work/step4a-roof-distribution/final-c/M/centre_state.tif": {
+      "sha256": "111e8714b6ea92dbeb23ca5d82c1d2464810f3094f5533c7b43829a3f0347097",
+      "size_bytes": 1870
+    },
+    "data/work/step4a-roof-distribution/final-c/M/centre_top.tif": {
+      "sha256": "d68be3e4505c081dab2015975cafd845116e962b5b09414da53dce05f35d6171",
+      "size_bytes": 2447
+    },
+    "data/work/step4a-roof-distribution/final-c/M/diagnostic.png": {
+      "sha256": "370bd6a7aaa38743079b0633ceef29258d532ba544482e68ff35707ee2e43542",
+      "size_bytes": 63569
+    },
+    "data/work/step4a-roof-distribution/final-c/M/inputs.json": {
+      "sha256": "93d1ba43ba55b65a4a6eea17606b25ce75b299b48788d23a4e568fc76fabe76f",
+      "size_bytes": 32451
+    },
+    "data/work/step4a-roof-distribution/final-c/M/projections.json": {
+      "sha256": "347304316acd7b6eb4d5a80040118b4dc135e8e0271c2025f7973024700fbc97",
+      "size_bytes": 41011
+    },
+    "data/work/step4a-roof-distribution/final-c/M/qa.json": {
+      "sha256": "e87db3b30284e924146b27d7e416035fd08e93789535269d966993cd6a897d43",
+      "size_bytes": 1186
+    },
+    "data/work/step4a-roof-distribution/final-c/M/source_faces.json": {
+      "sha256": "f1e8d969f9610960c8c810756d7078e124768057b012bbcb27cf6f99f583f315",
+      "size_bytes": 26560
+    },
+    "data/work/step4a-roof-distribution/final-c/S/cell_max_contributions.json": {
+      "sha256": "5254010e4a28c1c4641e35ae8fdf6dcbdf40de56e866d7e69383dfc1cd98e6a0",
+      "size_bytes": 519448
+    },
+    "data/work/step4a-roof-distribution/final-c/S/cell_max_footprint_fraction.tif": {
+      "sha256": "e7e9d81e7cb7d67452a76f1dfb3f680f5a5d666c7c64d1a7f9750ab2f184d33d",
+      "size_bytes": 2275
+    },
+    "data/work/step4a-roof-distribution/final-c/S/cell_max_minus_centre.tif": {
+      "sha256": "7a731d2dc25cdadc54bdfbac0c4f706ef714374b734eb57af5d6bc0556094342",
+      "size_bytes": 2714
+    },
+    "data/work/step4a-roof-distribution/final-c/S/cell_max_roof_coverage.tif": {
+      "sha256": "215479828f431372461729371a59e6dc8a8d26e87cbe7706cf68b7f4a90d5a32",
+      "size_bytes": 2272
+    },
+    "data/work/step4a-roof-distribution/final-c/S/cell_max_state.tif": {
+      "sha256": "440a9528eb152fa8d48699cd01ed1f6493150c8bf2b91e63406e358a4cd2c7f6",
+      "size_bytes": 1854
+    },
+    "data/work/step4a-roof-distribution/final-c/S/cell_max_top.tif": {
+      "sha256": "688fb4a02cb2a2650f7aa35b2cf25f832d8a6fc8233b6b7d565981874354228e",
+      "size_bytes": 3525
+    },
+    "data/work/step4a-roof-distribution/final-c/S/centre_contributions.json": {
+      "sha256": "dde450f4b0ba37d1236480ed391cb21f1e11a031f9776e36a840608587581934",
+      "size_bytes": 520122
+    },
+    "data/work/step4a-roof-distribution/final-c/S/centre_footprint_fraction.tif": {
+      "sha256": "e7e9d81e7cb7d67452a76f1dfb3f680f5a5d666c7c64d1a7f9750ab2f184d33d",
+      "size_bytes": 2275
+    },
+    "data/work/step4a-roof-distribution/final-c/S/centre_roof_coverage.tif": {
+      "sha256": "215479828f431372461729371a59e6dc8a8d26e87cbe7706cf68b7f4a90d5a32",
+      "size_bytes": 2272
+    },
+    "data/work/step4a-roof-distribution/final-c/S/centre_state.tif": {
+      "sha256": "73aa8aaf81e9ea6b0550cb13f7ff2ffaf304d4edf4e517582d116c407aa433f9",
+      "size_bytes": 1874
+    },
+    "data/work/step4a-roof-distribution/final-c/S/centre_top.tif": {
+      "sha256": "d20fcad2a8baad2a57678aa5caa06a2a01f8d441a61368859f7384706404577d",
+      "size_bytes": 3373
+    },
+    "data/work/step4a-roof-distribution/final-c/S/diagnostic.png": {
+      "sha256": "f84c4ca2d40583706261bba4941df1198a388513503f3b7565759add46c84381",
+      "size_bytes": 59130
+    },
+    "data/work/step4a-roof-distribution/final-c/S/inputs.json": {
+      "sha256": "9db53d472193cd895abe291eec94016598f9bbf93e4b43fb6bdfdca423645cfc",
+      "size_bytes": 68519
+    },
+    "data/work/step4a-roof-distribution/final-c/S/projections.json": {
+      "sha256": "744074d45640b31c7561eeb661de84c38d4bc48f9b8c4ded57ddb8014ed79435",
+      "size_bytes": 86229
+    },
+    "data/work/step4a-roof-distribution/final-c/S/qa.json": {
+      "sha256": "9b45d7a78cb9cc9be5eec73036397ea5a6cda06c1bf2d89691d572ccc433aa8a",
+      "size_bytes": 1203
+    },
+    "data/work/step4a-roof-distribution/final-c/S/source_faces.json": {
+      "sha256": "8ccf57cfaaec522c7462a29d1dae2f4badf732d908418f623e43a9b542fdd88b",
+      "size_bytes": 61210
+    },
+    "data/work/step4a-roof-distribution/final-c/report.json": {
+      "sha256": "c9f3315795dfa8ebba2d3d96a0fd89b8814e0301569da2c19c2f5151e9a9a9f1",
+      "size_bytes": 49135
+    },
+    "src/ouem/real_roof_voxel.py": {
+      "sha256": "9bb390ffa3a963cd2808bb6935ac720ac7634824f0e6ccc365bfc368979e3f85",
+      "size_bytes": 15207
+    },
+    "src/ouem/real_komae_voxel.py": {
+      "sha256": "e958d3a397439d2dace16977d0539712e975e4283cdb433993259d574c063fb2",
+      "size_bytes": 27505
+    },
+    "src/ouem/komae_integration.py": {
+      "sha256": "8e8f3a8db78f52ff110105170dd536d1bbce22e999914fcf33722631ae85d69b",
+      "size_bytes": 43056
+    },
+    "src/ouem/synthetic_height_voxel.py": {
+      "sha256": "47621959cc1405e6fcf31fb4cd867412d96218b048162c16046bfe903aba9d0c",
+      "size_bytes": 21777
+    },
+    "data/work/step4b2-roof-terrain/final-a/manifest.json": {
+      "sha256": "9f564e7d2e06c74301fdcf3670d6f60e2a531e628cfb36de882d8dec6f286817",
+      "size_bytes": 9436
+    },
+    "data/work/step4b2-roof-terrain/final-a/C/building_bottom_H.npy": {
+      "sha256": "69d561416565aad54e33cd439fbec935f8e4c1e5122073ebc1cf08912791ced2",
+      "size_bytes": 1280
+    },
+    "data/work/step4b2-roof-terrain/final-a/C/cell_max_contributions.json": {
+      "sha256": "62def3839acfce2788c6800e49b8f83132f5455562b7beab51457277f1fd66ff",
+      "size_bytes": 165451
+    },
+    "data/work/step4b2-roof-terrain/final-a/C/dem.npy": {
+      "sha256": "31f982a165213ac5dfa924f162a1563f13cf46ac0802734dc0b33513223c809a",
+      "size_bytes": 1280
+    },
+    "data/work/step4b2-roof-terrain/final-a/C/diagnostic.png": {
+      "sha256": "0f12e67e7536ff6eee08d421fd446f61283c29285bb77c762191e0a17c7e5a65",
+      "size_bytes": 111904
+    },
+    "data/work/step4b2-roof-terrain/final-a/C/effective_ground_H.npy": {
+      "sha256": "aa5ccad74eaedec754254449cb687aaba4f6e61307474b97682062d371b702b9",
+      "size_bytes": 1280
+    },
+    "data/work/step4b2-roof-terrain/final-a/C/engine.json": {
+      "sha256": "ab483bd8e9e11f2c1153882b85204970993bbb4cdfb556a7e3dce1255f07917a",
+      "size_bytes": 535
+    },
+    "data/work/step4b2-roof-terrain/final-a/C/footprint_fraction.npy": {
+      "sha256": "a895672198036b3b21933138bbfef7a5e04e7a1eccf25f8e2b2d80d331b52f73",
+      "size_bytes": 1280
+    },
+    "data/work/step4b2-roof-terrain/final-a/C/height.npy": {
+      "sha256": "a0b93ec50e4a2f4ac7275ee963855a785f679e84f48f4fa5f067a10780088e14",
+      "size_bytes": 1280
+    },
+    "data/work/step4b2-roof-terrain/final-a/C/ids.npy": {
+      "sha256": "617ad3ba1d4a5b79131dcabb0a302bf4e3321c53ae94d48b7bf52eb271cf6e25",
+      "size_bytes": 704
+    },
+    "data/work/step4b2-roof-terrain/final-a/C/inputs.json": {
+      "sha256": "388a3d2c946ff72e040a20a9bd04ef0324b8fa919d8eac2137770d9327d19b8f",
+      "size_bytes": 15909
+    },
+    "data/work/step4b2-roof-terrain/final-a/C/metadata.json": {
+      "sha256": "58dc30bb70583a90376ef2a0e135b73c8337b7beb4c95a1a5acfbc25c2cb9d59",
+      "size_bytes": 23600
+    },
+    "data/work/step4b2-roof-terrain/final-a/C/projections.json": {
+      "sha256": "00c6319ea1de445887c311bb139f6e4e88cd18b424840728e11bcdedc21d190c",
+      "size_bytes": 19431
+    },
+    "data/work/step4b2-roof-terrain/final-a/C/qa.json": {
+      "sha256": "c2c5e3f149142c4c9e1e189547b7cf6225a0ebc642c6bb385e31348b130f8024",
+      "size_bytes": 25929
+    },
+    "data/work/step4b2-roof-terrain/final-a/C/roof_coverage.npy": {
+      "sha256": "d2193cb0a4af296328b71d98852e9e0d3ba637cd9b6bf355c4b172502d047756",
+      "size_bytes": 1280
+    },
+    "data/work/step4b2-roof-terrain/final-a/C/runtime.json": {
+      "sha256": "7984febfd89f24618f9748f7d88f04a7fdfcdfe8a0a0d8796abba61c5ab25e32",
+      "size_bytes": 247
+    },
+    "data/work/step4b2-roof-terrain/final-a/C/segments.json": {
+      "sha256": "31f20e97b182eb8899da1f88f09953fac79a0f482dd8af7f25095f39e15de469",
+      "size_bytes": 6750
+    },
+    "data/work/step4b2-roof-terrain/final-a/C/source_faces.json": {
+      "sha256": "b9226b3b66d462ada34381df9703a990a70152479e76808b65c065da356e492c",
+      "size_bytes": 10771
+    },
+    "data/work/step4b2-roof-terrain/final-a/C/source_row_col.npy": {
+      "sha256": "4bc1453f0b8bfe22b9dbcf087cc9d3ac48272ca7c6808d6a6b47e18462fc0b5d",
+      "size_bytes": 2432
+    },
+    "data/work/step4b2-roof-terrain/final-a/C/state.npy": {
+      "sha256": "d3cf95186fa886b076fe2a70e9314fe78a39b9ea41452b387a4bee22dc57c01e",
+      "size_bytes": 272
+    },
+    "data/work/step4b2-roof-terrain/final-a/C/surface_lower_H.npy": {
+      "sha256": "fd0e23fe36274c3177df26dbf5b2a682053c59937fc4afe7630f59f72a8d1beb",
+      "size_bytes": 1280
+    },
+    "data/work/step4b2-roof-terrain/final-a/C/top.npy": {
+      "sha256": "f168ed87754dd0abeca9d2d6c103ad7fdde4308570378c7f535afc973b1b041e",
+      "size_bytes": 1280
+    },
+    "data/work/step4b2-roof-terrain/final-a/C/voxel_upper_H.npy": {
+      "sha256": "150893b144d362fd63d950f73a324fe93fb03263b4a138cfd5afeb452cd97ec1",
+      "size_bytes": 1280
+    },
+    "data/work/step4b2-roof-terrain/final-a/C/voxel_uppermost_lower_H.npy": {
+      "sha256": "53eb5141f35f2a65f480e651fc63d4e6c92cd2b3bcb26048cb3b043f465fea10",
+      "size_bytes": 1280
+    },
+    "data/work/step4b2-roof-terrain/final-a/C/voxels.npy": {
+      "sha256": "fe854d577467daef6b0c6a3c14deef88124875bc7ce052a5c7b206d49e68d972",
+      "size_bytes": 1424
+    },
+    "data/work/step4b2-roof-terrain/final-a/F/building_bottom_H.npy": {
+      "sha256": "376d9d11ce011f0bf3cb14cd503eac5fd92b7b1076c5e43e97f1250955b365bf",
+      "size_bytes": 848
+    },
+    "data/work/step4b2-roof-terrain/final-a/F/cell_max_contributions.json": {
+      "sha256": "fa02944646ef2ef7b099b227b2a0093773035f6a16d6372a58be6d73c483e631",
+      "size_bytes": 68774
+    },
+    "data/work/step4b2-roof-terrain/final-a/F/dem.npy": {
+      "sha256": "5dd2f0a9074da430c04e9a12737a4848e85af07ee431d44ae16f991af2abf519",
+      "size_bytes": 848
+    },
+    "data/work/step4b2-roof-terrain/final-a/F/diagnostic.png": {
+      "sha256": "47dfbc2105a31604e1f370068c3177355dadbb0d6f35e3a3f298d09c56c975dd",
+      "size_bytes": 112910
+    },
+    "data/work/step4b2-roof-terrain/final-a/F/effective_ground_H.npy": {
+      "sha256": "cb1a3dc9639086a596d795e69462d372b05c4b5cfb0708cac8a971bb88892405",
+      "size_bytes": 848
+    },
+    "data/work/step4b2-roof-terrain/final-a/F/engine.json": {
+      "sha256": "ab483bd8e9e11f2c1153882b85204970993bbb4cdfb556a7e3dce1255f07917a",
+      "size_bytes": 535
+    },
+    "data/work/step4b2-roof-terrain/final-a/F/footprint_fraction.npy": {
+      "sha256": "0a621005c2d8ebc7ea23cb21eb0f1aa5bfae2057ab2c221f387eaa0947d9714b",
+      "size_bytes": 848
+    },
+    "data/work/step4b2-roof-terrain/final-a/F/height.npy": {
+      "sha256": "3d3ac0bcd97736bab559d5bc5a5c327051f6ec2a9c90332e35ca5137af493f1d",
+      "size_bytes": 848
+    },
+    "data/work/step4b2-roof-terrain/final-a/F/ids.npy": {
+      "sha256": "ffbf9c18021f4da696fc1ba1a052e268dabd47b1ea965c0e34510c51dd93ba77",
+      "size_bytes": 488
+    },
+    "data/work/step4b2-roof-terrain/final-a/F/inputs.json": {
+      "sha256": "0ee46deefd42a09a84f1b7a906b334eaebb79f91250137d8a5f151456b58db9c",
+      "size_bytes": 4869
+    },
+    "data/work/step4b2-roof-terrain/final-a/F/metadata.json": {
+      "sha256": "6c214072039fb112e5b89a6c0b08974589c620120752ab948174d49c4966987e",
+      "size_bytes": 10139
+    },
+    "data/work/step4b2-roof-terrain/final-a/F/projections.json": {
+      "sha256": "c5c8fa363c07853f645937c1c5fa5a7065947d3bdffa31a4ce52358299c23cfd",
+      "size_bytes": 3731
+    },
+    "data/work/step4b2-roof-terrain/final-a/F/qa.json": {
+      "sha256": "1683d93d09ae39af721607785f80d699da75c54eab290032e5130e06798b5f73",
+      "size_bytes": 15195
+    },
+    "data/work/step4b2-roof-terrain/final-a/F/roof_coverage.npy": {
+      "sha256": "0a621005c2d8ebc7ea23cb21eb0f1aa5bfae2057ab2c221f387eaa0947d9714b",
+      "size_bytes": 848
+    },
+    "data/work/step4b2-roof-terrain/final-a/F/runtime.json": {
+      "sha256": "7984febfd89f24618f9748f7d88f04a7fdfcdfe8a0a0d8796abba61c5ab25e32",
+      "size_bytes": 247
+    },
+    "data/work/step4b2-roof-terrain/final-a/F/segments.json": {
+      "sha256": "2e96508af90b15224f7931e92323a92939c241ef84b02efbbf799d1fc7c7f6e4",
+      "size_bytes": 3410
+    },
+    "data/work/step4b2-roof-terrain/final-a/F/source_faces.json": {
+      "sha256": "c4407712ec0181d7e88456774a2b50ccf2bd0be9a0a99f3d1b1311c653b83a4c",
+      "size_bytes": 988
+    },
+    "data/work/step4b2-roof-terrain/final-a/F/source_row_col.npy": {
+      "sha256": "1c02b1b3f57a0674aed59d59c5790c146e1a51fdb0142d0c00fe21d317faf3d8",
+      "size_bytes": 1568
+    },
+    "data/work/step4b2-roof-terrain/final-a/F/state.npy": {
+      "sha256": "ae0c96de4dfed837087f5997cc835ce1180be61b4af0e2f475cc00f698558242",
+      "size_bytes": 218
+    },
+    "data/work/step4b2-roof-terrain/final-a/F/surface_lower_H.npy": {
+      "sha256": "ae84f344d8256ca984379818d32d47987b445037e414a4b65edc6864b525585b",
+      "size_bytes": 848
+    },
+    "data/work/step4b2-roof-terrain/final-a/F/top.npy": {
+      "sha256": "54af376866c9c6ae7f2a375b6626f888bc7f035a065ed12aea9069061c41c084",
+      "size_bytes": 848
+    },
+    "data/work/step4b2-roof-terrain/final-a/F/voxel_upper_H.npy": {
+      "sha256": "a5fd3ffcbbab402a715c3f36f063aeb143827a0c21530d6f2342eddfcd53e662",
+      "size_bytes": 848
+    },
+    "data/work/step4b2-roof-terrain/final-a/F/voxel_uppermost_lower_H.npy": {
+      "sha256": "dcb7984ed2bfa38b029ce682d2f4b1631f2713deba9ebf797e9c4e4a392af244",
+      "size_bytes": 848
+    },
+    "data/work/step4b2-roof-terrain/final-a/F/voxels.npy": {
+      "sha256": "a5cd87ada211b3b88db25adf23095fac8e6b75609ac1e3218f08103694bb21ac",
+      "size_bytes": 488
+    },
+    "data/work/step4b2-roof-terrain/final-a/M/building_bottom_H.npy": {
+      "sha256": "d2e2504df7626c7f918b25f4d2976fde2d29d32fc5852d34c40f4c9421201740",
+      "size_bytes": 1920
+    },
+    "data/work/step4b2-roof-terrain/final-a/M/cell_max_contributions.json": {
+      "sha256": "bdb36163b9a067580676b232ec0f8e58fd0b257592271c06f650e6e4261a949f",
+      "size_bytes": 266668
+    },
+    "data/work/step4b2-roof-terrain/final-a/M/dem.npy": {
+      "sha256": "c37dc182f84a97ff404ba586d06ad4c62aa7615d9bbbe129a9d5a753f8f416f4",
+      "size_bytes": 1920
+    },
+    "data/work/step4b2-roof-terrain/final-a/M/diagnostic.png": {
+      "sha256": "d1c27211231a4e35b664f759c5397101d94e1b01a6e895cb89953ed6b340720d",
+      "size_bytes": 123153
+    },
+    "data/work/step4b2-roof-terrain/final-a/M/effective_ground_H.npy": {
+      "sha256": "60d979181981b9a78b1c69292247976f3bdf55971fee7178bf99d69e83f98eb8",
+      "size_bytes": 1920
+    },
+    "data/work/step4b2-roof-terrain/final-a/M/engine.json": {
+      "sha256": "ab483bd8e9e11f2c1153882b85204970993bbb4cdfb556a7e3dce1255f07917a",
+      "size_bytes": 535
+    },
+    "data/work/step4b2-roof-terrain/final-a/M/footprint_fraction.npy": {
+      "sha256": "5d686133097206b1e8a1ec8ef60e01bb23baf2f3754a7d1fd69ea8f075d1343b",
+      "size_bytes": 1920
+    },
+    "data/work/step4b2-roof-terrain/final-a/M/height.npy": {
+      "sha256": "22673afe73aadcd0e380ef9b786b890b52938ff175bb4a685d4eb062593d19dc",
+      "size_bytes": 1920
+    },
+    "data/work/step4b2-roof-terrain/final-a/M/ids.npy": {
+      "sha256": "3771ff4d17ef730f660dec20f901bd3854d0e521c6f490428d0eec159fdf5703",
+      "size_bytes": 1024
+    },
+    "data/work/step4b2-roof-terrain/final-a/M/inputs.json": {
+      "sha256": "93d1ba43ba55b65a4a6eea17606b25ce75b299b48788d23a4e568fc76fabe76f",
+      "size_bytes": 32451
+    },
+    "data/work/step4b2-roof-terrain/final-a/M/metadata.json": {
+      "sha256": "a1ab2a583eccfdbbb30940f76b562d92b2dcd68d7cc7f4d382d753356a830b1f",
+      "size_bytes": 43654
+    },
+    "data/work/step4b2-roof-terrain/final-a/M/projections.json": {
+      "sha256": "347304316acd7b6eb4d5a80040118b4dc135e8e0271c2025f7973024700fbc97",
+      "size_bytes": 41011
+    },
+    "data/work/step4b2-roof-terrain/final-a/M/qa.json": {
+      "sha256": "05c3be5cdb2a7e4002e5a6c63017c21ec665095590f6da5f5a41d8fa8af7bcd5",
+      "size_bytes": 37217
+    },
+    "data/work/step4b2-roof-terrain/final-a/M/roof_coverage.npy": {
+      "sha256": "2bc42409c91511530953c633e87b0cb3d0cd558c814e24aa5fdc1fce3b7e9b2c",
+      "size_bytes": 1920
+    },
+    "data/work/step4b2-roof-terrain/final-a/M/runtime.json": {
+      "sha256": "7984febfd89f24618f9748f7d88f04a7fdfcdfe8a0a0d8796abba61c5ab25e32",
+      "size_bytes": 247
+    },
+    "data/work/step4b2-roof-terrain/final-a/M/segments.json": {
+      "sha256": "9f93084b66ad26382ab816bb5bdbddf6e3855aa93d269bbae232ba5721862de2",
+      "size_bytes": 10091
+    },
+    "data/work/step4b2-roof-terrain/final-a/M/source_faces.json": {
+      "sha256": "f1e8d969f9610960c8c810756d7078e124768057b012bbcb27cf6f99f583f315",
+      "size_bytes": 26560
+    },
+    "data/work/step4b2-roof-terrain/final-a/M/source_row_col.npy": {
+      "sha256": "5fe466ce14fd0183dcca6e0a65b52d66e777a66d1a0d15cf84a09e819103e3c9",
+      "size_bytes": 3712
+    },
+    "data/work/step4b2-roof-terrain/final-a/M/state.npy": {
+      "sha256": "9d9255b94e54f06f5b7870a4627c81f5582e94580adb953110238006a8030987",
+      "size_bytes": 352
+    },
+    "data/work/step4b2-roof-terrain/final-a/M/surface_lower_H.npy": {
+      "sha256": "a123b1272a6dae0f14eb67b6a41c500979db66ba06dc201edfd7a02abf437a6f",
+      "size_bytes": 1920
+    },
+    "data/work/step4b2-roof-terrain/final-a/M/top.npy": {
+      "sha256": "930fe8def3d00d9ceedf7263522883d433071e6c2ba351e52fd9fd61caae03b7",
+      "size_bytes": 1920
+    },
+    "data/work/step4b2-roof-terrain/final-a/M/voxel_upper_H.npy": {
+      "sha256": "9377897aaf6706b0f969dee5cda03556779c56ceda9c38577d9cc8ba08d77125",
+      "size_bytes": 1920
+    },
+    "data/work/step4b2-roof-terrain/final-a/M/voxel_uppermost_lower_H.npy": {
+      "sha256": "7b7b25ca4a76c342cd6fe3d088a252314a4dd9f0d4777832c7504f7d3f92fa14",
+      "size_bytes": 1920
+    },
+    "data/work/step4b2-roof-terrain/final-a/M/voxels.npy": {
+      "sha256": "a06eb628590cedef85312f23f32273876cdbfb091987223e5bc15262047a5314",
+      "size_bytes": 2144
+    },
+    "data/work/step4b2-roof-terrain/final-a/S/building_bottom_H.npy": {
+      "sha256": "383a405323244776817e17c31ad9f277996e381441d424dd3964a7613a3e3952",
+      "size_bytes": 3248
+    },
+    "data/work/step4b2-roof-terrain/final-a/S/cell_max_contributions.json": {
+      "sha256": "5254010e4a28c1c4641e35ae8fdf6dcbdf40de56e866d7e69383dfc1cd98e6a0",
+      "size_bytes": 519448
+    },
+    "data/work/step4b2-roof-terrain/final-a/S/dem.npy": {
+      "sha256": "7448c47d77ec78f1e26ce22a2b3a5e31b9fc547a497b16da0d96006227aed949",
+      "size_bytes": 3248
+    },
+    "data/work/step4b2-roof-terrain/final-a/S/diagnostic.png": {
+      "sha256": "3a579f904b4c3d3c1c62aade88fbe0a9888059fa77dcb5267f97784f36b149af",
+      "size_bytes": 116948
+    },
+    "data/work/step4b2-roof-terrain/final-a/S/effective_ground_H.npy": {
+      "sha256": "683a3ba2bf8bf38e84498c92e611228efd635d9c768f64339149ae3889aa6981",
+      "size_bytes": 3248
+    },
+    "data/work/step4b2-roof-terrain/final-a/S/engine.json": {
+      "sha256": "ab483bd8e9e11f2c1153882b85204970993bbb4cdfb556a7e3dce1255f07917a",
+      "size_bytes": 535
+    },
+    "data/work/step4b2-roof-terrain/final-a/S/footprint_fraction.npy": {
+      "sha256": "ba465d4878ce17d7235695e9896c2c860ddf7928f6d657b790a43b7ebde4357f",
+      "size_bytes": 3248
+    },
+    "data/work/step4b2-roof-terrain/final-a/S/height.npy": {
+      "sha256": "f380624ca442a0893b51a6fe94c33288cffa2188962528ddb27594b42d6efd67",
+      "size_bytes": 3248
+    },
+    "data/work/step4b2-roof-terrain/final-a/S/ids.npy": {
+      "sha256": "bcbb44a1f97651be5b4f1c8f211eb916c2d5688a2c339c8ac236dcf5532bdd6f",
+      "size_bytes": 1688
+    },
+    "data/work/step4b2-roof-terrain/final-a/S/inputs.json": {
+      "sha256": "9db53d472193cd895abe291eec94016598f9bbf93e4b43fb6bdfdca423645cfc",
+      "size_bytes": 68519
+    },
+    "data/work/step4b2-roof-terrain/final-a/S/metadata.json": {
+      "sha256": "4ed6a1eee4e936b297d44cac53035a046c4d7b2f34640533f270c42cdfbf5dc8",
+      "size_bytes": 87013
+    },
+    "data/work/step4b2-roof-terrain/final-a/S/projections.json": {
+      "sha256": "744074d45640b31c7561eeb661de84c38d4bc48f9b8c4ded57ddb8014ed79435",
+      "size_bytes": 86229
+    },
+    "data/work/step4b2-roof-terrain/final-a/S/qa.json": {
+      "sha256": "5cde6fb8288c24989825955d09c1321794cfdc7809e4bc54e5b298f946ad559d",
+      "size_bytes": 70992
+    },
+    "data/work/step4b2-roof-terrain/final-a/S/roof_coverage.npy": {
+      "sha256": "10690d68b801009558bb2be2e40880b587d4f12b55724379928d6a0ee3924ba0",
+      "size_bytes": 3248
+    },
+    "data/work/step4b2-roof-terrain/final-a/S/runtime.json": {
+      "sha256": "7984febfd89f24618f9748f7d88f04a7fdfcdfe8a0a0d8796abba61c5ab25e32",
+      "size_bytes": 247
+    },
+    "data/work/step4b2-roof-terrain/final-a/S/segments.json": {
+      "sha256": "4bb6e8ae93b83d06648237427248791a8f36fccab32955243e64e835e99c92ca",
+      "size_bytes": 20640
+    },
+    "data/work/step4b2-roof-terrain/final-a/S/source_faces.json": {
+      "sha256": "8ccf57cfaaec522c7462a29d1dae2f4badf732d908418f623e43a9b542fdd88b",
+      "size_bytes": 61210
+    },
+    "data/work/step4b2-roof-terrain/final-a/S/source_row_col.npy": {
+      "sha256": "a2fcf9394395a86207004706fc88ca2946750acb0e85f41e715088101f9689ff",
+      "size_bytes": 6368
+    },
+    "data/work/step4b2-roof-terrain/final-a/S/state.npy": {
+      "sha256": "acb238babda9ad410126e6ffa695258281d1f9961b4856669a9f67a0d0dd7248",
+      "size_bytes": 518
+    },
+    "data/work/step4b2-roof-terrain/final-a/S/surface_lower_H.npy": {
+      "sha256": "072d562b1b7781ed1082c412241fd6832b874cd5b896213c4277d84dc36d23b7",
+      "size_bytes": 3248
+    },
+    "data/work/step4b2-roof-terrain/final-a/S/top.npy": {
+      "sha256": "2caeb1a6cd001b35692dbfb516ef3c1b50a58f96434f985700672f77b5ff5dc5",
+      "size_bytes": 3248
+    },
+    "data/work/step4b2-roof-terrain/final-a/S/voxel_upper_H.npy": {
+      "sha256": "4d6c8a3c1f5be2a9f32f251628ac1d7e6238411adaef5ed74562743c81e7158b",
+      "size_bytes": 3248
+    },
+    "data/work/step4b2-roof-terrain/final-a/S/voxel_uppermost_lower_H.npy": {
+      "sha256": "880459c355b8edb25d3915c700ba812cfae459689d0bcf8143f5124e48b9f40d",
+      "size_bytes": 3248
+    },
+    "data/work/step4b2-roof-terrain/final-a/S/voxels.npy": {
+      "sha256": "911db244579cfac8542f42c1263c92175f2c5df886fa9ba6ad72bcdf25cbe491",
+      "size_bytes": 4028
+    },
+    "data/work/step4b2-roof-terrain/final-a/preflight.json": {
+      "sha256": "851529c929e82cf485e8a398b53167ce17bbbdc2df6788b92dca58970b3f4c22",
+      "size_bytes": 3405
+    },
+    "data/work/step4b2-roof-terrain/final-a/report.json": {
+      "sha256": "20cf80af2f915a8eea3aca2432ffa23f938fc9c2485be5c276adcce4739cea7b",
+      "size_bytes": 356818
+    },
+    "src/ouem/real_roof_shadow.py": {
+      "sha256": "c56aef67a83cdb9487efe71feb748a8e56af9e7d0894d7db0faae703d00ba897",
+      "size_bytes": 17619
+    },
+    "src/ouem/b2_gvi.py": {
+      "sha256": "fa71402d6026c044167a4510628e62aae5409214dfe7b6445a7634c89d75575d",
+      "size_bytes": 19590
+    },
+    "src/ouem/candidate_b_shadow.py": {
+      "sha256": "987815be3baa2fda9a5b7dbd6f653225b31ed2b4ea706a236010b123869fcfd4",
+      "size_bytes": 10583
+    },
+    "src/ouem/synthetic_height_solar.py": {
+      "sha256": "59888268557a3bd750c30958cece575c68d8c8a6468a04d7e9beb104c67f8a3c",
+      "size_bytes": 24516
+    },
+    "data/work/step4b-roof-voxel/final-b/manifest.json": {
+      "sha256": "5f1b0e1c11414889aa2ee305faf74989da65d590130bf85a0b61128ecf2662e9",
+      "size_bytes": 7848
+    },
+    "data/work/step4b-roof-voxel/final-b/C/cell_max_contributions.json": {
+      "sha256": "62def3839acfce2788c6800e49b8f83132f5455562b7beab51457277f1fd66ff",
+      "size_bytes": 165451
+    },
+    "data/work/step4b-roof-voxel/final-b/C/dem.npy": {
+      "sha256": "55a0fd98d98e7b89b998fbfa5cc2d9c487d3580b4add22c195c2e37adb906f30",
+      "size_bytes": 1280
+    },
+    "data/work/step4b-roof-voxel/final-b/C/diagnostic.png": {
+      "sha256": "47eada991cc2a5f5c93b65ae2d996ec08196241010f5e9dcc5e66727a8c29ac1",
+      "size_bytes": 97180
+    },
+    "data/work/step4b-roof-voxel/final-b/C/engine.json": {
+      "sha256": "ab483bd8e9e11f2c1153882b85204970993bbb4cdfb556a7e3dce1255f07917a",
+      "size_bytes": 535
+    },
+    "data/work/step4b-roof-voxel/final-b/C/footprint_fraction.npy": {
+      "sha256": "a895672198036b3b21933138bbfef7a5e04e7a1eccf25f8e2b2d80d331b52f73",
+      "size_bytes": 1280
+    },
+    "data/work/step4b-roof-voxel/final-b/C/height.npy": {
+      "sha256": "edd2ea98a2c85a17efbd12d89bc428a77e13df684c0e36cdd1440dd6e9e0d7bc",
+      "size_bytes": 1280
+    },
+    "data/work/step4b-roof-voxel/final-b/C/ids.npy": {
+      "sha256": "617ad3ba1d4a5b79131dcabb0a302bf4e3321c53ae94d48b7bf52eb271cf6e25",
+      "size_bytes": 704
+    },
+    "data/work/step4b-roof-voxel/final-b/C/inputs.json": {
+      "sha256": "388a3d2c946ff72e040a20a9bd04ef0324b8fa919d8eac2137770d9327d19b8f",
+      "size_bytes": 15909
+    },
+    "data/work/step4b-roof-voxel/final-b/C/metadata.json": {
+      "sha256": "f1991921598eed56932e05ac0682ac65aac827a68f68fc9ad29cf5c8c3230320",
+      "size_bytes": 19011
+    },
+    "data/work/step4b-roof-voxel/final-b/C/projections.json": {
+      "sha256": "00c6319ea1de445887c311bb139f6e4e88cd18b424840728e11bcdedc21d190c",
+      "size_bytes": 19431
+    },
+    "data/work/step4b-roof-voxel/final-b/C/qa.json": {
+      "sha256": "5e988353178d0fe2a3fd2e6d844ec22a7ccb5f4379b4e5784b220329c6bbcab0",
+      "size_bytes": 22541
+    },
+    "data/work/step4b-roof-voxel/final-b/C/roof_coverage.npy": {
+      "sha256": "d2193cb0a4af296328b71d98852e9e0d3ba637cd9b6bf355c4b172502d047756",
+      "size_bytes": 1280
+    },
+    "data/work/step4b-roof-voxel/final-b/C/runtime.json": {
+      "sha256": "7984febfd89f24618f9748f7d88f04a7fdfcdfe8a0a0d8796abba61c5ab25e32",
+      "size_bytes": 247
+    },
+    "data/work/step4b-roof-voxel/final-b/C/segments.json": {
+      "sha256": "16cda54b70fdd7cc042e67c51f7156f22e783d01448e7e0ab8bd2f83248e19e8",
+      "size_bytes": 6756
+    },
+    "data/work/step4b-roof-voxel/final-b/C/source_faces.json": {
+      "sha256": "b9226b3b66d462ada34381df9703a990a70152479e76808b65c065da356e492c",
+      "size_bytes": 10771
+    },
+    "data/work/step4b-roof-voxel/final-b/C/state.npy": {
+      "sha256": "d3cf95186fa886b076fe2a70e9314fe78a39b9ea41452b387a4bee22dc57c01e",
+      "size_bytes": 272
+    },
+    "data/work/step4b-roof-voxel/final-b/C/top.npy": {
+      "sha256": "f168ed87754dd0abeca9d2d6c103ad7fdde4308570378c7f535afc973b1b041e",
+      "size_bytes": 1280
+    },
+    "data/work/step4b-roof-voxel/final-b/C/voxel_upper_H.npy": {
+      "sha256": "9240fef863cb351ff5cb894739a0ea7120252ada4f63d2f90a52e87ff5c500fd",
+      "size_bytes": 1280
+    },
+    "data/work/step4b-roof-voxel/final-b/C/voxel_uppermost_lower_H.npy": {
+      "sha256": "5159931c11d05987c78c9124f41c929b415f5847ce1eca0617c6baa8cfb33884",
+      "size_bytes": 1280
+    },
+    "data/work/step4b-roof-voxel/final-b/C/voxels.npy": {
+      "sha256": "24fea787a6162c80676e77d2fe9c6ce72f2c3a66414abc3684448e7a3b40329f",
+      "size_bytes": 1424
+    },
+    "data/work/step4b-roof-voxel/final-b/F/cell_max_contributions.json": {
+      "sha256": "fa02944646ef2ef7b099b227b2a0093773035f6a16d6372a58be6d73c483e631",
+      "size_bytes": 68774
+    },
+    "data/work/step4b-roof-voxel/final-b/F/dem.npy": {
+      "sha256": "f4b8bf3420830ff4efc1da2ed34abf87cfed9e62a0b14eb0e976c5375dd33207",
+      "size_bytes": 848
+    },
+    "data/work/step4b-roof-voxel/final-b/F/diagnostic.png": {
+      "sha256": "f8667b6745fc229acf9911729b87f83c25688cdd93551a44059f4ce63681a511",
+      "size_bytes": 90817
+    },
+    "data/work/step4b-roof-voxel/final-b/F/engine.json": {
+      "sha256": "ab483bd8e9e11f2c1153882b85204970993bbb4cdfb556a7e3dce1255f07917a",
+      "size_bytes": 535
+    },
+    "data/work/step4b-roof-voxel/final-b/F/footprint_fraction.npy": {
+      "sha256": "0a621005c2d8ebc7ea23cb21eb0f1aa5bfae2057ab2c221f387eaa0947d9714b",
+      "size_bytes": 848
+    },
+    "data/work/step4b-roof-voxel/final-b/F/height.npy": {
+      "sha256": "1198cf456e273759d5eee03a7716489edae184b11fb6624631a16f2b0b8caa11",
+      "size_bytes": 848
+    },
+    "data/work/step4b-roof-voxel/final-b/F/ids.npy": {
+      "sha256": "ffbf9c18021f4da696fc1ba1a052e268dabd47b1ea965c0e34510c51dd93ba77",
+      "size_bytes": 488
+    },
+    "data/work/step4b-roof-voxel/final-b/F/inputs.json": {
+      "sha256": "0ee46deefd42a09a84f1b7a906b334eaebb79f91250137d8a5f151456b58db9c",
+      "size_bytes": 4869
+    },
+    "data/work/step4b-roof-voxel/final-b/F/metadata.json": {
+      "sha256": "dba1c958880cb8781b5b1090d3edc44a3be837980306f4e3c8d02038df3c3a90",
+      "size_bytes": 7088
+    },
+    "data/work/step4b-roof-voxel/final-b/F/projections.json": {
+      "sha256": "c5c8fa363c07853f645937c1c5fa5a7065947d3bdffa31a4ce52358299c23cfd",
+      "size_bytes": 3731
+    },
+    "data/work/step4b-roof-voxel/final-b/F/qa.json": {
+      "sha256": "660c3e0f224eef0375270dd38d93cfd19c6b495aa7007edfefc22c455f21b9de",
+      "size_bytes": 12317
+    },
+    "data/work/step4b-roof-voxel/final-b/F/roof_coverage.npy": {
+      "sha256": "0a621005c2d8ebc7ea23cb21eb0f1aa5bfae2057ab2c221f387eaa0947d9714b",
+      "size_bytes": 848
+    },
+    "data/work/step4b-roof-voxel/final-b/F/runtime.json": {
+      "sha256": "7984febfd89f24618f9748f7d88f04a7fdfcdfe8a0a0d8796abba61c5ab25e32",
+      "size_bytes": 247
+    },
+    "data/work/step4b-roof-voxel/final-b/F/segments.json": {
+      "sha256": "6957e173433661c7910f5aedba1815ca05199c0ad7218b96fd8696d440e9aedd",
+      "size_bytes": 3449
+    },
+    "data/work/step4b-roof-voxel/final-b/F/source_faces.json": {
+      "sha256": "c4407712ec0181d7e88456774a2b50ccf2bd0be9a0a99f3d1b1311c653b83a4c",
+      "size_bytes": 988
+    },
+    "data/work/step4b-roof-voxel/final-b/F/state.npy": {
+      "sha256": "ae0c96de4dfed837087f5997cc835ce1180be61b4af0e2f475cc00f698558242",
+      "size_bytes": 218
+    },
+    "data/work/step4b-roof-voxel/final-b/F/top.npy": {
+      "sha256": "54af376866c9c6ae7f2a375b6626f888bc7f035a065ed12aea9069061c41c084",
+      "size_bytes": 848
+    },
+    "data/work/step4b-roof-voxel/final-b/F/voxel_upper_H.npy": {
+      "sha256": "440a1678dfe8abc11dc3fd3a0624d8bb3389431a2be63ae67ea9116a1524d632",
+      "size_bytes": 848
+    },
+    "data/work/step4b-roof-voxel/final-b/F/voxel_uppermost_lower_H.npy": {
+      "sha256": "b26b4fa7343a75be3726688e4339ce678672c093ef5219a11fa5c09170c65620",
+      "size_bytes": 848
+    },
+    "data/work/step4b-roof-voxel/final-b/F/voxels.npy": {
+      "sha256": "a5cd87ada211b3b88db25adf23095fac8e6b75609ac1e3218f08103694bb21ac",
+      "size_bytes": 488
+    },
+    "data/work/step4b-roof-voxel/final-b/M/cell_max_contributions.json": {
+      "sha256": "bdb36163b9a067580676b232ec0f8e58fd0b257592271c06f650e6e4261a949f",
+      "size_bytes": 266668
+    },
+    "data/work/step4b-roof-voxel/final-b/M/dem.npy": {
+      "sha256": "3071f3f0ad894651729f437455288ed4190e8558b1284c0cc45b70d915c1ded5",
+      "size_bytes": 1920
+    },
+    "data/work/step4b-roof-voxel/final-b/M/diagnostic.png": {
+      "sha256": "4038f9aa82c01e24280192d7b81d9e9dff5eb9330ff204e6cf331702c6877415",
+      "size_bytes": 95077
+    },
+    "data/work/step4b-roof-voxel/final-b/M/engine.json": {
+      "sha256": "ab483bd8e9e11f2c1153882b85204970993bbb4cdfb556a7e3dce1255f07917a",
+      "size_bytes": 535
+    },
+    "data/work/step4b-roof-voxel/final-b/M/footprint_fraction.npy": {
+      "sha256": "5d686133097206b1e8a1ec8ef60e01bb23baf2f3754a7d1fd69ea8f075d1343b",
+      "size_bytes": 1920
+    },
+    "data/work/step4b-roof-voxel/final-b/M/height.npy": {
+      "sha256": "9f179171091f9643b1351c1a237f524731cc21ea5e905ee66adbfda62ffb13d9",
+      "size_bytes": 1920
+    },
+    "data/work/step4b-roof-voxel/final-b/M/ids.npy": {
+      "sha256": "3771ff4d17ef730f660dec20f901bd3854d0e521c6f490428d0eec159fdf5703",
+      "size_bytes": 1024
+    },
+    "data/work/step4b-roof-voxel/final-b/M/inputs.json": {
+      "sha256": "93d1ba43ba55b65a4a6eea17606b25ce75b299b48788d23a4e568fc76fabe76f",
+      "size_bytes": 32451
+    },
+    "data/work/step4b-roof-voxel/final-b/M/metadata.json": {
+      "sha256": "722aff05a113a0007dbc9da8630c01c6ded5798ecfdd07ec452d336d030bee13",
+      "size_bytes": 36889
+    },
+    "data/work/step4b-roof-voxel/final-b/M/projections.json": {
+      "sha256": "347304316acd7b6eb4d5a80040118b4dc135e8e0271c2025f7973024700fbc97",
+      "size_bytes": 41011
+    },
+    "data/work/step4b-roof-voxel/final-b/M/qa.json": {
+      "sha256": "9a9bdfc5ecf991f593c9ad74ed4f34c48f25a14d8f0194e5628ae81ae559470b",
+      "size_bytes": 33126
+    },
+    "data/work/step4b-roof-voxel/final-b/M/roof_coverage.npy": {
+      "sha256": "2bc42409c91511530953c633e87b0cb3d0cd558c814e24aa5fdc1fce3b7e9b2c",
+      "size_bytes": 1920
+    },
+    "data/work/step4b-roof-voxel/final-b/M/runtime.json": {
+      "sha256": "7984febfd89f24618f9748f7d88f04a7fdfcdfe8a0a0d8796abba61c5ab25e32",
+      "size_bytes": 247
+    },
+    "data/work/step4b-roof-voxel/final-b/M/segments.json": {
+      "sha256": "c789a007fb1276df97285b0802ea8f488f4175b1815dc30c4e414164a587f4e7",
+      "size_bytes": 10086
+    },
+    "data/work/step4b-roof-voxel/final-b/M/source_faces.json": {
+      "sha256": "f1e8d969f9610960c8c810756d7078e124768057b012bbcb27cf6f99f583f315",
+      "size_bytes": 26560
+    },
+    "data/work/step4b-roof-voxel/final-b/M/state.npy": {
+      "sha256": "9d9255b94e54f06f5b7870a4627c81f5582e94580adb953110238006a8030987",
+      "size_bytes": 352
+    },
+    "data/work/step4b-roof-voxel/final-b/M/top.npy": {
+      "sha256": "930fe8def3d00d9ceedf7263522883d433071e6c2ba351e52fd9fd61caae03b7",
+      "size_bytes": 1920
+    },
+    "data/work/step4b-roof-voxel/final-b/M/voxel_upper_H.npy": {
+      "sha256": "9cc0a31e72e180b28928237803c4246230f0ba223473358b890a8e04c5ce50cd",
+      "size_bytes": 1920
+    },
+    "data/work/step4b-roof-voxel/final-b/M/voxel_uppermost_lower_H.npy": {
+      "sha256": "eb1a2193303c6210bd343e380626546987da759ac0d8cb23a3299bef894b5e76",
+      "size_bytes": 1920
+    },
+    "data/work/step4b-roof-voxel/final-b/M/voxels.npy": {
+      "sha256": "e0e106e78676d9e4ae32d5ec42e6340bcc3992c0af2521ec1fa2a9acae18a9a4",
+      "size_bytes": 2144
+    },
+    "data/work/step4b-roof-voxel/final-b/S/cell_max_contributions.json": {
+      "sha256": "5254010e4a28c1c4641e35ae8fdf6dcbdf40de56e866d7e69383dfc1cd98e6a0",
+      "size_bytes": 519448
+    },
+    "data/work/step4b-roof-voxel/final-b/S/dem.npy": {
+      "sha256": "502f730a8f7aab5739c457a7af0531ebe7ecf6a07c3221c3880138fefd38f16c",
+      "size_bytes": 3248
+    },
+    "data/work/step4b-roof-voxel/final-b/S/diagnostic.png": {
+      "sha256": "581d62044a173285aefe5fed4f7a7dee846303daf79699569a2320859cdf0916",
+      "size_bytes": 96876
+    },
+    "data/work/step4b-roof-voxel/final-b/S/engine.json": {
+      "sha256": "ab483bd8e9e11f2c1153882b85204970993bbb4cdfb556a7e3dce1255f07917a",
+      "size_bytes": 535
+    },
+    "data/work/step4b-roof-voxel/final-b/S/footprint_fraction.npy": {
+      "sha256": "ba465d4878ce17d7235695e9896c2c860ddf7928f6d657b790a43b7ebde4357f",
+      "size_bytes": 3248
+    },
+    "data/work/step4b-roof-voxel/final-b/S/height.npy": {
+      "sha256": "5bcf827b106dd4f89ce2ac8a9fb09a60fddacefabd992065732c434b859d408d",
+      "size_bytes": 3248
+    },
+    "data/work/step4b-roof-voxel/final-b/S/ids.npy": {
+      "sha256": "bcbb44a1f97651be5b4f1c8f211eb916c2d5688a2c339c8ac236dcf5532bdd6f",
+      "size_bytes": 1688
+    },
+    "data/work/step4b-roof-voxel/final-b/S/inputs.json": {
+      "sha256": "9db53d472193cd895abe291eec94016598f9bbf93e4b43fb6bdfdca423645cfc",
+      "size_bytes": 68519
+    },
+    "data/work/step4b-roof-voxel/final-b/S/metadata.json": {
+      "sha256": "8b6024488518c8ea012174fcb783703b4d4b6df23e6c5ebda692e9278898f1ce",
+      "size_bytes": 75765
+    },
+    "data/work/step4b-roof-voxel/final-b/S/projections.json": {
+      "sha256": "744074d45640b31c7561eeb661de84c38d4bc48f9b8c4ded57ddb8014ed79435",
+      "size_bytes": 86229
+    },
+    "data/work/step4b-roof-voxel/final-b/S/qa.json": {
+      "sha256": "1d1d9eb5d3dab85021535dda89c611b66210bb2c30a066cf06062cbe4fda6711",
+      "size_bytes": 65376
+    },
+    "data/work/step4b-roof-voxel/final-b/S/roof_coverage.npy": {
+      "sha256": "10690d68b801009558bb2be2e40880b587d4f12b55724379928d6a0ee3924ba0",
+      "size_bytes": 3248
+    },
+    "data/work/step4b-roof-voxel/final-b/S/runtime.json": {
+      "sha256": "7984febfd89f24618f9748f7d88f04a7fdfcdfe8a0a0d8796abba61c5ab25e32",
+      "size_bytes": 247
+    },
+    "data/work/step4b-roof-voxel/final-b/S/segments.json": {
+      "sha256": "abfc9f6667bb6f33ae7ada4aa73987a35241561184be241d806d1ca8bb165808",
+      "size_bytes": 20590
+    },
+    "data/work/step4b-roof-voxel/final-b/S/source_faces.json": {
+      "sha256": "8ccf57cfaaec522c7462a29d1dae2f4badf732d908418f623e43a9b542fdd88b",
+      "size_bytes": 61210
+    },
+    "data/work/step4b-roof-voxel/final-b/S/state.npy": {
+      "sha256": "acb238babda9ad410126e6ffa695258281d1f9961b4856669a9f67a0d0dd7248",
+      "size_bytes": 518
+    },
+    "data/work/step4b-roof-voxel/final-b/S/top.npy": {
+      "sha256": "2caeb1a6cd001b35692dbfb516ef3c1b50a58f96434f985700672f77b5ff5dc5",
+      "size_bytes": 3248
+    },
+    "data/work/step4b-roof-voxel/final-b/S/voxel_upper_H.npy": {
+      "sha256": "5c2af99873b7c089f07bcd99da97db420d77dba69aeae28cce4641aec0579540",
+      "size_bytes": 3248
+    },
+    "data/work/step4b-roof-voxel/final-b/S/voxel_uppermost_lower_H.npy": {
+      "sha256": "0989edfd4aa5403d46cd5f37151f890d2df33ee611bb3b80a3f7e27a6201cebb",
+      "size_bytes": 3248
+    },
+    "data/work/step4b-roof-voxel/final-b/S/voxels.npy": {
+      "sha256": "f7bdeba5a7fdf2987ca7ab9d6933b87e86c63141a8a409b3882981108e37bc9e",
+      "size_bytes": 4028
+    },
+    "data/work/step4b-roof-voxel/final-b/gate_b0.json": {
+      "sha256": "de0f4cb2bb55b1a8a46a1d65fb92f5c5c1eebd91f8ad7da5a811f8512e9c68f4",
+      "size_bytes": 2633
+    },
+    "data/work/step4b-roof-voxel/final-b/report.json": {
+      "sha256": "5a615675276402bd10563a29cf8b74aff4768bf1c34187d8ac0707e862ed7646",
+      "size_bytes": 280381
+    },
+    "data/work/terrain-candidate-b/t5-23-02/report.json": {
+      "sha256": "1a4c3ed60bebcb92b00f5a28dbb52ceea78fd4b9eb4893cb87445dc17080695f",
+      "size_bytes": 157175
+    },
+    "src/ouem/real_roof_terrain_voxel.py": {
+      "sha256": "ff0ee281fafb2c509a6549c117b6f872e9fc28d02b70a7e873a305e7d21b56b7",
+      "size_bytes": 14760
+    },
+    "src/ouem/height_envelope.py": {
+      "sha256": "f4be689ef9e380e87dd0606decb486e14f58e67b48e1500bd55edcd39b7189cf",
+      "size_bytes": 22226
+    },
+    "data/work/terrain-candidate-b/t5-23-02/t5-2/terrain.tif": {
+      "sha256": "ead7545fb2b50aaad9958aa8db647708a8ceba04f719ac6e8400150a17bb36a2",
+      "size_bytes": 109708
+    },
+    "data/work/terrain-candidate-b/run-03/23ku/09LD3423.tif": {
+      "sha256": "62b98534376827a0906b6703522764356e20eb5c2d8ef53ac36b1ea3e3e6b8b8",
+      "size_bytes": 715360
+    },
+    "data/work/terrain-candidate-b/run-03/23ku/09LD3433.tif": {
+      "sha256": "66190876d0baab6aa25fb518a6e4827d45b78286a2e3fa385e0fe9b61f7eb18c",
+      "size_bytes": 506944
+    },
+    "data/work/mixed-lod-standard/run-02/standard.gpkg": {
+      "sha256": "954d01aad3004a0d2d69586036ef9961071064a39db4215d45577dee2f996f60",
+      "size_bytes": 303104
+    },
+    "data/work/mixed-lod-standard/run-02/manifest.json": {
+      "sha256": "9789d443e0286ad0c5da57156d7ba10ed19adafba5e42cec068e9deeead0f789",
+      "size_bytes": 38134
+    },
+    "data/work/mixed-lod-consumer/run-04/receipt.json": {
+      "sha256": "1f9de8a7bdd7c92fd455f7c3897f45d8280dff05da90634f2aa677a86298e415",
+      "size_bytes": 21009
+    },
+    "data/work/terrain-candidate-b/t3-02/artifacts/source_tile.tif": {
+      "sha256": "7ee11d4b757c3b73b1d1467e76a02d6501cd8763274477e3f6a006a7c0962c5a",
+      "size_bytes": 1590
+    },
+    "data/work/terrain-candidate-b/t4b1-04/report.json": {
+      "sha256": "f8e0e72ac4aa2b39b090a4b1f0e54fe5b6b796b1a079661c044eb9d9dedc013f",
+      "size_bytes": 52134
+    },
+    "data/work/terrain-candidate-b/t4b1-04/grids/building_ids.npy": {
+      "sha256": "39befce3b0692a58a51f3ba9416f673f561d1243e267b476fc0172b29b61d481",
+      "size_bytes": 40128
+    },
+    "data/work/terrain-candidate-b/t4b2-02/report.json": {
+      "sha256": "5105b192961e771cf24336ab2dc36ed84c1b3d14e2d591d140968634f67978b9",
+      "size_bytes": 70038
+    },
+    "data/work/terrain-candidate-b/t4b2-02/voxels.npy": {
+      "sha256": "44bc3982807aadd05b3676ae76b06c166b6eb050357ecd685697c79ae7d5e1d7",
+      "size_bytes": 110128
+    },
+    "data/work/terrain-candidate-b/t4b1-04/grids/centres_xy.npy": {
+      "sha256": "5c922053b741fa430a041358af70b3b3258e445bb6c0610fbff92267b51b68f6",
+      "size_bytes": 160128
+    },
+    "data/work/terrain-candidate-b/t5-1-01/report.json": {
+      "sha256": "2b832f2c3a146812e3e77a4363e80058b33996c6b80e62eb9f141cbd540832b9",
+      "size_bytes": 77656
+    },
+    "data/work/terrain-candidate-b/run-03/tama/09LD3423.tif": {
+      "sha256": "8b92f4ce3cb72f6084858df629b0cc676cd7cd45e6973942f0a9cf0c793b34ca",
+      "size_bytes": 1922867
+    },
+    "data/work/terrain-candidate-b/run-03/tama/09LD3433.tif": {
+      "sha256": "491defd8c37fb52241d73ae4bd2142c605056133b51a320a750aeddfb9018d92",
+      "size_bytes": 1906067
+    },
+    "data/work/terrain-candidate-b/t3-02/artifacts/terrain.tif": {
+      "sha256": "4b38efbfdca1535983a691cba4a18592fe332e87072f05b70d1bebff4759f193",
+      "size_bytes": 68694
+    },
+    "data/work/terrain-candidate-b/t3-02/manifest.json": {
+      "sha256": "66c0c835a2a448140dbce905cf2be3af3942b809ce72788bb0e4c81be953b1ab",
+      "size_bytes": 10095
+    },
+    "data/work/terrain-candidate-b/t3-02/artifacts/validation.json": {
+      "sha256": "f8e18193e225f94e9fd45cf721a948b47d11e97316b8ee5f4bc38e97a5adb936",
+      "size_bytes": 14807
+    },
+    "data/raw/building/plateau_komae/2025_v5_api/acquisition-manifest.json": {
+      "sha256": "4322fbce9d084acdd51a5995a758df5426658d2fe6c498345f7220bd7e2f019d",
+      "size_bytes": 10184
+    },
+    "src/ouem/mixed_lod_converter_bridge.py": {
+      "sha256": "3e1413aa03f3aa98c8a1c3d7f879bf170e8a926d8bc61b012468af389ac5ac04",
+      "size_bytes": 11976
+    },
+    "data/work/mixed-lod-converter-bridge/run-02/bridge.json": {
+      "sha256": "53e72d051136df1cc9d2c92701243a7f28b7a144123e52ba50ab81cff6a92900",
+      "size_bytes": 5685479
+    },
+    "external-tool:plateau-gis-converter/target/x86_64-pc-windows-msvc/release-lto/nusamai.exe": {
+      "sha256": "0195a11df4fd0ef30dcd5578175035a918c41285b1fcc329f3399f5337326f1b",
+      "size_bytes": 27265024
+    },
+    "src/ouem/real_roof_distribution.py": {
+      "sha256": "e5b2576c8ed2b1c6e0369922e9f3abf63f571f49f7d354eb2bc65a1f2856bce1",
+      "size_bytes": 23454
+    },
+    "src/ouem/lod2_roof_audit.py": {
+      "sha256": "cf7d498875a9830e57b0db92566e62b3c278d6c6d7681666a1ad71b39bbf9356",
+      "size_bytes": 22025
+    },
+    "src/ouem/consumers/mixed_lod.py": {
+      "sha256": "9de559be10ad92a4b0302799184880277f6ac5519b63be78c0e90e09f2b06546",
+      "size_bytes": 26370
+    },
+    "src/ouem/synthetic_height_distribution.py": {
+      "sha256": "ee66f58d8de0b7bc09ecb317873b7663c2be8eaeaefcc4efc9f7eb35e7a46b54",
+      "size_bytes": 15682
+    },
+    "data/work/mixed-lod-converter-bridge/run-02/extracted/udx/bldg/53393466_bldg_6697_op.gml": {
+      "sha256": "6128aa2a2bd637e51dbef89ee42bd54620eae6a2fab82b082149a4dc4924c0c9",
+      "size_bytes": 199626757
+    },
+    "data/work/mixed-lod-converter-bridge/run-02/lod1.gpkg": {
+      "sha256": "bdb207ea324e8f1b9a7b45a5de748c9b62273c0f300adfbac349d15a697e38d6",
+      "size_bytes": 24055808
+    },
+    "data/work/mixed-lod-converter-bridge/run-02/lod1.stderr.log": {
+      "sha256": "d980c3dbfac34aea95f0d34e2e28c22bc2a75b1f3b4e5d8f931952f893dae69c",
+      "size_bytes": 613
+    },
+    "data/work/mixed-lod-converter-bridge/run-02/lod1.stdout.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    "data/work/mixed-lod-converter-bridge/run-02/lod2.gpkg": {
+      "sha256": "561b910286d5ac340298cd9029c8519459165a29ba69483b85bce7613b4fe048",
+      "size_bytes": 29814784
+    },
+    "data/work/mixed-lod-converter-bridge/run-02/lod2.stderr.log": {
+      "sha256": "d980c3dbfac34aea95f0d34e2e28c22bc2a75b1f3b4e5d8f931952f893dae69c",
+      "size_bytes": 613
+    },
+    "data/work/mixed-lod-converter-bridge/run-02/lod2.stdout.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    "data/work/mixed-lod-native/run-02/native.gpkg": {
+      "sha256": "1e2af898307e5f9bfbc4fbc86ab714dfad2557e2371ff98138171eb768ca7da7",
+      "size_bytes": 307200
+    },
+    "src/ouem/native/building/mixed_lod.py": {
+      "sha256": "c62b6d164532714a0f352b6c7f14045fbd37afee63dca51950ed75562e010fab",
+      "size_bytes": 16165
+    },
+    "data/work/mixed-lod-native/run-02/manifest.json": {
+      "sha256": "b7e932b9b6da9da98a59ccb6e1acb5a60a1cb7d50ea5c3d5e86782eccbcfc46d",
+      "size_bytes": 1739154
+    },
+    "data/raw/building/plateau_komae/2025_v5_api/13219_komae-shi_pref_2025_citygml_1_op.zip": {
+      "sha256": "659fe9f96eb8a45b57e788b52d6e80edef154ddc3aa9b4f2c1ea117c61a5a555",
+      "size_bytes": 1192172043
+    },
+    "data/work/mixed-lod-selector/run-pr136-rereview-01/geometries.jsonl": {
+      "sha256": "51386b7fb5286e18bf5d310e09ddd7c438c92188efcd713fac7222cf3b9485ef",
+      "size_bytes": 32731212
+    },
+    "src/ouem/mixed_lod_selector.py": {
+      "sha256": "83a195845ae6e81a5e0ea8ed46562b3a8f3710f1002f4fba5c2cb9d2b1317c7b",
+      "size_bytes": 18068
+    },
+    "data/work/mixed-lod-selector/run-pr136-rereview-01/manifest.json": {
+      "sha256": "eea7a117658208018fb0e12d212f7e63a6fef69a0c86c1265fd6692fda4b0785",
+      "size_bytes": 29286801
+    },
+    "src/ouem/standardize/building/mixed_lod.py": {
+      "sha256": "8ab92991b1f5a503b0d868c130a4f56cf4561731b277323b08d38fe9a32b0694",
+      "size_bytes": 14448
+    },
+    "data/work/step4-0-roof-audit/audit-final-e/manifest.json": {
+      "sha256": "14498ba34826c2b68c2a22c29da6fcbeb8bc696e20b68f799d8a8cca0a41a852",
+      "size_bytes": 305
+    },
+    "data/work/step4-0-roof-audit/audit-final-e/report.json": {
+      "sha256": "71de561a0644352654c4d30814259f3d42b1d31a18b9c1591652be88c1b3565e",
+      "size_bytes": 1586141
+    }
+  }
+}
