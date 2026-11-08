@@ -1,0 +1,4002 @@
+{
+  "label": "S",
+  "source_id": "bldg_040379e5-dffb-40b6-a392-6396158211f5",
+  "ouem_id": "oub-664a9132-cf36-52a5-96f5-577e78c91e59",
+  "stages": {
+    "SOURCE_IDENTITY": "PASS",
+    "TRIANGULATION": "PASS",
+    "MERGE": "PASS"
+  },
+  "faces": [
+    {
+      "polygon_id": "pol_3bdc58e3-7979-45a7-a2f0-038e4fffb82c",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "c671fcf42927083bc31c65ce903c2668a76611daa265355c4593103fa9c44de6"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 1.353003194517511,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 1.6936660229925541e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_a466a9ae-54ac-49a3-bbc6-a56c8f3d98cf",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "db3fdb9127c98924b3b546fbb073dbbdaa1c34991940609b398af8e2677bc577"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 0.818578158931966,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 6.744256549018153e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_a59c1e98-fbca-4501-a60e-2bbaf92ee8cc",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "50d1711f7646dd1ff89787792e2a06f70e6c6e646ec6185eb03a6954ea168f6c"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 0,
+        "source_projected_area_m2": 0.8998675594601888,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 6.199413269424255e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_549937aa-57d7-4955-aea3-e634ba614ab1",
+      "semantic": "GroundSurface",
+      "ring_vertex_counts_including_closure": [
+        18
+      ],
+      "ring_XYZ_sha256": [
+        "05eb5db53e68b1f70fd26e73bcbb00b1de8e642452c217d950d1351bc319da42"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 15,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 220.13006916242867,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 5.684341886080802e-14,
+        "numerical_area_budget_m2": 9.755907507557657e-10,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_2dd643c6-0ced-4e14-8931-2f27e7f57393",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        5
+      ],
+      "ring_XYZ_sha256": [
+        "db731e42d9a1d270485d304a19ccb356cf6127f76a9b62214eb05dd371eab3c8"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 2,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 1.0680319958620987,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 9.706234832427532e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_4ed533ca-a5aa-43ea-9aa7-b86f8da741cd",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "5f0bb216e7d914c45522749325a61f86ed7c2458a2b9691189c498662b8b2386"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 1,
+        "source_projected_area_m2": 0.5119027041129852,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 2.7011391543146633e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_81c86e5f-1e52-4c66-989e-c4c4faeeb151",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "c8ae9ebe267b6ad3937f71ee1613008002bd1df7786e7754622cbe34394d319f"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 1,
+        "source_projected_area_m2": 0.8461084189306172,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 7.37945253382351e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_27b7c7ed-9a1a-4a83-bfe7-aefaefb1926f",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "c4f22e0c9a7b35bc701014e610844df7d856da8f72ea8965c19d9d8c0f92b9be"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 1,
+        "source_projected_area_m2": 0.888485856457981,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 7.37945253382351e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_c8954f80-244f-468a-900d-e59e54dca319",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "2c7dbb0820a94e44c1d4df5b342f830c5f5d52121ba0aa34e33fad3d198379bb"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 1,
+        "source_projected_area_m2": 0.5375414099552627,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 2.7011391543146633e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_ea9de3aa-4c11-453f-90af-e64506b7512b",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "089b3761c010b68bf1df7ff9e117a64f64045dd5804f2ff05b56d6796077c833"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 0,
+        "source_projected_area_m2": 21.2275572413034,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 1.7635228250903556e-11,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_6e5d5ec2-47e7-46b2-a3fc-cc21574fe583",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "a328db70e46060313a7d5c1952da2d2a2fc5707c6ed493b69283c067d74194c3"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 0,
+        "source_projected_area_m2": 10.106216185716319,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 5.283957450854341e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_57fb81df-bb0a-4e5b-9ec5-feb268b4ca3e",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "f8ef694ffc21ae6c693ccd8c7ddb58fdd7397b5672106f18c57769df9a926692"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 0,
+        "source_projected_area_m2": 1.3579541294674324,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 3.997221475721972e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_6dd3c46f-2372-431a-87c4-09bf075010c1",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "01e30b31661b203bde42ce094d380f21988382bcd21a3676571341c0c461da17"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 0,
+        "source_projected_area_m2": 1.3579541294674324,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 3.997221475721972e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_b20cdd1b-2118-4852-9dd2-dcb075d433c4",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "2015b5955ec92792c906b05f38a5dc33d40a71e42a4a794a0bc8fd0a3d03d309"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 0,
+        "source_projected_area_m2": 13.499885171777118,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 7.272852369307889e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_950bda69-b305-4ce4-b7b9-5aa0368111fb",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "bae996742bb5061780a3c4b7350cf0efcdd37faa5abac7d970baf60f2e5b0896"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 0,
+        "source_projected_area_m2": 3.525855590835021,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 5.283957450854341e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_9a76b58b-e6e1-4aff-910e-0b364bcafd1a",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "e792fd4e6087dd23e428192e157e22bbd8a04c13e4e186cff59d0e55585a548a"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 0,
+        "source_projected_area_m2": 21.021719217166456,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 1.7635228250903556e-11,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_1151f234-d414-417b-a9d1-c6dd2768e4a7",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "fca33c6b797ed06f546b1963f13e7674df82a7f9e14009fbe7a20399025712b5"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 1,
+        "source_projected_area_m2": 7.646239624425436,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 7.272852369307889e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_6e782556-9be6-4f56-89dd-216141bbb1d1",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "cb426c67c63dd1763d4235b81f77a9b089e4e512a1be0660908469da48728735"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 1,
+        "source_projected_area_m2": 15.176668570252044,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 7.272852369307889e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_25e711d6-df4a-4a7a-8b40-a7c767793042",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "b9ff83bde0b64ab9089512f2286acedd1e954717f2106acddf0f529a47db2887"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 1,
+        "source_projected_area_m2": 7.646239626606399,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 7.272852369307889e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_68c3a2b2-91b3-4fd3-ba5b-52331cd62ccb",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "9ffa6a2ee22fcf5871bbe7426e259b6487180ad503de875b7485d370c87af423"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 1,
+        "source_projected_area_m2": 15.621691627583708,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 7.272852369307889e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_5bcc25ff-eec5-43b2-b013-251c4b503a26",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "2ca1e16a0d7761d3542ce9d4e76dec61b4e299f510f3ce58b042a7f8c7e24798"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 1,
+        "source_projected_area_m2": 15.621691627583708,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 7.272852369307889e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_01b55e37-14be-449c-bf00-0732de4141cf",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "a265e99b6c93f95811d9ff25182f20fb7ea062d2c9fa88a39a7bf6f38d7d2b4c"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 1,
+        "source_projected_area_m2": 15.176668570252044,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 7.272852369307889e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_f59058c1-4ec7-49d7-9987-30eb42a84016",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "cf22cacb44c228a531fc4f17b8fe007eb95570f5eb020c84836eeaec67cdd16a"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 1,
+        "source_projected_area_m2": 15.292479251031835,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 7.272852369307889e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_91239773-53ff-4715-9cf4-b68625f427d2",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "607849452ac19809494cbef84516a8c515fa9a8a88f2ba578cdf91bd7c5c8f1b"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 1,
+        "source_projected_area_m2": 8.741667754410365,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 7.272852369307889e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_d2148154-49e3-4619-b123-45fc6bf56c57",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "4ad10df6fcd92b23ea9ffa4c5e782e253fa7f767118e6e72101ae4aa305db682"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 1,
+        "source_projected_area_m2": 8.70303119565009,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 7.272852369307889e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_24f15435-4163-472b-9811-a76104689134",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "e2a22f32e9970bc4e68f7c7cda77bc37fd16c57537bebab9556bfa1b4dec656a"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 1,
+        "source_projected_area_m2": 8.741667754410365,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 7.272852369307889e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_031210fb-8430-4627-bbf4-4d6f2fae6ee2",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "d239407469abb782bce79478c4b1e232eb5f8b1d71f49f48a8e2c76756931d56"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 1,
+        "source_projected_area_m2": 8.70303119565009,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 7.272852369307889e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_654d5f73-6ca7-4427-9ed5-94496e340777",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "2254eb38bb3a3a8b6269d8835d4e131d2b035632662c5a6dc36d5e1b2d13c3c0"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 0,
+        "source_projected_area_m2": 0.8998675594601918,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 6.199413269424255e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_0279a3e0-760f-4388-aeb9-3667973ab69b",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "82a6b21716d3e04040dc8fc0246bdb8e0f34a0abb0eaf761dc2d4b2af97710b5"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 1,
+        "source_projected_area_m2": 0.5119027033397723,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 2.7011391543146456e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_178c0310-cf3c-46b8-b34f-97752f1b6c66",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "0d6397b094b1ef6c6326755999c32f6551db9a446d836e1d103b45efb0d688b8"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 1,
+        "source_projected_area_m2": 0.8461084176525981,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 7.379452533823481e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_710685bd-bdf6-47a6-b5c9-7017ce5020cd",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "169b0d9f9aa270afa021bc0e880db94c832d0d3b0f24b0e1c82c73e622859465"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 1,
+        "source_projected_area_m2": 0.8884858575328245,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 7.379452533823481e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_a47b1e2a-e367-4cbe-89e4-21eedba71375",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "c745ed580b9a958124e9efb3d47244dcb4bee922bf733f70ddba746e68aafd89"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 1,
+        "source_projected_area_m2": 0.5375414106055514,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 2.7011391543146456e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_bebd95a7-db32-46cd-9e55-0de229cc6d03",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "9f2d589b2380089adc9a268638d9d978065c0d69cfc9047898e85a8cb2865022"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 0.7795350531145749,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 6.199413264070092e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_a4f4a183-3ebb-4bbb-9d85-42de0201db04",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "ed98657865bb5adbe423642bae354e82953c80b972027066dc5bf8e4616cbcf9"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 1.2884695799335335,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 1.6936660229925541e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_a184e740-bce3-49f1-bde6-1ff4089ded60",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "e34ca8e80865cfa8941d9ccd444bcbce8ca673cd1a0621ae7c304346eeaf4a53"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 0,
+        "source_projected_area_m2": 0.2378606774523518,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 4.905613217053998e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_c172e4c7-26e9-4bff-90b6-2330003728ed",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "36d0c3b7d78d8846a542d0ce0989f327d61a7ba7b55b5175da39d06c3301c441"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 0,
+        "source_projected_area_m2": 0.47766459683267476,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 4.986095148999543e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_5cd7c0b2-ff60-48a2-92e3-2b776698d046",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "f955377d76d796f0b1cdc6e7c34a6b283dae0e010f639ba335d2f6478d963024"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 0,
+        "source_projected_area_m2": 0.23980391936334086,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 4.986095148999543e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_33ddf93d-2950-4d51-b179-ae61eec29c5e",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "c06d4e4b8327f4aed26cdbb46c5995c25727163be66940949a1b0ebafd01b1be"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 1.3530026642243582,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 1.6936647820433658e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_7ee18dab-5815-413c-a606-4450ebc2512b",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "d6dc26ab1b819e548d5a5972902efe93fb6c586600f33df9bce654fed08c2623"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 0.8185780996365198,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 6.74424871825757e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_fc5cb874-314a-4fc9-9beb-fe2f2ea393e8",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "99989124445e3d77c885dfabfcffcc0395a4613aba7e094200d5f9bb8db434dc"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 1.353003196552627,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 1.6936660194797517e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_633b1306-528e-4025-8bc0-5ce7b76bd316",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "a8c8a61daa45336a9990ef61ad612c603f154b27b2f3a6fe3864c988ffab774d"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 0.8185781593949495,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 6.744256532435642e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_d3e87c88-8e16-48d6-8149-7d339aa47046",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "a9b18fe68bd2b39f1a52a3c359de936fefd4918011f77b32271fad7e273e9484"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 1,
+        "source_projected_area_m2": 7.636210019788932,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 3.997221475721972e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_f23ff851-cb09-4227-b482-70f27d503f8c",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "8bf25d24bd0aec4eb72e62a3c93a5264da6743e6f1d50d93914556732ce29e8d"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 1,
+        "source_projected_area_m2": 2.6969881560606397,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 3.0167399333041157e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_ca5a2e28-30ec-426c-87f0-c6b89e7a097a",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "2389b8a98e1ab900b1e6ea714512d1e44717bf5b440ab201c18094bd61e04973"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 1,
+        "source_projected_area_m2": 3.4388305548803726,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 3.997221475721972e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_4df0bafb-f984-4df8-a7fa-0493551b0379",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "2629321c31d445168c8958333c70d66eb1c77130649dbd7a460bd8bea038fcb2"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 1,
+        "source_projected_area_m2": 3.4388305548803726,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 3.997221475721972e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_1de987ff-96cf-45ed-9d99-471938e05e4b",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "2e7d457d74a6e9d90698797651e88b2af9b6f023cd9a54e53d64c09d02272b53"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 1.3530031943051284,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 1.6936660221075807e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_6b3399bd-2f87-4b00-b028-e673f8372323",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "834d730b014508f72b79234b006c0cadc85c380dfa160445d8cf59b21216c031"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 0.8185781590689336,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 6.744256543490649e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_3c7ce4b2-384b-483b-bb0f-50178b300af3",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "7a9c81bf625fb227e8c919dc72ec4a6b5b90faade9f1a0142422aac5ea0d2926"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 2.8898283358254573,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 2.9465107275464147e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_fb7e8eac-2b66-4d59-aa38-6d2a82df595d",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "6a975653e0d7c0b5483f19707108675352f3f444f2137194d0aa0cf775df4935"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 2.8558414793487943,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 2.87986573062209e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_d419f374-34ec-4cad-89a4-a80c8b5f497f",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "638ad493fb2bb7522fc7001ec511a30639739b05199737a3b6d95695c24b5d3c"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 0.32049596540036673,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 7.569255212906556e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_e509df0b-b7b5-43d0-8198-8da11dc114fd",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "12dcad8b30c7165f0f81415684d4a439bc1c45302aee3dbf1a695936b583b4ca"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 2.986442578696233,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 3.1401270614607043e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_75148834-64b8-4e80-ac83-47ab49a67df5",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "bcc141222c53a5e07fee8636568387f5540e174e1fe43e6bb2d426ecac5d7ced"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 0.3285486653475149,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 7.711440493943369e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_1d775728-a9a0-42db-b71c-0d13ff8f7bfd",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "9f13b3cc37c584a93ef794d2fdbc1bcc62214b98ff1ba551fdbbb23ced86fc6f"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 2.8558414769178695,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 2.87986573062209e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_8192f17b-2e63-4898-b2d7-8188005aca11",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "b16789c6d882fa2949a341513cd79664f5e9c6c00c228fabd0fb3525c6102a87"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 2.8898283412125836,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 2.9465107275464147e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_5638f6a5-8777-4182-aee1-1e2de6a82339",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "13c55836688613af63242297a3af374676a3aba90fc6a83cd158b0537d527f67"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 0.6447978674776397,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 4.241568472680108e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_0d6fa945-b47e-4933-b4ae-bd9c5313b3af",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "9467b6e5f06e9845717c48ab810d8b39258cfc15e3eb3fb5e13813b8bc9a9d9f"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 2.9864432641169385,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 3.1401270614607043e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_e328d250-3502-423b-b99d-f8876462a803",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "3f3284cbd80daed52eaa6125f5c082232d07daf08e9ff1e0ac899111a3171db5"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 0.6367448144903135,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 4.136282393097462e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_a46ada76-c2eb-4aac-a61d-58526b50ee70",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "bd825c186f99b306cbb61a349804d2e660bdb3d4b2edce708ebdaa555645c3f4"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 0.652911790133047,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 4.348989005444089e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_89c3841d-92fd-46eb-be1c-b97449c6d5bf",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "dd7a42b6c7ac53046f6e551ac9c1220191c138e3e5e2b7647778272b2dc9ffb2"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 0.33654748278630553,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 6.462379646495028e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_df7a1049-a768-4e57-976f-f93ce5b273fe",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "389a166a3a7c2852085a19f2dafee2e4c039f5499cb5ac1098c9210391290057"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 3.0366016744087054,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 4.194315136816831e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_079725a8-57a6-4a2d-b79f-9e392086ff8a",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "48c43b67de65d75c0df7ff089176baa5c68af81ce969d77258488a11eca64376"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 0.31238147168342306,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 7.427324500655596e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_eb730587-c47f-405e-a9f4-a00f300f043a",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "ed9f209b4cadbc2d94b7c1d3ff7539b695939f4434fb47714173ab6f6dc81bb8"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 0.3450035102586429,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 6.59380843697092e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_c0b7517a-9d40-4824-877d-3487e9eb96e5",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "6c56a3f71e7f5296304bca6abf06432960a4883bad18dfa5431e4f77411d27bf"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 3.0305800147909046,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 4.112332881581732e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_979eac5c-676e-443c-bdb4-3e911747b070",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "ec1b0d3b4ae2fa431bb70fb602eee3db88b5f9f2aa0fd744354fadb251b7c33e"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 3.20015367394502,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 4.419778263751432e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_2d257c5c-783f-49b1-97b3-26c1da55c1af",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "21f031235e0e1eae95d51cf4db329da9469046c9ca3f976cb36f4ae8d884b50a"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 2.0029310845102533,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 2.106352384725203e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_5f3adbe4-a5f8-48b8-a4ed-a6cc7d7adf7f",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "137cb3413e98b19321425077b7a0d7fc447ec1df76ef354164b6827cee1ec1ec"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 2.370281731849187,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 4.558735013916949e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_8d5f3c83-a8bd-4d2e-b752-b098e2e0df22",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "8e0ed6c97593ba8842440e5a1013b20b99a7f8621273bc3f0f5e7ab6ac6c7d5f"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 0.6686363036577937,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 4.583426205647068e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_fcb2eac1-7162-4cb7-a8de-6a2b1f62776c",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "65619d892984e82706217097b8ed270810ca777c7df486c0ecbb0fb5c0022fe5"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 2.4285347615097033,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 4.645030938774602e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_35e117dd-0723-4d89-b73d-b25a3c0b0edc",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "b6a27a6a4621decda84a5c9b82701362d792845a4261e5435d8e59400426fe11"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 0.6770925921873123,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 4.694215757007524e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_92fc6086-7440-4b1c-bc83-c606fdff12b2",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "63dd70db6cdbce8b9edbb2afb51b82e9a2b396f7967dd9f1ef87bc62dd80219c"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 2.4476962737917916,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 4.882144492182275e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_a9f3f588-12e0-4aba-9cf8-16a05c56bd50",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "00a94ecec60dadbfabfc1ae54eadc50031de846a1aa3b668abf98f0a7453f543"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 0.6599325545312454,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 4.470770820454006e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_eaed2b06-b152-4e60-97dc-3ed52b0b7d3b",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "3238e91732f2fedc7435efabe0a568c012cb094a53b52c1a740c553e0e909155"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 0.6284562473308233,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 4.029298206448575e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_b5ec9a33-1d6a-446f-8dbc-abca10770da8",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "e04fe85f12ca4afe4686e82b51037072d64dac1d2846b4f2e66d6d62f0c471bb"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 0.35370690839096147,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 6.730471627738763e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_dbd3548b-935f-46f8-beca-e11f9eae48ea",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "84e61931aa33f0238cbacf4681af2d8fd1793825755d2f5c57a4a51348cadfb4"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 1.7468722250019866,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 1.8893912653075926e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_4304771e-35b2-4e3a-8864-4849fc76e5c2",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "0d7cda6115480939a2a1e99a88432734b2e08fc36c5101fc9a47e9b31f7f1078"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 0.6856129545171283,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 4.807194509951959e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_71893e56-c110-42cf-aaef-9056a310ca8a",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "a3442bb5cb3c68d39fcf72632d6a12c3a2076a8fd33d1d2ae8e2414b407ce2bb"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 2.0043395962106514,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 2.2261696007587263e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_c45454a3-ff75-4667-9672-97dfc63a06b5",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "bb1a02e833a5de86eb1648130f0ffce1010a774024d634e22a6aef6628fb27a7"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 1.7745776027983151,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 2.23669451233768e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_416e546a-3d21-486a-a69f-6af34dc9d250",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "70c165bd0ed62ddb6e0aa78d3d0a8d2b41ebe6a1d9cd3995518a6054877734ed"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 4.775198972832564,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 6.6495366378719094e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_0933450c-0adf-4a31-81cc-a7afe74824f7",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "fd725f1e7ee0b072e58f934b5044822e4018794cdebed6807ec8f2c37ba55ccb"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 1.0280470724337223,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 2.172822132036435e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_8feed72b-afdb-47d7-a06a-72f727b47cae",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "d425dad54bc0836ef3d6663997564547ab00ed3c8883ccf12b6af6a94bbef3fc"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 4.785045279959508,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 6.549203471494349e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_9141aa05-221d-438c-913a-ba4e801010d2",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "e339bd272e499244c4b773ab61226573bde1a25013a8e7ec0822448063d26ee3"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 4.974102941137097,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 6.9389171898910355e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_059c304f-0c54-4cf4-ae75-e368c02b3b20",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "a9bf457611bdbe12263d1a67cf7775f3a003402a547d53db37b8a3f475bff035"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 5.050491107461726,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 5.181980000224076e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_5ac774ae-b8b2-4215-ae33-6f5d024811d5",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "662f17bfb40880cf52461bb5bc4b4234ef576e1f9c8b50d2b666b2caaee214a4"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 3.6381084091547264,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 6.5492034767417225e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_d98c0e28-04e9-440e-93b8-c24e19f07083",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "92f259cc138adc1ecf7401b9f88a7cb58c77e84e4b532dab19ad66ce7c096eca"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 3.7122303951906543,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 6.6495366402874796e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_c7c7504a-4eed-4913-94c9-eb775782ce27",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "562e3a4309a68e00377585cd2678901866467287f5c482cf4e3a5db4fd3adb28"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 3.696041558864701,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 6.938917192230659e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_28ac0f47-0831-4d16-8083-512cd5b8ee54",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "29f6f69bf5efa56bc7a77ad76598cb925d46fa57e35ba27f0ec7712d3b6f49a5"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 2.059108352528094,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 2.1536576300508716e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_9c89e467-250d-4599-b346-37b3c61e93ab",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "40a4156d23ca5c9f0bb4a63855e428ca54b115c7ab00327d10ca6b95ff5d2c09"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 1.1036307797882317,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 2.2261696007587263e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_6cdc49e4-d9f4-4e12-9dcf-fe6c9bf537d5",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "7e7609ea47421bba2f51117081249833d0059b84b413e149a69fb8c449568acf"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 2.148733379164584,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 2.172822130394797e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_2fc94ed1-ffec-402f-ac58-fe1306d33139",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "093a126bc4c69f817f8dc93890342d6a242ff820131eaa3daf8145247ffc06d7"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 5.130589781789608,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 5.181979995627536e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_fc32aa38-dd8a-4c42-9087-ea3a0a94cbb8",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "c8d8f3f3f214f79852d1cb347b753e782f17f5031051b3165f7e80d6cf8f6a14"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 1,
+        "source_projected_area_m2": 0.5119027050983322,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 2.7011391543146456e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_7f76b295-07df-42dc-ba9d-8bf85c805d53",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "a8448a59034d571f8f8283e43772d642d501b0cb44eac2f8bb82d07b032343fb"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 1,
+        "source_projected_area_m2": 0.8461084205592684,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 7.379452533823481e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_f20f4af9-a698-4f1c-ad54-2333fdd33301",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "6b0e5a8a8d61d40d9dd1456b320f56cf6482a780a716ce4bd29b8b1b6c483c1d"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 1,
+        "source_projected_area_m2": 0.8884858566021657,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 7.379452533823481e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_7f1b804a-3aa3-4cfe-8cbe-002dee95a4c7",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "6f5bd39b1f01b1742955719d7408c60daa9ec9d837d5a3edd101b5cebe52edb1"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 1,
+        "source_projected_area_m2": 0.537541410042495,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 2.7011391543146456e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_cbf689c0-65d7-4178-8366-29cfbd88a09f",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "f46c3eee7805148b381aff885fad6d02173177c89ff772c0c1ca7340ab8be48f"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 1.1858270646316411,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 3.094501453604372e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_5c4bd2af-70bc-4a88-9f0f-0f1c3ef5825c",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "60d5ce55be062329eaddfede5b7880d0a37e49a096fcb8c612cb71d7a7850197"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 1.1858270648728229,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 3.094501453604372e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_8e6b9c04-be6e-42dc-a66f-ac7475331108",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "dfaabb07f44061b4bc92493c963424b1d1beed1dfd961965e1dd11685e8fb113"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 0,
+        "source_projected_area_m2": 0.8998675590755658,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 6.199413264124726e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_a6423db2-3a7a-40dc-a6c4-27448f7840d5",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "60d0ffd8abc3ed4cc09e90572e962aa6efbcce2e75c831b1ad7e4a037c0a2be6"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 0,
+        "source_projected_area_m2": 0.899867560233403,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 6.199413280077947e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_78f1cdfb-cd06-4794-af56-7df6494ce952",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "a75ee11cc823fc2fdd2fb70e41b4a952851cb8465b4ff62900238a4f8e1965f4"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 1,
+        "source_projected_area_m2": 48.59663888512203,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 6.715031426340515e-11,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_f84a434b-5179-438d-855b-10860fad2433",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "c4da352880dc6eff242e38d9085e7859b7d65a1a724809d9048ed4eee8b9d850"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 1,
+        "source_projected_area_m2": 7.625196941800357,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 3.98570005927468e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_48c75c5d-ee4a-4361-8301-480b676b65d5",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "9d17177ce911eef61b0b260ba1af2691694e4f55661bbd6dd7ee499598f0e775"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 1,
+        "source_projected_area_m2": 35.9754432488854,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 6.715031426340515e-11,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_6e6fef25-6683-4468-a261-ff56a9d1764e",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "d94ac25e92a65e7e978f944995c4a990d256255512bdd7c9f5c895f3d1498cc9"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 1,
+        "source_projected_area_m2": 2.6641201123687703,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 3.01673993537706e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_5a325104-36b2-4bec-9fc6-a62448b4a66e",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "a747d1b576ca29e2cc612d66c839d589a8ce368d46ff460cb0995a7cf0bb025e"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 1,
+        "source_projected_area_m2": 12.621195636236637,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 6.715031426340515e-11,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_0421cf2f-3e15-48cd-b0bf-b65c783e3504",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "0fb240624c01f358754bd97b5cf7bf303bc88d9a6224293298a840dc473bc3bb"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 1,
+        "source_projected_area_m2": 1.1997388249190317,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 6.117918634931599e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_a4288299-5b83-4f93-b97f-a5ae6e4edb43",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "7b317ec10b01b961351d0ca95c6d84b76375c5a95f27149a3012faf068dd6500"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 1,
+        "source_projected_area_m2": 1.1997388249190317,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 6.117918634931599e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_7785764b-d286-4897-bc35-fa74cb97f855",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "e21f3452355ad2b13542a66c4ed7a12683fea263b1523b774106b638254edea6"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 0,
+        "source_projected_area_m2": 0.8998675590716035,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 6.199413264070092e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_9cd856fa-1bf3-4ae4-a0b2-ca617ac6174a",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "7b884a243ce1406c9203993be18b53d3718ad77dc81f2c249d36269584b9edaf"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 0.77953508684801,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 6.199413280023313e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_2e9c4d37-402b-4091-901e-5c6a859549bf",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "c809a93f9064a941dbdd57613f7cd02f60090bc03236d4b6ed3dd0a5d9823f80"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 1.2884709393272722,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 1.6936660194797517e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_6856226f-5354-4bed-9ae8-90d9e2192970",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "050ce4bc9c24c564c75e3c687834ba9cec2934534877fd1ed72041ea257a3980"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 0,
+        "source_projected_area_m2": 0.8998675590755687,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 6.199413264124726e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_761b0591-cefd-461f-bcc2-7fba2a534cea",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "a1ef3c94bdc1dd804f2fad34bb269ae91ee629b8c3a4b2e355a215f5939139d6"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 0,
+        "source_projected_area_m2": 6.8160358892735635,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 7.272852369307889e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_307c1440-11b0-4d85-ae48-c186469593cb",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "fbf22772a338b4a569ba1c074e62745e2fcf0beb1bc192e0cfbe866817dbe0b9"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 0,
+        "source_projected_area_m2": 6.8160358892735635,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 7.272852369307889e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_27d5ebd0-2b24-4828-a04d-94c34d7ffff8",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "89b45580f59e9bc51603bcdb708fa504c38d84dabb489031dfe00efec8c1de13"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 0,
+        "source_projected_area_m2": 21.227557244411198,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 1.7635228250903556e-11,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_344be458-c333-42b4-bf9d-bd2513cd3857",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "696ac477288793e05eddddff1fe931f9fe5e4892e66df4281cc8bea1de7c305f"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 0,
+        "source_projected_area_m2": 13.499885165789758,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 7.272852369307889e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_34298177-b47b-4a0a-93a0-46ec426ed68f",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "5e9d5a4c640e2d00c56db09ebee106d85e3f5bdce2acc65dba4a46f194064f6b"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 0,
+        "source_projected_area_m2": 21.021719207843073,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 1.7635228250903556e-11,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_f465795f-6487-4b15-a810-7dda8c81b3ba",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "2380de9fea9bc6a62e90ba140f7439fcefab8cce6ac245c7cf9d47d78424a2ff"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 13.384487114628259,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 1.8209451560545185e-11,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_306c3363-7a97-4752-82aa-b54ff900e33b",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "e5fc2322dc734d06da715cffef066d2ec3d14aed52dc9e75ebae92ac6222a6cb"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 13.102421787989583,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 6.6495366378719094e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_75bc864f-2139-4822-9725-d802b0023dc8",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "d15185fee0b7d9f5bab84ccd68603819a5af66b38a89536690ade58f260b9be9"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 13.003196173989107,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 1.5423497840739724e-11,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_0c6acfa4-8d5b-476f-a1cc-ab98412cd456",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "44ae6d6a7648f8bc99c7d102c55483c40a1632b795b57458180a3e85145ac9f5"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 7.48976154364834,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 5.5155027058598234e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_60a1a814-50ca-4d72-8c6a-890d8244a428",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "8e922ae8c6d263dada92122ca77223efe4aef6ae3526bf7221718ccdb6cfbef8"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 3.974273330402769,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 5.283957450854341e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_9ebf9333-872a-4fbd-a87d-15fccdf5b129",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "9912028d6fc1b7abf67005aef9c29c2a048e2f8d5c7e4c12fcd804a297c5710b"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 7.456657900069011,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 5.283957452401524e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_8383dd5b-7b0e-43b8-9048-5d1fbe02981a",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "92850301d5a4562905cd19e5563011a389fa2f7326c8c108e5ff42e0e522dcfb"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 41.63704507761768,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 6.715031426340515e-11,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_5fa7579c-26bf-4659-94ec-6789b5471f73",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "74a6aace02241d89d0e65d9ae1717f1b0339d557572ea9d659ae03c869ac7fc0"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 8.825205757269272,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 5.5155027058598234e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_b60e4702-879c-4b06-8e76-a2fa9b66cce0",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "15034a3b1d32076b293bd312ba8c990a0d90dc51a097ff6806a7d456fab51006"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 0.7795350567282433,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 6.199413264124726e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_95e483f3-be68-43ed-8ded-efe9fcac074c",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "0162525dcfe4c6a4b1c471c991ce927ae72b2b8d2c2dd782aac2125d732157ea"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 1.2884690486133072,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 1.6936647820433658e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_2494b021-d92c-41ce-ade0-b8bf2384785f",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "92db9ca98069ee45a5bcf4e34b74924c5d57d4f23d457d9e9468b44f6b0f7dac"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 0,
+        "source_projected_area_m2": 0.8998675602334001,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 6.199413280077947e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_40720524-a865-438c-8138-33c1ec3c527e",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "337d75c5f235b08541a5fcb6069e48895b06b1d70b864367952363039663b404"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 1,
+        "source_projected_area_m2": 0.5119027065892438,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 2.7011391543146633e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_803a2a09-91bb-4ba7-ad08-c0594a94f61a",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "def2fad534aac9b1d5aef1c7a6000a3248ac8045bb59d8a57cdedca759520d09"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 1,
+        "source_projected_area_m2": 0.8461084230235497,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 7.37945253382351e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_279936a6-349c-40b7-8b7c-949beac0a3bf",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "5d093dd3f81dec2445ac7cca98c2b916707f0d3108a3526bab21537e96e2729f"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 1,
+        "source_projected_area_m2": 0.8884858559828206,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 7.37945253382351e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_d799b160-5071-48f3-942e-54d2efe6c216",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "c1899f7b70f64bc7416af481a6d820ece68be35259e1a90b905dd1f88cf273bf"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 1,
+        "source_projected_area_m2": 0.5375414096677866,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 2.7011391543146633e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_fd30e0ab-445f-4b58-aaae-1aa27f8ec4bf",
+      "semantic": "WallSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "e1841649510bd6cda740f1d1230125ed4c9ee263ac02df499282bff961647003"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 0,
+        "source_projected_area_m2": 0.8998675602294349,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 6.199413280023313e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_e6ec10a2-827d-42f9-ad81-54991d1100ea",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "e293bea7e38b94aa19cded0b817387cf18abb87b4923a40cc1d3dfa42fe4adcc"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 0.779535030079781,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 6.199413280077947e-13,
+        "holes": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "polygon_id": "pol_05e8b32b-b99e-49e4-87da-bb1623553ba2",
+      "semantic": "RoofSurface",
+      "ring_vertex_counts_including_closure": [
+        4
+      ],
+      "ring_XYZ_sha256": [
+        "051e319a805670137cf418542aabab8d4ed7cc00f05581f7468905b27cad44db"
+      ],
+      "holes": 0,
+      "standard_alignment": [
+        {
+          "reversed": false,
+          "cyclic_shift": 0,
+          "max_XY_error_m": 0.0
+        }
+      ],
+      "triangles": 1,
+      "coverage": {
+        "dropped_axis": 2,
+        "source_projected_area_m2": 1.2884708455669058,
+        "uncovered_m2": 0.0,
+        "outside_m2": 0.0,
+        "overlap_m2": 0.0,
+        "numerical_area_budget_m2": 1.6936660221075807e-12,
+        "holes": 0
+      },
+      "status": "PASS"
+    }
+  ],
+  "voxelization": "NOT_EXECUTED_BY_SCOPE",
+  "voxel_ready": "CONDITIONAL_REVIEW_REQUIRED",
+  "source_counts": {
+    "semantic_faces": {
+      "RoofSurface": 69,
+      "WallSurface": 61,
+      "GroundSurface": 1
+    },
+    "polygons": 131,
+    "rings": 131,
+    "holes": 0,
+    "vertices_excluding_closure_with_face_duplicates": 408
+  },
+  "triangulated": {
+    "vertices": 408,
+    "triangles": 146,
+    "bounds": [
+      [
+        -22567.360943975476,
+        -39834.594643169614,
+        24.877753
+      ],
+      [
+        -22544.2019999753,
+        -39822.734252171664,
+        33.6846
+      ]
+    ],
+    "area_m2": 899.9839901246819,
+    "signed_volume_m3": 1590.6492169341072,
+    "watertight": false,
+    "is_volume": false,
+    "vertices_sha256": "9bd31ec3f5550d1cee3fe3beed71a68e93523c4d1baa2c2bd40bcbe7dbabf5f8",
+    "faces_sha256": "3c02fa6bbcf8721fb8ef84c826da60a77827e30ad2fce9382edfde68a9c68665",
+    "boundary_edges": 408,
+    "nonmanifold_edges": 0
+  },
+  "merge": {
+    "method": "merge",
+    "accepted_by_engine": true,
+    "error": null,
+    "stats": {
+      "vertices": 75,
+      "triangles": 146,
+      "bounds": [
+        [
+          -22567.360944,
+          -39834.594643,
+          24.877753
+        ],
+        [
+          -22544.202,
+          -39822.734252,
+          33.6846
+        ]
+      ],
+      "area_m2": 899.9839901500739,
+      "signed_volume_m3": 1590.649216945904,
+      "watertight": true,
+      "is_volume": true,
+      "vertices_sha256": "354af1ce5bd97cb6174afde95939ee8e731c866bb9fe0e222be021011f04c1bf",
+      "faces_sha256": "1264fcdf8ee03668753bd3243ba702f69bf5ee164d1ef4e3d45bbb09f4ad47a1",
+      "boundary_edges": 0,
+      "nonmanifold_edges": 0
+    },
+    "delta": {
+      "triangles_removed_at_merge_precision": 0,
+      "triangles_added_at_merge_precision": 0,
+      "max_nearest_vertex_coordinate_delta_m": 1.7317506717517972e-07,
+      "new_H_values": [],
+      "lost_H_values": []
+    },
+    "trace": [
+      {
+        "operation": "_merge_vertices",
+        "before": {
+          "vertices": 408,
+          "triangles": 146,
+          "bounds": [
+            [
+              -22567.360943975476,
+              -39834.594643169614,
+              24.877753
+            ],
+            [
+              -22544.2019999753,
+              -39822.734252171664,
+              33.6846
+            ]
+          ],
+          "area_m2": 899.9839901246819,
+          "signed_volume_m3": 1590.6492169341072,
+          "watertight": false,
+          "is_volume": false,
+          "vertices_sha256": "9bd31ec3f5550d1cee3fe3beed71a68e93523c4d1baa2c2bd40bcbe7dbabf5f8",
+          "faces_sha256": "3c02fa6bbcf8721fb8ef84c826da60a77827e30ad2fce9382edfde68a9c68665",
+          "boundary_edges": 408,
+          "nonmanifold_edges": 0
+        },
+        "after": {
+          "vertices": 75,
+          "triangles": 146,
+          "bounds": [
+            [
+              -22567.360944,
+              -39834.594643,
+              24.877753
+            ],
+            [
+              -22544.202,
+              -39822.734252,
+              33.6846
+            ]
+          ],
+          "area_m2": 899.9839901500739,
+          "signed_volume_m3": 1590.649216945904,
+          "watertight": true,
+          "is_volume": true,
+          "vertices_sha256": "354af1ce5bd97cb6174afde95939ee8e731c866bb9fe0e222be021011f04c1bf",
+          "faces_sha256": "1264fcdf8ee03668753bd3243ba702f69bf5ee164d1ef4e3d45bbb09f4ad47a1",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0
+        },
+        "vertices_array_changed": true,
+        "faces_array_changed": true
+      },
+      {
+        "operation": "_validate_watertight",
+        "before": {
+          "vertices": 75,
+          "triangles": 146,
+          "bounds": [
+            [
+              -22567.360944,
+              -39834.594643,
+              24.877753
+            ],
+            [
+              -22544.202,
+              -39822.734252,
+              33.6846
+            ]
+          ],
+          "area_m2": 899.9839901500739,
+          "signed_volume_m3": 1590.649216945904,
+          "watertight": true,
+          "is_volume": true,
+          "vertices_sha256": "354af1ce5bd97cb6174afde95939ee8e731c866bb9fe0e222be021011f04c1bf",
+          "faces_sha256": "1264fcdf8ee03668753bd3243ba702f69bf5ee164d1ef4e3d45bbb09f4ad47a1",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0
+        },
+        "after": {
+          "vertices": 75,
+          "triangles": 146,
+          "bounds": [
+            [
+              -22567.360944,
+              -39834.594643,
+              24.877753
+            ],
+            [
+              -22544.202,
+              -39822.734252,
+              33.6846
+            ]
+          ],
+          "area_m2": 899.9839901500739,
+          "signed_volume_m3": 1590.649216945904,
+          "watertight": true,
+          "is_volume": true,
+          "vertices_sha256": "354af1ce5bd97cb6174afde95939ee8e731c866bb9fe0e222be021011f04c1bf",
+          "faces_sha256": "1264fcdf8ee03668753bd3243ba702f69bf5ee164d1ef4e3d45bbb09f4ad47a1",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0
+        },
+        "vertices_array_changed": false,
+        "faces_array_changed": false
+      }
+    ],
+    "correspondence": {
+      "max_coordinate_delta_m": 1.7317506717517972e-07,
+      "rounding_rule": "pinned merge precision=6; <=0.5e-6 m per coordinate + one source ULP",
+      "source_H_values_unchanged": true,
+      "all_triangles_preserved_ignoring_winding": true,
+      "arrays_identical": false,
+      "source_and_repaired_are_distinct": true
+    }
+  },
+  "status": "PASS_MERGE_ONLY",
+  "source_H_preserved_through_triangulation": true
+}

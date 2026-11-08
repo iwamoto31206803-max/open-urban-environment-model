@@ -1,0 +1,98 @@
+{
+  "profile": "ouem-p1-1b-fixed-smc/v0.1",
+  "status": "PASS_MERGE_ONLY",
+  "scientific_validation": "NOT_VERIFIED",
+  "formal_acceptance": "NOT_VERIFIED",
+  "terrain_integration_ready": false,
+  "voxelization": "NOT_EXECUTED_BY_SCOPE",
+  "environment": {
+    "python": "3.11.9",
+    "voxcitygml_commit": "19628c033b1cbbbdee80fe781f516672765d1eee",
+    "voxcity": {
+      "expected_version": "1.7.0",
+      "expected_commit": "fa212656305328a9a657973bae26f352bfe813bc",
+      "verified": true,
+      "method": "PEP 610 VCS origin + installed source RECORD hashes",
+      "limitation": "Not an independent comparison with the upstream Git tree.",
+      "version": "1.7.0",
+      "commit": "fa212656305328a9a657973bae26f352bfe813bc",
+      "url": "https://github.com/kunifujiwara/VoxCity.git",
+      "checked_source_files": 136,
+      "source_content_sha256": "33e2bfdbc8a677f53154e8cd16295603819c68cf9f24c7a4cdfeb196bcbcd0bd"
+    },
+    "meshlib": false,
+    "voxcitygml_source_files_matched": 29,
+    "packages": {
+      "voxcitygml": "0.3.0",
+      "voxcity": "1.7.0",
+      "numpy": "2.4.6",
+      "trimesh": "5.2.0",
+      "pyproj": "3.7.2",
+      "shapely": "2.2.0",
+      "mapbox-earcut": "2.1.0"
+    }
+  },
+  "buildings": {
+    "S": {
+      "status": "PASS_MERGE_ONLY",
+      "voxel_ready": "CONDITIONAL_REVIEW_REQUIRED"
+    },
+    "M": {
+      "status": "PASS_MERGE_ONLY",
+      "voxel_ready": "CONDITIONAL_REVIEW_REQUIRED"
+    },
+    "C": {
+      "status": "PASS_MERGE_ONLY",
+      "voxel_ready": "CONDITIONAL_REVIEW_REQUIRED"
+    }
+  },
+  "inputs": {
+    "53393466_bldg_6697_op.gml": "6128aa2a2bd637e51dbef89ee42bd54620eae6a2fab82b082149a4dc4924c0c9",
+    "standard.gpkg": "954d01aad3004a0d2d69586036ef9961071064a39db4215d45577dee2f996f60",
+    "report.json": "71de561a0644352654c4d30814259f3d42b1d31a18b9c1591652be88c1b3565e",
+    "source_identity.json": "aea3c536ada746da2bb2ebcea6069b4e92d1af05eeda2909be8e999767b3bdba",
+    "static_compatibility.json": "bee392700769633f9dcfece916d158275faec8bb3857d1b09b1116ffac9774cc",
+    "manifest.json": "cfb01bad1f823f9e8c475a5b95e9fc404132858eadd06949dde834484fd25d65",
+    "p1_lod2_f.py": "12025ff722e06eb46d393a143b5456efb0f2500a2c8c7cde7573c7527acd2456"
+  },
+  "environment_inventory_unchanged": true,
+  "input_SHA_unchanged": true,
+  "forbidden_attempts": [],
+  "implementation_sha256": "eafe4977f5f827bb816ed3b47e59a51ab617e763ab363ddaa36d15d2b49b7a9f",
+  "archived_local_outputs": {
+    "C/geometry_diagnostics.json": "56c8e0ffa17ddf3e44852c43a2a77e908723cce3a9994eea1ec8d696fb828bd3",
+    "C/merge_faces.npy": "3e38640072f05a24081d5648d9ac4e608c963ce2d710adfbb9e003df2415b170",
+    "C/merge_vertices.npy": "4368e42e567dfc88ebc89c95a0141e9941d6d4ad3dfecabde77c2bcc1a512f28",
+    "C/triangulated_faces.npy": "919db2f509fe9778152c5cc27212c9df318a4b23be331e526f9a5309fc1063b3",
+    "C/triangulated_vertices.npy": "2cdf1ef3283dd7d97f5d3dfb128e78f348f6d39884d6970bb995dfae645e11ab",
+    "M/geometry_diagnostics.json": "660f686b10bcbc4865a845058768ea2946fbe45c1012651661ea6f8a93473098",
+    "M/merge_faces.npy": "a9b9382ba373f3d4071da723aff4bbd82a11f9dc4f805f33bdd15522060594b4",
+    "M/merge_vertices.npy": "6d112b25ce8890d4b5dc2ac85b40c9c26b47e6a888515c3bab63a7fb2a09c3d1",
+    "M/triangulated_faces.npy": "cfb37488f8bc4afdaf3b661789255d6a3c2ac995677143cf7ed4acaf525ee715",
+    "M/triangulated_vertices.npy": "5ecef17236d559911450bf91b8f6b49a25f93001d1aaca7d15faaf6e34acad23",
+    "S/geometry_diagnostics.json": "3714f4346507c3e11cce881b29b2a2949bab92b8a89eb19a938f12d1a6c5cc02",
+    "S/merge_faces.npy": "d277e62faaf459fec91210f67be8d21d4cea37fab74c8b713f1684015ee47bbe",
+    "S/merge_vertices.npy": "8487c00722dece6de012951cc1c3712e3fd0415a7871c4ac9c8df02d4c8b3bfc",
+    "S/triangulated_faces.npy": "d0c5b32b107286eb752f121ec91e34fc34626cad16f9a58ee990f20ea019e2f8",
+    "S/triangulated_vertices.npy": "109f83ab49426b5953ca7b78dd3a0dd74ca59b2aae3add2b1a06d5cd2c8225d6"
+  },
+  "baseline_main": "8cbaac6d474fa5770b31d8e2dba774f9b4e30ed5",
+  "local_runs": [
+    "p1-1b-final-d",
+    "p1-1b-final-e"
+  ],
+  "local_manifest_sha256": "97e790a12dc18c30c695f70b7d2bb9388d1a528cef67f5de0d960a0ee62edd1a",
+  "public_files": {
+    "S_geometry_diagnostics.json": "9203ac6601c6023958b62bcf8970a9d3725aca01d20ee4797f70414f96e0e8f1",
+    "M_geometry_diagnostics.json": "56755a04268310b9bb1447779da81cb11f665d41f911c1bbba19a16c0f0bdd7a",
+    "C_geometry_diagnostics.json": "31dae19c75449fabc88a4b27c383e8ce80da9eac37cfd5f39b4457300fcdecdb"
+  },
+  "publication_scope": "Diagnostic JSON contains IDs, ring hashes/counts and metrics, no raw XYZ. Public text is LF-normalized; archival raw file SHAs are separate.",
+  "reproducibility": {
+    "independent_processes": 2,
+    "all_15_output_file_SHAs_equal": true,
+    "manifests_equal": true,
+    "NPY_readback_shape_finite_and_array_SHA_verified": true
+  },
+  "license": "CONDITIONAL inherited P1-0/P1-1a; no new dependency or installation"
+}
