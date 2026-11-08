@@ -1,0 +1,210 @@
+name,version,archive_sha256,license_expression,license_classifier,notice_count
+affine,3.0.1,cda3b303325e7bf2bf34817e68753a0d1c4cacbdd451fe67c4878dc2ecbaa540,BSD-3-Clause,,1
+annotated-types,0.8.0,f072f4d804ea359e4eaf198b1af7a8b0943881a87f31bb764f8bf219bb9419e0,MIT,License :: OSI Approved :: MIT License,1
+anyio,4.16.0,c66ae634e0b8228396b801741beb3294326d4b6102f7bba4041c0dfb58c29026,MIT,,1
+anywidget,0.11.0,c574d9acc6503ad27b37a9acea48f957a8ba7c9c9876cfcb37898931c098ce9d,MIT,License :: OSI Approved :: MIT License,1
+argon2-cffi,25.1.0,fdc8b074db390fccb6eb4a3604ae7231f219aa669a2652e0f20e16ba513d5741,MIT,,1
+argon2-cffi-bindings,26.1.0,2c36ff87b5dfaa477d0bd51e9d7f6abdae7c8955d2983c97419085d842154b3e,MIT,,1
+arrow,1.4.0,749f0769958ebdc79c173ff0b0670d59051a535fa26e8eba02953dc19eb43205,,License :: OSI Approved :: Apache Software License,1
+astral,3.2,cb7b49a3f0d4c64ae666be131276d2a3226134c598db10e672028cf8ff855f83,,License :: OSI Approved :: Apache Software License,1
+asttokens,3.0.2,9da13157f5b28becde0bd374fc677dcd3c290614264eff096f167c469cd9f933,,,1
+async-lru,2.4.0,1b46a96419ef91fe11431d58db98d792c9b4250001427191a40faf1031934212,,License :: OSI Approved :: MIT License,1
+attrs,26.1.0,c647aa4a12dfbad9333ca4e71fe62ddc36f4e63b2d260a37a8b83d2f043ac309,MIT,,1
+babel,2.18.0,e2b422b277c2b9a9630c1d7903c2a00d0830c409c59ac8cae9081c92f1aeba35,,License :: OSI Approved :: BSD License,2
+beautifulsoup4,4.15.0,d6f88de62e1d4e38ecb1077eb9724cd0eff29d2a08ca16a401e9b9e93f117cf9,,License :: OSI Approved :: MIT License,1
+bleach,6.4.0,4b6b6a54fff2e69a3dde9d21cc6301220bee3c3cb792187d11403fd795031081,,,3
+bqplot,0.12.47,6a2a6a88e211f7c2df56dcefd609e187771625fee669d4980061cc89c78182a7,,,4
+branca,0.8.2,2ebaef3983e3312733c1ae2b793b0a8ba3e1c4edeb7598e10328505280cf2f7c,,License :: OSI Approved :: MIT License,1
+certifi,2026.10.23,e9b54de76e530bb6cf0ccd036787103acb58fd42ba930ea8bf948ddbaa2f61d1,,License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0),1
+cffi,2.1.1,42f6930c31dc7f50732c9ae793c2786c7b6b044195967bbdde40bb9be81c4cc0,MIT-0,,1
+cftime,1.6.6.1,e4ed505118cbffec8ca6b59636f283d55df1675a3f092bc2d276f917a04af68a,MIT,,1
+charset-normalizer,3.5.2,87e50a3e7cb90af586b6c5faf23e302a970415ac73bd7bd90a515a04b427ef96,,,1
+click,8.5.1,8bb5376d2006950386f8c6427613334a2acadc5f559cb80e638d00b4df957e37,BSD-3-Clause,,1
+click-plugins,1.1.1.2,008d65743833ffc1f5417bf0e78e8d2c23aab04d9745ba817bd3e71b0feb6aa6,,License :: OSI Approved :: BSD License,1
+cligj,0.7.2,c1ca117dbce1fe20a5809dc96f01e1c2840f6dcc939b3ddbb1111bf330ba82df,,,1
+cloudpickle,3.1.2,9acb47f6afd73f60dc1df93bb801b472f05ff42fa6c84167d25cb206be1fbf4a,,License :: OSI Approved :: BSD License,1
+colorama,0.4.6,4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6,,License :: OSI Approved :: BSD License,1
+comm,0.2.3,c615d91d75f7f04f095b30d1c1711babd43bdc6419c1be9886a85f2f4e489417,,License :: OSI Approved :: BSD License,1
+contextily,1.7.1,82ca36a4a51cf49e43700ad1113b50531b3637e4f12b407b54e0a1fd8950a49c,BSD-3-Clause,,1
+contourpy,1.3.3,3519428f6be58431c56581f1694ba8e50626f2dd550af225f82fb5f5814d2a42,,License :: OSI Approved :: BSD License,1
+cryptography,50.0.2,7afa5a6602a9f29af1f3a2965f831bae7c9d5d597b7cbb716d41ab3b7d89879c,Apache-2.0 OR BSD-3-Clause,,3
+cycler,0.12.1,85cef7cff222d8644161529808465972e51340599459b8ac3ccbac5a854e0d30,,License :: OSI Approved :: BSD License,1
+cyclopts,5.3.3,b16ae3619f9447f6b7e42834586e2def254b940ce0b39f82eaf3cfee788a924f,Apache-2.0,License :: OSI Approved :: Apache Software License,1
+debugpy,1.8.22,1e76339d5510bc17e9181dba9577508afcb21aad5728f1a55ef74d7d97d255f3,,License :: OSI Approved :: MIT License,2
+decorator,5.3.1,f47fe6fdbd2edd623ecfe36875d37aba411624e2670dd395dddae1358689bb3c,,,1
+defusedxml,0.7.1,a352e7e428770286cc899e2542b6cdaedb2b4953ff269a210103ec58f6198a61,,License :: OSI Approved :: Python Software Foundation License,1
+docstring_parser,0.18.0,b3fcbed555c47d8479be0796ef7e19c2670d428d72e96da63f3a40122860374b,,License :: OSI Approved :: MIT License,1
+earthengine-api,1.7.51,95941824ac2d48497382a077dfc2437a3a0de915be5ccd10ce48c87da6ed920b,,License :: OSI Approved :: Apache Software License,1
+eerepr,0.1.4,f506b55292bed827ed5496bea84dd944aa70121e28842cc888412f37f7ded9dc,,,0
+executing,2.3.0,736e859c9f8701f11fcf516856f26f562e04776387824b43a35a1dfe21c84122,,License :: OSI Approved :: MIT License,1
+ezdxf,1.4.5,b5b637c9bdb510e2ed9d49ddd841595dbf98c0181935387c5c9b841ce8418ff1,,License :: OSI Approved :: MIT License,1
+fastjsonschema,2.22.3,f670b443830b75aca3f00b75949efa20f4b2a80302ec7a21505c28dd54cffd43,,License :: OSI Approved :: BSD License,1
+fiona,1.10.1,30594c0cd8682c43fd01e7cdbe000f94540f8fa3b7cb5901e805c88c4ff2058b,,License :: OSI Approved :: BSD License,2
+flatbuffers,25.12.19,7634f50c427838bb021c2d66a3d1168e9d199b0607e6329399f04846d42e20b4,,License :: OSI Approved :: Apache Software License,0
+folium,0.20.0,f0bc2a92acde20bca56367aa5c1c376c433f450608d058daebab2fc9bf8198bf,,License :: OSI Approved :: MIT License,1
+fonttools,4.68.0,35425bba603cf9d72c9f3c173ea6c98632164f3bdfb1ce1a3dcc928979c6ec6d,,,2
+fqdn,1.6.0,6c793c312ccfa29981e1135b3ef5e1277ebe639731a6b0f7350d90e96e63f0b4,MPL-2.0,,1
+future,1.0.0,929292d34f5872e70396626ef385ec22355a1fae8ad29e1a734c3e43f9fbc216,,License :: OSI Approved; License :: OSI Approved :: MIT License,1
+geemap,0.37.2,be717818f305317302d2be6fb7bbf7dde7dfe8bfa1af71325e745098678a764e,,License :: OSI Approved :: MIT License,1
+geocoder,1.38.1,a733e1dfbce3f4e1a526cac03aadcedb8ed1239cf55bd7f3a23c60075121a834,,License :: OSI Approved :: Apache Software License,0
+geographiclib,2.1,e2a873b9b9e7fc38721ad73d5f4e6c9ed140d428a339970f505c07056997d40b,,,1
+geopandas,1.2.0,948fd57df4f713697d5cce149333c0e4714965320c9f5ffa411666c577962eba,BSD-3-Clause,,1
+geopy,2.5.0,8ad8cc226b505ca4d272ae9a2eeba08b8a2c565fc9a04eaefc33ad49c32b51aa,,License :: OSI Approved :: MIT License,1
+google-api-core,2.44.0,8cb9ad8af28de9bc75121686d69b697ce0937e21fad2ad80c9a7e89f22b26e1f,,License :: OSI Approved :: Apache Software License,1
+google-api-python-client,2.201.0,2d9bf1ba3f12eee8ed3d0f1791ce0605d163432f496baa72d3677faa2cf097d6,,License :: OSI Approved :: Apache Software License,1
+google-auth,2.62.1,015399a5abde39033c69404cc1c079e6d4c2de2993e164c9f4eac6e5376ad72b,,License :: OSI Approved :: Apache Software License,1
+google-auth-httplib2,0.4.4,bbe5d7b2401bb3a4017f4720e1e91bd273ab9a2bb60b84e65edbc0de127852da,,License :: OSI Approved :: Apache Software License,1
+google-cloud-core,2.8.0,e235b0952f7ffe7b9c71a4cf96b506d9cfb557e22557c412f0df9b7068b5d007,,License :: OSI Approved :: Apache Software License,1
+google-cloud-storage,3.17.1,287c7919d7bcda710eae6f6b60c756e89140475d9a4daec01b6174e737488ca8,,License :: OSI Approved :: Apache Software License,1
+google-crc32c,1.9.0,43a2dc26f9be213fbe0b4fc4a1088c5d45cbfcb3247420ccc820f0fc3edeea86,,,1
+google-resumable-media,2.11.0,f43d15e6a7f818f762eaead0f369c551f8275a4179c9d6225d0d259f49b87b5d,,License :: OSI Approved :: Apache Software License,1
+googleapis-common-protos,1.76.0,59e13344a9f3651aa201a03e2bee815a3bf43a4baf1f9ff8a9b62a840ce25fac,Apache-2.0,,1
+h11,0.16.0,63cf8bbe7522de3bf65932fda1d9c2772064ffb3dae62d55932da54b31cb6c86,,License :: OSI Approved :: MIT License,1
+h3,4.5.0,362efd509ed8899e75a5fb43ea39745103fac13a65ef6bb1971f043a562c90ef,,License :: OSI Approved :: Apache Software License,1
+h5py,3.16.0,17d1f1630f92ad74494a9a7392ab25982ce2b469fc62da6074c0ce48366a2999,BSD-3-Clause,,3
+httpcore,1.0.9,2d400746a40668fc9dec9810239072b40b4484b640a8c38fd654a024c7a1bf55,BSD-3-Clause,License :: OSI Approved :: BSD License,1
+httplib2,0.32.1,82e7a6ab08fcb27879864ddf63dbb529fb032ca336c331cb1597d6dd8b47c92e,,License :: OSI Approved :: MIT License,1
+httpx,0.28.1,d909fcccc110f8c7faf814ca82a9a4d816bc5a6dbfea25d6591d6985b8ba59ad,,License :: OSI Approved :: BSD License,1
+idna,3.20,ab7ae7122974553370f0bdb919e1a960b2cd1bc1ef0276416d896db81c14582c,BSD-3-Clause,,1
+ipyevents,2.0.4,e532e05b037f70373850723f483d2830cb8a633e5aa19637ee9e7adaf41421f1,,License :: OSI Approved :: BSD License,3
+ipyfilechooser,0.6.0,4555c24b30b819c91dc0ae5e6f7e4cf8f90e5cca531a9209a1fe4deee288d5c5,,License :: OSI Approved :: MIT License,1
+ipykernel,7.4.0,a6757f790ddc5a6006b813d82da1a9dbb65b3a00f2b6607df776418c6566ec1c,BSD-3-Clause,,1
+ipyleaflet,0.20.0,b4c20ddc0b17d68e226cd3367ca2215a4db7e2b14374468c0eeaa54b53e4d173,,License :: OSI Approved :: MIT License,1
+ipython,9.18.1,997ce9140d374531a61069c70c0f9ef299d6dd3559ea0f94b8af589726e3c1d5,BSD-3-Clause,,2
+ipython-genutils,0.2.0,72dd37233799e619666c9f639a9da83c34013a73e8bbc79a7a6348d93c61fab8,,License :: OSI Approved :: BSD License,0
+ipython_pygments_lexers,1.1.1,a9462224a505ade19a605f71f8fa63c2048833ce50abc86768a0d81d876dc81c,,License :: OSI Approved :: BSD License,1
+ipywidgets,7.8.5,8055fe314edd4c101a5f1ea230620ef5e315b0ca87f940264b4eac1faf9746ef,,License :: OSI Approved :: BSD License,1
+isoduration,20.11.0,b2904c2a4228c3d44f409c8ae8e2370eb21a26f7ac2ec5446df141dde3452042,,License :: OSI Approved :: ISC License (ISCL),1
+jedi,0.20.1,0fb16d86c4a4c73c37ba518c77419975e30fcc620658a8d14fbb5720cdd34142,,License :: OSI Approved :: MIT License,3
+Jinja2,3.1.6,85ece4451f492d0c13c5dd7c13a64681a86afae63a5f347908daf103ce6d2f67,,License :: OSI Approved :: BSD License,1
+joblib,1.6.0,3dbbf9f6e4b592a2357b854608e980fe6390d131d7a82f011a377ef2ebef7aba,BSD-3-Clause,,1
+json5,0.17.3,2c8b22a893c35cd6a3c5ccbf1dd1c7d02c25dc1b5897fea658f9bf08c2e05f9a,Apache-2.0,,1
+jsonpointer,3.10,3b08b9e5239f1b683e31c9561c350d75ce3fa8cdd407130ca8491fdb0c9e56f3,,License :: OSI Approved :: BSD License,1
+jsonschema,4.26.0,d489f15263b8d200f8387e64b4c3a75f06629559fb73deb8fdfb525f2dab50ce,MIT,,1
+jsonschema-specifications,2025.9.1,98802fee3a11ee76ecaca44429fda8a41bff98b00a0f2838151b113f210cc6fe,MIT,,1
+jupyter_builder,1.2.4,74fbafc8a7bedcc88415fab7da05727a7668f7dbdc069676f47790158e255f5a,Apache-2.0 AND BSD-2-Clause AND BSD-3-Clause AND ISC AND MIT,,4
+jupyter_client,8.10.0,5f73f24f22fa25192cfff6b23c051932a2473a797b05734aff495b392103e14e,,License :: OSI Approved :: BSD License,1
+jupyter_core,5.9.1,ebf87fdc6073d142e114c72c9e29a9d7ca03fad818c5d300ce2adc1fb0743407,BSD-3-Clause,,1
+jupyter-events,0.12.1,c366585253f537a627da52fa7ca7410c5b5301fe893f511e7b077c2d93ec8bcf,,License :: OSI Approved :: BSD License,1
+jupyter-leaflet,0.20.0,2e27ce83647316424f04845e3a6af35e1ee44c177c318a145646b11f4afe0764,,License :: OSI Approved :: MIT License,6
+jupyter-lsp,2.3.1,71b954d834e85ff3096400554f2eefaf7fe37053036f9a782b0f7c5e42dadb81,,License :: OSI Approved :: BSD License,1
+jupyter_server,2.21.1,2a6467606af7dbae2e7e31640030025969e15db6a649eae334af90415dc71dca,,License :: OSI Approved :: BSD License,1
+jupyter_server_terminals,0.5.4,55be353fc74a80bc7f3b20e6be50a55a61cd525626f578dcb66a5708e2007d14,,License :: OSI Approved :: BSD License,1
+jupyterlab,4.6.6,4261910ccf1ecad6e0b3ca0debe96d4fde9735bfc9707509c125aab850e06b81,,License :: OSI Approved :: BSD License,3
+jupyterlab_pygments,0.3.0,841a89020971da1d8693f1a99997aefc5dc424bb1b251fd6322462a1b8842780,,License :: OSI Approved :: BSD License,2
+jupyterlab_server,2.28.1,4bd36c7c11d872e15cefa4951e12380a47e6901687165332dd50a007cb367ad9,,License :: OSI Approved :: BSD License,1
+jupyterlab_widgets,1.1.11,840e538021d87e020a8e7b786597f088431f4ebd8308655555e126c3950a1b27,,License :: OSI Approved :: BSD License,7
+kiwisolver,1.5.1,1a7587dc335f2c0f5bd577fd0540bd16c66006bdb60f759a1059f025e6c4f071,,License :: OSI Approved :: BSD License,1
+lark,1.3.1,c629b661023a014c37da873b4ff58a817398d12635d3bbb2c5a03be7fe5d1e12,,License :: OSI Approved :: MIT License,1
+llvmlite,0.50.0,ffe46ef508df226e54b5fe1f7bf11122e5297bcdbb3902cc5b670a429d56ff47,,,2
+lxml,6.1.3,7ae4949f212a53b007dbc355884fda122545c5764a54256c9217e419a62a6559,,,2
+mapbox_earcut,2.1.0,010531c21c3ebbe9f52b185e023aa9132a496bd57a6e113bafd7ce4b41d05c7b,,License :: OSI Approved :: ISC License (ISCL),1
+markdown-it-py,4.2.0,9f7ebbcd14fe59494226453aed97c1070d83f8d24b6fc3a3bcf9a38092641c4a,,License :: OSI Approved :: MIT License,2
+MarkupSafe,3.0.4,fdb4ca07ab75ffadab4a8b135ad59cdbb3156b99310f3d565370da74a15d6bd3,BSD-3-Clause,,1
+matplotlib,3.11.2,a24d5fd36e4f0e742c3851dcd20810e56a95633a342e4bf6cb591c678e8fe61f,,License :: OSI Approved :: Python Software Foundation License,3
+matplotlib-inline,0.2.2,3c821cf1c209f59fb2d2d64abbf5b23b67bcb2210d663f9918dd851c6da1fcf6,BSD-3-Clause,,1
+mdurl,0.1.2,84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8,,License :: OSI Approved :: MIT License,1
+mercantile,1.2.1,30f457a73ee88261aab787b7069d85961a5703bb09dc57a170190bc042cd023f,,License :: OSI Approved :: BSD License,1
+mistune,3.4.0,d03cec4c8620f21517a996d82d14f3b59c30d79bda2cc6c56bd32b839f18ce6b,,License :: OSI Approved :: BSD License,1
+morecantile,7.1.0,1a6fd28a22467a6ec3fef1dfc4659d892a48a3c7e5e4acdceff68c6cc7956b0b,,License :: OSI Approved :: MIT License,1
+narwhals,2.28.0,1f69d6385ec30e2fa6e1fdeb37c562ecabd0f713f6f3e3b58a668c5c9df9567f,MIT,,1
+nbclient,0.11.0,ef7fa0d59d6e1d41103933d8a445a18d5de860ca6b613b87b8574accdb3c2895,,License :: OSI Approved :: BSD License,1
+nbconvert,7.17.2,6a143c11c00bf831604da4b1be4347d36ea52367057eb920135d69bc2862fed2,,License :: OSI Approved :: BSD License,1
+nbformat,5.11.1,cc6698fa75f4fab8755ead786317815f13a6fee3b53311c0abb1a8b51d52f7ec,,License :: OSI Approved :: BSD License,1
+nest-asyncio2,1.7.4,86e77b52c3d1496b294af3c944b44213b9b82a12a5ee590c0acc4ca4692ef6c7,,License :: OSI Approved :: BSD License,1
+netCDF4,1.7.5.1.post1,5ed5cc38606a7588afbca1f855a606cc6afe13eb7d56fa311aadff0ecfdb911d,MIT,,1
+networkx,3.6.1,d47fbf302e7d9cbbb9e2555a0d267983d2aa476bac30e90dfbe5669bd57f3762,BSD-3-Clause,,1
+notebook,7.6.5,b27b4af6e410e7456cfffc6fb5a764dcfb7a331408907d483024d6ddb5ec05f2,,License :: OSI Approved :: BSD License,3
+notebook_shim,0.2.4,411a5be4e9dc882a074ccbcae671eda64cceb068767e9a3419096986560e1cef,,License :: OSI Approved :: BSD License,1
+numba,0.68.1,e5a2d544d8a2da45f9cc5856ed794c31f133ada51ef7a734a9b7cd4596e1887f,,License :: OSI Approved :: BSD License,2
+numpy,2.4.6,1e254a00cdf42b1e4d5b3d68d33af63268d41340d8885df2ab6470f2e1500147,BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0,,20
+opentelemetry-api,1.45.2,2cbd737377e710ee740d261c94e93fa0f08e6d037c18f17513cc0a2d94479a34,Apache-2.0,,1
+orjson,3.13.0,a0377d6962fa431c93ecd78fdea771bb62ec545b24ee0c5d4e32acf2260af259,MPL-2.0 AND (Apache-2.0 OR MIT),License :: OSI Approved :: Apache Software License; License :: OSI Approved :: MIT License; License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0),3
+osmnx,2.1.1,6680c98312a8c327dea01da8ec59328bf1d7b0e0cab42db6ce500d0cb83b87e5,MIT,,1
+overrides,7.7.0,c7ed9d062f78b8e4c1a7b70bd8796b35ead4d9f510227ef9c5dc7626c60d7e49,,,1
+overturemaps,2.1.0,cbd5c7540a7782f0bdbdf26c2a74240a3ab218a69cf0ac9e99e1c5595442ffd4,MIT,,1
+packaging,26.3,d7193f7c8e4e93f444fde0262bf90af30e16fa0ad0ad44cb553c87339b23cd1c,Apache-2.0 OR BSD-2-Clause,,3
+pandas,2.3.3,f086f6fe114e19d92014a1966f43a3e62285109afe874f067f5abbdcbb10e59c,,License :: OSI Approved :: BSD License,1
+pandocfilters,1.5.1,93be382804a9cdb0a7267585f157e5d1731bbe5545a85b268d6f5fe6232de2bc,,License :: OSI Approved :: BSD License,1
+parso,0.8.7,a8926eb2a1b915486941fdbd31e86a4baf88fe8c210f25f2f35ecec5b574ca1c,,License :: OSI Approved :: MIT License,1
+pillow,13.0.0,d7710eb676e9bb68965cb045be0d333b4c0d7f9dfbaa7fbf121385b1588683d3,MIT-CMU,,1
+platformdirs,4.14.5,8e778c6fa421516f4d3369449f8df3b0e1b72c0e0005fe88e3ec772d0a14e750,MIT,,1
+plotly,7.1.0,dbb7fa18afce40d0a8e80d1bf162eceb3faa0ce5a77fe741ad09a74cf78f53f3,MIT,License :: OSI Approved :: MIT License,3
+pooch,1.9.0,f265597baa9f760d25ceb29d0beb8186c243d6607b0f60b83ecf14078dbc703b,BSD-3-Clause,,1
+prometheus_client,0.26.0,fa93d06737aa02bacd05794768508bb97d2fbee28cb3bca04eaae92f0ca953d6,Apache-2.0 AND BSD-2-Clause,,2
+prompt_toolkit,3.0.53,01c0891d7f9237d5e339f7d3e42cdae80b7534abb1c7c0e3352efba6231492f2,,License :: OSI Approved :: BSD License,1
+proto-plus,1.29.0,8acd070469a7aaf43f440b022ef9757c8cac1a9f866e933f59ae98669ddc6c8b,,License :: OSI Approved :: Apache Software License,1
+protobuf,7.36.2,a300819d441e078a5608c0d3c709796bb548136058fda017ae51d425b44fd353,,,1
+psutil,7.2.2,eb7e81434c8d223ec4a219b5fc1c47d0417b12be7ea866e24fb5ad6e84b3d988,,,1
+psygnal,0.16.1,a83647146a550b2c1754ebf80bec8529b7031eab77b81be8264b513d4f6606d8,,License :: OSI Approved :: BSD License,1
+pure_eval,0.2.4,96cae060a313cfaad51bb761278bfb0e62dc0248d9315a81173752dc546cd37a,,License :: OSI Approved :: MIT License,1
+py-vox-io,0.1,fcfe119838ae1b70b6b7ef27cfcbda117572c451929e124e2870ff609a4407a9,,,0
+pyarrow,26.0.1,5f681458e4fb81aefef50d3a8a432fe92f8480a87693616f9d95e95ceac8844c,Apache-2.0,,2
+pyasn1,0.6.5,4017b0fce125096b8573b39c989fdb1a4b19cf761e683398184550fea0e66587,,,1
+pyasn1_modules,0.4.2,29253a9207ce32b64c3ac6600edc75368f98473906e8fd1043bd6b5b1de2c14a,,License :: OSI Approved :: BSD License,1
+pycountry,26.2.16,115c4baf7cceaa30f59a4694d79483c9167dbce7a9de4d3d571c5f3ea77c305a,LGPL-2.1-only,License :: OSI Approved :: GNU Lesser General Public License v2 (LGPLv2),1
+pycparser,3.12,a076f3f489b39b43ed13563a1dafe42447445bec2e294154ec5c57fcdda4c85e,BSD-3-Clause,,1
+pydantic,2.14.3,3f7b347782ab7e4cf4c798496ae3a82787d9f21ec12676a9c564355eeef8daa8,MIT,,1
+pydantic_core,2.50.4,15bece43a02ad543c621c8305e67dedb5f27d378c5ba741e5a2c36523f8ef37f,MIT,,1
+pyfiglet,1.0.4,65b57b7a8e1dff8a67dc8e940a117238661d5e14c3e49121032bd404d9b2b39f,,License :: OSI Approved :: MIT License,1
+Pygments,2.21.0,2363c69b61c4a97c838da3b130dcd6468f4848992b21a82f2a63ec34377137d9,BSD-2-Clause,,1
+pyogrio,0.13.0,1b91f6d6e6757a6ea84b9459d24f479dcb52bbf4ebcdb16baf39e49d2836a1cf,,License :: OSI Approved :: MIT License,2
+pyparsing,3.3.3,ece8c00a69cf01b45d0b1dedabb469c90d8caf996d4fda40f147627a122849a4,MIT,,1
+pyperclip,1.11.0,299403e9ff44581cb9ba2ffeed69c7aa96a008622ad0c46cb575ca75b5b84273,,License :: OSI Approved :: BSD License,1
+pyproj,3.7.2,0b7cb633565129677b2a183c4d807c727d1c736fcb0568a12299383056e67433,MIT,,2
+pyshp,3.1.6,be8cd9436dcbde477c63ea789f7dcdea3af19f17ea84f2744bfc12efe9145d1e,MIT,,1
+python-box,8.0.0,f928a2329dbae535cfe35c3cdc923d39c67da92290f9425f797b3f5b5a16f22a,MIT,,1
+python-dateutil,4.0.0,a5e246f79eb80475e691bf93862cead98decd8a498cf53ba0516fcdc0f50dc1c,BSD-3-Clause,,1
+python-json-logger,4.2.0,158a52126fcd6869e09574d2b66272666f3dc8f468c62637ef9a1fa883719cb9,BSD-2-Clause,,1
+pytz,2026.6,7fed3fee8fd6bd4a2b7b75a8d56021d0624127bf69bd5691f115db929ac570b3,,License :: OSI Approved :: MIT License,1
+pyvista,0.49.2,63f78495b30e146c9d1debeca7fa44c7a3935cc9f9ded8638b809ef955fc167a,MIT,,1
+pyvista-validation,0.2.2,9ee46b4177e6b8fcc5d750d9c471d30fa05f1384668a67cef0b19a700a797659,MIT,,1
+pywinpty,3.1.2,a58997fa8519694725dca4a297aa7bebada3675263742cfb12fbc5eb09d466e7,,License :: OSI Approved :: MIT License,1
+PyYAML,6.0.3,9f3bfb4965eb874431221a3ff3fdcddc7e74e3b07799e0e84ca4a0f867d449bf,,License :: OSI Approved :: MIT License,1
+pyzmq,27.3.0,df98c790f86b6aa2378b4bb94dec7b85b0adb195b880b41e429a4990aed2a8c9,BSD-3-Clause,,4
+rasterio,1.4.4,0718630f607be2f5742d8e4b34b434746fd788a192d77eefc9bb924399fea802,,License :: OSI Approved :: BSD License,2
+ratelim,0.1.6,e1a7dd39e6b552b7cc7f52169cd66cdb826a1a30198e355d7016012987c9ad08,,,0
+referencing,0.37.0,381329a9f99628c9069361716891d34ad94af76e461dcb0335825aecc7692231,MIT,,1
+requests,2.34.2,2a0d60c172f83ac6ab31e4554906c0f3b3588d37b5cb939b1c061f4907e278e0,,License :: OSI Approved :: Apache Software License,2
+reverse_geocoder,1.5.1,2a2e781b5f69376d922b78fe8978f1350c84fce0ddb07e02c834ecf98b57c75c,,,0
+rfc3339-validator,0.1.4,24f6ec1eda14ef823da9e36ec7113124b39c04d50a4d3d3a3c2859577e7791fa,,License :: OSI Approved :: MIT License,1
+rfc3986-validator,0.1.1,2f235c432ef459970b4306369336b9d5dbdda31b510ca1e327636e01f528bfa9,,License :: OSI Approved :: MIT License,1
+rfc3987-syntax,1.1.0,6c3d97604e4c5ce9f714898e05401a0445a641cfa276432b0a648c80856f6a3f,MIT,License :: OSI Approved :: Apache Software License,1
+rich,15.0.0,33bd4ef74232fb73fe9279a257718407f169c09b78a87ad3d296f548e27de0bb,,License :: OSI Approved :: MIT License,1
+rich-rst,2.2.0,1ea1c43813dc4a8d86475fce27ffb74e0ada3d4656c9f8130ba2a59868055fe9,MIT,,3
+rio-cogeo,7.0.4,ea23c1a1aedb9a98b18f9efebaefc21d89eb6bbc4457179c14352007e1c8cae9,,License :: OSI Approved :: BSD License,1
+rpds-py,2026.9.1,ce4d4f52e2a4324396caddbd45a97d8d7be5f42edd25d2355282a9c34f9b2f7f,MIT,,1
+rtree,1.4.1,efe125f416fd27150197ab8521158662943a40f87acab8028a1aac4ad667a489,MIT,,1
+scikit-learn,1.9.1,220fa18152852a5ce29c49e1eaba9d44ec44631cd2e5cf65f5a40eafa5ab3412,BSD-3-Clause,,3
+scipy,1.17.1,d30e57c72013c2a4fe441c2fcb8e77b14e152ad48b5464858e07e2ad9fbfceff,,License :: OSI Approved :: BSD License,5
+scooby,0.12.1,4e3e474a3542fd1d19d775cea70d19ce58a005102c0206955dddbbd33f07eb4e,MIT,,1
+seaborn,0.13.2,636f8336facf092165e27924f223d3c62ca560b1f2bb5dff7ab7fad265361987,,License :: OSI Approved :: BSD License,1
+Send2Trash,2.1.0,0da2f112e6d6bb22de6aa6daa7e144831a4febf2a87261451c4ad849fe9a873c,BSD-3-Clause,,1
+shapely,2.2.0,806d399418b23eee7241736d572ad1e0b784782f9241d7c8e2cfceb00787831d,BSD-3-Clause,,3
+six,1.17.0,4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274,,License :: OSI Approved :: MIT License,1
+soupsieve,4.0.1,2e68cf7dd5a0f29d81f9d485275ccf294e6475f615e211895d91cb81f8614f04,MIT,License :: OSI Approved :: MIT License,1
+stack-data,0.6.3,d5558e0c25a4cb0853cddad3d77da9891a08cb85dd9f9f91b9f8cd66e511e695,,License :: OSI Approved :: MIT License,1
+terminado,0.18.1,a4468e1b37bb318f8a86514f65814e1afc977cf29b3992a4500d9dd305dcceb0,,License :: OSI Approved :: BSD License,1
+threadpoolctl,3.8.0,f1b49c82704d50f13ffae019c727b0fa4f6791a58f48f06a09c45face1be66da,BSD-3-Clause,,1
+timezonefinder,9.0.0,c21c47f1463320eda57c4cbb5b80e875b80e64d6b78e73477e0f8bdc1a112c04,,,1
+timezonefinder-data,3.2026.3.post1,d71b3814362e69cb208f8d30249efe2fa0d2cd55579679c5ae1727cd38840606,,,1
+tinycss2,1.5.1,3415ba0f5839c062696996998176c4a3751d18b7edaaeeb658c9ce21ec150661,,License :: OSI Approved :: BSD License,1
+tornado,6.6,48f26ed9d7beb64e5f06adc864524e581ab6d62ba8ff46eaaa1ac2d0e6d753fd,,License :: OSI Approved :: Apache Software License,1
+tqdm,4.70.1,c293e525e6fef9c20e8728fd4612df02a0aa31bb5fe91ecd93e123b1b7bffa73,,,1
+traitlets,5.16.1,f775618166caa0396c8e337099240f2bd3e5e917d203b2e6fbe21a58d3cb1f6b,,License :: OSI Approved :: BSD License,1
+traittypes,0.2.3,49016082ce740d6556d9bb4672ee2d899cd14f9365f17cbb79d5d96b47096d4e,,License :: OSI Approved :: BSD License,1
+trimesh,5.2.0,04db2c7ec62afdd7763fb04c82bb5f257ddd984993a19ee83697f475fc58fd29,,License :: OSI Approved :: MIT License,1
+typing_extensions,4.16.0,481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8,PSF-2.0,,1
+typing-inspection,0.4.5,bc210535442b39e1bf2805e0c7a17dfd6a4ace760c84c7f7d16245d23a6b1c39,MIT,,1
+tzdata,2026.6,0a10eec6e13ef16b627fabed9a5f2ba61a62b1c67f327305f4e7e412a70b4aec,,,2
+uri-template,1.3.0,a44a133ea12d44a0c0f06d7d42a52d71282e77e2f937d8abd5655b8d56fc1363,,License :: OSI Approved :: MIT License,1
+uritemplate,4.2.0,962201ba1c4edcab02e60f9a0d3821e82dfc5d2d6662a21abd533879bdb8a686,,,1
+urllib3,2.8.0,0cf3cae568d36aa9576b28dfb35f11328f1cb974ca7647d9475ebb86c75ac6e3,MIT,,1
+vtk,9.7.2,eb9362c228bc6347c302301b486ff185a5fba5947f6e23fc76f776136f361885,,License :: OSI Approved :: BSD License,1
+wcwidth,0.9.4,f28d77153303450ee13ebbe888297e75cf532c754555b6cabafc9bdda16c421c,,License :: OSI Approved :: MIT License,1
+webcolors,25.10.0,032c727334856fc0b968f63daa252a1ac93d33db2f5267756623c210e57a4f1d,,License :: OSI Approved :: BSD License,1
+webencodings,0.6.1,7fab6269c8bf237c657876b52058ccb182e861518d1c695c1a9aaa8c1c105d5b,,License :: OSI Approved :: BSD License,1
+websocket-client,1.9.2,e1a673830a9c7bfa47b1cd3d5e4178f4c9651d80a4eab02c9c23a1c3ec6250ce,,,1
+widgetsnbextension,3.6.10,91a283c2bb50b43ae415dfe69fb026ece0c14e0102987fb53127c7a71e82417d,,License :: OSI Approved :: BSD License,1
+xarray,2026.9.0,fe349fa871628b1a0a5217af3fe1283a2862d5485156e6eda354fffb81c3bb7c,Apache-2.0,,1
+xyzservices,2026.9.1,af4fddac0f1fa5f7951834e2c58e10109e722be548cb1fe4f1a8e8b18cef4c09,BSD-3-Clause,,1

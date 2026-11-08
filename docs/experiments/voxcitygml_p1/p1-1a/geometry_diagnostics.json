@@ -1,0 +1,278 @@
+{
+  "profile": "ouem-p1-1a-single-F/v0.1",
+  "stages": {
+    "ENVIRONMENT": "PASS",
+    "SOURCE_IDENTITY": "PASS",
+    "GEOMETRY": "PASS_WITH_DOCUMENTED_MERGE",
+    "VERTICAL": "PASS_SOURCE_H_PRESERVED",
+    "VOXEL": "PASS_MESH_ONLY"
+  },
+  "environment": {
+    "python": "3.11.9",
+    "packages": {
+      "voxcitygml": "0.3.0",
+      "voxcity": "1.7.0",
+      "numpy": "2.4.6",
+      "numba": "0.68.1",
+      "trimesh": "5.2.0",
+      "pyproj": "3.7.2",
+      "mapbox-earcut": "2.1.0"
+    },
+    "voxcity_commit": "fa212656305328a9a657973bae26f352bfe813bc",
+    "voxcitygml_commit": "19628c033b1cbbbdee80fe781f516672765d1eee",
+    "meshlib": false,
+    "voxcitygml_source_files_matched": 29,
+    "voxcity_provenance": {
+      "expected_version": "1.7.0",
+      "expected_commit": "fa212656305328a9a657973bae26f352bfe813bc",
+      "verified": true,
+      "method": "PEP 610 VCS origin + installed source RECORD hashes",
+      "limitation": "Not an independent comparison with the upstream Git tree.",
+      "version": "1.7.0",
+      "commit": "fa212656305328a9a657973bae26f352bfe813bc",
+      "url": "https://github.com/kunifujiwara/VoxCity.git",
+      "checked_source_files": 136,
+      "source_content_sha256": "33e2bfdbc8a677f53154e8cd16295603819c68cf9f24c7a4cdfeb196bcbcd0bd"
+    }
+  },
+  "source_id": "bldg_09532951-4dab-457d-b1c6-56d509900d1b",
+  "ouem_id": "oub-c56cb020-c11c-5f9c-a37f-73018266a333",
+  "face_table": [
+    {
+      "polygon_id": "pol_2615e0b6-b772-4b9f-ab74-7c7c1fbed3e1",
+      "semantic": "RoofSurface",
+      "rings": [
+        {
+          "kind": "exterior",
+          "vertex_count_including_closure": 5,
+          "XYZ_reference": "original Polygon/ring in SHA-bound CityGML; full coordinates retained only in local run",
+          "XYZ_json_sha256": "121cbb05db0029b7f625a0be98cb2fbe212dc92953ec7619a33449127da75147"
+        }
+      ],
+      "standard_alignment": {
+        "reversed": false,
+        "cyclic_shift": 0,
+        "max_XY_error_m": 0.0
+      },
+      "triangle_indices": [
+        0,
+        1
+      ],
+      "triangles": 2,
+      "holes": 0
+    },
+    {
+      "polygon_id": "pol_115b6bc1-41b1-404d-ae7c-d54b3f5a9ddf",
+      "semantic": "WallSurface",
+      "rings": [
+        {
+          "kind": "exterior",
+          "vertex_count_including_closure": 5,
+          "XYZ_reference": "original Polygon/ring in SHA-bound CityGML; full coordinates retained only in local run",
+          "XYZ_json_sha256": "ad62b63db3e82ce39a3f72fb76d2e0d05555b945c221504d718bd25d010d615f"
+        }
+      ],
+      "standard_alignment": {
+        "reversed": false,
+        "cyclic_shift": 0,
+        "max_XY_error_m": 0.0
+      },
+      "triangle_indices": [
+        2,
+        3
+      ],
+      "triangles": 2,
+      "holes": 0
+    },
+    {
+      "polygon_id": "pol_a1a63b17-f504-4c0e-b5fc-378237ca4364",
+      "semantic": "WallSurface",
+      "rings": [
+        {
+          "kind": "exterior",
+          "vertex_count_including_closure": 5,
+          "XYZ_reference": "original Polygon/ring in SHA-bound CityGML; full coordinates retained only in local run",
+          "XYZ_json_sha256": "865b435edec728067d5a97116decf778e881392dbadf841b047b886810d61c01"
+        }
+      ],
+      "standard_alignment": {
+        "reversed": false,
+        "cyclic_shift": 0,
+        "max_XY_error_m": 0.0
+      },
+      "triangle_indices": [
+        4,
+        5
+      ],
+      "triangles": 2,
+      "holes": 0
+    },
+    {
+      "polygon_id": "pol_76bed7d2-5091-4ca8-9f96-cbcb1c55367e",
+      "semantic": "WallSurface",
+      "rings": [
+        {
+          "kind": "exterior",
+          "vertex_count_including_closure": 5,
+          "XYZ_reference": "original Polygon/ring in SHA-bound CityGML; full coordinates retained only in local run",
+          "XYZ_json_sha256": "c1e83a62d5b23fc42dc5118a0bc9ef6165b843a87fdb1ede615314e0d07a60d3"
+        }
+      ],
+      "standard_alignment": {
+        "reversed": false,
+        "cyclic_shift": 0,
+        "max_XY_error_m": 0.0
+      },
+      "triangle_indices": [
+        6,
+        7
+      ],
+      "triangles": 2,
+      "holes": 0
+    },
+    {
+      "polygon_id": "pol_5e08eff5-3241-4f7a-8bb3-34a8bd49cd5e",
+      "semantic": "GroundSurface",
+      "rings": [
+        {
+          "kind": "exterior",
+          "vertex_count_including_closure": 5,
+          "XYZ_reference": "original Polygon/ring in SHA-bound CityGML; full coordinates retained only in local run",
+          "XYZ_json_sha256": "31dfe4b15fb0ddba72a07e57b7bb0f9d55c144df9565d51ecc69efc939ff82ca"
+        }
+      ],
+      "standard_alignment": {
+        "reversed": false,
+        "cyclic_shift": 0,
+        "max_XY_error_m": 0.0
+      },
+      "triangle_indices": [
+        8,
+        9
+      ],
+      "triangles": 2,
+      "holes": 0
+    },
+    {
+      "polygon_id": "pol_d4135b35-dae2-4b30-a0bd-4b14eff00a33",
+      "semantic": "WallSurface",
+      "rings": [
+        {
+          "kind": "exterior",
+          "vertex_count_including_closure": 5,
+          "XYZ_reference": "original Polygon/ring in SHA-bound CityGML; full coordinates retained only in local run",
+          "XYZ_json_sha256": "524b7d663b89fd09a25ca0b745b9a19fbdf555af7354aeec22db4060ad0c2d43"
+        }
+      ],
+      "standard_alignment": {
+        "reversed": false,
+        "cyclic_shift": 0,
+        "max_XY_error_m": 0.0
+      },
+      "triangle_indices": [
+        10,
+        11
+      ],
+      "triangles": 2,
+      "holes": 0
+    }
+  ],
+  "coordinates": {
+    "raw": "EPSG:6697 lat/lon/H",
+    "horizontal": "EPSG:6668 -> EPSG:6677 XY only",
+    "engine": "explicit projected metric XYZ; north-up rows, eastward columns",
+    "Z": "absolute source H; no DEM or vertical transform",
+    "standard_max_XY_error_m": 0.0,
+    "XY_tolerance_m": 1e-07
+  },
+  "triangulated": {
+    "vertices": 24,
+    "triangles": 12,
+    "bounds": [
+      [
+        -22581.789816972632,
+        -39849.32104117203,
+        24.888792
+      ],
+      [
+        -22569.672499974113,
+        -39846.654500172306,
+        27.0858
+      ]
+    ],
+    "area_m2": 107.8527971277263,
+    "signed_volume_m3": 51.11014714164776,
+    "watertight": false,
+    "is_volume": false,
+    "vertices_sha256": "5f480178f2f03bd010e03e195e43ebbef0191a91c56293dea5649816782535c5",
+    "faces_sha256": "15e4544087ac886e83ea2c6f84406b56b09370208d305b0ed3c2a2cae4bdf76b"
+  },
+  "repair": {
+    "method": "merge",
+    "watertight": true,
+    "stats": {
+      "vertices": 8,
+      "triangles": 12,
+      "bounds": [
+        [
+          -22581.789817,
+          -39849.321041,
+          24.888792
+        ],
+        [
+          -22569.6725,
+          -39846.6545,
+          27.0858
+        ]
+      ],
+      "area_m2": 107.85279712009044,
+      "signed_volume_m3": 51.11014713677772,
+      "watertight": true,
+      "is_volume": true,
+      "vertices_sha256": "17653b2644acc8f2317ef853fcc5326523da7038245fda0ee32ebdf4db254648",
+      "faces_sha256": "18fa7731622da2ba9f26405cdaee9e6e9845088b96d24075ae3f606f4ac08dd8"
+    },
+    "correspondence": {
+      "max_coordinate_delta_m": 1.723092282190919e-07,
+      "rounding_rule": "pinned merge precision=6; <=0.5e-6 m per coordinate + one source ULP",
+      "source_H_values_unchanged": true,
+      "all_triangles_preserved_ignoring_winding": true,
+      "arrays_identical": false,
+      "source_and_repaired_are_distinct": true
+    }
+  },
+  "voxel": {
+    "shape": [
+      6,
+      15,
+      6
+    ],
+    "building_voxels": 156,
+    "grid": {
+      "n_rows": 6,
+      "n_cols": 15,
+      "n_z": 6,
+      "min_x": -22583.0,
+      "max_x": -22568.0,
+      "min_y": -39851.0,
+      "max_y": -39845.0,
+      "min_z": 23.0,
+      "max_z": 29.0,
+      "voxel_size": 1.0
+    },
+    "sha256": "7813da706823b88436510a7e4fdec9c9483d002334cdfb1f4fbc6569205d2c00",
+    "trace": [
+      "repair:merge",
+      "occupancy:True"
+    ],
+    "DEM": "NOT_USED; no ground substitute",
+    "network_attempts": [],
+    "land_cover_canopy_water": "NOT_USED",
+    "API": "voxcitygml.voxelizer3d._voxelize_building_solid (pinned low-level private API)"
+  },
+  "P1-1b_READY": "CONDITIONAL_REVIEW_REQUIRED",
+  "scientific_validation": "NOT_VERIFIED",
+  "formal_acceptance": "NOT_VERIFIED",
+  "terrain_integration_ready": false,
+  "publication_scope": "Minimized projection of local diagnostics; raw XYZ omitted, original output SHA in manifest. No dataset redistribution."
+}
