@@ -1,0 +1,409 @@
+{
+  "label": "M",
+  "status": "PASS_MESH_ONLY",
+  "cases": {
+    "1m": {
+      "grid": {
+        "n_rows": 14,
+        "n_cols": 16,
+        "n_z": 11,
+        "min_x": -22535.0,
+        "max_x": -22519.0,
+        "min_y": -39924.0,
+        "max_y": -39910.0,
+        "min_z": 23.0,
+        "max_z": 34.0,
+        "voxel_size": 1.0
+      },
+      "shape": [
+        14,
+        16,
+        11
+      ],
+      "axis_order": "row south/col east/z up; metric EPSG:6677 XY + source absolute H",
+      "occupied_cells": 881,
+      "voxel_union_volume_m3": 881.0,
+      "interior_cells": 669,
+      "contact_shell_cells": 520,
+      "shell_only_cells": 212,
+      "interior_shell_overlap": 308,
+      "trace": [
+        "repair:merge",
+        "occupancy:True"
+      ],
+      "one_cell_padding_check": "PASS: core identical; extra occupancy=0",
+      "voxel_array_sha256": "88e8cb468074a7820256db2b1557eacc19997fd4715445af0bbc4f6cf6615139",
+      "sample_estimates": [
+        {
+          "method": "independent oriented solid-angle; full-domain subcell midpoints",
+          "subdivisions_per_axis": 2,
+          "sample_count": 19712,
+          "sample_counts": {
+            "tp": 4700,
+            "fp": 2342,
+            "fn": 0,
+            "tn": 12664,
+            "ambiguous_occupied": 6,
+            "ambiguous_empty": 0
+          },
+          "cell_categories": {
+            "occupied_all_samples_inside": 446,
+            "occupied_mixed_samples": 319,
+            "occupied_no_inside_samples": 116,
+            "occupied_with_ambiguous_samples": 4
+          },
+          "sampled_solid_volume_m3": [
+            587.5,
+            588.25
+          ],
+          "intersection_m3": [
+            587.5,
+            588.25
+          ],
+          "excess_m3": [
+            292.75,
+            293.5
+          ],
+          "missed_m3": [
+            0.0,
+            0.0
+          ],
+          "sampled_IoU": [
+            0.6668558456299659,
+            0.6677071509648127
+          ],
+          "limitation": "intervals cover ambiguous samples only; no bound on quadrature error",
+          "sampled_solid_minus_reference_m3": [
+            9.01071256551711,
+            9.76071256551711
+          ]
+        },
+        {
+          "method": "independent oriented solid-angle; full-domain subcell midpoints",
+          "subdivisions_per_axis": 3,
+          "sample_count": 66528,
+          "sample_counts": {
+            "tp": 15432,
+            "fp": 8355,
+            "fn": 0,
+            "tn": 42741,
+            "ambiguous_occupied": 0,
+            "ambiguous_empty": 0
+          },
+          "cell_categories": {
+            "occupied_all_samples_inside": 413,
+            "occupied_mixed_samples": 387,
+            "occupied_no_inside_samples": 81,
+            "occupied_with_ambiguous_samples": 0
+          },
+          "sampled_solid_volume_m3": [
+            571.5555555555555,
+            571.5555555555555
+          ],
+          "intersection_m3": [
+            571.5555555555555,
+            571.5555555555555
+          ],
+          "excess_m3": [
+            309.4444444444444,
+            309.4444444444444
+          ],
+          "missed_m3": [
+            0.0,
+            0.0
+          ],
+          "sampled_IoU": [
+            0.648757724807668,
+            0.648757724807668
+          ],
+          "limitation": "intervals cover ambiguous samples only; no bound on quadrature error",
+          "sampled_solid_minus_reference_m3": [
+            -6.933731878927347,
+            -6.933731878927347
+          ]
+        }
+      ],
+      "voxel_to_reference_volume_ratio": 1.5229322636329339
+    },
+    "0.5m": {
+      "grid": {
+        "n_rows": 28,
+        "n_cols": 32,
+        "n_z": 22,
+        "min_x": -22535.0,
+        "max_x": -22519.0,
+        "min_y": -39924.0,
+        "max_y": -39910.0,
+        "min_z": 23.0,
+        "max_z": 34.0,
+        "voxel_size": 0.5
+      },
+      "shape": [
+        28,
+        32,
+        22
+      ],
+      "axis_order": "row south/col east/z up; metric EPSG:6677 XY + source absolute H",
+      "occupied_cells": 5610,
+      "voxel_union_volume_m3": 701.25,
+      "interior_cells": 4888,
+      "contact_shell_cells": 2073,
+      "shell_only_cells": 722,
+      "interior_shell_overlap": 1351,
+      "trace": [
+        "repair:merge",
+        "occupancy:True"
+      ],
+      "one_cell_padding_check": "PASS: core identical; extra occupancy=0",
+      "voxel_array_sha256": "4342ccc847f40a85ac73ac40495dc4eef6ca0e63c4ed9632a18e9753e598570b",
+      "sample_estimates": [
+        {
+          "method": "independent oriented solid-angle; full-domain subcell midpoints",
+          "subdivisions_per_axis": 2,
+          "sample_count": 157696,
+          "sample_counts": {
+            "tp": 37801,
+            "fp": 7079,
+            "fn": 0,
+            "tn": 112816,
+            "ambiguous_occupied": 0,
+            "ambiguous_empty": 0
+          },
+          "cell_categories": {
+            "occupied_all_samples_inside": 4323,
+            "occupied_mixed_samples": 839,
+            "occupied_no_inside_samples": 448,
+            "occupied_with_ambiguous_samples": 0
+          },
+          "sampled_solid_volume_m3": [
+            590.640625,
+            590.640625
+          ],
+          "intersection_m3": [
+            590.640625,
+            590.640625
+          ],
+          "excess_m3": [
+            110.609375,
+            110.609375
+          ],
+          "missed_m3": [
+            0.0,
+            0.0
+          ],
+          "sampled_IoU": [
+            0.8422682709447415,
+            0.8422682709447415
+          ],
+          "limitation": "intervals cover ambiguous samples only; no bound on quadrature error",
+          "sampled_solid_minus_reference_m3": [
+            12.15133756551711,
+            12.15133756551711
+          ]
+        }
+      ],
+      "voxel_to_reference_volume_ratio": 1.2122091371993131
+    },
+    "1m_shift_xyz": {
+      "grid": {
+        "n_rows": 14,
+        "n_cols": 16,
+        "n_z": 11,
+        "min_x": -22534.5,
+        "max_x": -22518.5,
+        "min_y": -39923.5,
+        "max_y": -39909.5,
+        "min_z": 23.5,
+        "max_z": 34.5,
+        "voxel_size": 1.0
+      },
+      "shape": [
+        14,
+        16,
+        11
+      ],
+      "axis_order": "row south/col east/z up; metric EPSG:6677 XY + source absolute H",
+      "occupied_cells": 814,
+      "voxel_union_volume_m3": 814.0,
+      "interior_cells": 639,
+      "contact_shell_cells": 499,
+      "shell_only_cells": 175,
+      "interior_shell_overlap": 324,
+      "trace": [
+        "repair:merge",
+        "occupancy:True"
+      ],
+      "one_cell_padding_check": "PASS: core identical; extra occupancy=0",
+      "voxel_array_sha256": "78ed1e52dc3cd416654cc08e1e8ccea3c882ddd435e82b7575dc88bace2c5c47",
+      "sample_estimates": [
+        {
+          "method": "independent oriented solid-angle; full-domain subcell midpoints",
+          "subdivisions_per_axis": 2,
+          "sample_count": 19712,
+          "sample_counts": {
+            "tp": 4700,
+            "fp": 1806,
+            "fn": 0,
+            "tn": 13200,
+            "ambiguous_occupied": 6,
+            "ambiguous_empty": 0
+          },
+          "cell_categories": {
+            "occupied_all_samples_inside": 497,
+            "occupied_mixed_samples": 200,
+            "occupied_no_inside_samples": 117,
+            "occupied_with_ambiguous_samples": 3
+          },
+          "sampled_solid_volume_m3": [
+            587.5,
+            588.25
+          ],
+          "intersection_m3": [
+            587.5,
+            588.25
+          ],
+          "excess_m3": [
+            225.75,
+            226.5
+          ],
+          "missed_m3": [
+            0.0,
+            0.0
+          ],
+          "sampled_IoU": [
+            0.7217444717444718,
+            0.7226658476658476
+          ],
+          "limitation": "intervals cover ambiguous samples only; no bound on quadrature error",
+          "sampled_solid_minus_reference_m3": [
+            9.01071256551711,
+            9.76071256551711
+          ]
+        }
+      ],
+      "voxel_to_reference_volume_ratio": 1.4071133514156733
+    }
+  },
+  "source_id": "bldg_2bd71700-a145-46ff-b14f-ad60394ff253",
+  "ouem_id": "oub-cb250497-c12d-5fcc-9dca-e82c8b051398",
+  "semantic_counts": {
+    "GroundSurface": 1,
+    "RoofSurface": 30,
+    "WallSurface": 57
+  },
+  "polygon_ids": [
+    "pol_f79cfaff-d1da-4f84-8256-2a6928480420",
+    "pol_469c34a0-baf0-439b-8502-1cda75bde9c8",
+    "pol_9af5d995-7ce4-4cbe-ad22-af45a192906c",
+    "pol_b25819e3-cf45-45dc-8d5c-33f1c3c756b6",
+    "pol_27462859-7232-4203-9c14-694a7cd0348b",
+    "pol_45bec0ac-3121-4cf2-a289-401b8ca4a8c6",
+    "pol_5389c679-9ce5-4451-8fb4-ace97dd3b3d1",
+    "pol_36cebf7f-8996-4e38-8e8a-ba110c7fb89a",
+    "pol_8b3dfd86-9d90-4945-b5f9-216dc4e53dc5",
+    "pol_dda9c4aa-30aa-4e57-8820-6720bdaa287f",
+    "pol_f2c109dc-7a2a-40c1-8d8d-2699cc61f5e3",
+    "pol_a931d641-5fad-4843-a589-a27feaad7306",
+    "pol_69b212cd-bebd-4c39-8d18-f0258ecaa78f",
+    "pol_1c2f9b5b-fb98-425c-947c-a38b9230d38d",
+    "pol_61bbdaf7-a4ea-437c-9c88-46def6cdd2f7",
+    "pol_61137cc3-70a1-457d-be33-72a0810c3fa3",
+    "pol_49253263-d56f-488d-8469-c9269d330ec7",
+    "pol_dae88e9c-993f-4193-a8f4-b61dec161bbd",
+    "pol_4d536f5e-8d5b-47d6-8fa6-5cf0e856b77b",
+    "pol_67be9bbd-5119-4164-9247-a3d1df897911",
+    "pol_aeaa19bd-7bae-41d3-bc4e-4fabfb0fbd62",
+    "pol_34e4b520-2f1c-4270-bccb-6b9f511e4791",
+    "pol_83ded31f-a1a9-4e82-86c8-7465c9cc8487",
+    "pol_b8277c94-b007-43d1-80f3-ff853273027c",
+    "pol_66d78d55-10d4-4986-b63c-a38457db9b6c",
+    "pol_77eb82c0-7077-4305-8340-f436e8be901d",
+    "pol_a1f7145e-091e-43b9-bb2c-e0c2aee6d4ce",
+    "pol_ddae3e4c-7ce3-4eca-ae25-779c90748adc",
+    "pol_d03a98a7-baa8-4c27-bb11-43bf9118b91f",
+    "pol_b25d0bc8-ede9-48db-b392-f0af86027869",
+    "pol_86263663-1db6-41a5-a4fa-d6ede3b76489",
+    "pol_6d8f5430-a102-4046-b993-7b29a351dd0d",
+    "pol_ebc462fb-a641-4b1d-b6be-0eea049e5834",
+    "pol_198349ef-3e2b-444f-8c1a-2f66b542d621",
+    "pol_4dea5ecc-c6de-4c7b-9a3f-8a449c278e95",
+    "pol_ec12eaaf-3bcd-4f37-b85c-7f183331b115",
+    "pol_9cce95a4-0f23-4ab6-b975-66565f54d718",
+    "pol_c195e944-6bdb-4c03-b5ea-71fffd415584",
+    "pol_02fec63e-d0d1-4ae4-95bb-7d0dc0496ab2",
+    "pol_698b63cf-6883-4615-ad4c-fad63e380af2",
+    "pol_c495ca6b-eca6-4c4e-9691-5da6707cca06",
+    "pol_766e565c-4d42-43d4-85de-d64d00e0a58d",
+    "pol_468dacba-089d-4c8a-b32d-d88ee15a0ad0",
+    "pol_050ff504-b131-4549-ae29-d758a43b1ea7",
+    "pol_1d9fae0e-6d00-4548-8f41-30518045e3e3",
+    "pol_694c6d85-1d55-46c6-bc3a-175a18d8ca51",
+    "pol_6b4cf6fb-d4cb-4fcf-9c2a-ca4dd39be467",
+    "pol_59cbc58a-c8f2-44c8-adac-118d9a736131",
+    "pol_44ced5aa-086e-4755-a67f-87021eccf455",
+    "pol_73ea058d-7c8f-4133-bb03-9646c985a2f2",
+    "pol_8ef25136-9cb6-4772-9dba-a19c76594307",
+    "pol_5a28dc37-19ed-4d5f-b1b8-1ce71c9e4623",
+    "pol_fd2cc776-2b42-4fa9-a9d5-a25c53f0d05e",
+    "pol_a480a35d-b435-4adc-a332-c8f45c3cf986",
+    "pol_42bb1155-5637-4fc3-aa1c-96a657c9dea7",
+    "pol_46e06c08-5e12-4d69-bf01-9442183844fd",
+    "pol_25c1e72a-a99b-420b-beda-e506c3152609",
+    "pol_76995c57-f463-4c8a-8299-aecc76c0c5b4",
+    "pol_3fe1ab05-2936-4c19-843a-edaa2d2e7f14",
+    "pol_98dae481-977e-4e72-b178-9253d4c81c84",
+    "pol_5b03aa45-8dea-4e57-88e8-dd64f4d44923",
+    "pol_c54625b5-dbc1-4c5a-bd4f-75e77250990a",
+    "pol_77e53e8d-a468-4f8b-911c-ce74358a3b4f",
+    "pol_73bec3b1-4166-4f23-a833-1b0ca6fb0c43",
+    "pol_a9c66e2e-26f5-4bf7-9eaf-a2ffbee24d1f",
+    "pol_8e4eb731-3c94-4da6-9baf-00945a668890",
+    "pol_0d775961-28a0-4731-b250-c4bf0ed7fc27",
+    "pol_bf7c005f-a2a6-4217-83bf-cfba10a78622",
+    "pol_59d5b2f9-0250-4151-a45f-d3142de3730e",
+    "pol_ae72f1c1-5e19-47c7-85dc-7307d7815e6a",
+    "pol_fcb7f858-8bfe-4680-b3ea-96916fc204c5",
+    "pol_4adddd25-e85f-471b-af63-60a517f1de18",
+    "pol_c9640f43-a838-4334-b281-da438edc43bb",
+    "pol_6f471307-0b4e-4d06-980e-05785aaa552d",
+    "pol_e609cf0d-496b-41af-91e0-c2403ade61b8",
+    "pol_cdc3feaf-228a-4abc-a456-f434cfe068f6",
+    "pol_9af5c594-e917-4323-a5e1-790b3dc62b82",
+    "pol_a6bbda3f-a380-4057-a724-93a663a2efe8",
+    "pol_8270afee-4427-4a38-aca1-b8b70fef8207",
+    "pol_1471038d-daf5-4421-bccb-07fa64b9be62",
+    "pol_9080ff9b-398b-4339-9f8a-5bc613eba63c",
+    "pol_9c44969d-43b8-4fd2-a1c7-249a39efcc3d",
+    "pol_54ed1d65-4946-41c2-8474-50babf87095f",
+    "pol_89242305-246a-4bb2-96a4-21b7953db488",
+    "pol_518450d5-f8a2-4eaf-9038-87ef53f39a00",
+    "pol_8f735cf9-9fcf-4b90-a1ec-796fc6a907bf",
+    "pol_6237d28c-991d-4cfe-9e8c-7d794c573961",
+    "pol_647681b7-6439-4574-9b46-8a01f3c80250"
+  ],
+  "reference": {
+    "vertices": 56,
+    "triangles": 108,
+    "bounds": [
+      [
+        -22533.52,
+        -39922.25,
+        24.607191
+      ],
+      [
+        -22520.33,
+        -39911.96,
+        32.38
+      ]
+    ],
+    "area_m2": 429.52414555766336,
+    "signed_volume_m3": 578.4892874344829,
+    "watertight": true,
+    "is_volume": true,
+    "vertices_sha256": "424df6122d7e6d330df565062346bf8fd49b8451cf8dbe6afcb0ab0094c53fe5",
+    "faces_sha256": "1181db6d5964e7aab40e17974c1f8423e896d417b7531e2f0898980f20fc279e",
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0
+  },
+  "environment_analysis_ready": "CONDITIONAL_REVIEW_REQUIRED"
+}
