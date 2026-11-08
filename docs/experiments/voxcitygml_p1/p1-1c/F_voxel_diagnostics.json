@@ -1,0 +1,328 @@
+{
+  "label": "F",
+  "status": "PASS_MESH_ONLY",
+  "cases": {
+    "1m": {
+      "grid": {
+        "n_rows": 6,
+        "n_cols": 15,
+        "n_z": 6,
+        "min_x": -22583.0,
+        "max_x": -22568.0,
+        "min_y": -39851.0,
+        "max_y": -39845.0,
+        "min_z": 23.0,
+        "max_z": 29.0,
+        "voxel_size": 1.0
+      },
+      "shape": [
+        6,
+        15,
+        6
+      ],
+      "axis_order": "row south/col east/z up; metric EPSG:6677 XY + source absolute H",
+      "occupied_cells": 156,
+      "voxel_union_volume_m3": 156.0,
+      "interior_cells": 96,
+      "contact_shell_cells": 138,
+      "shell_only_cells": 60,
+      "interior_shell_overlap": 78,
+      "trace": [
+        "repair:merge",
+        "occupancy:True"
+      ],
+      "one_cell_padding_check": "PASS: core identical; extra occupancy=0",
+      "voxel_array_sha256": "7813da706823b88436510a7e4fdec9c9483d002334cdfb1f4fbc6569205d2c00",
+      "sample_estimates": [
+        {
+          "method": "independent oriented solid-angle; full-domain subcell midpoints",
+          "subdivisions_per_axis": 2,
+          "sample_count": 4320,
+          "sample_counts": {
+            "tp": 364,
+            "fp": 884,
+            "fn": 0,
+            "tn": 3072,
+            "ambiguous_occupied": 0,
+            "ambiguous_empty": 0
+          },
+          "cell_categories": {
+            "occupied_all_samples_inside": 36,
+            "occupied_mixed_samples": 22,
+            "occupied_no_inside_samples": 98,
+            "occupied_with_ambiguous_samples": 0
+          },
+          "sampled_solid_volume_m3": [
+            45.5,
+            45.5
+          ],
+          "intersection_m3": [
+            45.5,
+            45.5
+          ],
+          "excess_m3": [
+            110.5,
+            110.5
+          ],
+          "missed_m3": [
+            0.0,
+            0.0
+          ],
+          "sampled_IoU": [
+            0.2916666666666667,
+            0.2916666666666667
+          ],
+          "limitation": "intervals cover ambiguous samples only; no bound on quadrature error",
+          "sampled_solid_minus_reference_m3": [
+            -5.610147136777719,
+            -5.610147136777719
+          ]
+        },
+        {
+          "method": "independent oriented solid-angle; full-domain subcell midpoints",
+          "subdivisions_per_axis": 3,
+          "sample_count": 14580,
+          "sample_counts": {
+            "tp": 1260,
+            "fp": 2952,
+            "fn": 0,
+            "tn": 10368,
+            "ambiguous_occupied": 0,
+            "ambiguous_empty": 0
+          },
+          "cell_categories": {
+            "occupied_all_samples_inside": 28,
+            "occupied_mixed_samples": 40,
+            "occupied_no_inside_samples": 88,
+            "occupied_with_ambiguous_samples": 0
+          },
+          "sampled_solid_volume_m3": [
+            46.666666666666664,
+            46.666666666666664
+          ],
+          "intersection_m3": [
+            46.666666666666664,
+            46.666666666666664
+          ],
+          "excess_m3": [
+            109.33333333333333,
+            109.33333333333333
+          ],
+          "missed_m3": [
+            0.0,
+            0.0
+          ],
+          "sampled_IoU": [
+            0.29914529914529914,
+            0.29914529914529914
+          ],
+          "limitation": "intervals cover ambiguous samples only; no bound on quadrature error",
+          "sampled_solid_minus_reference_m3": [
+            -4.443480470111055,
+            -4.443480470111055
+          ]
+        }
+      ],
+      "voxel_to_reference_volume_ratio": 3.0522314792505436
+    },
+    "0.5m": {
+      "grid": {
+        "n_rows": 12,
+        "n_cols": 30,
+        "n_z": 12,
+        "min_x": -22583.0,
+        "max_x": -22568.0,
+        "min_y": -39851.0,
+        "max_y": -39845.0,
+        "min_z": 23.0,
+        "max_z": 29.0,
+        "voxel_size": 0.5
+      },
+      "shape": [
+        12,
+        30,
+        12
+      ],
+      "axis_order": "row south/col east/z up; metric EPSG:6677 XY + source absolute H",
+      "occupied_cells": 744,
+      "voxel_union_volume_m3": 93.0,
+      "interior_cells": 546,
+      "contact_shell_cells": 480,
+      "shell_only_cells": 198,
+      "interior_shell_overlap": 282,
+      "trace": [
+        "repair:merge",
+        "occupancy:True"
+      ],
+      "one_cell_padding_check": "PASS: core identical; extra occupancy=0",
+      "voxel_array_sha256": "7b2d327686853b073ac681e0ca665938c6b9bd0c00cbef47b5b4e63ca655d621",
+      "sample_estimates": [
+        {
+          "method": "independent oriented solid-angle; full-domain subcell midpoints",
+          "subdivisions_per_axis": 2,
+          "sample_count": 34560,
+          "sample_counts": {
+            "tp": 2984,
+            "fp": 2968,
+            "fn": 0,
+            "tn": 28608,
+            "ambiguous_occupied": 0,
+            "ambiguous_empty": 0
+          },
+          "cell_categories": {
+            "occupied_all_samples_inside": 300,
+            "occupied_mixed_samples": 152,
+            "occupied_no_inside_samples": 292,
+            "occupied_with_ambiguous_samples": 0
+          },
+          "sampled_solid_volume_m3": [
+            46.625,
+            46.625
+          ],
+          "intersection_m3": [
+            46.625,
+            46.625
+          ],
+          "excess_m3": [
+            46.375,
+            46.375
+          ],
+          "missed_m3": [
+            0.0,
+            0.0
+          ],
+          "sampled_IoU": [
+            0.5013440860215054,
+            0.5013440860215054
+          ],
+          "limitation": "intervals cover ambiguous samples only; no bound on quadrature error",
+          "sampled_solid_minus_reference_m3": [
+            -4.485147136777719,
+            -4.485147136777719
+          ]
+        }
+      ],
+      "voxel_to_reference_volume_ratio": 1.819599535707055
+    },
+    "1m_shift_xyz": {
+      "grid": {
+        "n_rows": 6,
+        "n_cols": 15,
+        "n_z": 6,
+        "min_x": -22582.5,
+        "max_x": -22567.5,
+        "min_y": -39850.5,
+        "max_y": -39844.5,
+        "min_z": 23.5,
+        "max_z": 29.5,
+        "voxel_size": 1.0
+      },
+      "shape": [
+        6,
+        15,
+        6
+      ],
+      "axis_order": "row south/col east/z up; metric EPSG:6677 XY + source absolute H",
+      "occupied_cells": 117,
+      "voxel_union_volume_m3": 117.0,
+      "interior_cells": 69,
+      "contact_shell_cells": 106,
+      "shell_only_cells": 48,
+      "interior_shell_overlap": 58,
+      "trace": [
+        "repair:merge",
+        "occupancy:True"
+      ],
+      "one_cell_padding_check": "PASS: core identical; extra occupancy=0",
+      "voxel_array_sha256": "c3155f7d569531295f91de314eb3e995dabc8ff11e62d501f0473a8bab34b9c8",
+      "sample_estimates": [
+        {
+          "method": "independent oriented solid-angle; full-domain subcell midpoints",
+          "subdivisions_per_axis": 2,
+          "sample_count": 4320,
+          "sample_counts": {
+            "tp": 364,
+            "fp": 572,
+            "fn": 0,
+            "tn": 3384,
+            "ambiguous_occupied": 0,
+            "ambiguous_empty": 0
+          },
+          "cell_categories": {
+            "occupied_all_samples_inside": 13,
+            "occupied_mixed_samples": 86,
+            "occupied_no_inside_samples": 18,
+            "occupied_with_ambiguous_samples": 0
+          },
+          "sampled_solid_volume_m3": [
+            45.5,
+            45.5
+          ],
+          "intersection_m3": [
+            45.5,
+            45.5
+          ],
+          "excess_m3": [
+            71.5,
+            71.5
+          ],
+          "missed_m3": [
+            0.0,
+            0.0
+          ],
+          "sampled_IoU": [
+            0.3888888888888889,
+            0.3888888888888889
+          ],
+          "limitation": "intervals cover ambiguous samples only; no bound on quadrature error",
+          "sampled_solid_minus_reference_m3": [
+            -5.610147136777719,
+            -5.610147136777719
+          ]
+        }
+      ],
+      "voxel_to_reference_volume_ratio": 2.2891736094379076
+    }
+  },
+  "source_id": "bldg_09532951-4dab-457d-b1c6-56d509900d1b",
+  "ouem_id": "oub-c56cb020-c11c-5f9c-a37f-73018266a333",
+  "semantic_counts": {
+    "GroundSurface": 1,
+    "RoofSurface": 1,
+    "WallSurface": 4
+  },
+  "polygon_ids": [
+    "pol_2615e0b6-b772-4b9f-ab74-7c7c1fbed3e1",
+    "pol_115b6bc1-41b1-404d-ae7c-d54b3f5a9ddf",
+    "pol_a1a63b17-f504-4c0e-b5fc-378237ca4364",
+    "pol_76bed7d2-5091-4ca8-9f96-cbcb1c55367e",
+    "pol_5e08eff5-3241-4f7a-8bb3-34a8bd49cd5e",
+    "pol_d4135b35-dae2-4b30-a0bd-4b14eff00a33"
+  ],
+  "reference": {
+    "vertices": 8,
+    "triangles": 12,
+    "bounds": [
+      [
+        -22581.789817,
+        -39849.321041,
+        24.888792
+      ],
+      [
+        -22569.6725,
+        -39846.6545,
+        27.0858
+      ]
+    ],
+    "area_m2": 107.85279712009044,
+    "signed_volume_m3": 51.11014713677772,
+    "watertight": true,
+    "is_volume": true,
+    "vertices_sha256": "17653b2644acc8f2317ef853fcc5326523da7038245fda0ee32ebdf4db254648",
+    "faces_sha256": "18fa7731622da2ba9f26405cdaee9e6e9845088b96d24075ae3f606f4ac08dd8",
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0
+  },
+  "F_P1_1a_voxel_identity": "PASS: exact array equality",
+  "environment_analysis_ready": "CONDITIONAL_REVIEW_REQUIRED"
+}

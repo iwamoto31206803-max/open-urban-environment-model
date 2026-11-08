@@ -1,0 +1,130 @@
+{
+  "scope": "Measured case times include voxelization, padding QA, output and sampling; exclude interpreter/import/input verification. Timing values are not deterministic output.",
+  "peak_memory": "NOT_MEASURED",
+  "runs": {
+    "p1-1c-final-d": {
+      "F/1m": {
+        "voxel_kernel_seconds": 4.253595600021072,
+        "case_total_seconds": 4.29409520002082,
+        "case_CPU_seconds": 4.4375
+      },
+      "F/0.5m": {
+        "voxel_kernel_seconds": 0.002855899976566434,
+        "case_total_seconds": 0.08325689996127039,
+        "case_CPU_seconds": 0.1875
+      },
+      "F/1m_shift_xyz": {
+        "voxel_kernel_seconds": 0.002979899989441037,
+        "case_total_seconds": 0.02025810000486672,
+        "case_CPU_seconds": 0.03125
+      },
+      "S/1m": {
+        "voxel_kernel_seconds": 0.005561599973589182,
+        "case_total_seconds": 3.3335525000002235,
+        "case_CPU_seconds": 3.40625
+      },
+      "S/0.5m": {
+        "voxel_kernel_seconds": 0.005879000062122941,
+        "case_total_seconds": 6.183947300072759,
+        "case_CPU_seconds": 6.28125
+      },
+      "S/1m_shift_xyz": {
+        "voxel_kernel_seconds": 0.00524909992236644,
+        "case_total_seconds": 0.8017096999101341,
+        "case_CPU_seconds": 0.890625
+      },
+      "M/1m": {
+        "voxel_kernel_seconds": 0.004753400105983019,
+        "case_total_seconds": 1.3109477000543848,
+        "case_CPU_seconds": 1.40625
+      },
+      "M/0.5m": {
+        "voxel_kernel_seconds": 0.005054700071923435,
+        "case_total_seconds": 2.454744000104256,
+        "case_CPU_seconds": 2.53125
+      },
+      "M/1m_shift_xyz": {
+        "voxel_kernel_seconds": 0.004580299952067435,
+        "case_total_seconds": 0.32649709994439036,
+        "case_CPU_seconds": 0.4375
+      },
+      "C/1m": {
+        "voxel_kernel_seconds": 0.0035204000305384398,
+        "case_total_seconds": 0.3661600999766961,
+        "case_CPU_seconds": 0.453125
+      },
+      "C/0.5m": {
+        "voxel_kernel_seconds": 0.0038828999968245625,
+        "case_total_seconds": 0.6362004999537021,
+        "case_CPU_seconds": 0.71875
+      },
+      "C/1m_shift_xyz": {
+        "voxel_kernel_seconds": 0.003613599925301969,
+        "case_total_seconds": 0.10468200000468642,
+        "case_CPU_seconds": 0.15625
+      }
+    },
+    "p1-1c-final-e": {
+      "F/1m": {
+        "voxel_kernel_seconds": 4.272938200039789,
+        "case_total_seconds": 4.315084300003946,
+        "case_CPU_seconds": 4.40625
+      },
+      "F/0.5m": {
+        "voxel_kernel_seconds": 0.0027975999983027577,
+        "case_total_seconds": 0.08347289997618645,
+        "case_CPU_seconds": 0.1875
+      },
+      "F/1m_shift_xyz": {
+        "voxel_kernel_seconds": 0.0028380000730976462,
+        "case_total_seconds": 0.02054689999204129,
+        "case_CPU_seconds": 0.03125
+      },
+      "S/1m": {
+        "voxel_kernel_seconds": 0.005887000006623566,
+        "case_total_seconds": 3.3259519001003355,
+        "case_CPU_seconds": 3.421875
+      },
+      "S/0.5m": {
+        "voxel_kernel_seconds": 0.006183900055475533,
+        "case_total_seconds": 6.187404999975115,
+        "case_CPU_seconds": 6.265625
+      },
+      "S/1m_shift_xyz": {
+        "voxel_kernel_seconds": 0.005443600006401539,
+        "case_total_seconds": 0.7971456000814214,
+        "case_CPU_seconds": 0.890625
+      },
+      "M/1m": {
+        "voxel_kernel_seconds": 0.004700499936006963,
+        "case_total_seconds": 1.3386826999485493,
+        "case_CPU_seconds": 1.421875
+      },
+      "M/0.5m": {
+        "voxel_kernel_seconds": 0.005006800056435168,
+        "case_total_seconds": 2.4070440999930725,
+        "case_CPU_seconds": 2.421875
+      },
+      "M/1m_shift_xyz": {
+        "voxel_kernel_seconds": 0.0046401999425143,
+        "case_total_seconds": 0.3161776999477297,
+        "case_CPU_seconds": 0.453125
+      },
+      "C/1m": {
+        "voxel_kernel_seconds": 0.0038452999433502555,
+        "case_total_seconds": 0.3390724000055343,
+        "case_CPU_seconds": 0.4375
+      },
+      "C/0.5m": {
+        "voxel_kernel_seconds": 0.004169000079855323,
+        "case_total_seconds": 0.6479756000917405,
+        "case_CPU_seconds": 0.734375
+      },
+      "C/1m_shift_xyz": {
+        "voxel_kernel_seconds": 0.003631399944424629,
+        "case_total_seconds": 0.10201559995766729,
+        "case_CPU_seconds": 0.171875
+      }
+    }
+  }
+}
