@@ -1,0 +1,999 @@
+{
+  "scope": "Read-only SHA/JSON/NPY/static source audit. No shadow/voxelizer/mesh/simulation call; no installation. New files only this evidence and design documents.",
+  "baseline_main": "59f331ef3717c042784c1f2ccbc8b4c10991e2fa",
+  "STEP4C_manifest_SHA256": "82488e2807a0cbc95cb528d25a38bc77a2e4a1c3181122a091f75c2ec7eb7c8e",
+  "STEP4C_outputs_verified": 125,
+  "STEP4C_chain_selected_verified": {
+    "4A_manifest": {
+      "locator": "data/work/step4a-roof-distribution/final-c/manifest.json",
+      "sha256": "f73e65073ed823b9155cc75a93a4cfdbc314fb9a0f1859f4d635ec5e71a952bd"
+    },
+    "4C_B2_manifest": {
+      "locator": "data/work/step4b2-roof-terrain/final-a/manifest.json",
+      "sha256": "9f564e7d2e06c74301fdcf3670d6f60e2a531e628cfb36de882d8dec6f286817"
+    },
+    "step4_0_manifest": {
+      "locator": "data/work/step4-0-roof-audit/audit-final-e/manifest.json",
+      "sha256": "14498ba34826c2b68c2a22c29da6fcbeb8bc696e20b68f799d8a8cca0a41a852"
+    },
+    "step4_0_report": {
+      "locator": "data/work/step4-0-roof-audit/audit-final-e/report.json",
+      "sha256": "71de561a0644352654c4d30814259f3d42b1d31a18b9c1591652be88c1b3565e"
+    },
+    "T5_report": {
+      "locator": "data/work/terrain-candidate-b/t5-23-02/report.json",
+      "sha256": "1a4c3ed60bebcb92b00f5a28dbb52ceea78fd4b9eb4893cb87445dc17080695f"
+    },
+    "B2_terrain": {
+      "locator": "data/work/terrain-candidate-b/t5-23-02/t5-2/terrain.tif",
+      "sha256": "ead7545fb2b50aaad9958aa8db647708a8ceba04f719ac6e8400150a17bb36a2"
+    },
+    "extracted_member": {
+      "locator": "data/work/mixed-lod-converter-bridge/run-02/extracted/udx/bldg/53393466_bldg_6697_op.gml",
+      "sha256": "6128aa2a2bd637e51dbef89ee42bd54620eae6a2fab82b082149a4dc4924c0c9"
+    },
+    "standard_gpkg": {
+      "locator": "data/work/mixed-lod-standard/run-02/standard.gpkg",
+      "sha256": "954d01aad3004a0d2d69586036ef9961071064a39db4215d45577dee2f996f60"
+    },
+    "native_gpkg": {
+      "locator": "data/work/mixed-lod-native/run-02/native.gpkg",
+      "sha256": "1e2af898307e5f9bfbc4fbc86ab714dfad2557e2371ff98138171eb768ca7da7"
+    },
+    "standard_manifest": {
+      "locator": "data/work/mixed-lod-standard/run-02/manifest.json",
+      "sha256": "9789d443e0286ad0c5da57156d7ba10ed19adafba5e42cec068e9deeead0f789"
+    },
+    "native_manifest": {
+      "locator": "data/work/mixed-lod-native/run-02/manifest.json",
+      "sha256": "b7e932b9b6da9da98a59ccb6e1acb5a60a1cb7d50ea5c3d5e86782eccbcfc46d"
+    },
+    "selector_manifest": {
+      "locator": "data/work/mixed-lod-selector/run-pr136-rereview-01/manifest.json",
+      "sha256": "eea7a117658208018fb0e12d212f7e63a6fef69a0c86c1265fd6692fda4b0785"
+    }
+  },
+  "P1_saved_chains": {
+    "p1-1a": {
+      "public_manifest": "docs/experiments/voxcitygml_p1/p1-1a/manifest.json",
+      "public_manifest_SHA256_current_bytes": "cfb01bad1f823f9e8c475a5b95e9fc404132858eadd06949dde834484fd25d65",
+      "local_manifest": "data/work/voxcitygml_p1/p1-1a-final-b/manifest.json",
+      "local_manifest_SHA256": "d140473154cc234a05fa42a55241fa59dee32e4c3e577da098a5ca5f5bf7052a",
+      "outputs_checked": 7
+    },
+    "p1-1b": {
+      "public_manifest": "docs/experiments/voxcitygml_p1/p1-1b/manifest.json",
+      "public_manifest_SHA256_current_bytes": "ebb673dc8544f01260c9c09551ab2394beb933520b925ceb82b50b23f9dfe16e",
+      "local_manifest": "data/work/voxcitygml_p1/p1-1b-final-d/manifest.json",
+      "local_manifest_SHA256": "97e790a12dc18c30c695f70b7d2bb9388d1a528cef67f5de0d960a0ee62edd1a",
+      "outputs_checked": 15
+    },
+    "p1-1c": {
+      "public_manifest": "docs/experiments/voxcitygml_p1/p1-1c/manifest.json",
+      "public_manifest_SHA256_current_bytes": "edfe05979309f4fd5cfd1c19dcace816682696a94a6a3de6c6fcacfdf4062998",
+      "local_manifest": "data/work/voxcitygml_p1/p1-1c-final-d/manifest.json",
+      "local_manifest_SHA256": "b513b2527e82f0dbe9b35f5285f12b59e1f4b7a38de2e244c51da4c09c9a9fa2",
+      "outputs_checked": 40
+    }
+  },
+  "buildings": {
+    "F": {
+      "source_id": "bldg_09532951-4dab-457d-b1c6-56d509900d1b",
+      "ouem_id": "oub-c56cb020-c11c-5f9c-a37f-73018266a333",
+      "context_bounds": [
+        -22588,
+        -39859,
+        -22560,
+        -39837
+      ],
+      "shape_R_C_Nz": [
+        22,
+        28,
+        4
+      ],
+      "grid": {
+        "boundary_rule": "positive-area presence/support; closed-set centre; affine maximum on polygon closure",
+        "bounds": [
+          -22588,
+          -39859,
+          -22560,
+          -39837
+        ],
+        "column_axis": [
+          1.0,
+          0.0
+        ],
+        "crs": "EPSG:6677",
+        "default_halo_cells": 1,
+        "epsg": 6677,
+        "global_phase_origin_xy": [
+          0.0,
+          0.0
+        ],
+        "height": 22,
+        "orientation": "north-up",
+        "origin_xy": [
+          -22588,
+          -39837
+        ],
+        "resolution": 1.0,
+        "row_axis": [
+          0.0,
+          -1.0
+        ],
+        "sampling_location": "cell centres locate cells; roof evaluation is method-specific",
+        "transform": [
+          1.0,
+          0.0,
+          -22588.0,
+          0.0,
+          -1.0,
+          -39837.0
+        ],
+        "width": 28
+      },
+      "valid_count": 577,
+      "excluded_building_columns": 39,
+      "observer_index_range": [
+        1,
+        2
+      ],
+      "observer_absolute_H_range": [
+        25.985000610351562,
+        26.985000610351562
+      ],
+      "actual_height_above_effective_ground_range": [
+        1.0010013580322266,
+        2.0
+      ],
+      "D0": 24.485000610351562,
+      "orientation": {
+        "approximation": "one local grid bearing per small scene; no per-cell correction",
+        "conversion": "axis-0 reflection on inputs and outputs; true azimuth unchanged; subtract recorded grid bearing",
+        "corner_bearing_range_deg": [
+          -0.1453380247259933,
+          -0.14515680726546398
+        ],
+        "direction_north_east_up": [
+          -0.7071045090927752,
+          -0.0017925458614656705,
+          0.7071067811865476
+        ],
+        "grid_north_true_bearing_deg": -0.1452474013593025,
+        "input_axes": [
+          "south",
+          "east",
+          "up"
+        ],
+        "kernel_axes": [
+          "north",
+          "east",
+          "up"
+        ],
+        "projection": "EPSG:6677"
+      },
+      "projected_sunward_X_Y_H": [
+        -0.0017925458614656705,
+        -0.7071045090927752,
+        0.7071067811865476
+      ],
+      "shadow_displacement_X_Y_per_vertical_m": [
+        0.0025350426684605143,
+        0.9999967867741721
+      ],
+      "saved_metrics": {
+        "changed_cells": 0,
+        "distributed_shadow_cells": 26,
+        "representative_shadow_cells": 26,
+        "shadow_IoU": 1.0,
+        "shadow_area_delta_m2": 0,
+        "shadow_cells_delta_B_minus_A": 0,
+        "shadow_to_sun": 0,
+        "sun_to_shadow": 0,
+        "valid_observers": 577
+      },
+      "A_B_ground_mask_observer_registration": "PASS_READ_ONLY",
+      "top_upper_edge_minus_source_H_range": {
+        "A": [
+          1.3992006103515635,
+          1.3992006103515635
+        ],
+        "B": [
+          1.3992006103515635,
+          1.3992006103515635
+        ]
+      },
+      "P1_1c_existing_grid_probe": {
+        "grid": {
+          "n_rows": 6,
+          "n_cols": 15,
+          "n_z": 6,
+          "min_x": -22583.0,
+          "max_x": -22568.0,
+          "min_y": -39851.0,
+          "max_y": -39845.0,
+          "min_z": 23.0,
+          "max_z": 29.0,
+          "voxel_size": 1.0
+        },
+        "valid_observers_in_old_C_array_domain": 51,
+        "outside_old_C_array_domain": 526,
+        "old_C_occupied_at_saved_observer_XYZ": 0,
+        "observer_origins_on_exact_integer_C_indices": 0,
+        "limitation": "read-only old-grid point lookup, not shadow or future D0-grid mask; outside old domain is not classified"
+      }
+    },
+    "S": {
+      "source_id": "bldg_040379e5-dffb-40b6-a392-6396158211f5",
+      "ouem_id": "oub-664a9132-cf36-52a5-96f5-577e78c91e59",
+      "context_bounds": [
+        -22583,
+        -39850,
+        -22529,
+        -39811
+      ],
+      "shape_R_C_Nz": [
+        39,
+        54,
+        11
+      ],
+      "grid": {
+        "boundary_rule": "positive-area presence/support; closed-set centre; affine maximum on polygon closure",
+        "bounds": [
+          -22583,
+          -39850,
+          -22529,
+          -39811
+        ],
+        "column_axis": [
+          1.0,
+          0.0
+        ],
+        "crs": "EPSG:6677",
+        "default_halo_cells": 1,
+        "epsg": 6677,
+        "global_phase_origin_xy": [
+          0.0,
+          0.0
+        ],
+        "height": 39,
+        "orientation": "north-up",
+        "origin_xy": [
+          -22583,
+          -39811
+        ],
+        "resolution": 1.0,
+        "row_axis": [
+          0.0,
+          -1.0
+        ],
+        "sampling_location": "cell centres locate cells; roof evaluation is method-specific",
+        "transform": [
+          1.0,
+          0.0,
+          -22583.0,
+          0.0,
+          -1.0,
+          -39811.0
+        ],
+        "width": 54
+      },
+      "valid_count": 1845,
+      "excluded_building_columns": 261,
+      "observer_index_range": [
+        1,
+        2
+      ],
+      "observer_absolute_H_range": [
+        26.05299949645996,
+        27.05299949645996
+      ],
+      "actual_height_above_effective_ground_range": [
+        1.003000259399414,
+        2.0
+      ],
+      "D0": 24.55299949645996,
+      "orientation": {
+        "approximation": "one local grid bearing per small scene; no per-cell correction",
+        "conversion": "axis-0 reflection on inputs and outputs; true azimuth unchanged; subtract recorded grid bearing",
+        "corner_bearing_range_deg": [
+          -0.14530710175656195,
+          -0.14495778487123118
+        ],
+        "direction_north_east_up": [
+          -0.7071045126881279,
+          -0.0017911270432978943,
+          0.7071067811865476
+        ],
+        "grid_north_true_bearing_deg": -0.14513243632704076,
+        "input_axes": [
+          "south",
+          "east",
+          "up"
+        ],
+        "kernel_axes": [
+          "north",
+          "east",
+          "up"
+        ],
+        "projection": "EPSG:6677"
+      },
+      "projected_sunward_X_Y_H": [
+        -0.0017911270432978943,
+        -0.7071045126881279,
+        0.7071067811865476
+      ],
+      "shadow_displacement_X_Y_per_vertical_m": [
+        0.002533036156565104,
+        0.9999967918587687
+      ],
+      "saved_metrics": {
+        "changed_cells": 74,
+        "distributed_shadow_cells": 118,
+        "representative_shadow_cells": 192,
+        "shadow_IoU": 0.6145833333333334,
+        "shadow_area_delta_m2": -74,
+        "shadow_cells_delta_B_minus_A": -74,
+        "shadow_to_sun": 74,
+        "sun_to_shadow": 0,
+        "valid_observers": 1845
+      },
+      "A_B_ground_mask_observer_registration": "PASS_READ_ONLY",
+      "top_upper_edge_minus_source_H_range": {
+        "A": [
+          0.8683994964575845,
+          0.8683994964575845
+        ],
+        "B": [
+          0.047837587505547674,
+          1.0456069507924788
+        ]
+      },
+      "P1_1c_existing_grid_probe": {
+        "grid": {
+          "n_rows": 15,
+          "n_cols": 26,
+          "n_z": 12,
+          "min_x": -22569.0,
+          "max_x": -22543.0,
+          "min_y": -39836.0,
+          "max_y": -39821.0,
+          "min_z": 23.0,
+          "max_z": 35.0,
+          "voxel_size": 1.0
+        },
+        "valid_observers_in_old_C_array_domain": 129,
+        "outside_old_C_array_domain": 1716,
+        "old_C_occupied_at_saved_observer_XYZ": 0,
+        "observer_origins_on_exact_integer_C_indices": 0,
+        "limitation": "read-only old-grid point lookup, not shadow or future D0-grid mask; outside old domain is not classified"
+      }
+    },
+    "M": {
+      "source_id": "bldg_2bd71700-a145-46ff-b14f-ad60394ff253",
+      "ouem_id": "oub-cb250497-c12d-5fcc-9dca-e82c8b051398",
+      "context_bounds": [
+        -22548,
+        -39937,
+        -22506,
+        -39897
+      ],
+      "shape_R_C_Nz": [
+        40,
+        42,
+        10
+      ],
+      "grid": {
+        "boundary_rule": "positive-area presence/support; closed-set centre; affine maximum on polygon closure",
+        "bounds": [
+          -22548,
+          -39937,
+          -22506,
+          -39897
+        ],
+        "column_axis": [
+          1.0,
+          0.0
+        ],
+        "crs": "EPSG:6677",
+        "default_halo_cells": 1,
+        "epsg": 6677,
+        "global_phase_origin_xy": [
+          0.0,
+          0.0
+        ],
+        "height": 40,
+        "orientation": "north-up",
+        "origin_xy": [
+          -22548,
+          -39897
+        ],
+        "resolution": 1.0,
+        "row_axis": [
+          0.0,
+          -1.0
+        ],
+        "sampling_location": "cell centres locate cells; roof evaluation is method-specific",
+        "transform": [
+          1.0,
+          0.0,
+          -22548.0,
+          0.0,
+          -1.0,
+          -39897.0
+        ],
+        "width": 42
+      },
+      "valid_count": 1558,
+      "excluded_building_columns": 122,
+      "observer_index_range": [
+        1,
+        2
+      ],
+      "observer_absolute_H_range": [
+        25.836999893188477,
+        26.836999893188477
+      ],
+      "actual_height_above_effective_ground_range": [
+        1.0009994506835938,
+        2.0
+      ],
+      "D0": 24.336999893188477,
+      "orientation": {
+        "approximation": "one local grid bearing per small scene; no per-cell correction",
+        "conversion": "axis-0 reflection on inputs and outputs; true azimuth unchanged; subtract recorded grid bearing",
+        "corner_bearing_range_deg": [
+          -0.14507775805426118,
+          -0.1448056149004246
+        ],
+        "direction_north_east_up": [
+          -0.7071045186470133,
+          -0.0017887730363727013,
+          0.7071067811865476
+        ],
+        "grid_north_true_bearing_deg": -0.14494169414005176,
+        "input_axes": [
+          "south",
+          "east",
+          "up"
+        ],
+        "kernel_axes": [
+          "north",
+          "east",
+          "up"
+        ],
+        "projection": "EPSG:6677"
+      },
+      "projected_sunward_X_Y_H": [
+        -0.0017887730363727013,
+        -0.7071045186470133,
+        0.7071067811865476
+      ],
+      "shadow_displacement_X_Y_per_vertical_m": [
+        0.0025297070880455756,
+        0.9999968002859052
+      ],
+      "saved_metrics": {
+        "changed_cells": 45,
+        "distributed_shadow_cells": 53,
+        "representative_shadow_cells": 98,
+        "shadow_IoU": 0.5408163265306123,
+        "shadow_area_delta_m2": -45,
+        "shadow_cells_delta_B_minus_A": -45,
+        "shadow_to_sun": 45,
+        "sun_to_shadow": 0,
+        "valid_observers": 1558
+      },
+      "A_B_ground_mask_observer_registration": "PASS_READ_ONLY",
+      "top_upper_edge_minus_source_H_range": {
+        "A": [
+          0.9569998931876214,
+          0.9569998931876214
+        ],
+        "B": [
+          0.14689106432641807,
+          1.1354389342375413
+        ]
+      },
+      "P1_1c_existing_grid_probe": {
+        "grid": {
+          "n_rows": 14,
+          "n_cols": 16,
+          "n_z": 11,
+          "min_x": -22535.0,
+          "max_x": -22519.0,
+          "min_y": -39924.0,
+          "max_y": -39910.0,
+          "min_z": 23.0,
+          "max_z": 34.0,
+          "voxel_size": 1.0
+        },
+        "valid_observers_in_old_C_array_domain": 102,
+        "outside_old_C_array_domain": 1456,
+        "old_C_occupied_at_saved_observer_XYZ": 0,
+        "observer_origins_on_exact_integer_C_indices": 0,
+        "limitation": "read-only old-grid point lookup, not shadow or future D0-grid mask; outside old domain is not classified"
+      }
+    },
+    "C": {
+      "source_id": "bldg_2d5a9713-b02f-4903-9164-c5653e03494d",
+      "ouem_id": "oub-10894413-4369-5131-ac0d-78ee9d234016",
+      "context_bounds": [
+        -22588,
+        -39845,
+        -22553,
+        -39811
+      ],
+      "shape_R_C_Nz": [
+        34,
+        35,
+        9
+      ],
+      "grid": {
+        "boundary_rule": "positive-area presence/support; closed-set centre; affine maximum on polygon closure",
+        "bounds": [
+          -22588,
+          -39845,
+          -22553,
+          -39811
+        ],
+        "column_axis": [
+          1.0,
+          0.0
+        ],
+        "crs": "EPSG:6677",
+        "default_halo_cells": 1,
+        "epsg": 6677,
+        "global_phase_origin_xy": [
+          0.0,
+          0.0
+        ],
+        "height": 34,
+        "orientation": "north-up",
+        "origin_xy": [
+          -22588,
+          -39811
+        ],
+        "resolution": 1.0,
+        "row_axis": [
+          0.0,
+          -1.0
+        ],
+        "sampling_location": "cell centres locate cells; roof evaluation is method-specific",
+        "transform": [
+          1.0,
+          0.0,
+          -22588.0,
+          0.0,
+          -1.0,
+          -39811.0
+        ],
+        "width": 35
+      },
+      "valid_count": 1108,
+      "excluded_building_columns": 82,
+      "observer_index_range": [
+        1,
+        2
+      ],
+      "observer_absolute_H_range": [
+        26.01799964904785,
+        27.01799964904785
+      ],
+      "actual_height_above_effective_ground_range": [
+        1.0009994506835938,
+        2.0
+      ],
+      "D0": 24.51799964904785,
+      "orientation": {
+        "approximation": "one local grid bearing per small scene; no per-cell correction",
+        "conversion": "axis-0 reflection on inputs and outputs; true azimuth unchanged; subtract recorded grid bearing",
+        "corner_bearing_range_deg": [
+          -0.14533928160768078,
+          -0.14511245327988212
+        ],
+        "direction_north_east_up": [
+          -0.7071045097668859,
+          -0.0017922799256665208,
+          0.7071067811865476
+        ],
+        "grid_north_true_bearing_deg": -0.14522585291956447,
+        "input_axes": [
+          "south",
+          "east",
+          "up"
+        ],
+        "kernel_axes": [
+          "north",
+          "east",
+          "up"
+        ],
+        "projection": "EPSG:6677"
+      },
+      "projected_sunward_X_Y_H": [
+        -0.0017922799256665208,
+        -0.7071045097668859,
+        0.7071067811865476
+      ],
+      "shadow_displacement_X_Y_per_vertical_m": [
+        0.002534666578446636,
+        0.9999967877275086
+      ],
+      "saved_metrics": {
+        "changed_cells": 16,
+        "distributed_shadow_cells": 44,
+        "representative_shadow_cells": 60,
+        "shadow_IoU": 0.7333333333333333,
+        "shadow_area_delta_m2": -16,
+        "shadow_cells_delta_B_minus_A": -16,
+        "shadow_to_sun": 16,
+        "sun_to_shadow": 0,
+        "valid_observers": 1108
+      },
+      "A_B_ground_mask_observer_registration": "PASS_READ_ONLY",
+      "top_upper_edge_minus_source_H_range": {
+        "A": [
+          0.5145996490465876,
+          0.5145996490465876
+        ],
+        "B": [
+          0.0852777437052481,
+          1.0673368107807057
+        ]
+      },
+      "P1_1c_existing_grid_probe": {
+        "grid": {
+          "n_rows": 12,
+          "n_cols": 12,
+          "n_z": 11,
+          "min_x": -22578.0,
+          "max_x": -22566.0,
+          "min_y": -39832.0,
+          "max_y": -39820.0,
+          "min_z": 23.0,
+          "max_z": 34.0,
+          "voxel_size": 1.0
+        },
+        "valid_observers_in_old_C_array_domain": 62,
+        "outside_old_C_array_domain": 1046,
+        "old_C_occupied_at_saved_observer_XYZ": 0,
+        "observer_origins_on_exact_integer_C_indices": 0,
+        "limitation": "read-only old-grid point lookup, not shadow or future D0-grid mask; outside old domain is not classified"
+      }
+    }
+  },
+  "runtime_static": {
+    "OUEM": {
+      "versions": {
+        "voxcity": "1.7.0",
+        "numpy": "2.4.6",
+        "numba": "0.68.0",
+        "pyproj": "3.7.2"
+      },
+      "VoxCity_commit": "fa212656305328a9a657973bae26f352bfe813bc",
+      "source_files": {
+        "utils/orientation.py": "46ea08c50a51d813d58f84ab7ab2293c051785a524062ac0183aa53b1c88958d",
+        "simulator/solar/kernels.py": "59b5bac159f41a841879089aa7385a9a0b72e8511dfbeff4773d21a9daa8b631",
+        "simulator/common/raytracing.py": "549e6a0a3c028e1fb638f9294f92afa0080d568580426440c97262ba263e24d7",
+        "simulator/solar/radiation.py": "a05289164e306ac1a9d5c7fe22ad1b264eab84e82848441664610d28ef6f0c05"
+      }
+    },
+    "P1": {
+      "versions": {
+        "voxcity": "1.7.0",
+        "numpy": "2.4.6",
+        "numba": "0.68.1",
+        "pyproj": "3.7.2"
+      },
+      "VoxCity_commit": "fa212656305328a9a657973bae26f352bfe813bc",
+      "source_files": {
+        "utils/orientation.py": "46ea08c50a51d813d58f84ab7ab2293c051785a524062ac0183aa53b1c88958d",
+        "simulator/solar/kernels.py": "59b5bac159f41a841879089aa7385a9a0b72e8511dfbeff4773d21a9daa8b631",
+        "simulator/common/raytracing.py": "549e6a0a3c028e1fb638f9294f92afa0080d568580426440c97262ba263e24d7",
+        "simulator/solar/radiation.py": "a05289164e306ac1a9d5c7fe22ad1b264eab84e82848441664610d28ef6f0c05"
+      }
+    }
+  },
+  "STEP4C_saved_runtime": {
+    "land_cover_source": "Standard",
+    "numba": "0.68.0",
+    "numpy": "2.4.6",
+    "public_api": "voxcity.generator.voxelizer.Voxelizer.generate_combined",
+    "python": "3.11.9",
+    "shapely": "2.2.0",
+    "threads": 2,
+    "voxel_size_m": 1.0
+  },
+  "VoxCityGML_installed_source_count": 29,
+  "verified_file_count": 262,
+  "verified_files": {
+    "data/work/step4c-roof-shadow/final-c/manifest.json": "82488e2807a0cbc95cb528d25a38bc77a2e4a1c3181122a091f75c2ec7eb7c8e",
+    "data/work/step4c-roof-shadow/final-c/C/comparison.png": "46d493a4e2868a171b9c5276c372792726c03e4bc53dd0ba77adc23d961573d2",
+    "data/work/step4c-roof-shadow/final-c/C/difference.npy": "b460003ea7c3d55d34aecc9a002ed57f1f32b0ccff2d1dc9b2925294a67f4243",
+    "data/work/step4c-roof-shadow/final-c/C/distributed/dem.npy": "89e98ee866ce6e39c53f8cd1fe834918d16f5a7fc4a20d35c62bb6b736174639",
+    "data/work/step4c-roof-shadow/final-c/C/distributed/engine.json": "ab483bd8e9e11f2c1153882b85204970993bbb4cdfb556a7e3dce1255f07917a",
+    "data/work/step4c-roof-shadow/final-c/C/distributed/height.npy": "283cec68675fa198408996348b39ed4cebdee9ed1e3d6f2a53cb1044becd03b3",
+    "data/work/step4c-roof-shadow/final-c/C/distributed/ids.npy": "f00dc5e5fbfd4888e898054978c6eb0f3d48742efc6f20f14ea9ababc9e1c4b9",
+    "data/work/step4c-roof-shadow/final-c/C/distributed/metadata.json": "482a5793ae7f131678d424376c75b12644af9dd77350bfc7276cf5338639dca4",
+    "data/work/step4c-roof-shadow/final-c/C/distributed/qa.json": "4b2c4cdefd80c44ebc29c5b8b57f3f3aa1a05a85ca0dd49955cf00de34a392e7",
+    "data/work/step4c-roof-shadow/final-c/C/distributed/runtime.json": "7984febfd89f24618f9748f7d88f04a7fdfcdfe8a0a0d8796abba61c5ab25e32",
+    "data/work/step4c-roof-shadow/final-c/C/distributed/segments.json": "2756faef99ac8e83247926f618354c35d313be64c8aa8ef17cb4a0f6ef4fdbcc",
+    "data/work/step4c-roof-shadow/final-c/C/distributed/shadow.npy": "58783e91343c30afc1115216b18b193735c48cee658b3d8d7cf22db99400f082",
+    "data/work/step4c-roof-shadow/final-c/C/distributed/shared_voxels.npy": "533b6103be11de6909d5c5c9e738d8a23e95d31cb5e120cfcbbf734fc2fc047e",
+    "data/work/step4c-roof-shadow/final-c/C/distributed/voxels.npy": "533b6103be11de6909d5c5c9e738d8a23e95d31cb5e120cfcbbf734fc2fc047e",
+    "data/work/step4c-roof-shadow/final-c/C/footprint_fraction.npy": "d0e46962c0343524bd6d9eb014fa793a078a6ca8937d8bb5ebba26621f061098",
+    "data/work/step4c-roof-shadow/final-c/C/observer_index.npy": "609974fafcba7762eabe63be50765da19592dab472f28c4165f7a092aa94e0bc",
+    "data/work/step4c-roof-shadow/final-c/C/observer_valid.npy": "cffc908a914b744662f7bb5e4ae6a2dfbc92bcc56d9b6a0c99e065e8d5e255d5",
+    "data/work/step4c-roof-shadow/final-c/C/observer_xyz.npy": "68e3f390ae7b25385c622765f3ee08ef9269e7850bc9072ed092fe73b1603803",
+    "data/work/step4c-roof-shadow/final-c/C/representative/dem.npy": "89e98ee866ce6e39c53f8cd1fe834918d16f5a7fc4a20d35c62bb6b736174639",
+    "data/work/step4c-roof-shadow/final-c/C/representative/engine.json": "ab483bd8e9e11f2c1153882b85204970993bbb4cdfb556a7e3dce1255f07917a",
+    "data/work/step4c-roof-shadow/final-c/C/representative/height.npy": "d82c89472d639e5e3fd4c545a9f55c9191c7438f3c6669163ac5fe46a1ac3bef",
+    "data/work/step4c-roof-shadow/final-c/C/representative/ids.npy": "f00dc5e5fbfd4888e898054978c6eb0f3d48742efc6f20f14ea9ababc9e1c4b9",
+    "data/work/step4c-roof-shadow/final-c/C/representative/metadata.json": "443261cb338a5ba3cda4941cfdc0491084157ba13c2729fab0f68719a40ec39e",
+    "data/work/step4c-roof-shadow/final-c/C/representative/qa.json": "cbf9898041c86d6a9c75fd6fd2c7f76bbd18372bbcd622c89aeae53dff5a826f",
+    "data/work/step4c-roof-shadow/final-c/C/representative/runtime.json": "7984febfd89f24618f9748f7d88f04a7fdfcdfe8a0a0d8796abba61c5ab25e32",
+    "data/work/step4c-roof-shadow/final-c/C/representative/segments.json": "78f2f8e63fb6f978bd0bcd253a30a0f8a76403ce6d84ac07c2d1455e1d0dc4e0",
+    "data/work/step4c-roof-shadow/final-c/C/representative/shadow.npy": "0266785bd82fb0033c1cb1558dc0f2cb1fbec81c4a42894ca183a5ac94b2db45",
+    "data/work/step4c-roof-shadow/final-c/C/representative/shared_voxels.npy": "7e57b7f4b6a43431981035ab56511ca5feb6b4a0ad27244ec6fb6f361ed329df",
+    "data/work/step4c-roof-shadow/final-c/C/representative/voxels.npy": "7e57b7f4b6a43431981035ab56511ca5feb6b4a0ad27244ec6fb6f361ed329df",
+    "data/work/step4c-roof-shadow/final-c/C/roof_coverage.npy": "8bbc69831983da942ed1146511e05a74a9d4a5ed2524253d74babb40b72287fc",
+    "data/work/step4c-roof-shadow/final-c/C/source_row_col.npy": "70bb4a26b8450f431df63c0acb0dcbee1a07355658707f0fe75b4e152fac6ad3",
+    "data/work/step4c-roof-shadow/final-c/C/source_top_H.npy": "1577f916c291aa0e9f657c355836f609c0fef645e9aaf0858dae62e887f8a38a",
+    "data/work/step4c-roof-shadow/final-c/F/comparison.png": "2f9b63610c5db5385656cde0896718b18a6a4a033cb4c14796b481504595457e",
+    "data/work/step4c-roof-shadow/final-c/F/difference.npy": "b32bc4c681bc51da7736a675b0339a433a516a3d7d428148abb30504d3ad0a4c",
+    "data/work/step4c-roof-shadow/final-c/F/distributed/dem.npy": "ce714194a9f7857cf3e8cbbc85f545ebfb4644e26decbe13f1f8994b973bfe21",
+    "data/work/step4c-roof-shadow/final-c/F/distributed/engine.json": "ab483bd8e9e11f2c1153882b85204970993bbb4cdfb556a7e3dce1255f07917a",
+    "data/work/step4c-roof-shadow/final-c/F/distributed/height.npy": "cf98df6cb45f97fe5a86631f08e00268af3c05889e84fbf4881315dd384dcd7f",
+    "data/work/step4c-roof-shadow/final-c/F/distributed/ids.npy": "542e7f27d155a00ab1fd0c8ad8960c315e90573227fbfb24d544f2e3d5d62491",
+    "data/work/step4c-roof-shadow/final-c/F/distributed/metadata.json": "9d3036ca55c6ec5cf0e88315bc754724e7b8bd2186b7b52c012ad24109ae4d6b",
+    "data/work/step4c-roof-shadow/final-c/F/distributed/qa.json": "9061908182934a170130c1896ebacb72ab7a25eaa166aeb42e61f6120e1c0b83",
+    "data/work/step4c-roof-shadow/final-c/F/distributed/runtime.json": "7984febfd89f24618f9748f7d88f04a7fdfcdfe8a0a0d8796abba61c5ab25e32",
+    "data/work/step4c-roof-shadow/final-c/F/distributed/segments.json": "e955acec2362817435ab529c1c9721277b42c70de3c2576bf6571f68f71e9dab",
+    "data/work/step4c-roof-shadow/final-c/F/distributed/shadow.npy": "ddfd0d2f92714b583018eb9368b7ade85d38343970313a403fdd592059e446dc",
+    "data/work/step4c-roof-shadow/final-c/F/distributed/shared_voxels.npy": "a04c9567bcff442198e8b3b516404ea2abf317071f65eed911617ae7db55ad02",
+    "data/work/step4c-roof-shadow/final-c/F/distributed/voxels.npy": "a04c9567bcff442198e8b3b516404ea2abf317071f65eed911617ae7db55ad02",
+    "data/work/step4c-roof-shadow/final-c/F/footprint_fraction.npy": "0d24198abff32f389f72a210c293fb7a05baa9929713ca007e80a525345123a4",
+    "data/work/step4c-roof-shadow/final-c/F/observer_index.npy": "274e85cd97757228eb0b3b9d5f1aeb1f67e32cbde3e597065757a703c5e681ac",
+    "data/work/step4c-roof-shadow/final-c/F/observer_valid.npy": "84ff9a0333ef499ebd7880ada2c8fefd09bfe6552a8a4328b3ffcfeec8959a42",
+    "data/work/step4c-roof-shadow/final-c/F/observer_xyz.npy": "a86cedddfc50567521c0eb1f90c246fac29d455e86db0e45314802d76603b8b6",
+    "data/work/step4c-roof-shadow/final-c/F/representative/dem.npy": "ce714194a9f7857cf3e8cbbc85f545ebfb4644e26decbe13f1f8994b973bfe21",
+    "data/work/step4c-roof-shadow/final-c/F/representative/engine.json": "ab483bd8e9e11f2c1153882b85204970993bbb4cdfb556a7e3dce1255f07917a",
+    "data/work/step4c-roof-shadow/final-c/F/representative/height.npy": "cf98df6cb45f97fe5a86631f08e00268af3c05889e84fbf4881315dd384dcd7f",
+    "data/work/step4c-roof-shadow/final-c/F/representative/ids.npy": "542e7f27d155a00ab1fd0c8ad8960c315e90573227fbfb24d544f2e3d5d62491",
+    "data/work/step4c-roof-shadow/final-c/F/representative/metadata.json": "7347aea0dc3ecf0cc4837b7bcbd0108a4313fcd48cb92c5a9023a510144fca62",
+    "data/work/step4c-roof-shadow/final-c/F/representative/qa.json": "9061908182934a170130c1896ebacb72ab7a25eaa166aeb42e61f6120e1c0b83",
+    "data/work/step4c-roof-shadow/final-c/F/representative/runtime.json": "7984febfd89f24618f9748f7d88f04a7fdfcdfe8a0a0d8796abba61c5ab25e32",
+    "data/work/step4c-roof-shadow/final-c/F/representative/segments.json": "e955acec2362817435ab529c1c9721277b42c70de3c2576bf6571f68f71e9dab",
+    "data/work/step4c-roof-shadow/final-c/F/representative/shadow.npy": "ddfd0d2f92714b583018eb9368b7ade85d38343970313a403fdd592059e446dc",
+    "data/work/step4c-roof-shadow/final-c/F/representative/shared_voxels.npy": "a04c9567bcff442198e8b3b516404ea2abf317071f65eed911617ae7db55ad02",
+    "data/work/step4c-roof-shadow/final-c/F/representative/voxels.npy": "a04c9567bcff442198e8b3b516404ea2abf317071f65eed911617ae7db55ad02",
+    "data/work/step4c-roof-shadow/final-c/F/roof_coverage.npy": "0d24198abff32f389f72a210c293fb7a05baa9929713ca007e80a525345123a4",
+    "data/work/step4c-roof-shadow/final-c/F/source_row_col.npy": "fa710e0edfe14e0e6cda66d8e9af2c7e2b79abb726ea6e851a125837da9e4a5a",
+    "data/work/step4c-roof-shadow/final-c/F/source_top_H.npy": "f7f643c7144002cf599c4bc00e28c06b404bd1b7f11a6b9813ce51ae19ab4f95",
+    "data/work/step4c-roof-shadow/final-c/M/comparison.png": "8d75024b1a53c5687ad402a0061b5cb4a27f169557177975193c283e43ca3f32",
+    "data/work/step4c-roof-shadow/final-c/M/difference.npy": "487b8c75c7ef4ea474dce573511e4a3d3716d4d50da394ea77a9eb28e033848a",
+    "data/work/step4c-roof-shadow/final-c/M/distributed/dem.npy": "6ae0cff14b1c34fd6567c06c46dbe536020ee8d1d3ef94167b7a5fec153bbf30",
+    "data/work/step4c-roof-shadow/final-c/M/distributed/engine.json": "ab483bd8e9e11f2c1153882b85204970993bbb4cdfb556a7e3dce1255f07917a",
+    "data/work/step4c-roof-shadow/final-c/M/distributed/height.npy": "af8f36e5d8319583115a87a6e0283d74fa9011dbfe2383091ddc91e58bf539e0",
+    "data/work/step4c-roof-shadow/final-c/M/distributed/ids.npy": "d91c07ce17acb62a9bd058539716aa4dbe42d185f159b9f38e4d52c7675b70f4",
+    "data/work/step4c-roof-shadow/final-c/M/distributed/metadata.json": "b3aaa0d4d269751a70e71369a54c3652f311043d80feba2062d991387a0999c0",
+    "data/work/step4c-roof-shadow/final-c/M/distributed/qa.json": "b464bd528f41b325f85ca6761fed3db3b236ccf2e8aafdbad72ad01288b5fece",
+    "data/work/step4c-roof-shadow/final-c/M/distributed/runtime.json": "7984febfd89f24618f9748f7d88f04a7fdfcdfe8a0a0d8796abba61c5ab25e32",
+    "data/work/step4c-roof-shadow/final-c/M/distributed/segments.json": "ed6a326bb86703b22748ade5a878ee07110c46ba3d7b54107fcf3ff798b97f33",
+    "data/work/step4c-roof-shadow/final-c/M/distributed/shadow.npy": "d7b60f8c999f8024a1b2fd8141cd3773f443a87c87440f8da1d69810c250971a",
+    "data/work/step4c-roof-shadow/final-c/M/distributed/shared_voxels.npy": "db5afa9f43e3ee90edd58548a9d34df37f15539723e60ee1c09e9afe715dc2bd",
+    "data/work/step4c-roof-shadow/final-c/M/distributed/voxels.npy": "db5afa9f43e3ee90edd58548a9d34df37f15539723e60ee1c09e9afe715dc2bd",
+    "data/work/step4c-roof-shadow/final-c/M/footprint_fraction.npy": "6ac865c922afaef35ac5f52d37d78b6586d08514865098a29cb6fce8151a7ab7",
+    "data/work/step4c-roof-shadow/final-c/M/observer_index.npy": "10ce861a0c10726661dc3d6ed93aea72d20720735c766fb7fc1141b2b05021d4",
+    "data/work/step4c-roof-shadow/final-c/M/observer_valid.npy": "75dafbb0e928b41ada66ef3cf1298b9f3ec35b706a3428f2a9c00e283979715e",
+    "data/work/step4c-roof-shadow/final-c/M/observer_xyz.npy": "293501783158a15f98711f3bb2eb3b96431edd5cd2f8486dcdc398917468852e",
+    "data/work/step4c-roof-shadow/final-c/M/representative/dem.npy": "6ae0cff14b1c34fd6567c06c46dbe536020ee8d1d3ef94167b7a5fec153bbf30",
+    "data/work/step4c-roof-shadow/final-c/M/representative/engine.json": "ab483bd8e9e11f2c1153882b85204970993bbb4cdfb556a7e3dce1255f07917a",
+    "data/work/step4c-roof-shadow/final-c/M/representative/height.npy": "503f07fc5fc8e2dffb555ab035b6fe9aadadc2937609ae066ab0841a6c84f693",
+    "data/work/step4c-roof-shadow/final-c/M/representative/ids.npy": "d91c07ce17acb62a9bd058539716aa4dbe42d185f159b9f38e4d52c7675b70f4",
+    "data/work/step4c-roof-shadow/final-c/M/representative/metadata.json": "7ee46264aee699865465c919dc3925a9cef659a995a915fb36e6a3f7ab23a4c5",
+    "data/work/step4c-roof-shadow/final-c/M/representative/qa.json": "92bf0578894eebf85d46eebac40591a28a6ee51bf333a523bbc57a8ed0ea3d5e",
+    "data/work/step4c-roof-shadow/final-c/M/representative/runtime.json": "7984febfd89f24618f9748f7d88f04a7fdfcdfe8a0a0d8796abba61c5ab25e32",
+    "data/work/step4c-roof-shadow/final-c/M/representative/segments.json": "4f31dd27c94f92c452636bd9bca67ca8c188bbbc66165e9b92e8967c626510ec",
+    "data/work/step4c-roof-shadow/final-c/M/representative/shadow.npy": "315e2982b44531fd1259ba961a44b3e71dfe3bfe4c93a7b972858741c428b4d6",
+    "data/work/step4c-roof-shadow/final-c/M/representative/shared_voxels.npy": "cd0da74fb631f875d8351e1bec76b80ac7c4472ab7a92040998418e51dffce53",
+    "data/work/step4c-roof-shadow/final-c/M/representative/voxels.npy": "cd0da74fb631f875d8351e1bec76b80ac7c4472ab7a92040998418e51dffce53",
+    "data/work/step4c-roof-shadow/final-c/M/roof_coverage.npy": "d5bde965bf490d4e0beb640fc9c5767ac5047b20d7fa6a380733da15111fa9d4",
+    "data/work/step4c-roof-shadow/final-c/M/source_row_col.npy": "156827103d1997c0a56ddb1721c16b322bd57486b6d2f6e33d252829d9b43acc",
+    "data/work/step4c-roof-shadow/final-c/M/source_top_H.npy": "25fd2fafd28f4a3869c35943e0315885a619b627b94fbf94f434ec94b3107c3b",
+    "data/work/step4c-roof-shadow/final-c/S/comparison.png": "a172bed0e086bcf02072e8ba939ca9fdefbbd044dbeade4df86f0518570c1148",
+    "data/work/step4c-roof-shadow/final-c/S/difference.npy": "106dcc3472eea7ea787e66c72b3ff2d34829fdc63ad8938833342a6062209f01",
+    "data/work/step4c-roof-shadow/final-c/S/distributed/dem.npy": "8992946bfb5781a06038c2a535321a88c5153e46e10aad8744c1b47aa6d49cc0",
+    "data/work/step4c-roof-shadow/final-c/S/distributed/engine.json": "ab483bd8e9e11f2c1153882b85204970993bbb4cdfb556a7e3dce1255f07917a",
+    "data/work/step4c-roof-shadow/final-c/S/distributed/height.npy": "ea2d1704d6cc80b759326e7d5d38603e7eef7a0466639b138c68f1af1b804a20",
+    "data/work/step4c-roof-shadow/final-c/S/distributed/ids.npy": "92527d68b5da69e6081af96e369a6b1413559aae61684342fe9e99775dcd5a9c",
+    "data/work/step4c-roof-shadow/final-c/S/distributed/metadata.json": "61f047d1730eb37e77aaf42175293bad70c14498bba76e35742df74bbf21714d",
+    "data/work/step4c-roof-shadow/final-c/S/distributed/qa.json": "a6b98e0b168595fb471d4ab14245f99337db097899f130cbafa2ca0323d2b82d",
+    "data/work/step4c-roof-shadow/final-c/S/distributed/runtime.json": "7984febfd89f24618f9748f7d88f04a7fdfcdfe8a0a0d8796abba61c5ab25e32",
+    "data/work/step4c-roof-shadow/final-c/S/distributed/segments.json": "44b7037a4653c400c0c28575b9698af1f74d5872fc93692cb11728a189533397",
+    "data/work/step4c-roof-shadow/final-c/S/distributed/shadow.npy": "d0a9d08e149ed9027a31fefd0a61d485b30e3993513b06d2ae5150559ccb2c31",
+    "data/work/step4c-roof-shadow/final-c/S/distributed/shared_voxels.npy": "9cc5cf0bc629729509fbb408c283ddd2dd9c957e00a544a9b3c57c54d54630ca",
+    "data/work/step4c-roof-shadow/final-c/S/distributed/voxels.npy": "9cc5cf0bc629729509fbb408c283ddd2dd9c957e00a544a9b3c57c54d54630ca",
+    "data/work/step4c-roof-shadow/final-c/S/footprint_fraction.npy": "266834ab4b3a43e2a19e89576e5d832245493a782b4322b1ab2edd9337f42ebd",
+    "data/work/step4c-roof-shadow/final-c/S/observer_index.npy": "c8a22c0d2dfe56db22560336aba5a2487f29930c9e68d8b0296e5b7833f7755b",
+    "data/work/step4c-roof-shadow/final-c/S/observer_valid.npy": "ad4669b41199b21969f300e4082dc3b83c00d48a93c279ac320a2a9d2837a87e",
+    "data/work/step4c-roof-shadow/final-c/S/observer_xyz.npy": "28a09e1ab24d015856f3036b68943d54bf835abdcfa8fc11d4f90551fb4a9e19",
+    "data/work/step4c-roof-shadow/final-c/S/representative/dem.npy": "8992946bfb5781a06038c2a535321a88c5153e46e10aad8744c1b47aa6d49cc0",
+    "data/work/step4c-roof-shadow/final-c/S/representative/engine.json": "ab483bd8e9e11f2c1153882b85204970993bbb4cdfb556a7e3dce1255f07917a",
+    "data/work/step4c-roof-shadow/final-c/S/representative/height.npy": "b4f58333fb70eaf0a75b43bdfbb22fd39a3d6ec5a4c72b25d806c9dce5410357",
+    "data/work/step4c-roof-shadow/final-c/S/representative/ids.npy": "92527d68b5da69e6081af96e369a6b1413559aae61684342fe9e99775dcd5a9c",
+    "data/work/step4c-roof-shadow/final-c/S/representative/metadata.json": "602e96f066df9cfd665834cbf3c05a783e5917237d546b0f6c97866c989de135",
+    "data/work/step4c-roof-shadow/final-c/S/representative/qa.json": "2ae427227ae488fdf6adf0ea2360ab8deaa661f34c0c3f72e156a6946ae32edd",
+    "data/work/step4c-roof-shadow/final-c/S/representative/runtime.json": "7984febfd89f24618f9748f7d88f04a7fdfcdfe8a0a0d8796abba61c5ab25e32",
+    "data/work/step4c-roof-shadow/final-c/S/representative/segments.json": "fa9da1d5c6d8e4a38f58c4e041ced12cef941559f4700db460c36529647cf03a",
+    "data/work/step4c-roof-shadow/final-c/S/representative/shadow.npy": "2bd6c4bf230ad7dbedb76b4bdfe51a94fc0b12bfc9c5ba4d5209981e95555841",
+    "data/work/step4c-roof-shadow/final-c/S/representative/shared_voxels.npy": "1407ba580ccef241e7719946a09056013b417a03e472d32187b29e467fd4572b",
+    "data/work/step4c-roof-shadow/final-c/S/representative/voxels.npy": "1407ba580ccef241e7719946a09056013b417a03e472d32187b29e467fd4572b",
+    "data/work/step4c-roof-shadow/final-c/S/roof_coverage.npy": "8298776a3bbcd6ba37e90c98787678d821c46bb7cbd37b44387fcd0434f4d554",
+    "data/work/step4c-roof-shadow/final-c/S/source_row_col.npy": "dfb33b2d907646fd2478dc6e57dd63c4aba7d657ea6b76afef10cd1b80deab92",
+    "data/work/step4c-roof-shadow/final-c/S/source_top_H.npy": "9725757ac250d0f419cd7b32173543ace21af9151be1b0ab53be9c5f99d40488",
+    "data/work/step4c-roof-shadow/final-c/report.json": "c84599fdca7b20828702b314d1e1a863695567b30e3d670fcd23fddca4a4227e",
+    "data/work/step4a-roof-distribution/final-c/manifest.json": "f73e65073ed823b9155cc75a93a4cfdbc314fb9a0f1859f4d635ec5e71a952bd",
+    "data/work/step4b2-roof-terrain/final-a/manifest.json": "9f564e7d2e06c74301fdcf3670d6f60e2a531e628cfb36de882d8dec6f286817",
+    "data/work/step4-0-roof-audit/audit-final-e/manifest.json": "14498ba34826c2b68c2a22c29da6fcbeb8bc696e20b68f799d8a8cca0a41a852",
+    "data/work/step4-0-roof-audit/audit-final-e/report.json": "71de561a0644352654c4d30814259f3d42b1d31a18b9c1591652be88c1b3565e",
+    "data/work/terrain-candidate-b/t5-23-02/report.json": "1a4c3ed60bebcb92b00f5a28dbb52ceea78fd4b9eb4893cb87445dc17080695f",
+    "data/work/terrain-candidate-b/t5-23-02/t5-2/terrain.tif": "ead7545fb2b50aaad9958aa8db647708a8ceba04f719ac6e8400150a17bb36a2",
+    "data/work/mixed-lod-converter-bridge/run-02/extracted/udx/bldg/53393466_bldg_6697_op.gml": "6128aa2a2bd637e51dbef89ee42bd54620eae6a2fab82b082149a4dc4924c0c9",
+    "data/work/mixed-lod-standard/run-02/standard.gpkg": "954d01aad3004a0d2d69586036ef9961071064a39db4215d45577dee2f996f60",
+    "data/work/mixed-lod-native/run-02/native.gpkg": "1e2af898307e5f9bfbc4fbc86ab714dfad2557e2371ff98138171eb768ca7da7",
+    "data/work/mixed-lod-standard/run-02/manifest.json": "9789d443e0286ad0c5da57156d7ba10ed19adafba5e42cec068e9deeead0f789",
+    "data/work/mixed-lod-native/run-02/manifest.json": "b7e932b9b6da9da98a59ccb6e1acb5a60a1cb7d50ea5c3d5e86782eccbcfc46d",
+    "data/work/mixed-lod-selector/run-pr136-rereview-01/manifest.json": "eea7a117658208018fb0e12d212f7e63a6fef69a0c86c1265fd6692fda4b0785",
+    "docs/experiments/voxcitygml_p1/p1-1a/manifest.json": "cfb01bad1f823f9e8c475a5b95e9fc404132858eadd06949dde834484fd25d65",
+    "data/work/voxcitygml_p1/p1-1a-final-b/manifest.json": "d140473154cc234a05fa42a55241fa59dee32e4c3e577da098a5ca5f5bf7052a",
+    "data/work/voxcitygml_p1/p1-1a-final-b/F-only.xml": "06fa125f8cbbecbbbcbdc477421504a5bf31749acce05e1b39c89b87ec5b771f",
+    "data/work/voxcitygml_p1/p1-1a-final-b/geometry_diagnostics.json": "12d6cceae7b390c700b156cf465c08d604155150a5d7c1a859a07f9094e9ecab",
+    "data/work/voxcitygml_p1/p1-1a-final-b/repaired_faces.npy": "654c6fd8f3f74a2a026c3897f7a8ab9acc041ecb8ca3ef930174f40f8e2272e0",
+    "data/work/voxcitygml_p1/p1-1a-final-b/repaired_vertices.npy": "840ff8a385de338ad375f806210c2a0c38836b3cc5390e480adc3243ae617ebf",
+    "data/work/voxcitygml_p1/p1-1a-final-b/triangulated_faces.npy": "e7a110999cd204133b1f0c09bf922856f82085dde3cf98d2d19a11674929c66a",
+    "data/work/voxcitygml_p1/p1-1a-final-b/triangulated_vertices.npy": "8847fee59626b8a25b73d6ac515a578ad6f4ffe6100de01079f7c7f3710578ab",
+    "data/work/voxcitygml_p1/p1-1a-final-b/voxels.npy": "38c4e62b4c32f4936ff643b4d3803006048ea2140b4cb1dc52ae4bcf694ec2dd",
+    "docs/experiments/voxcitygml_p1/p1-1a/geometry_diagnostics.json": "a664917f78e2e47481036aa74da4db295f611995712edd065f507581d3e77d0a",
+    "docs/experiments/voxcitygml_p1/p1-1a/dependency_artifacts.csv": "f2ff2d26ad68c850e8d5b4720681de89a4e82c21f02988b24094c5ccce482642",
+    "docs/experiments/voxcitygml_p1/p1-1b/manifest.json": "ebb673dc8544f01260c9c09551ab2394beb933520b925ceb82b50b23f9dfe16e",
+    "data/work/voxcitygml_p1/p1-1b-final-d/manifest.json": "97e790a12dc18c30c695f70b7d2bb9388d1a528cef67f5de0d960a0ee62edd1a",
+    "data/work/voxcitygml_p1/p1-1b-final-d/C/geometry_diagnostics.json": "56c8e0ffa17ddf3e44852c43a2a77e908723cce3a9994eea1ec8d696fb828bd3",
+    "data/work/voxcitygml_p1/p1-1b-final-d/C/merge_faces.npy": "3e38640072f05a24081d5648d9ac4e608c963ce2d710adfbb9e003df2415b170",
+    "data/work/voxcitygml_p1/p1-1b-final-d/C/merge_vertices.npy": "4368e42e567dfc88ebc89c95a0141e9941d6d4ad3dfecabde77c2bcc1a512f28",
+    "data/work/voxcitygml_p1/p1-1b-final-d/C/triangulated_faces.npy": "919db2f509fe9778152c5cc27212c9df318a4b23be331e526f9a5309fc1063b3",
+    "data/work/voxcitygml_p1/p1-1b-final-d/C/triangulated_vertices.npy": "2cdf1ef3283dd7d97f5d3dfb128e78f348f6d39884d6970bb995dfae645e11ab",
+    "data/work/voxcitygml_p1/p1-1b-final-d/M/geometry_diagnostics.json": "660f686b10bcbc4865a845058768ea2946fbe45c1012651661ea6f8a93473098",
+    "data/work/voxcitygml_p1/p1-1b-final-d/M/merge_faces.npy": "a9b9382ba373f3d4071da723aff4bbd82a11f9dc4f805f33bdd15522060594b4",
+    "data/work/voxcitygml_p1/p1-1b-final-d/M/merge_vertices.npy": "6d112b25ce8890d4b5dc2ac85b40c9c26b47e6a888515c3bab63a7fb2a09c3d1",
+    "data/work/voxcitygml_p1/p1-1b-final-d/M/triangulated_faces.npy": "cfb37488f8bc4afdaf3b661789255d6a3c2ac995677143cf7ed4acaf525ee715",
+    "data/work/voxcitygml_p1/p1-1b-final-d/M/triangulated_vertices.npy": "5ecef17236d559911450bf91b8f6b49a25f93001d1aaca7d15faaf6e34acad23",
+    "data/work/voxcitygml_p1/p1-1b-final-d/S/geometry_diagnostics.json": "3714f4346507c3e11cce881b29b2a2949bab92b8a89eb19a938f12d1a6c5cc02",
+    "data/work/voxcitygml_p1/p1-1b-final-d/S/merge_faces.npy": "d277e62faaf459fec91210f67be8d21d4cea37fab74c8b713f1684015ee47bbe",
+    "data/work/voxcitygml_p1/p1-1b-final-d/S/merge_vertices.npy": "8487c00722dece6de012951cc1c3712e3fd0415a7871c4ac9c8df02d4c8b3bfc",
+    "data/work/voxcitygml_p1/p1-1b-final-d/S/triangulated_faces.npy": "d0c5b32b107286eb752f121ec91e34fc34626cad16f9a58ee990f20ea019e2f8",
+    "data/work/voxcitygml_p1/p1-1b-final-d/S/triangulated_vertices.npy": "109f83ab49426b5953ca7b78dd3a0dd74ca59b2aae3add2b1a06d5cd2c8225d6",
+    "docs/experiments/voxcitygml_p1/p1-1b/S_geometry_diagnostics.json": "9203ac6601c6023958b62bcf8970a9d3725aca01d20ee4797f70414f96e0e8f1",
+    "docs/experiments/voxcitygml_p1/p1-1b/M_geometry_diagnostics.json": "56755a04268310b9bb1447779da81cb11f665d41f911c1bbba19a16c0f0bdd7a",
+    "docs/experiments/voxcitygml_p1/p1-1b/C_geometry_diagnostics.json": "31dae19c75449fabc88a4b27c383e8ce80da9eac37cfd5f39b4457300fcdecdb",
+    "docs/experiments/voxcitygml_p1/p1-1c/manifest.json": "edfe05979309f4fd5cfd1c19dcace816682696a94a6a3de6c6fcacfdf4062998",
+    "data/work/voxcitygml_p1/p1-1c-final-d/manifest.json": "b513b2527e82f0dbe9b35f5285f12b59e1f4b7a38de2e244c51da4c09c9a9fa2",
+    "data/work/voxcitygml_p1/p1-1c-final-d/C/0.5m/interior.npy": "a5ab0e9f00626d5fba92c555ae5b5be4b71c03abf792923d1de8505f82b2854e",
+    "data/work/voxcitygml_p1/p1-1c-final-d/C/0.5m/shell.npy": "1391b15175e26d90857683215b33eb04c887a4727cdff72492cb1c5fafab8ff9",
+    "data/work/voxcitygml_p1/p1-1c-final-d/C/0.5m/voxels.npy": "65c015157cf31477aba770bceafb2e4d37499c984fec8abcacbea3d8d9f124f6",
+    "data/work/voxcitygml_p1/p1-1c-final-d/C/1m/interior.npy": "5c1ad60c31c3b5d0a83567b94cb608c70590df42f918c37a76d9ca91ec057113",
+    "data/work/voxcitygml_p1/p1-1c-final-d/C/1m/shell.npy": "e93e4a9b7af754c885c8469569152c9af96701f6f08e3fd7f52034e58ff3139e",
+    "data/work/voxcitygml_p1/p1-1c-final-d/C/1m/voxels.npy": "67f95648da592e0e88eea6beac9ce8ddfd555c5519c34507017496b590a5381d",
+    "data/work/voxcitygml_p1/p1-1c-final-d/C/1m_shift_xyz/interior.npy": "915636bfc3cb0c5c2f0074dad7baab701298de0601c546257c78235c705a00d4",
+    "data/work/voxcitygml_p1/p1-1c-final-d/C/1m_shift_xyz/shell.npy": "a8ad49c310ecbe8670063b127dba796939b59aaa9f66c52061cf89bc5e9b0ee6",
+    "data/work/voxcitygml_p1/p1-1c-final-d/C/1m_shift_xyz/voxels.npy": "34ab88099aae7addc8bb95b1120561c36876de143e78cff8a888f6fc688f90c2",
+    "data/work/voxcitygml_p1/p1-1c-final-d/C/voxel_diagnostics.json": "53895edcb41505dc43c0d8ec779ab789345d716894cfba48bef4705ed44a57d6",
+    "data/work/voxcitygml_p1/p1-1c-final-d/F/0.5m/interior.npy": "1392800a155b4dcabd1dc50a06591c6cb0e58df86b145708b8ac9da190229ba6",
+    "data/work/voxcitygml_p1/p1-1c-final-d/F/0.5m/shell.npy": "8023a2930e282a2983069ba9e4754379877699f4c810eba7a84d7a07cdcc4b6c",
+    "data/work/voxcitygml_p1/p1-1c-final-d/F/0.5m/voxels.npy": "6a1a68afb376e4abd8a20d8afe384b443aacc239ebfd44128403886baac4ceef",
+    "data/work/voxcitygml_p1/p1-1c-final-d/F/1m/interior.npy": "6b4874ca96bd68ade7e0d3f93edd136317e77b36756ff8d681d7e68e99b2c2c4",
+    "data/work/voxcitygml_p1/p1-1c-final-d/F/1m/shell.npy": "5d418144594b1f70de899134011923d25323442e3c20ac82c0d718aa1220f763",
+    "data/work/voxcitygml_p1/p1-1c-final-d/F/1m/voxels.npy": "38c4e62b4c32f4936ff643b4d3803006048ea2140b4cb1dc52ae4bcf694ec2dd",
+    "data/work/voxcitygml_p1/p1-1c-final-d/F/1m_shift_xyz/interior.npy": "d43b82fd99b21b0a1411eaa8ea7b5007a0b28b356c14db1fb723243edb7b7950",
+    "data/work/voxcitygml_p1/p1-1c-final-d/F/1m_shift_xyz/shell.npy": "97103c07595ecb4a2b3cbef68d632177f82ecaecf95fb26f5b2764c83662f8aa",
+    "data/work/voxcitygml_p1/p1-1c-final-d/F/1m_shift_xyz/voxels.npy": "11d3c22ae760a5a7f869058f4ac748d491ae58769d18a9f43a4e078ba152fbcf",
+    "data/work/voxcitygml_p1/p1-1c-final-d/F/voxel_diagnostics.json": "a0928b90deb32df6ff015f07ed54e2ba3cb24b670b2d1d1512555a5957e88515",
+    "data/work/voxcitygml_p1/p1-1c-final-d/M/0.5m/interior.npy": "b2bdf2b4fdc64e08de0f5ea5c26a887e243aa39f97c124b7a82f28f416697fd2",
+    "data/work/voxcitygml_p1/p1-1c-final-d/M/0.5m/shell.npy": "e9a73df5868a9a247cfb7cab97e0956f00ac1e801cef4d36f8b518abb5a49824",
+    "data/work/voxcitygml_p1/p1-1c-final-d/M/0.5m/voxels.npy": "002e51d00e788b5af71ad8779b4fad0b5c9e33a3027a65f21ddc504d2a868a18",
+    "data/work/voxcitygml_p1/p1-1c-final-d/M/1m/interior.npy": "204c2a5ef942c6c182eb23ff39d7abf46ac5683972fd82c0d0b5a8f5758e8e03",
+    "data/work/voxcitygml_p1/p1-1c-final-d/M/1m/shell.npy": "65730a443f8d376346a06386d4deca150a4e6f71a93bb8a47cf010901cfd98f9",
+    "data/work/voxcitygml_p1/p1-1c-final-d/M/1m/voxels.npy": "055e630d588a2f76f23c29cda9299f1c2bfd95e17785e6c242da6d04e3ae95ee",
+    "data/work/voxcitygml_p1/p1-1c-final-d/M/1m_shift_xyz/interior.npy": "9bd8bbd07ee2debaf3bb723f9203f90bee3bcbe6c224ab03c510db4b94088a59",
+    "data/work/voxcitygml_p1/p1-1c-final-d/M/1m_shift_xyz/shell.npy": "c7086de954260dd70cb62db465d76a4716c84869a1be895e20ce48e18d9d78c4",
+    "data/work/voxcitygml_p1/p1-1c-final-d/M/1m_shift_xyz/voxels.npy": "1df1cde05e0c7b129baae2a5358454e08f5d9f8472507f48ccddd2eb8962f974",
+    "data/work/voxcitygml_p1/p1-1c-final-d/M/voxel_diagnostics.json": "93bb7dc96a8fa16a902850c82fb6ff764bfa78affcf9a8679ac170a4c47647b9",
+    "data/work/voxcitygml_p1/p1-1c-final-d/S/0.5m/interior.npy": "66bd9882d910060aa070f86f4a620de8dfde66794c5b4b9acec50114e6e65fe8",
+    "data/work/voxcitygml_p1/p1-1c-final-d/S/0.5m/shell.npy": "7017e1c3eb111921f4beff933aa6bd901f57e7dfa8041cd5587f6a94a7de0f6b",
+    "data/work/voxcitygml_p1/p1-1c-final-d/S/0.5m/voxels.npy": "299543eb3362e1acd048677644a5bde58f9eecf16749a3bb92b5cccc0830b155",
+    "data/work/voxcitygml_p1/p1-1c-final-d/S/1m/interior.npy": "083b067f3156899b7479a41e9e866be8a64aea42f3fad1de3d42f586ae766f2f",
+    "data/work/voxcitygml_p1/p1-1c-final-d/S/1m/shell.npy": "44506ddecb46a0316b2ea00d30b58cacf365807b930b66bd01761338533fb0a1",
+    "data/work/voxcitygml_p1/p1-1c-final-d/S/1m/voxels.npy": "320784b21db2871da6f381fd990d842827697677d53625815288e40125ba001b",
+    "data/work/voxcitygml_p1/p1-1c-final-d/S/1m_shift_xyz/interior.npy": "d59400369741cd64281f98f8a8e7dad7f2a3fcb3b381eac217e3693b5a73069d",
+    "data/work/voxcitygml_p1/p1-1c-final-d/S/1m_shift_xyz/shell.npy": "176e8859576ae8fe680d068f2949c26c42ad2a1236ba9acf3e7a80307a20ae77",
+    "data/work/voxcitygml_p1/p1-1c-final-d/S/1m_shift_xyz/voxels.npy": "22f7c96883414b292af4174876296b8a664e33eb717012eb865fc94b7c669d53",
+    "data/work/voxcitygml_p1/p1-1c-final-d/S/voxel_diagnostics.json": "0a4c7ac92b9d109f50e207ec7e1f103565a452fbacaa177252ce02731631304c",
+    "docs/experiments/voxcitygml_p1/p1-1c/F_voxel_diagnostics.json": "773467d37120633da596107f76aadb85cf3f2095e6d336a181dab44b716c28d4",
+    "docs/experiments/voxcitygml_p1/p1-1c/S_voxel_diagnostics.json": "be5cd0db1d07978a75c283afd44152ab001f3faa67d24a171d574f91a234632f",
+    "docs/experiments/voxcitygml_p1/p1-1c/M_voxel_diagnostics.json": "96e0ef59e4d65c3a94c36bc1e24c800978218dc719f937c4b53889df8b9f9206",
+    "docs/experiments/voxcitygml_p1/p1-1c/C_voxel_diagnostics.json": "672dcc3ab0bbef86cacb0179aaf3717a55acb4ec5428136ebd43d01bc035fd66",
+    "docs/experiments/voxcitygml_p1/p1-1c/timing_diagnostics.json": "295f887bd1c2d81536187614ab601e657f6d2b8cc820f7beef3d827837581e46",
+    "OUEM_VENV/voxcity/utils/orientation.py": "46ea08c50a51d813d58f84ab7ab2293c051785a524062ac0183aa53b1c88958d",
+    "OUEM_VENV/voxcity/simulator/solar/kernels.py": "59b5bac159f41a841879089aa7385a9a0b72e8511dfbeff4773d21a9daa8b631",
+    "OUEM_VENV/voxcity/simulator/common/raytracing.py": "549e6a0a3c028e1fb638f9294f92afa0080d568580426440c97262ba263e24d7",
+    "OUEM_VENV/voxcity/simulator/solar/radiation.py": "a05289164e306ac1a9d5c7fe22ad1b264eab84e82848441664610d28ef6f0c05",
+    "P1_VENV/voxcity/utils/orientation.py": "46ea08c50a51d813d58f84ab7ab2293c051785a524062ac0183aa53b1c88958d",
+    "P1_VENV/voxcity/simulator/solar/kernels.py": "59b5bac159f41a841879089aa7385a9a0b72e8511dfbeff4773d21a9daa8b631",
+    "P1_VENV/voxcity/simulator/common/raytracing.py": "549e6a0a3c028e1fb638f9294f92afa0080d568580426440c97262ba263e24d7",
+    "P1_VENV/voxcity/simulator/solar/radiation.py": "a05289164e306ac1a9d5c7fe22ad1b264eab84e82848441664610d28ef6f0c05",
+    "P1_VENV/voxcitygml/cli.py": "e576691076e34fe65129c5df6d196e81c76a4d57031921eab526f32699c671d5",
+    "P1_VENV/voxcitygml/export_obj.py": "9365a0e012ca678f4fce878fbb361f662c56ca4a5f7279b1b642573204c76235",
+    "P1_VENV/voxcitygml/grid_utils.py": "4bb5ca9b3ec6bfdd0005f28d4c06a9bd1d05eb076d60316730c8059d88756947",
+    "P1_VENV/voxcitygml/models.py": "d1d3557bea4eea97931a572f0d9c424dbb5c78945798c69a422d4e48c38f8b54",
+    "P1_VENV/voxcitygml/pipeline.py": "7cdf5f56e4e2ef06fb80c290ca4d4ffe1b8f0a6290f2ec4026de5486347b772f",
+    "P1_VENV/voxcitygml/pipeline_export.py": "4ec112645d0df5f7284f76d298e0da527848408e11ba9bcf18db7e136aa6b259",
+    "P1_VENV/voxcitygml/reapply.py": "48428b242e80e5293e32f5049bc945755fce6741712625c74343f2a486896d34",
+    "P1_VENV/voxcitygml/refine.py": "98e01410804b165a055ade00b15e2b1f033f4768d94a4470fd383de555b0d7be",
+    "P1_VENV/voxcitygml/terrain_solid.py": "0ee83462ad856144a2415f6e4ec0f5855cccc707d2b795a5e31625d50b6f9032",
+    "P1_VENV/voxcitygml/voxelizer3d.py": "3bc0e3cd113d93310de90afe74959d207e0d8d85fa596ce8139245a56e732730",
+    "P1_VENV/voxcitygml/watertight.py": "6cca4a2661a1fc3a06f7967c875a7aa8fff5a4a82ed59a98170a3fb74525f025",
+    "P1_VENV/voxcitygml/__init__.py": "9f04c134c049d625aead33b30dff82c51f2ef5d5eeaf1da05e4b7c37dddec315",
+    "P1_VENV/voxcitygml/__main__.py": "fd347a84265980a60bef1e46a6af8a0d69667b40a13aa7d325efadfaad2236e9",
+    "P1_VENV/voxcitygml/buildings/processor.py": "1c1c29efd2bd5ff36be2d5ce0f7e81e19f37d64328b5452979c9ffa302465ebd",
+    "P1_VENV/voxcitygml/buildings/__init__.py": "52aacdd885dd4fb118b2d01f3f091a67ca6e18336cbd71f7fb7324ac90ccfc96",
+    "P1_VENV/voxcitygml/canopy/processor.py": "bf4fc1d5097373255d1fb793ada9e84ee301ab76f95eeef055534f3971d73124",
+    "P1_VENV/voxcitygml/canopy/__init__.py": "759cb2bc074792f567c2b3b271707cac9d4780ba46c806a682868b5914400c47",
+    "P1_VENV/voxcitygml/citygml/coordinates.py": "7b084283a7c3feb08cee90dcef50a3d5c37bedbc6db66e89446331fe32b44b7d",
+    "P1_VENV/voxcitygml/citygml/extractors.py": "65016a351fb6c59cee0f27ebc5c81804f810870bc989f239b8541dbafd0ea20a",
+    "P1_VENV/voxcitygml/citygml/geometry.py": "b90d3d358b663e9b0f8e30b491c8e82788c4277d5ecbcd1315cd97aad7b044dd",
+    "P1_VENV/voxcitygml/citygml/namespaces.py": "4aad91232667aeeaeb76aaec361637a89b3ed3dcd9eaedb17e0ec3002f74159d",
+    "P1_VENV/voxcitygml/citygml/parser.py": "4fe58e4cc9e60842b733acad961746c8515283e0170d5e330f0c07a9d9eab861",
+    "P1_VENV/voxcitygml/citygml/parse_cache.py": "151d29053d8cad4f8d48d6f664a4afd8f3119b3042d8cf21239b972f23d3991a",
+    "P1_VENV/voxcitygml/citygml/__init__.py": "200ac3dab9cefd44d4ee8618c684c402d89fb60fb063f782713594a1de05c351",
+    "P1_VENV/voxcitygml/landcover/citygml_landcover.py": "3b6594277d8151a192ab1d7df768e3740d8db0f9e17760f613e85650bdb205e0",
+    "P1_VENV/voxcitygml/landcover/processor.py": "4c0bca2646ecea58e63866eac80b3f5fb9e68b443db80fa0aea47b5672b77e32",
+    "P1_VENV/voxcitygml/landcover/__init__.py": "166262fd4ea0ef3920a5acb2ff14b3fe654fc45c92935c0eb25c9d118ff896df",
+    "P1_VENV/voxcitygml/terrain/processor.py": "24c04ca17112c403b246509496114bb8b5c15a0ba2058408c346bebcd0b21bfa",
+    "P1_VENV/voxcitygml/terrain/__init__.py": "fc9c516ca58cb152357a74f19bf75816d9b563df114fdac6492d78880f71c597",
+    "src/ouem/real_roof_shadow.py": "c56aef67a83cdb9487efe71feb748a8e56af9e7d0894d7db0faae703d00ba897",
+    "src/ouem/candidate_b_shadow.py": "987815be3baa2fda9a5b7dbd6f653225b31ed2b4ea706a236010b123869fcfd4",
+    "src/ouem/synthetic_height_solar.py": "59888268557a3bd750c30958cece575c68d8c8a6468a04d7e9beb104c67f8a3c",
+    "src/ouem/b2_gvi.py": "fa71402d6026c044167a4510628e62aae5409214dfe7b6445a7634c89d75575d",
+    "src/ouem/p1_mesh_voxel.py": "752cf4f8cfde4478b3aeb598366db10b8a070058a7de47b426131720a89e51e5",
+    "docs/OUEM_Concept_Architecture_v0.2.md": "6f0d28e527c41ca3b18c1e87fdccd366e82bfbfe5e78d48f8c72a6e0495bc569",
+    "docs/OUEM_Standard_Building_v0.1.md": "ee27096177e834e2db7f9622e3745b366c285ed13e5c255784176309dd2cb550",
+    "docs/OUEM_Standard_Terrain_v0.1.md": "2fce0d3b5db4975ac13bc4af587d915855929966e34f05696cd8b2b04a4f0e89",
+    "docs/OUEM_VoxCity_Adapter_v0.1.md": "733f77f75db6df57fd6ad840c4b8f9814651f5183126373577df41e69d270360"
+  },
+  "checked_files_content_unchanged_at_end": true,
+  "scientific_validation": "NOT_VERIFIED",
+  "formal_acceptance": "NOT_VERIFIED",
+  "terrain_integration_ready": false,
+  "STEP4C_current_entry_sources_match_saved": {
+    "4C_code_adapter": {
+      "locator": "src/ouem/real_roof_shadow.py",
+      "sha256": "c56aef67a83cdb9487efe71feb748a8e56af9e7d0894d7db0faae703d00ba897",
+      "matches_saved_STEP4C": true
+    },
+    "4C_code_shared": {
+      "locator": "src/ouem/synthetic_height_solar.py",
+      "sha256": "59888268557a3bd750c30958cece575c68d8c8a6468a04d7e9beb104c67f8a3c",
+      "matches_saved_STEP4C": true
+    },
+    "4C_code_shadow": {
+      "locator": "src/ouem/candidate_b_shadow.py",
+      "sha256": "987815be3baa2fda9a5b7dbd6f653225b31ed2b4ea706a236010b123869fcfd4",
+      "matches_saved_STEP4C": true
+    },
+    "4C_code_observer": {
+      "locator": "src/ouem/b2_gvi.py",
+      "sha256": "fa71402d6026c044167a4510628e62aae5409214dfe7b6445a7634c89d75575d",
+      "matches_saved_STEP4C": true
+    }
+  }
+}
