@@ -1,0 +1,1587 @@
+{
+  "profile": "ouem-p1-2b-common-point-shadow/v0.1",
+  "status": "COMPLETED_EXPERIMENTAL",
+  "gates": {
+    "Gate_1": "PASS",
+    "Gate_2": "PASS",
+    "Gate_3": "PASS",
+    "Gate_4": "PASS",
+    "Gate_5": "PASS"
+  },
+  "settings": {
+    "meshsize": 1.0,
+    "hit_values": [
+      0,
+      -1,
+      1
+    ],
+    "inclusion_mode": false,
+    "tree_k": 0.6,
+    "tree_lad": 1.0,
+    "numba_threads": 2,
+    "azimuth_true_deg": 180.0,
+    "elevation_deg": 45.0,
+    "baseline_include_building_roofs": false,
+    "baseline_requested_observer_height_m": 0.0,
+    "ray_kernel": "voxcity.simulator.common.raytracing.trace_ray_generic",
+    "axis_transform": "single axis-0 reflection; integer origin (R-1-r,c,k); kernel adds 0.5",
+    "observer": "saved STEP4C XYZ; no observer regeneration"
+  },
+  "buildings": {
+    "F": {
+      "controls": {
+        "A": {
+          "status": "PASS",
+          "evaluated_saved_valid_points": 577,
+          "mismatch_count": 0,
+          "mismatch_row_col": [],
+          "saved_shadow_cells": 26,
+          "control_shadow_cells": 26,
+          "origin_XYZ_exact": true,
+          "mask_policy": "full saved M_AB; no C-derived exclusion in control"
+        },
+        "B": {
+          "status": "PASS",
+          "evaluated_saved_valid_points": 577,
+          "mismatch_count": 0,
+          "mismatch_row_col": [],
+          "saved_shadow_cells": 26,
+          "control_shadow_cells": 26,
+          "origin_XYZ_exact": true,
+          "mask_policy": "full saved M_AB; no C-derived exclusion in control"
+        }
+      },
+      "saved_direction_north_east_up": [
+        -0.7071045090927752,
+        -0.0017925458614656705,
+        0.7071067811865476
+      ],
+      "saved_observer_grid": {
+        "boundary_rule": "positive-area presence/support; closed-set centre; affine maximum on polygon closure",
+        "bounds": [
+          -22588,
+          -39859,
+          -22560,
+          -39837
+        ],
+        "column_axis": [
+          1.0,
+          0.0
+        ],
+        "crs": "EPSG:6677",
+        "default_halo_cells": 1,
+        "epsg": 6677,
+        "global_phase_origin_xy": [
+          0.0,
+          0.0
+        ],
+        "height": 22,
+        "orientation": "north-up",
+        "origin_xy": [
+          -22588,
+          -39837
+        ],
+        "resolution": 1.0,
+        "row_axis": [
+          0.0,
+          -1.0
+        ],
+        "sampling_location": "cell centres locate cells; roof evaluation is method-specific",
+        "transform": [
+          1.0,
+          0.0,
+          -22588.0,
+          0.0,
+          -1.0,
+          -39837.0
+        ],
+        "width": 28
+      },
+      "D0_abs_H": 24.485000610351562,
+      "original_saved_valid_count": 577,
+      "observer_index_range": [
+        1,
+        2
+      ],
+      "observer_abs_H_range": [
+        25.985000610351562,
+        26.985000610351562
+      ],
+      "C_derived": {
+        "identity": {
+          "source_id": "bldg_09532951-4dab-457d-b1c6-56d509900d1b",
+          "ouem_id": "oub-c56cb020-c11c-5f9c-a37f-73018266a333",
+          "semantic_counts": {
+            "GroundSurface": 1,
+            "RoofSurface": 1,
+            "WallSurface": 4
+          },
+          "polygon_ids": [
+            "pol_2615e0b6-b772-4b9f-ab74-7c7c1fbed3e1",
+            "pol_115b6bc1-41b1-404d-ae7c-d54b3f5a9ddf",
+            "pol_a1a63b17-f504-4c0e-b5fc-378237ca4364",
+            "pol_76bed7d2-5091-4ca8-9f96-cbcb1c55367e",
+            "pol_5e08eff5-3241-4f7a-8bb3-34a8bd49cd5e",
+            "pol_d4135b35-dae2-4b30-a0bd-4b14eff00a33"
+          ],
+          "reference": {
+            "vertices": 8,
+            "triangles": 12,
+            "bounds": [
+              [
+                -22581.789817,
+                -39849.321041,
+                24.888792
+              ],
+              [
+                -22569.6725,
+                -39846.6545,
+                27.0858
+              ]
+            ],
+            "area_m2": 107.85279712009044,
+            "signed_volume_m3": 51.11014713677772,
+            "watertight": true,
+            "is_volume": true,
+            "vertices_sha256": "17653b2644acc8f2317ef853fcc5326523da7038245fda0ee32ebdf4db254648",
+            "faces_sha256": "18fa7731622da2ba9f26405cdaee9e6e9845088b96d24075ae3f606f4ac08dd8",
+            "boundary_edges": 0,
+            "nonmanifold_edges": 0
+          }
+        },
+        "grid": {
+          "n_rows": 22,
+          "n_cols": 28,
+          "n_z": 5,
+          "min_x": -22588.0,
+          "max_x": -22560.0,
+          "min_y": -39859.0,
+          "max_y": -39837.0,
+          "min_z": 24.485000610351562,
+          "max_z": 29.485000610351562,
+          "voxel_size": 1.0
+        },
+        "trace": [
+          "repair:merge",
+          "occupancy:True"
+        ],
+        "shape": [
+          22,
+          28,
+          5
+        ],
+        "occupied_cells": 117,
+        "scanline_fill_cells": 72,
+        "contact_shell_cells": 108,
+        "voxel_padding_core_identity": true,
+        "extra_domain_occupied_cells": 0,
+        "geometry_context": {
+          "conservative_shadow_bbox_XY": [
+            -22582,
+            -39850,
+            -22568.996197435998,
+            -39844.50000481984
+          ],
+          "maximum_vertical_reach_m": 1.5,
+          "highest_occupied_upper_H": 27.485000610351562,
+          "AIR_layers_above_highest_occupied": 2,
+          "source_H_not_reanchored": true
+        },
+        "original_H_unchanged": true,
+        "original_C_archives_unchanged": true,
+        "GROUND_SURFACE_DEM": "NOT_CREATED; D0 is grid origin only",
+        "A_B_padding_qa": {
+          "A": {
+            "original_shape": [
+              22,
+              28,
+              4
+            ],
+            "shared_shape": [
+              22,
+              28,
+              5
+            ],
+            "AIR_layers_added": 1,
+            "original_layers_identical": true,
+            "added_layers_AIR_only": true,
+            "full_saved_valid_control_identical": true,
+            "highest_occupied_upper_H": 28.485000610351562
+          },
+          "B": {
+            "original_shape": [
+              22,
+              28,
+              4
+            ],
+            "shared_shape": [
+              22,
+              28,
+              5
+            ],
+            "AIR_layers_added": 1,
+            "original_layers_identical": true,
+            "added_layers_AIR_only": true,
+            "full_saved_valid_control_identical": true,
+            "highest_occupied_upper_H": 28.485000610351562
+          }
+        }
+      },
+      "common_mask": {
+        "original_AB_valid": 577,
+        "common_valid": 577,
+        "original_AB_excluded": 39,
+        "C_origin_occupied_excluded": 0,
+        "excluded_row_col": [],
+        "reason_codes": {
+          "original_AB_excluded": 0,
+          "common_AIR_observer": 1,
+          "C_origin_occupied": 2
+        },
+        "outside_domain_or_capacity": "none; any such case is BLOCKED, never excluded",
+        "mask_fixed_before_C_shadow": true,
+        "mask_file_sha256": "84ff9a0333ef499ebd7880ada2c8fefd09bfe6552a8a4328b3ffcfeec8959a42",
+        "mask_array_sha256": "db92ba4debe4e128e3af4ee8e428c4fb66c4a86b2439fc96ccb8a3174cf7f2b4"
+      },
+      "comparison": {
+        "models_on_common_mask": {
+          "A": {
+            "valid_observers": 577,
+            "shadow_cells": 26,
+            "shadow_area_m2": 26.0,
+            "shadow_fraction": 0.045060658578856154
+          },
+          "B": {
+            "valid_observers": 577,
+            "shadow_cells": 26,
+            "shadow_area_m2": 26.0,
+            "shadow_fraction": 0.045060658578856154
+          },
+          "C": {
+            "valid_observers": 577,
+            "shadow_cells": 12,
+            "shadow_area_m2": 12.0,
+            "shadow_fraction": 0.02079722703639515
+          }
+        },
+        "pairs_on_common_mask": {
+          "A_B": {
+            "valid_cells": 577,
+            "first_shadow_cells": 26,
+            "second_shadow_cells": 26,
+            "discrete_area_delta_m2_second_minus_first": 0,
+            "changed_cells": 0,
+            "first_shadow_to_second_sun": 0,
+            "first_sun_to_second_shadow": 0,
+            "shadow_IoU": 1.0,
+            "common_sun": 551,
+            "common_shadow": 26,
+            "first_only_shadow": 0,
+            "second_only_shadow": 0,
+            "empty_union": false
+          },
+          "A_C": {
+            "valid_cells": 577,
+            "first_shadow_cells": 26,
+            "second_shadow_cells": 12,
+            "discrete_area_delta_m2_second_minus_first": -14,
+            "changed_cells": 14,
+            "first_shadow_to_second_sun": 14,
+            "first_sun_to_second_shadow": 0,
+            "shadow_IoU": 0.46153846153846156,
+            "common_sun": 551,
+            "common_shadow": 12,
+            "first_only_shadow": 14,
+            "second_only_shadow": 0,
+            "empty_union": false
+          },
+          "B_C": {
+            "valid_cells": 577,
+            "first_shadow_cells": 26,
+            "second_shadow_cells": 12,
+            "discrete_area_delta_m2_second_minus_first": -14,
+            "changed_cells": 14,
+            "first_shadow_to_second_sun": 14,
+            "first_sun_to_second_shadow": 0,
+            "shadow_IoU": 0.46153846153846156,
+            "common_sun": 551,
+            "common_shadow": 12,
+            "first_only_shadow": 14,
+            "second_only_shadow": 0,
+            "empty_union": false
+          }
+        },
+        "original_STEP4C_full_AB_metrics": {
+          "changed_cells": 0,
+          "distributed_shadow_cells": 26,
+          "representative_shadow_cells": 26,
+          "shadow_IoU": 1.0,
+          "shadow_area_delta_m2": 0,
+          "shadow_cells_delta_B_minus_A": 0,
+          "shadow_to_sun": 0,
+          "sun_to_shadow": 0,
+          "valid_observers": 577
+        },
+        "C_plus_three_AIR_identity": true,
+        "C_outer_two_cell_shadow_count": 0,
+        "shared_observer_mask_array_sha256": "db92ba4debe4e128e3af4ee8e428c4fb66c4a86b2439fc96ccb8a3174cf7f2b4",
+        "shadow_codes": {
+          "shadow": 0,
+          "sun": 1,
+          "excluded": 255
+        },
+        "difference_codes": {
+          "excluded": 0,
+          "common_sun": 1,
+          "common_shadow": 2,
+          "first_only_shadow": 3,
+          "second_only_shadow": 4
+        }
+      }
+    },
+    "S": {
+      "controls": {
+        "A": {
+          "status": "PASS",
+          "evaluated_saved_valid_points": 1845,
+          "mismatch_count": 0,
+          "mismatch_row_col": [],
+          "saved_shadow_cells": 192,
+          "control_shadow_cells": 192,
+          "origin_XYZ_exact": true,
+          "mask_policy": "full saved M_AB; no C-derived exclusion in control"
+        },
+        "B": {
+          "status": "PASS",
+          "evaluated_saved_valid_points": 1845,
+          "mismatch_count": 0,
+          "mismatch_row_col": [],
+          "saved_shadow_cells": 118,
+          "control_shadow_cells": 118,
+          "origin_XYZ_exact": true,
+          "mask_policy": "full saved M_AB; no C-derived exclusion in control"
+        }
+      },
+      "saved_direction_north_east_up": [
+        -0.7071045126881279,
+        -0.0017911270432978943,
+        0.7071067811865476
+      ],
+      "saved_observer_grid": {
+        "boundary_rule": "positive-area presence/support; closed-set centre; affine maximum on polygon closure",
+        "bounds": [
+          -22583,
+          -39850,
+          -22529,
+          -39811
+        ],
+        "column_axis": [
+          1.0,
+          0.0
+        ],
+        "crs": "EPSG:6677",
+        "default_halo_cells": 1,
+        "epsg": 6677,
+        "global_phase_origin_xy": [
+          0.0,
+          0.0
+        ],
+        "height": 39,
+        "orientation": "north-up",
+        "origin_xy": [
+          -22583,
+          -39811
+        ],
+        "resolution": 1.0,
+        "row_axis": [
+          0.0,
+          -1.0
+        ],
+        "sampling_location": "cell centres locate cells; roof evaluation is method-specific",
+        "transform": [
+          1.0,
+          0.0,
+          -22583.0,
+          0.0,
+          -1.0,
+          -39811.0
+        ],
+        "width": 54
+      },
+      "D0_abs_H": 24.55299949645996,
+      "original_saved_valid_count": 1845,
+      "observer_index_range": [
+        1,
+        2
+      ],
+      "observer_abs_H_range": [
+        26.05299949645996,
+        27.05299949645996
+      ],
+      "C_derived": {
+        "identity": {
+          "source_id": "bldg_040379e5-dffb-40b6-a392-6396158211f5",
+          "ouem_id": "oub-664a9132-cf36-52a5-96f5-577e78c91e59",
+          "semantic_counts": {
+            "GroundSurface": 1,
+            "RoofSurface": 69,
+            "WallSurface": 61
+          },
+          "polygon_ids": [
+            "pol_3bdc58e3-7979-45a7-a2f0-038e4fffb82c",
+            "pol_a466a9ae-54ac-49a3-bbc6-a56c8f3d98cf",
+            "pol_a59c1e98-fbca-4501-a60e-2bbaf92ee8cc",
+            "pol_549937aa-57d7-4955-aea3-e634ba614ab1",
+            "pol_2dd643c6-0ced-4e14-8931-2f27e7f57393",
+            "pol_4ed533ca-a5aa-43ea-9aa7-b86f8da741cd",
+            "pol_81c86e5f-1e52-4c66-989e-c4c4faeeb151",
+            "pol_27b7c7ed-9a1a-4a83-bfe7-aefaefb1926f",
+            "pol_c8954f80-244f-468a-900d-e59e54dca319",
+            "pol_ea9de3aa-4c11-453f-90af-e64506b7512b",
+            "pol_6e5d5ec2-47e7-46b2-a3fc-cc21574fe583",
+            "pol_57fb81df-bb0a-4e5b-9ec5-feb268b4ca3e",
+            "pol_6dd3c46f-2372-431a-87c4-09bf075010c1",
+            "pol_b20cdd1b-2118-4852-9dd2-dcb075d433c4",
+            "pol_950bda69-b305-4ce4-b7b9-5aa0368111fb",
+            "pol_9a76b58b-e6e1-4aff-910e-0b364bcafd1a",
+            "pol_1151f234-d414-417b-a9d1-c6dd2768e4a7",
+            "pol_6e782556-9be6-4f56-89dd-216141bbb1d1",
+            "pol_25e711d6-df4a-4a7a-8b40-a7c767793042",
+            "pol_68c3a2b2-91b3-4fd3-ba5b-52331cd62ccb",
+            "pol_5bcc25ff-eec5-43b2-b013-251c4b503a26",
+            "pol_01b55e37-14be-449c-bf00-0732de4141cf",
+            "pol_f59058c1-4ec7-49d7-9987-30eb42a84016",
+            "pol_91239773-53ff-4715-9cf4-b68625f427d2",
+            "pol_d2148154-49e3-4619-b123-45fc6bf56c57",
+            "pol_24f15435-4163-472b-9811-a76104689134",
+            "pol_031210fb-8430-4627-bbf4-4d6f2fae6ee2",
+            "pol_654d5f73-6ca7-4427-9ed5-94496e340777",
+            "pol_0279a3e0-760f-4388-aeb9-3667973ab69b",
+            "pol_178c0310-cf3c-46b8-b34f-97752f1b6c66",
+            "pol_710685bd-bdf6-47a6-b5c9-7017ce5020cd",
+            "pol_a47b1e2a-e367-4cbe-89e4-21eedba71375",
+            "pol_bebd95a7-db32-46cd-9e55-0de229cc6d03",
+            "pol_a4f4a183-3ebb-4bbb-9d85-42de0201db04",
+            "pol_a184e740-bce3-49f1-bde6-1ff4089ded60",
+            "pol_c172e4c7-26e9-4bff-90b6-2330003728ed",
+            "pol_5cd7c0b2-ff60-48a2-92e3-2b776698d046",
+            "pol_33ddf93d-2950-4d51-b179-ae61eec29c5e",
+            "pol_7ee18dab-5815-413c-a606-4450ebc2512b",
+            "pol_fc5cb874-314a-4fc9-9beb-fe2f2ea393e8",
+            "pol_633b1306-528e-4025-8bc0-5ce7b76bd316",
+            "pol_d3e87c88-8e16-48d6-8149-7d339aa47046",
+            "pol_f23ff851-cb09-4227-b482-70f27d503f8c",
+            "pol_ca5a2e28-30ec-426c-87f0-c6b89e7a097a",
+            "pol_4df0bafb-f984-4df8-a7fa-0493551b0379",
+            "pol_1de987ff-96cf-45ed-9d99-471938e05e4b",
+            "pol_6b3399bd-2f87-4b00-b028-e673f8372323",
+            "pol_3c7ce4b2-384b-483b-bb0f-50178b300af3",
+            "pol_fb7e8eac-2b66-4d59-aa38-6d2a82df595d",
+            "pol_d419f374-34ec-4cad-89a4-a80c8b5f497f",
+            "pol_e509df0b-b7b5-43d0-8198-8da11dc114fd",
+            "pol_75148834-64b8-4e80-ac83-47ab49a67df5",
+            "pol_1d775728-a9a0-42db-b71c-0d13ff8f7bfd",
+            "pol_8192f17b-2e63-4898-b2d7-8188005aca11",
+            "pol_5638f6a5-8777-4182-aee1-1e2de6a82339",
+            "pol_0d6fa945-b47e-4933-b4ae-bd9c5313b3af",
+            "pol_e328d250-3502-423b-b99d-f8876462a803",
+            "pol_a46ada76-c2eb-4aac-a61d-58526b50ee70",
+            "pol_89c3841d-92fd-46eb-be1c-b97449c6d5bf",
+            "pol_df7a1049-a768-4e57-976f-f93ce5b273fe",
+            "pol_079725a8-57a6-4a2d-b79f-9e392086ff8a",
+            "pol_eb730587-c47f-405e-a9f4-a00f300f043a",
+            "pol_c0b7517a-9d40-4824-877d-3487e9eb96e5",
+            "pol_979eac5c-676e-443c-bdb4-3e911747b070",
+            "pol_2d257c5c-783f-49b1-97b3-26c1da55c1af",
+            "pol_5f3adbe4-a5f8-48b8-a4ed-a6cc7d7adf7f",
+            "pol_8d5f3c83-a8bd-4d2e-b752-b098e2e0df22",
+            "pol_fcb2eac1-7162-4cb7-a8de-6a2b1f62776c",
+            "pol_35e117dd-0723-4d89-b73d-b25a3c0b0edc",
+            "pol_92fc6086-7440-4b1c-bc83-c606fdff12b2",
+            "pol_a9f3f588-12e0-4aba-9cf8-16a05c56bd50",
+            "pol_eaed2b06-b152-4e60-97dc-3ed52b0b7d3b",
+            "pol_b5ec9a33-1d6a-446f-8dbc-abca10770da8",
+            "pol_dbd3548b-935f-46f8-beca-e11f9eae48ea",
+            "pol_4304771e-35b2-4e3a-8864-4849fc76e5c2",
+            "pol_71893e56-c110-42cf-aaef-9056a310ca8a",
+            "pol_c45454a3-ff75-4667-9672-97dfc63a06b5",
+            "pol_416e546a-3d21-486a-a69f-6af34dc9d250",
+            "pol_0933450c-0adf-4a31-81cc-a7afe74824f7",
+            "pol_8feed72b-afdb-47d7-a06a-72f727b47cae",
+            "pol_9141aa05-221d-438c-913a-ba4e801010d2",
+            "pol_059c304f-0c54-4cf4-ae75-e368c02b3b20",
+            "pol_5ac774ae-b8b2-4215-ae33-6f5d024811d5",
+            "pol_d98c0e28-04e9-440e-93b8-c24e19f07083",
+            "pol_c7c7504a-4eed-4913-94c9-eb775782ce27",
+            "pol_28ac0f47-0831-4d16-8083-512cd5b8ee54",
+            "pol_9c89e467-250d-4599-b346-37b3c61e93ab",
+            "pol_6cdc49e4-d9f4-4e12-9dcf-fe6c9bf537d5",
+            "pol_2fc94ed1-ffec-402f-ac58-fe1306d33139",
+            "pol_fc32aa38-dd8a-4c42-9087-ea3a0a94cbb8",
+            "pol_7f76b295-07df-42dc-ba9d-8bf85c805d53",
+            "pol_f20f4af9-a698-4f1c-ad54-2333fdd33301",
+            "pol_7f1b804a-3aa3-4cfe-8cbe-002dee95a4c7",
+            "pol_cbf689c0-65d7-4178-8366-29cfbd88a09f",
+            "pol_5c4bd2af-70bc-4a88-9f0f-0f1c3ef5825c",
+            "pol_8e6b9c04-be6e-42dc-a66f-ac7475331108",
+            "pol_a6423db2-3a7a-40dc-a6c4-27448f7840d5",
+            "pol_78f1cdfb-cd06-4794-af56-7df6494ce952",
+            "pol_f84a434b-5179-438d-855b-10860fad2433",
+            "pol_48c75c5d-ee4a-4361-8301-480b676b65d5",
+            "pol_6e6fef25-6683-4468-a261-ff56a9d1764e",
+            "pol_5a325104-36b2-4bec-9fc6-a62448b4a66e",
+            "pol_0421cf2f-3e15-48cd-b0bf-b65c783e3504",
+            "pol_a4288299-5b83-4f93-b97f-a5ae6e4edb43",
+            "pol_7785764b-d286-4897-bc35-fa74cb97f855",
+            "pol_9cd856fa-1bf3-4ae4-a0b2-ca617ac6174a",
+            "pol_2e9c4d37-402b-4091-901e-5c6a859549bf",
+            "pol_6856226f-5354-4bed-9ae8-90d9e2192970",
+            "pol_761b0591-cefd-461f-bcc2-7fba2a534cea",
+            "pol_307c1440-11b0-4d85-ae48-c186469593cb",
+            "pol_27d5ebd0-2b24-4828-a04d-94c34d7ffff8",
+            "pol_344be458-c333-42b4-bf9d-bd2513cd3857",
+            "pol_34298177-b47b-4a0a-93a0-46ec426ed68f",
+            "pol_f465795f-6487-4b15-a810-7dda8c81b3ba",
+            "pol_306c3363-7a97-4752-82aa-b54ff900e33b",
+            "pol_75bc864f-2139-4822-9725-d802b0023dc8",
+            "pol_0c6acfa4-8d5b-476f-a1cc-ab98412cd456",
+            "pol_60a1a814-50ca-4d72-8c6a-890d8244a428",
+            "pol_9ebf9333-872a-4fbd-a87d-15fccdf5b129",
+            "pol_8383dd5b-7b0e-43b8-9048-5d1fbe02981a",
+            "pol_5fa7579c-26bf-4659-94ec-6789b5471f73",
+            "pol_b60e4702-879c-4b06-8e76-a2fa9b66cce0",
+            "pol_95e483f3-be68-43ed-8ded-efe9fcac074c",
+            "pol_2494b021-d92c-41ce-ade0-b8bf2384785f",
+            "pol_40720524-a865-438c-8138-33c1ec3c527e",
+            "pol_803a2a09-91bb-4ba7-ad08-c0594a94f61a",
+            "pol_279936a6-349c-40b7-8b7c-949beac0a3bf",
+            "pol_d799b160-5071-48f3-942e-54d2efe6c216",
+            "pol_fd30e0ab-445f-4b58-aaae-1aa27f8ec4bf",
+            "pol_e6ec10a2-827d-42f9-ad81-54991d1100ea",
+            "pol_05e8b32b-b99e-49e4-87da-bb1623553ba2"
+          ],
+          "reference": {
+            "vertices": 75,
+            "triangles": 146,
+            "bounds": [
+              [
+                -22567.360944,
+                -39834.594643,
+                24.877753
+              ],
+              [
+                -22544.202,
+                -39822.734252,
+                33.6846
+              ]
+            ],
+            "area_m2": 899.9839901500739,
+            "signed_volume_m3": 1590.649216945904,
+            "watertight": true,
+            "is_volume": true,
+            "vertices_sha256": "354af1ce5bd97cb6174afde95939ee8e731c866bb9fe0e222be021011f04c1bf",
+            "faces_sha256": "1264fcdf8ee03668753bd3243ba702f69bf5ee164d1ef4e3d45bbb09f4ad47a1",
+            "boundary_edges": 0,
+            "nonmanifold_edges": 0
+          }
+        },
+        "grid": {
+          "n_rows": 39,
+          "n_cols": 54,
+          "n_z": 12,
+          "min_x": -22583.0,
+          "max_x": -22529.0,
+          "min_y": -39850.0,
+          "max_y": -39811.0,
+          "min_z": 24.55299949645996,
+          "max_z": 36.55299949645996,
+          "voxel_size": 1.0
+        },
+        "trace": [
+          "repair:merge",
+          "occupancy:True"
+        ],
+        "shape": [
+          39,
+          54,
+          12
+        ],
+        "occupied_cells": 2155,
+        "scanline_fill_cells": 1761,
+        "contact_shell_cells": 1035,
+        "voxel_padding_core_identity": true,
+        "extra_domain_occupied_cells": 0,
+        "geometry_context": {
+          "conservative_shadow_bbox_XY": [
+            -22568,
+            -39835,
+            -22543.97846919267,
+            -39813.5000272692
+          ],
+          "maximum_vertical_reach_m": 8.5,
+          "highest_occupied_upper_H": 34.55299949645996,
+          "AIR_layers_above_highest_occupied": 2,
+          "source_H_not_reanchored": true
+        },
+        "original_H_unchanged": true,
+        "original_C_archives_unchanged": true,
+        "GROUND_SURFACE_DEM": "NOT_CREATED; D0 is grid origin only",
+        "A_B_padding_qa": {
+          "A": {
+            "original_shape": [
+              39,
+              54,
+              11
+            ],
+            "shared_shape": [
+              39,
+              54,
+              12
+            ],
+            "AIR_layers_added": 1,
+            "original_layers_identical": true,
+            "added_layers_AIR_only": true,
+            "full_saved_valid_control_identical": true,
+            "highest_occupied_upper_H": 34.55299949645996
+          },
+          "B": {
+            "original_shape": [
+              39,
+              54,
+              11
+            ],
+            "shared_shape": [
+              39,
+              54,
+              12
+            ],
+            "AIR_layers_added": 1,
+            "original_layers_identical": true,
+            "added_layers_AIR_only": true,
+            "full_saved_valid_control_identical": true,
+            "highest_occupied_upper_H": 34.55299949645996
+          }
+        }
+      },
+      "common_mask": {
+        "original_AB_valid": 1845,
+        "common_valid": 1845,
+        "original_AB_excluded": 261,
+        "C_origin_occupied_excluded": 0,
+        "excluded_row_col": [],
+        "reason_codes": {
+          "original_AB_excluded": 0,
+          "common_AIR_observer": 1,
+          "C_origin_occupied": 2
+        },
+        "outside_domain_or_capacity": "none; any such case is BLOCKED, never excluded",
+        "mask_fixed_before_C_shadow": true,
+        "mask_file_sha256": "ad4669b41199b21969f300e4082dc3b83c00d48a93c279ac320a2a9d2837a87e",
+        "mask_array_sha256": "0b5da3d9f73e4a2f199413d7d646c565173677fcbbfb294292e899b2a2a5c4b8"
+      },
+      "comparison": {
+        "models_on_common_mask": {
+          "A": {
+            "valid_observers": 1845,
+            "shadow_cells": 192,
+            "shadow_area_m2": 192.0,
+            "shadow_fraction": 0.1040650406504065
+          },
+          "B": {
+            "valid_observers": 1845,
+            "shadow_cells": 118,
+            "shadow_area_m2": 118.0,
+            "shadow_fraction": 0.06395663956639566
+          },
+          "C": {
+            "valid_observers": 1845,
+            "shadow_cells": 117,
+            "shadow_area_m2": 117.0,
+            "shadow_fraction": 0.06341463414634146
+          }
+        },
+        "pairs_on_common_mask": {
+          "A_B": {
+            "valid_cells": 1845,
+            "first_shadow_cells": 192,
+            "second_shadow_cells": 118,
+            "discrete_area_delta_m2_second_minus_first": -74,
+            "changed_cells": 74,
+            "first_shadow_to_second_sun": 74,
+            "first_sun_to_second_shadow": 0,
+            "shadow_IoU": 0.6145833333333334,
+            "common_sun": 1653,
+            "common_shadow": 118,
+            "first_only_shadow": 74,
+            "second_only_shadow": 0,
+            "empty_union": false
+          },
+          "A_C": {
+            "valid_cells": 1845,
+            "first_shadow_cells": 192,
+            "second_shadow_cells": 117,
+            "discrete_area_delta_m2_second_minus_first": -75,
+            "changed_cells": 75,
+            "first_shadow_to_second_sun": 75,
+            "first_sun_to_second_shadow": 0,
+            "shadow_IoU": 0.609375,
+            "common_sun": 1653,
+            "common_shadow": 117,
+            "first_only_shadow": 75,
+            "second_only_shadow": 0,
+            "empty_union": false
+          },
+          "B_C": {
+            "valid_cells": 1845,
+            "first_shadow_cells": 118,
+            "second_shadow_cells": 117,
+            "discrete_area_delta_m2_second_minus_first": -1,
+            "changed_cells": 1,
+            "first_shadow_to_second_sun": 1,
+            "first_sun_to_second_shadow": 0,
+            "shadow_IoU": 0.9915254237288136,
+            "common_sun": 1727,
+            "common_shadow": 117,
+            "first_only_shadow": 1,
+            "second_only_shadow": 0,
+            "empty_union": false
+          }
+        },
+        "original_STEP4C_full_AB_metrics": {
+          "changed_cells": 74,
+          "distributed_shadow_cells": 118,
+          "representative_shadow_cells": 192,
+          "shadow_IoU": 0.6145833333333334,
+          "shadow_area_delta_m2": -74,
+          "shadow_cells_delta_B_minus_A": -74,
+          "shadow_to_sun": 74,
+          "sun_to_shadow": 0,
+          "valid_observers": 1845
+        },
+        "C_plus_three_AIR_identity": true,
+        "C_outer_two_cell_shadow_count": 0,
+        "shared_observer_mask_array_sha256": "0b5da3d9f73e4a2f199413d7d646c565173677fcbbfb294292e899b2a2a5c4b8",
+        "shadow_codes": {
+          "shadow": 0,
+          "sun": 1,
+          "excluded": 255
+        },
+        "difference_codes": {
+          "excluded": 0,
+          "common_sun": 1,
+          "common_shadow": 2,
+          "first_only_shadow": 3,
+          "second_only_shadow": 4
+        }
+      }
+    },
+    "M": {
+      "controls": {
+        "A": {
+          "status": "PASS",
+          "evaluated_saved_valid_points": 1558,
+          "mismatch_count": 0,
+          "mismatch_row_col": [],
+          "saved_shadow_cells": 98,
+          "control_shadow_cells": 98,
+          "origin_XYZ_exact": true,
+          "mask_policy": "full saved M_AB; no C-derived exclusion in control"
+        },
+        "B": {
+          "status": "PASS",
+          "evaluated_saved_valid_points": 1558,
+          "mismatch_count": 0,
+          "mismatch_row_col": [],
+          "saved_shadow_cells": 53,
+          "control_shadow_cells": 53,
+          "origin_XYZ_exact": true,
+          "mask_policy": "full saved M_AB; no C-derived exclusion in control"
+        }
+      },
+      "saved_direction_north_east_up": [
+        -0.7071045186470133,
+        -0.0017887730363727013,
+        0.7071067811865476
+      ],
+      "saved_observer_grid": {
+        "boundary_rule": "positive-area presence/support; closed-set centre; affine maximum on polygon closure",
+        "bounds": [
+          -22548,
+          -39937,
+          -22506,
+          -39897
+        ],
+        "column_axis": [
+          1.0,
+          0.0
+        ],
+        "crs": "EPSG:6677",
+        "default_halo_cells": 1,
+        "epsg": 6677,
+        "global_phase_origin_xy": [
+          0.0,
+          0.0
+        ],
+        "height": 40,
+        "orientation": "north-up",
+        "origin_xy": [
+          -22548,
+          -39897
+        ],
+        "resolution": 1.0,
+        "row_axis": [
+          0.0,
+          -1.0
+        ],
+        "sampling_location": "cell centres locate cells; roof evaluation is method-specific",
+        "transform": [
+          1.0,
+          0.0,
+          -22548.0,
+          0.0,
+          -1.0,
+          -39897.0
+        ],
+        "width": 42
+      },
+      "D0_abs_H": 24.336999893188477,
+      "original_saved_valid_count": 1558,
+      "observer_index_range": [
+        1,
+        2
+      ],
+      "observer_abs_H_range": [
+        25.836999893188477,
+        26.836999893188477
+      ],
+      "C_derived": {
+        "identity": {
+          "source_id": "bldg_2bd71700-a145-46ff-b14f-ad60394ff253",
+          "ouem_id": "oub-cb250497-c12d-5fcc-9dca-e82c8b051398",
+          "semantic_counts": {
+            "GroundSurface": 1,
+            "RoofSurface": 30,
+            "WallSurface": 57
+          },
+          "polygon_ids": [
+            "pol_f79cfaff-d1da-4f84-8256-2a6928480420",
+            "pol_469c34a0-baf0-439b-8502-1cda75bde9c8",
+            "pol_9af5d995-7ce4-4cbe-ad22-af45a192906c",
+            "pol_b25819e3-cf45-45dc-8d5c-33f1c3c756b6",
+            "pol_27462859-7232-4203-9c14-694a7cd0348b",
+            "pol_45bec0ac-3121-4cf2-a289-401b8ca4a8c6",
+            "pol_5389c679-9ce5-4451-8fb4-ace97dd3b3d1",
+            "pol_36cebf7f-8996-4e38-8e8a-ba110c7fb89a",
+            "pol_8b3dfd86-9d90-4945-b5f9-216dc4e53dc5",
+            "pol_dda9c4aa-30aa-4e57-8820-6720bdaa287f",
+            "pol_f2c109dc-7a2a-40c1-8d8d-2699cc61f5e3",
+            "pol_a931d641-5fad-4843-a589-a27feaad7306",
+            "pol_69b212cd-bebd-4c39-8d18-f0258ecaa78f",
+            "pol_1c2f9b5b-fb98-425c-947c-a38b9230d38d",
+            "pol_61bbdaf7-a4ea-437c-9c88-46def6cdd2f7",
+            "pol_61137cc3-70a1-457d-be33-72a0810c3fa3",
+            "pol_49253263-d56f-488d-8469-c9269d330ec7",
+            "pol_dae88e9c-993f-4193-a8f4-b61dec161bbd",
+            "pol_4d536f5e-8d5b-47d6-8fa6-5cf0e856b77b",
+            "pol_67be9bbd-5119-4164-9247-a3d1df897911",
+            "pol_aeaa19bd-7bae-41d3-bc4e-4fabfb0fbd62",
+            "pol_34e4b520-2f1c-4270-bccb-6b9f511e4791",
+            "pol_83ded31f-a1a9-4e82-86c8-7465c9cc8487",
+            "pol_b8277c94-b007-43d1-80f3-ff853273027c",
+            "pol_66d78d55-10d4-4986-b63c-a38457db9b6c",
+            "pol_77eb82c0-7077-4305-8340-f436e8be901d",
+            "pol_a1f7145e-091e-43b9-bb2c-e0c2aee6d4ce",
+            "pol_ddae3e4c-7ce3-4eca-ae25-779c90748adc",
+            "pol_d03a98a7-baa8-4c27-bb11-43bf9118b91f",
+            "pol_b25d0bc8-ede9-48db-b392-f0af86027869",
+            "pol_86263663-1db6-41a5-a4fa-d6ede3b76489",
+            "pol_6d8f5430-a102-4046-b993-7b29a351dd0d",
+            "pol_ebc462fb-a641-4b1d-b6be-0eea049e5834",
+            "pol_198349ef-3e2b-444f-8c1a-2f66b542d621",
+            "pol_4dea5ecc-c6de-4c7b-9a3f-8a449c278e95",
+            "pol_ec12eaaf-3bcd-4f37-b85c-7f183331b115",
+            "pol_9cce95a4-0f23-4ab6-b975-66565f54d718",
+            "pol_c195e944-6bdb-4c03-b5ea-71fffd415584",
+            "pol_02fec63e-d0d1-4ae4-95bb-7d0dc0496ab2",
+            "pol_698b63cf-6883-4615-ad4c-fad63e380af2",
+            "pol_c495ca6b-eca6-4c4e-9691-5da6707cca06",
+            "pol_766e565c-4d42-43d4-85de-d64d00e0a58d",
+            "pol_468dacba-089d-4c8a-b32d-d88ee15a0ad0",
+            "pol_050ff504-b131-4549-ae29-d758a43b1ea7",
+            "pol_1d9fae0e-6d00-4548-8f41-30518045e3e3",
+            "pol_694c6d85-1d55-46c6-bc3a-175a18d8ca51",
+            "pol_6b4cf6fb-d4cb-4fcf-9c2a-ca4dd39be467",
+            "pol_59cbc58a-c8f2-44c8-adac-118d9a736131",
+            "pol_44ced5aa-086e-4755-a67f-87021eccf455",
+            "pol_73ea058d-7c8f-4133-bb03-9646c985a2f2",
+            "pol_8ef25136-9cb6-4772-9dba-a19c76594307",
+            "pol_5a28dc37-19ed-4d5f-b1b8-1ce71c9e4623",
+            "pol_fd2cc776-2b42-4fa9-a9d5-a25c53f0d05e",
+            "pol_a480a35d-b435-4adc-a332-c8f45c3cf986",
+            "pol_42bb1155-5637-4fc3-aa1c-96a657c9dea7",
+            "pol_46e06c08-5e12-4d69-bf01-9442183844fd",
+            "pol_25c1e72a-a99b-420b-beda-e506c3152609",
+            "pol_76995c57-f463-4c8a-8299-aecc76c0c5b4",
+            "pol_3fe1ab05-2936-4c19-843a-edaa2d2e7f14",
+            "pol_98dae481-977e-4e72-b178-9253d4c81c84",
+            "pol_5b03aa45-8dea-4e57-88e8-dd64f4d44923",
+            "pol_c54625b5-dbc1-4c5a-bd4f-75e77250990a",
+            "pol_77e53e8d-a468-4f8b-911c-ce74358a3b4f",
+            "pol_73bec3b1-4166-4f23-a833-1b0ca6fb0c43",
+            "pol_a9c66e2e-26f5-4bf7-9eaf-a2ffbee24d1f",
+            "pol_8e4eb731-3c94-4da6-9baf-00945a668890",
+            "pol_0d775961-28a0-4731-b250-c4bf0ed7fc27",
+            "pol_bf7c005f-a2a6-4217-83bf-cfba10a78622",
+            "pol_59d5b2f9-0250-4151-a45f-d3142de3730e",
+            "pol_ae72f1c1-5e19-47c7-85dc-7307d7815e6a",
+            "pol_fcb7f858-8bfe-4680-b3ea-96916fc204c5",
+            "pol_4adddd25-e85f-471b-af63-60a517f1de18",
+            "pol_c9640f43-a838-4334-b281-da438edc43bb",
+            "pol_6f471307-0b4e-4d06-980e-05785aaa552d",
+            "pol_e609cf0d-496b-41af-91e0-c2403ade61b8",
+            "pol_cdc3feaf-228a-4abc-a456-f434cfe068f6",
+            "pol_9af5c594-e917-4323-a5e1-790b3dc62b82",
+            "pol_a6bbda3f-a380-4057-a724-93a663a2efe8",
+            "pol_8270afee-4427-4a38-aca1-b8b70fef8207",
+            "pol_1471038d-daf5-4421-bccb-07fa64b9be62",
+            "pol_9080ff9b-398b-4339-9f8a-5bc613eba63c",
+            "pol_9c44969d-43b8-4fd2-a1c7-249a39efcc3d",
+            "pol_54ed1d65-4946-41c2-8474-50babf87095f",
+            "pol_89242305-246a-4bb2-96a4-21b7953db488",
+            "pol_518450d5-f8a2-4eaf-9038-87ef53f39a00",
+            "pol_8f735cf9-9fcf-4b90-a1ec-796fc6a907bf",
+            "pol_6237d28c-991d-4cfe-9e8c-7d794c573961",
+            "pol_647681b7-6439-4574-9b46-8a01f3c80250"
+          ],
+          "reference": {
+            "vertices": 56,
+            "triangles": 108,
+            "bounds": [
+              [
+                -22533.52,
+                -39922.25,
+                24.607191
+              ],
+              [
+                -22520.33,
+                -39911.96,
+                32.38
+              ]
+            ],
+            "area_m2": 429.52414555766336,
+            "signed_volume_m3": 578.4892874344829,
+            "watertight": true,
+            "is_volume": true,
+            "vertices_sha256": "424df6122d7e6d330df565062346bf8fd49b8451cf8dbe6afcb0ab0094c53fe5",
+            "faces_sha256": "1181db6d5964e7aab40e17974c1f8423e896d417b7531e2f0898980f20fc279e",
+            "boundary_edges": 0,
+            "nonmanifold_edges": 0
+          }
+        },
+        "grid": {
+          "n_rows": 40,
+          "n_cols": 42,
+          "n_z": 11,
+          "min_x": -22548.0,
+          "max_x": -22506.0,
+          "min_y": -39937.0,
+          "max_y": -39897.0,
+          "min_z": 24.336999893188477,
+          "max_z": 35.33699989318848,
+          "voxel_size": 1.0
+        },
+        "trace": [
+          "repair:merge",
+          "occupancy:True"
+        ],
+        "shape": [
+          40,
+          42,
+          11
+        ],
+        "occupied_cells": 852,
+        "scanline_fill_cells": 641,
+        "contact_shell_cells": 511,
+        "voxel_padding_core_identity": true,
+        "extra_domain_occupied_cells": 0,
+        "geometry_context": {
+          "conservative_shadow_bbox_XY": [
+            -22534,
+            -39923,
+            -22519.981027196838,
+            -39903.500023997854
+          ],
+          "maximum_vertical_reach_m": 7.5,
+          "highest_occupied_upper_H": 33.33699989318848,
+          "AIR_layers_above_highest_occupied": 2,
+          "source_H_not_reanchored": true
+        },
+        "original_H_unchanged": true,
+        "original_C_archives_unchanged": true,
+        "GROUND_SURFACE_DEM": "NOT_CREATED; D0 is grid origin only",
+        "A_B_padding_qa": {
+          "A": {
+            "original_shape": [
+              40,
+              42,
+              10
+            ],
+            "shared_shape": [
+              40,
+              42,
+              11
+            ],
+            "AIR_layers_added": 1,
+            "original_layers_identical": true,
+            "added_layers_AIR_only": true,
+            "full_saved_valid_control_identical": true,
+            "highest_occupied_upper_H": 33.33699989318848
+          },
+          "B": {
+            "original_shape": [
+              40,
+              42,
+              10
+            ],
+            "shared_shape": [
+              40,
+              42,
+              11
+            ],
+            "AIR_layers_added": 1,
+            "original_layers_identical": true,
+            "added_layers_AIR_only": true,
+            "full_saved_valid_control_identical": true,
+            "highest_occupied_upper_H": 33.33699989318848
+          }
+        }
+      },
+      "common_mask": {
+        "original_AB_valid": 1558,
+        "common_valid": 1558,
+        "original_AB_excluded": 122,
+        "C_origin_occupied_excluded": 0,
+        "excluded_row_col": [],
+        "reason_codes": {
+          "original_AB_excluded": 0,
+          "common_AIR_observer": 1,
+          "C_origin_occupied": 2
+        },
+        "outside_domain_or_capacity": "none; any such case is BLOCKED, never excluded",
+        "mask_fixed_before_C_shadow": true,
+        "mask_file_sha256": "75dafbb0e928b41ada66ef3cf1298b9f3ec35b706a3428f2a9c00e283979715e",
+        "mask_array_sha256": "a721fccacdf4d38337af260dd61b243f3a0646a7462cf276be8c740e34b963df"
+      },
+      "comparison": {
+        "models_on_common_mask": {
+          "A": {
+            "valid_observers": 1558,
+            "shadow_cells": 98,
+            "shadow_area_m2": 98.0,
+            "shadow_fraction": 0.06290115532734275
+          },
+          "B": {
+            "valid_observers": 1558,
+            "shadow_cells": 53,
+            "shadow_area_m2": 53.0,
+            "shadow_fraction": 0.03401797175866496
+          },
+          "C": {
+            "valid_observers": 1558,
+            "shadow_cells": 52,
+            "shadow_area_m2": 52.0,
+            "shadow_fraction": 0.03337612323491656
+          }
+        },
+        "pairs_on_common_mask": {
+          "A_B": {
+            "valid_cells": 1558,
+            "first_shadow_cells": 98,
+            "second_shadow_cells": 53,
+            "discrete_area_delta_m2_second_minus_first": -45,
+            "changed_cells": 45,
+            "first_shadow_to_second_sun": 45,
+            "first_sun_to_second_shadow": 0,
+            "shadow_IoU": 0.5408163265306123,
+            "common_sun": 1460,
+            "common_shadow": 53,
+            "first_only_shadow": 45,
+            "second_only_shadow": 0,
+            "empty_union": false
+          },
+          "A_C": {
+            "valid_cells": 1558,
+            "first_shadow_cells": 98,
+            "second_shadow_cells": 52,
+            "discrete_area_delta_m2_second_minus_first": -46,
+            "changed_cells": 46,
+            "first_shadow_to_second_sun": 46,
+            "first_sun_to_second_shadow": 0,
+            "shadow_IoU": 0.5306122448979592,
+            "common_sun": 1460,
+            "common_shadow": 52,
+            "first_only_shadow": 46,
+            "second_only_shadow": 0,
+            "empty_union": false
+          },
+          "B_C": {
+            "valid_cells": 1558,
+            "first_shadow_cells": 53,
+            "second_shadow_cells": 52,
+            "discrete_area_delta_m2_second_minus_first": -1,
+            "changed_cells": 1,
+            "first_shadow_to_second_sun": 1,
+            "first_sun_to_second_shadow": 0,
+            "shadow_IoU": 0.9811320754716981,
+            "common_sun": 1505,
+            "common_shadow": 52,
+            "first_only_shadow": 1,
+            "second_only_shadow": 0,
+            "empty_union": false
+          }
+        },
+        "original_STEP4C_full_AB_metrics": {
+          "changed_cells": 45,
+          "distributed_shadow_cells": 53,
+          "representative_shadow_cells": 98,
+          "shadow_IoU": 0.5408163265306123,
+          "shadow_area_delta_m2": -45,
+          "shadow_cells_delta_B_minus_A": -45,
+          "shadow_to_sun": 45,
+          "sun_to_shadow": 0,
+          "valid_observers": 1558
+        },
+        "C_plus_three_AIR_identity": true,
+        "C_outer_two_cell_shadow_count": 0,
+        "shared_observer_mask_array_sha256": "a721fccacdf4d38337af260dd61b243f3a0646a7462cf276be8c740e34b963df",
+        "shadow_codes": {
+          "shadow": 0,
+          "sun": 1,
+          "excluded": 255
+        },
+        "difference_codes": {
+          "excluded": 0,
+          "common_sun": 1,
+          "common_shadow": 2,
+          "first_only_shadow": 3,
+          "second_only_shadow": 4
+        }
+      }
+    },
+    "C": {
+      "controls": {
+        "A": {
+          "status": "PASS",
+          "evaluated_saved_valid_points": 1108,
+          "mismatch_count": 0,
+          "mismatch_row_col": [],
+          "saved_shadow_cells": 60,
+          "control_shadow_cells": 60,
+          "origin_XYZ_exact": true,
+          "mask_policy": "full saved M_AB; no C-derived exclusion in control"
+        },
+        "B": {
+          "status": "PASS",
+          "evaluated_saved_valid_points": 1108,
+          "mismatch_count": 0,
+          "mismatch_row_col": [],
+          "saved_shadow_cells": 44,
+          "control_shadow_cells": 44,
+          "origin_XYZ_exact": true,
+          "mask_policy": "full saved M_AB; no C-derived exclusion in control"
+        }
+      },
+      "saved_direction_north_east_up": [
+        -0.7071045097668859,
+        -0.0017922799256665208,
+        0.7071067811865476
+      ],
+      "saved_observer_grid": {
+        "boundary_rule": "positive-area presence/support; closed-set centre; affine maximum on polygon closure",
+        "bounds": [
+          -22588,
+          -39845,
+          -22553,
+          -39811
+        ],
+        "column_axis": [
+          1.0,
+          0.0
+        ],
+        "crs": "EPSG:6677",
+        "default_halo_cells": 1,
+        "epsg": 6677,
+        "global_phase_origin_xy": [
+          0.0,
+          0.0
+        ],
+        "height": 34,
+        "orientation": "north-up",
+        "origin_xy": [
+          -22588,
+          -39811
+        ],
+        "resolution": 1.0,
+        "row_axis": [
+          0.0,
+          -1.0
+        ],
+        "sampling_location": "cell centres locate cells; roof evaluation is method-specific",
+        "transform": [
+          1.0,
+          0.0,
+          -22588.0,
+          0.0,
+          -1.0,
+          -39811.0
+        ],
+        "width": 35
+      },
+      "D0_abs_H": 24.51799964904785,
+      "original_saved_valid_count": 1108,
+      "observer_index_range": [
+        1,
+        2
+      ],
+      "observer_abs_H_range": [
+        26.01799964904785,
+        27.01799964904785
+      ],
+      "C_derived": {
+        "identity": {
+          "source_id": "bldg_2d5a9713-b02f-4903-9164-c5653e03494d",
+          "ouem_id": "oub-10894413-4369-5131-ac0d-78ee9d234016",
+          "semantic_counts": {
+            "GroundSurface": 1,
+            "RoofSurface": 12,
+            "WallSurface": 25
+          },
+          "polygon_ids": [
+            "pol_d12d9fcf-ce75-4545-a4c3-e80d2986ef53",
+            "pol_aec4295b-d75e-4ec3-8a20-1c03d9261459",
+            "pol_ce08fa27-5aad-454e-9147-fac7256a623e",
+            "pol_714aa1ed-4ab4-4350-9dd6-5c9f941b28dc",
+            "pol_d4cb49a8-5ddd-4040-b7ef-630ff5a1d21f",
+            "pol_3119998c-e49f-4c8b-87f7-36465aa3b53a",
+            "pol_3130fdef-3e03-4abc-b8e5-cbd569d3f7ac",
+            "pol_f3493436-2623-4531-a71a-329110df195f",
+            "pol_b95ac48c-b9e0-471a-a31c-4105d05014e2",
+            "pol_a3779c11-407e-4df6-9eec-378043def513",
+            "pol_243e297f-811d-4c67-b7ca-6c604e3d3bc6",
+            "pol_da3acde3-a5a8-45c9-8bc1-07606a625a13",
+            "pol_e956d8d5-a97a-46c7-ba9e-273ed4cfc4db",
+            "pol_0371dac5-416b-4431-b726-d2c23d5bb28c",
+            "pol_fe930937-0497-4e82-ae9c-9e337a1b7c6c",
+            "pol_c9988938-3248-4f15-a040-27c393b586f2",
+            "pol_998b4e6a-f729-4a26-9a95-ad37d89cfd0b",
+            "pol_37714cd9-963b-4dfa-bc78-3c4e4a179f0f",
+            "pol_70b4b2c2-865c-4fec-83cc-64fed5c0b4cf",
+            "pol_e7ccc3eb-3284-4606-b3b9-3e74aa441cf7",
+            "pol_dfc169ca-2197-4898-92e5-fc7bf74af55e",
+            "pol_fb08aca2-fa09-4a0d-9720-e16cdf71befe",
+            "pol_1ac383b9-23a1-4406-a619-6a1926ea05be",
+            "pol_218c5cce-1cee-4d9c-b386-b485ddf88577",
+            "pol_c514847d-5582-425a-a850-d487669bf6d3",
+            "pol_33c69c48-bf30-4c4f-92ad-c4192095c5d0",
+            "pol_a033e781-8926-4907-972e-92188f3ad2c6",
+            "pol_d9834b80-f903-4229-8b16-d5b69ed6ffbd",
+            "pol_a0532e3a-a669-47c2-a62f-4e010ca40c37",
+            "pol_b784a3b4-e69f-4543-b50e-1c6b38459ea2",
+            "pol_d23d6ca2-e4a2-4a7f-ac98-87509c4162b3",
+            "pol_e48fd2f7-8f5c-48bd-978e-7ccdd8202389",
+            "pol_75a6ed76-e2b5-4903-a6ec-ebb43a495b1b",
+            "pol_502c6ca6-a973-474c-8d38-592b49ef54b4",
+            "pol_1ad39631-8828-46e5-ab6f-72f95af6821c",
+            "pol_a45f1462-f77b-407b-8b6b-388e15fa2d98",
+            "pol_09cff6ce-b30b-48ef-9a63-c397ae62d71e",
+            "pol_e485c12b-4666-4d10-8ab3-6937b7fb8968"
+          ],
+          "reference": {
+            "vertices": 28,
+            "triangles": 52,
+            "bounds": [
+              [
+                -22576.8155,
+                -39830.113984,
+                24.821855
+              ],
+              [
+                -22567.613561,
+                -39821.99202,
+                32.0034
+              ]
+            ],
+            "area_m2": 323.4357829925482,
+            "signed_volume_m3": 398.8234596903785,
+            "watertight": true,
+            "is_volume": true,
+            "vertices_sha256": "f0f6e6122114885bb92a83470adbc5b2e14ee401ec850bef39eff109998358c2",
+            "faces_sha256": "92ad66443bd6ef212019268ba963f23a667d30cfcdf263b2c2b7d0f5912653e3",
+            "boundary_edges": 0,
+            "nonmanifold_edges": 0
+          }
+        },
+        "grid": {
+          "n_rows": 34,
+          "n_cols": 35,
+          "n_z": 10,
+          "min_x": -22588.0,
+          "max_x": -22553.0,
+          "min_y": -39845.0,
+          "max_y": -39811.0,
+          "min_z": 24.51799964904785,
+          "max_z": 34.51799964904785,
+          "voxel_size": 1.0
+        },
+        "trace": [
+          "repair:merge",
+          "occupancy:True"
+        ],
+        "shape": [
+          34,
+          35,
+          10
+        ],
+        "occupied_cells": 576,
+        "scanline_fill_cells": 467,
+        "contact_shell_cells": 350,
+        "voxel_padding_core_identity": true,
+        "extra_domain_occupied_cells": 0,
+        "geometry_context": {
+          "conservative_shadow_bbox_XY": [
+            -22577,
+            -39831,
+            -22566.98352466724,
+            -39814.50002087977
+          ],
+          "maximum_vertical_reach_m": 6.5,
+          "highest_occupied_upper_H": 32.51799964904785,
+          "AIR_layers_above_highest_occupied": 2,
+          "source_H_not_reanchored": true
+        },
+        "original_H_unchanged": true,
+        "original_C_archives_unchanged": true,
+        "GROUND_SURFACE_DEM": "NOT_CREATED; D0 is grid origin only",
+        "A_B_padding_qa": {
+          "A": {
+            "original_shape": [
+              34,
+              35,
+              9
+            ],
+            "shared_shape": [
+              34,
+              35,
+              10
+            ],
+            "AIR_layers_added": 1,
+            "original_layers_identical": true,
+            "added_layers_AIR_only": true,
+            "full_saved_valid_control_identical": true,
+            "highest_occupied_upper_H": 32.51799964904785
+          },
+          "B": {
+            "original_shape": [
+              34,
+              35,
+              9
+            ],
+            "shared_shape": [
+              34,
+              35,
+              10
+            ],
+            "AIR_layers_added": 1,
+            "original_layers_identical": true,
+            "added_layers_AIR_only": true,
+            "full_saved_valid_control_identical": true,
+            "highest_occupied_upper_H": 32.51799964904785
+          }
+        }
+      },
+      "common_mask": {
+        "original_AB_valid": 1108,
+        "common_valid": 1108,
+        "original_AB_excluded": 82,
+        "C_origin_occupied_excluded": 0,
+        "excluded_row_col": [],
+        "reason_codes": {
+          "original_AB_excluded": 0,
+          "common_AIR_observer": 1,
+          "C_origin_occupied": 2
+        },
+        "outside_domain_or_capacity": "none; any such case is BLOCKED, never excluded",
+        "mask_fixed_before_C_shadow": true,
+        "mask_file_sha256": "cffc908a914b744662f7bb5e4ae6a2dfbc92bcc56d9b6a0c99e065e8d5e255d5",
+        "mask_array_sha256": "9df56757f3b83e5f7ae93ef801824716e0d5859b3286e6344fbf2c9f60fda489"
+      },
+      "comparison": {
+        "models_on_common_mask": {
+          "A": {
+            "valid_observers": 1108,
+            "shadow_cells": 60,
+            "shadow_area_m2": 60.0,
+            "shadow_fraction": 0.05415162454873646
+          },
+          "B": {
+            "valid_observers": 1108,
+            "shadow_cells": 44,
+            "shadow_area_m2": 44.0,
+            "shadow_fraction": 0.039711191335740074
+          },
+          "C": {
+            "valid_observers": 1108,
+            "shadow_cells": 44,
+            "shadow_area_m2": 44.0,
+            "shadow_fraction": 0.039711191335740074
+          }
+        },
+        "pairs_on_common_mask": {
+          "A_B": {
+            "valid_cells": 1108,
+            "first_shadow_cells": 60,
+            "second_shadow_cells": 44,
+            "discrete_area_delta_m2_second_minus_first": -16,
+            "changed_cells": 16,
+            "first_shadow_to_second_sun": 16,
+            "first_sun_to_second_shadow": 0,
+            "shadow_IoU": 0.7333333333333333,
+            "common_sun": 1048,
+            "common_shadow": 44,
+            "first_only_shadow": 16,
+            "second_only_shadow": 0,
+            "empty_union": false
+          },
+          "A_C": {
+            "valid_cells": 1108,
+            "first_shadow_cells": 60,
+            "second_shadow_cells": 44,
+            "discrete_area_delta_m2_second_minus_first": -16,
+            "changed_cells": 16,
+            "first_shadow_to_second_sun": 16,
+            "first_sun_to_second_shadow": 0,
+            "shadow_IoU": 0.7333333333333333,
+            "common_sun": 1048,
+            "common_shadow": 44,
+            "first_only_shadow": 16,
+            "second_only_shadow": 0,
+            "empty_union": false
+          },
+          "B_C": {
+            "valid_cells": 1108,
+            "first_shadow_cells": 44,
+            "second_shadow_cells": 44,
+            "discrete_area_delta_m2_second_minus_first": 0,
+            "changed_cells": 0,
+            "first_shadow_to_second_sun": 0,
+            "first_sun_to_second_shadow": 0,
+            "shadow_IoU": 1.0,
+            "common_sun": 1064,
+            "common_shadow": 44,
+            "first_only_shadow": 0,
+            "second_only_shadow": 0,
+            "empty_union": false
+          }
+        },
+        "original_STEP4C_full_AB_metrics": {
+          "changed_cells": 16,
+          "distributed_shadow_cells": 44,
+          "representative_shadow_cells": 60,
+          "shadow_IoU": 0.7333333333333333,
+          "shadow_area_delta_m2": -16,
+          "shadow_cells_delta_B_minus_A": -16,
+          "shadow_to_sun": 16,
+          "sun_to_shadow": 0,
+          "valid_observers": 1108
+        },
+        "C_plus_three_AIR_identity": true,
+        "C_outer_two_cell_shadow_count": 0,
+        "shared_observer_mask_array_sha256": "9df56757f3b83e5f7ae93ef801824716e0d5859b3286e6344fbf2c9f60fda489",
+        "shadow_codes": {
+          "shadow": 0,
+          "sun": 1,
+          "excluded": 255
+        },
+        "difference_codes": {
+          "excluded": 0,
+          "common_sun": 1,
+          "common_shadow": 2,
+          "first_only_shadow": 3,
+          "second_only_shadow": 4
+        }
+      }
+    }
+  },
+  "scientific_validation": "NOT_VERIFIED",
+  "formal_acceptance": "NOT_VERIFIED",
+  "terrain_integration_ready": false,
+  "runtime": {
+    "python": "3.11.9",
+    "voxcity": {
+      "expected_version": "1.7.0",
+      "expected_commit": "fa212656305328a9a657973bae26f352bfe813bc",
+      "verified": true,
+      "method": "PEP 610 VCS origin + installed source RECORD hashes",
+      "limitation": "Not an independent comparison with the upstream Git tree.",
+      "version": "1.7.0",
+      "commit": "fa212656305328a9a657973bae26f352bfe813bc",
+      "url": "https://github.com/kunifujiwara/VoxCity.git",
+      "checked_source_files": 136,
+      "source_content_sha256": "33e2bfdbc8a677f53154e8cd16295603819c68cf9f24c7a4cdfeb196bcbcd0bd"
+    },
+    "voxcitygml_commit": "19628c033b1cbbbdee80fe781f516672765d1eee",
+    "versions": {
+      "numba": "0.68.1",
+      "numpy": "2.4.6",
+      "voxcity": "1.7.0",
+      "voxcitygml": "0.3.0"
+    },
+    "STEP4C_saved_numba": "0.68.0",
+    "MeshLib": false
+  },
+  "input_SHA_unchanged": true,
+  "environment_metadata_unchanged": true,
+  "forbidden_attempts": [],
+  "local_run_status": "READY_FOR_INDEPENDENT_REPRODUCIBILITY_CHECK",
+  "local_run_gates": {
+    "Gate_1": "PASS",
+    "Gate_2": "PASS",
+    "Gate_3": "PASS",
+    "Gate_4": "PASS",
+    "Gate_5": "CONDITIONAL"
+  },
+  "Gate_5_completion": "PASS by external SHA comparison in reproducibility.json; raw Gate5 records were not rewritten",
+  "local_report_SHA256": "d4e5ca1896cb64b20aabf8710760e0d4c2f53fd6437a7d70cd829f2ab83983eb",
+  "baseline_main": "596d1ed758a7d06c68497dff94b389d79a821195",
+  "immutable_local_Gate5_QA_note": "PASS: readback/input preservation; independent-run SHA comparison pending",
+  "vertical_conditions": {
+    "status": "CONDITIONAL",
+    "source": "data/work/step4c-roof-shadow/final-c/F/representative/metadata.json",
+    "source_SHA256": "7347aea0dc3ecf0cc4837b7bcbd0108a4313fcd48cb92c5a9023a510144fca62",
+    "inherited_declarations": {
+      "assumption": "T.P. inheritance working assumption; no height offset; not verified HAG",
+      "building": {
+        "accuracy": "NOT_VERIFIED",
+        "epoch": "NOT_VERIFIED",
+        "quantity": "absolute source-declared gravity-related H (m); not HAG",
+        "realization": "NOT_VERIFIED",
+        "source_compound_epsg": 6697,
+        "source_horizontal_epsg": 6668,
+        "source_vertical_epsg": 6695,
+        "standard_horizontal_epsg": 6677,
+        "vertical_operation": "identity_H in Standard; planar evaluation here"
+      },
+      "dem": {
+        "accuracy": "NOT_VERIFIED",
+        "candidate_b_eligibility": "PASS_PROPOSED",
+        "datum_realization": "NOT_VERIFIED",
+        "epoch": "NOT_VERIFIED",
+        "previous": "CONDITIONAL",
+        "ward_tp": "INFERRED_FROM_SOURCE_LINEAGE"
+      },
+      "realization_epoch_accuracy": "NOT_VERIFIED",
+      "status": "CONDITIONAL"
+    },
+    "C_operation": "absolute source H unchanged; D0 is grid origin only, no DEM anchoring/fusion"
+  }
+}

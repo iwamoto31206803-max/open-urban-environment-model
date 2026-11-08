@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "independent_runs": [
+    "p1-2b-final-d",
+    "p1-2b-final-e"
+  ],
+  "local_manifest_SHA256": {
+    "p1-2b-final-d": "5e81851c486cb439743971bda0e9459ef2ac504a3a1cf10b12c0de648d075d0f",
+    "p1-2b-final-e": "5e81851c486cb439743971bda0e9459ef2ac504a3a1cf10b12c0de648d075d0f"
+  },
+  "local_report_SHA256": "d4e5ca1896cb64b20aabf8710760e0d4c2f53fd6437a7d70cd829f2ab83983eb",
+  "manifest_bytes_identical": true,
+  "per_file_SHA_verified_count": 101,
+  "all_output_file_SHAs_identical": true,
+  "inventory_reference": "manifest.json / archived_local_outputs",
+  "local_gate5": "CONDITIONAL awaiting this independent comparison; original local files unchanged",
+  "aggregate_Gate_5": "PASS",
+  "scope": "file/array/JSON/PNG determinism, not scientific accuracy"
+}
