@@ -8,7 +8,7 @@ Phase A covers model construction; Phase B covers solar/shade and green view.
 The [concept and architecture](docs/OUEM_Concept_Architecture_v0.2.md) defines
 these phases and their variants.
 
-## Project tracks (status review: 2026-11-06)
+## Project tracks (2026-11-06 status baseline; 2026-11-10 P1 addendum)
 
 The bounded **Komae B1/B2 technical E2E** is already implemented and recorded;
 scientific accuracy and full formal acceptance are separate questions. Recent
@@ -19,6 +19,7 @@ upstream work follows distinct tracks, not a replacement for the existing B1/B2 
 | Komae B1/B2 environmental assessment | [B1 closeout](docs/status/B1_TECHNICAL_MILESTONE_CLOSEOUT.md), [B2 closeout](docs/status/B2_TECHNICAL_MILESTONE_CLOSEOUT.md) | Existing bounded real-data Solar and provisional CPU green-view outputs, GIS and checks; not field-calibrated results |
 | Kunitachi transfer preparation | [2 km source preflight](docs/planning/OUEM_Kunitachi_Data_Source_Preflight_v0.1.md), [study-area configuration](config/study_areas/kunitachi_2km.yaml) | Building/DEM/CHM coverage examined; no Kunitachi Native/Standard/Envelope/Voxel/Solar/GVI E2E yet; the rectangle includes areas outside Kunitachi |
 | Mixed-LoD Building experiment (Candidate B) | [T5-4 baseline](docs/experiments/real_komae_source_h/MIXED_LOD_CANDIDATE_B_T5_4_CLOSURE.md), [STEP 2-C2 canopy pair](docs/experiments/real_komae_source_h/STEP2C2_REAL_CANOPY_INTEGRATION.md), [STEP 2-C3 Solar](docs/experiments/real_komae_source_h/STEP2C3_REAL_SOLAR.md), [STEP 2-C4 GVI](docs/experiments/real_komae_source_h/STEP2C4_REAL_GVI.md) | Komae-distribution cross-municipality sample: 31 LoD1 Setagaya-attribute and 32 LoD2 Komae-attribute buildings; all 63 voxelized. Real saved-model Solar and weighted first-TREE view index have experimental technical E2E evidence, not scientific/formal acceptance. |
+| Detailed LoD2 / VoxCityGML PoC-P1 | [Five-module responsibility and technical closeout review](docs/reviews/OUEM_VoxCityGML_P1_Architecture_Closeout_20261110.md), [P1-2b execution](docs/experiments/voxcitygml_p1/p1-2b/P1-2b_REPORT.md) | Fixed F/S/M/C LoD2 mesh→voxel and shared-observer A/B/C binary shadow technically passed; independent P1 venv/private API. **Not** a formally integrated Adapter, Canopy/B1/B2 scientific validation or production acceptance. |
 
 The earlier [Candidate B E1 design](docs/planning/OUEM_Candidate_B_E1_Minimal_Shadow_Design.md)
 is historical planning, not the current execution status. Subsequent
