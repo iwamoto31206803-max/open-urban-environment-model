@@ -8,6 +8,26 @@ new execution or acceptance decision.
 This [informational entry point](../OUEM_Documentation_Governance_v0.1.md)
 reflects code and existing execution records, not a new run or acceptance decision.
 
+
+### 2026-11-10 addendum — VoxCityGML / PoC-P1 (PR #170–175)
+
+After the 2026-11-06 status checkpoint, the isolated [PoC-P1 3D LoD2 path](../reviews/OUEM_VoxCityGML_P1_Architecture_Closeout_20261110.md)
+reached **bounded technical PASS** for four F/S/M/C buildings: original
+CityGML/Standard identity checks, merge-only mesh, 1 m voxelization, and
+shared-XYZ/solar-direction binary-shadow A/B/C comparison. The
+[P1-2b execution record](../experiments/voxcitygml_p1/p1-2b/P1-2b_REPORT.md)
+owns numerical results and reproducibility evidence. The five-module
+responsibility / VoxCity versus VoxCityGML crosswalk and the initial draft-to-run
+mapping are in the linked **review proposal**, not an amendment to Concept v0.2.
+
+This uses a **separate pinned P1 environment and lower-level/private VoxCityGML
+API**, not the accepted v0.1 Building Adapter. It does not supersede 2.5D,
+prove real-shadow/terrain accuracy, integrate Canopy, or change
+`scientific_validation=NOT_VERIFIED`, `formal_acceptance=NOT_VERIFIED` or
+`terrain_integration_ready=false`. The pre-existing 2026-11-06 review below
+retains its date and scope. No new local real-data run was made for this addendum.
+
+
 Subsequent synthetic work, based on main
 `2864c61cfbf9fa0a993fdc67abe7cedf7a528be3` (PR #161 merged):
 [STEP 3-A height distribution](../experiments/height_distribution/STEP3A_SYNTHETIC_HEIGHT_DISTRIBUTION.md)
