@@ -8,7 +8,6 @@ new execution or acceptance decision.
 This [informational entry point](../OUEM_Documentation_Governance_v0.1.md)
 reflects code and existing execution records, not a new run or acceptance decision.
 
-
 ### 2026-11-10 addendum — VoxCityGML / PoC-P1 (PR #170–175)
 
 After the 2026-11-06 status checkpoint, the isolated [PoC-P1 3D LoD2 path](../reviews/OUEM_VoxCityGML_P1_Architecture_Closeout_20261110.md)
