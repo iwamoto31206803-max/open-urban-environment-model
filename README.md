@@ -8,6 +8,10 @@ Phase A covers model construction; Phase B covers solar/shade and green view.
 The [concept and architecture](docs/OUEM_Concept_Architecture_v0.2.md) defines
 these phases and their variants.
 
+The [Integrated Roadmap M0–M5 (review draft)](docs/planning/OUEM_Integrated_Roadmap_v0.1.md)
+sets proposed outcome milestones, completion boundaries and current priorities.
+It does not alter the Concept, Standards, or evidence/Acceptance status.
+
 ## Project tracks (2026-11-06 status baseline; 2026-11-10 P1 addendum)
 
 The bounded **Komae B1/B2 technical E2E** is already implemented and recorded;
