@@ -201,3 +201,52 @@ rewriting that history. The [Completion Gate](experiments/voxcity_canopy_shadow/
 and [Phase 5 Integration Plan DRAFT](experiments/voxcity_canopy_shadow/PHASE5_INTEGRATION_PLAN_v0.1_Draft.md)
 retain their existing entry conditions and unresolved issues. This addendum
 neither closes those gates nor changes this document's DRAFT status.
+
+## 13. Roadmap M1: source-neutral height input boundary (design proposal, 2026-11-11)
+
+**Status: REVIEW PROPOSAL, not an accepted Standard/API or a new SC decision.**
+This note records the design direction discussed in [Roadmap M1-Plan-A #178](https://github.com/iwamoto31206803-max/open-urban-environment-model/issues/178) and [M1-Plan-B #179](https://github.com/iwamoto31206803-max/open-urban-environment-model/issues/179). The [integrated roadmap](planning/OUEM_Integrated_Roadmap_v0.1.md), Concept v0.2 and sections 2–9A above retain their authority. The detailed source-neutral input contract, file schema and real-data acceptance remain **unapproved**.
+
+### 13.1 Why a shared upstream boundary is useful
+
+- **Current temporary baseline — Meta/WRI CHMv2.** Continue consuming the existing estimated height raster *without a new canopy-classification transformation* in the bounded Height Envelope experiments. The user's reasons for treating Meta as temporary are **reference-date freshness and uncertain future updates**, not an established failure of its visual canopy representation. Exact reference epoch and future-update policy require separate source verification. Keep the historic CHMv2 acquisition/evidence gate and accepted experiment artifacts unchanged.
+- **Future production candidate — GSI imagery + point clouds.** The independent [OUEM Canopy Segmentation project](https://github.com/iwamoto31206803-max/ouem-canopy-segmentation/blob/main/docs/PROJECT_CHARTER.md) owns the **RGB model's 2D canopy probabilities/masks and model-specific inference contract**; its [OUEM handoff](https://github.com/iwamoto31206803-max/ouem-canopy-segmentation/blob/main/docs/OUEM_HANDOFF.md) is not yet a frozen interface. **OUEM itself** owns GSI imagery acquisition/georeferencing and large-area tiling, point-cloud/terrain processing, geospatial joining of the 2D predictions with heights, derived CHM, polygonization, 3D conversion and environmental assessment.
+- **Intermediate target.** First construct a reproducible GSI-derived **canopy-height raster candidate** with retained mask/probability/point-height evidence; do not require direct 3D reconstruction inside the segmentation repository. Neither this future target nor readiness of the segmentation model is a prerequisite for continuing the Meta-based experimental path.
+
+The proposed **source-neutral HAG/CHM candidate boundary is upstream of the complete Standard Canopy**, within the source-specific Native/derived-input preparation and evidence-validation workflow. It is not a replacement for the Concept's canonical **canopy polygons + absolute top-Z + absolute bottom-Z**, and does not create an automatically accepted Standard layer. In particular, the existing height-only PoC can remain technically useful while complete Standard Canopy acceptance stays **NOT ACHIEVED**.
+
+### 13.2 Logical input axes (proposals, not an adopted schema)
+
+| Axis | Required meaning to preserve across both routes |
+| --- | --- |
+| Height quantity | Numeric **height above local ground in metres** (HAG candidate), plus the actual source quantity/method (Meta estimated canopy height, point-derived surface height, vegetation-filtered height, etc.). Metres and HAG alone do **not** prove equal physical quantities. Preserve original height values and source/DEM evidence. |
+| Horizontal/vertical alignment | Source grid, CRS/transform/GSD, output GridSpec, aggregation/resampling choices, compatible DEM/ground datum and their identities. Height-to-absolute-Z conversion remains blocked if vertical semantics are not justified. |
+| Support and validity | Distinguish source spatial support, masked/NoData/invalid height values, GSI image/inference validity, and outside/unprocessed areas. **Valid HAG=0 is not missing** and does not prove absence. |
+| Canopy-presence evidence | Meta has **no independently classified canopy-presence mask** in this route. GSI supplies **model-estimated** probability/mask with threshold and model identity; predicted background is not surveyed absence. Never infer confirmed presence or absence solely from height or TREE occupancy. |
+| Assessment coverage | Distinguish geometric source footprint, usable samples/predictions and actual **canopy assessment coverage**. A rectangular footprint or image valid mask is not proof of independently verified ecological absence. |
+| Time, rights, provenance | Preserve source/release and its documented reference epoch (or UNKNOWN), imagery acquisition date and point-cloud survey date **separately**, source/weight/output rights, model/config/input SHA and any temporal mismatch. Derived outputs must link to retained upstream information. |
+
+Do not flatten these axes into one boolean, one numeric state code or one CHM value. Section 6's proposed Standard state codes and the existing Height Envelope **height-validity bitset** remain distinct and unratified relative to one another.
+
+### 13.3 Two preparation routes, one reusable numerical core
+
+1. **Meta profile (existing experimental route):** preserve source CHM pixel values, masks, acquisition records and independently reviewed HAG/DEM compatibility bridge. The existing \`height_envelope.validate_sources()\` is intentionally **Meta CHMv2-specific**, requiring hash-bound acquisition and accepted Terrain evidence. Do not weaken it, invent a Meta record for GSI, or silently apply canopy-presence thresholds to the original Meta raster.
+2. **GSI profile (future OUEM-owned producer):** georeference the Segmentation probability/mask, derive **raw point-cloud-based height candidate(s)** with explicit ground normalization, point selection and per-cell quality, and perform a versioned mask–height fusion. Preserve raw source HAG, inference probability/mask and disagreement diagnostics. Where the model predicts no canopy but raw point-height is positive, the *derived* canopy-height layer may exclude that cell under a reviewed rule; **do not rewrite raw height to zero**. A predicted canopy cell with missing point-height remains **estimated presence / unknown height**.
+3. **Reusable core (candidate):** after source-specific meaning, provenance, GridSpec and vertical checks, reuse the current \`height_envelope.sample_raster()\`, \`calculate()\` and replaceable Crown Ratio model where applicable: \`Z_top=DEM+HAG\`, \`Z_bottom=DEM+HAG*(1-CR)\`. This is a design for extraction/reuse, **not a claim that the present CLI accepts GSI**. Current code restricts the initial grid to aligned EPSG:6677, nearest sampling, and requires valid source evidence; do not broaden those gates by implication.
+4. **Complete Standard / Adapter later:** preserve source-specific polygon derivation and IDs, assessment coverage, source-vs-derived evidence and top/bottom validity. A CHM-derived polygon is an explicitly derived geometry, **not an independent oracle**. Only a separately approved complete Standard contract may ratify polygons, coverage and state encoding. Adapter separately decides TREE occupancy/rounding, building overlap, occluder-domain missingness and analysis validity. The existing guarded voxel path rejects nonvalid Height Envelope cells and must not be changed to fill unknown with background.
+
+### 13.4 Proposed minimal synthetic contract tests before any real GSI processing
+
+| Synthetic condition | Expected invariant |
+| --- | --- |
+| Valid Meta positive/zero HAG versus masked/outside HAG | Preserve numeric zero versus missing; provenance and old Height Envelope math; no automatic ecological classification |
+| GSI mask positive with valid / missing / zero point height | Keep inferred presence distinct from height validity; do not fabricate 0 m for missing height |
+| GSI mask negative with positive point height | Retain raw height; record conflict and derived fusion decision |
+| Missing GSI RGB/inference extent with valid point height | Canopy class remains unassessed, not known absent |
+| Displaced imagery and point-cloud grids | Fail shape-only alignment; require explicit CRS/affine/cell and resampling evidence |
+| Different image/point epochs or incompatible height/ground references | Preserve separate epochs; BLOCK unsupported absolute-Z conversion rather than relabel coordinates |
+| Missing occluder-domain data at voxel handoff | Preserve current guarded BLOCK; defer any partial-validity Adapter policy to separate review |
+
+**Next review decision:** whether to describe an explicit *source-neutral HAG candidate input contract* (logical fields first), retain source-specific evidence validators, and implement only a small synthetic geometry/evidence compatibility fixture before any GSI data acquisition or new real processing. Thresholds, point-cloud methodology, segmentation acceptance, polygon IDs and formal Standard/Adapter acceptance remain open.
+
+**Documentation/acceptance boundary:** this section changes no existing implementation, old results, source hashes, Concept requirement, accepted Terrain/Building/Adapter contract, experimental Height Envelope output schema, or formal Canopy acceptance status.
