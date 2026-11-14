@@ -81,8 +81,8 @@ explicit user authorization; use authorization already given in the task.
 
 ## Relationship to existing documents
 
-[Concept & Architecture v0.2](OUEM_Concept_Architecture_v0.2.md) remains the
-formally registered upper conceptual design. Standards and acceptance records
+[Concept & Architecture v0.3](OUEM_Concept_Architecture_v0.3.md) is the
+formally registered upper conceptual design; [v0.2](OUEM_Concept_Architecture_v0.2.md) is preserved as historical design. Standards and acceptance records
 retain their own authority and scope. These principles neither amend them nor
 close source-H eligibility, scientific-validation or Phase 5 gates.
 [Documentation Governance](OUEM_Documentation_Governance_v0.1.md) remains
