@@ -108,7 +108,11 @@ Where an absolute top/bottom is invalid it must not silently be fabricated as ze
 5. Vertical compatibility, building/terrain/canopy offset checks and real engine-grid correspondence.
 6. Required versus optional on-disk materialization, output names, hashes and deterministic serialization, without mandatory geometry conversion.
 7. Native/Standard/Adapter data contracts, full Canopy Standard acceptance, unknown/halo policy and source rights.
-8. **Optional geometry export only:** polygon ID/component connectivity, cell-centre boundary ties, hole/area QA, and deferred generic 3D mesh format/LAD/transmissivity. No arbitrary universal tree-height cutoff.
+8. **Source-polygon input and Standard:** cell-centre inclusion and boundary tie rules for rasterization, and admission QA for original polygon IDs and geometry.
+9. **Optional geometry export:** connectivity, holes, area, IDs and boundary accuracy for derived 2D polygons, and generation methods, output formats and quality checks for optional 3D meshes. Export QA is independent of CHM → VoxCity analysis.
+10. **Future canopy internal properties and optical models:** LAD and transmissivity remain unset in the initial Standard, as specified in Concept v0.3 §4.3.
+
+No arbitrary universal tree-height cutoff.
 
 ## 9A. Deferred polygon integration and phased execution (design review note)
 
@@ -206,7 +210,7 @@ neither closes those gates nor changes this document's DRAFT status.
 
 ## 13. Roadmap M1: source-neutral height input boundary (design proposal, 2026-11-11)
 
-**Historical design note (2026-11-11):** references below to Concept v0.2's mandatory polygon bundle reflect that earlier date; current formal Concept v0.3 and §14 replace that assumption, without changing source-specific evidence safeguards.
+**Historical design note (2026-11-11):** All subsequent text in §13 is preserved as a record of the design discussion on that date. This includes the statement that Concept v0.2 and §§2–9A retain their authority, which describes the framework at that time. Concept v0.3 is the current formal upper-level design, and §14 describes the current M1 candidate approach. The dated decisions and verification records remain intact, and existing source-specific validation and provenance requirements continue to apply.
 
 **Status: REVIEW PROPOSAL, not an accepted Standard/API or a new SC decision.**
 This note records the design direction discussed in [Roadmap M1-Plan-A #178](https://github.com/iwamoto31206803-max/open-urban-environment-model/issues/178) and [M1-Plan-B #179](https://github.com/iwamoto31206803-max/open-urban-environment-model/issues/179). The [integrated roadmap](planning/OUEM_Integrated_Roadmap_v0.1.md), Concept v0.2 and sections 2–9A above retain their authority. The detailed source-neutral input contract, file schema and real-data acceptance remain **unapproved**.
