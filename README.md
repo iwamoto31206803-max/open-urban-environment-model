@@ -5,7 +5,7 @@
 OUEM prepares reproducible 3D urban environment models from geospatial data
 and explores human-scale environmental assessment using external engines.
 Phase A covers model construction; Phase B covers solar/shade and green view.
-The [concept and architecture](docs/OUEM_Concept_Architecture_v0.2.md) defines
+The [concept and architecture v0.3](docs/OUEM_Concept_Architecture_v0.3.md) defines
 these phases and their variants.
 
 The [Integrated Roadmap M0–M5 (review draft)](docs/planning/OUEM_Integrated_Roadmap_v0.1.md)
@@ -123,7 +123,7 @@ scope; this guide adds no Acceptance or validation criteria.
 
 | Information owner | Start here / responsibility |
 |---|---|
-| Architecture / Standards | [Concept and Architecture v0.2](docs/OUEM_Concept_Architecture_v0.2.md), [runtime architecture](docs/architecture.md) and the Standards below own design and contracts, subject to their stated status. [Development Principles](docs/OUEM_Development_Principles_v0.1.md) own development decisions. |
+| Architecture / Standards | [Concept and Architecture v0.3](docs/OUEM_Concept_Architecture_v0.3.md), [runtime architecture](docs/architecture.md) and the Standards below own design and contracts, subject to their stated status. [Development Principles](docs/OUEM_Development_Principles_v0.1.md) own development decisions. |
 | Status / Closeout | [B1 Technical Closeout](docs/status/B1_TECHNICAL_MILESTONE_CLOSEOUT.md) and [B2 Technical Closeout](docs/status/B2_TECHNICAL_MILESTONE_CLOSEOUT.md) summarize milestone scope and link its evidence. Technical completion does not establish scientific validity. |
 | Backlog | [B1 deferred validation](docs/planning/OUEM_B1_Deferred_Validation_Backlog.md) and [B2 deferred validation](docs/planning/OUEM_B2_Deferred_Validation_Backlog.md) own unresolved verification questions; these remain open within their recorded scope. |
 | Experiments / RESULTS | [B1 Solar usage and evidence](docs/experiments/real_komae_solar/README.md), [B1 original results](docs/experiments/real_komae_solar/RESULTS.md), [B2 usage](docs/experiments/b2_gvi/README.md) / [results](docs/experiments/b2_gvi/RESULTS.md), and [Candidate B STEP 2 experiments](docs/experiments/real_komae_source_h/README.md) own execution conditions, numbers and provenance. Use the workflow table above and [Windows runbook](scripts/work/README.md) for operational entry points. |
@@ -138,7 +138,7 @@ commands belong to those owning records.
 | Reference | Role |
 |---|---|
 | [Documentation governance](docs/OUEM_Documentation_Governance_v0.1.md) | Proposed roles and update rules; summaries do not override contracts or acceptance. |
-| [Concept v0.2](docs/OUEM_Concept_Architecture_v0.2.md), [historical v0.1](docs/OUEM_Concept_Architecture_v0.1.md), [Phase A implementation design](docs/Phase_A_Implementation_Design_v0.1.md) | Design context; read the implementation design's current-status note. |
+| [Concept v0.3](docs/OUEM_Concept_Architecture_v0.3.md), [historical v0.2](docs/OUEM_Concept_Architecture_v0.2.md), [historical v0.1](docs/OUEM_Concept_Architecture_v0.1.md), [Phase A implementation design](docs/Phase_A_Implementation_Design_v0.1.md) | Design context; read the implementation design's current-status note. |
 | [Standard Building](docs/OUEM_Standard_Building_v0.1.md), [Standard Terrain](docs/OUEM_Standard_Terrain_v0.1.md), [VoxCity Building Adapter](docs/OUEM_VoxCity_Adapter_v0.1.md) | Existing contracts and accepted boundaries. |
 | [Standard Canopy draft](docs/OUEM_Standard_Canopy_v0.1_Draft.md), [Height Envelope](docs/CHM_Height_Envelope_PoC_v0.1.md) | Full Canopy proposal and separate experimental raster contract. |
 | [Canopy shadow experiment index](docs/experiments/voxcity_canopy_shadow/README.md) | Earlier canopy-only results, observer/presence audits and historical context. |
