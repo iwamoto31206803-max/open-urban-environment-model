@@ -42,7 +42,7 @@ Accept Polygon/MultiPolygon and contiguous canopy without individual-tree segmen
 
 Multiple overlapping source polygons may be preserved. For the presence mask, candidate rule is their union; report overlap diagnostics. Do not silently merge the source geometries.
 
-An explicit **coverage footprint** is required conceptually to distinguish surveyed absence from unassessed space. Its storage format and relationship to canopy polygons are unresolved. Missing polygon outside known coverage **must not** imply no canopy.
+An explicit **assessment/coverage footprint** is required conceptually to distinguish source-assessed absence from unassessed space. Its storage format and relationship to canopy polygons are unresolved. The footprint must identify **how** the area was assessed (e.g., model-estimated versus independently surveyed), and must never label model-inferred absence as field-verified absence. Missing polygon outside known assessment coverage **must not** imply no canopy. This clarification is a design proposal rather than a ratified Standard state contract.
 
 ## 5. Height semantics and crown-base model
 
@@ -250,3 +250,45 @@ Do not flatten these axes into one boolean, one numeric state code or one CHM va
 **Next review decision:** whether to describe an explicit *source-neutral HAG candidate input contract* (logical fields first), retain source-specific evidence validators, and implement only a small synthetic geometry/evidence compatibility fixture before any GSI data acquisition or new real processing. Thresholds, point-cloud methodology, segmentation acceptance, polygon IDs and formal Standard/Adapter acceptance remain open.
 
 **Documentation/acceptance boundary:** this section changes no existing implementation, old results, source hashes, Concept requirement, accepted Terrain/Building/Adapter contract, experimental Height Envelope output schema, or formal Canopy acceptance status.
+
+## 14. Roadmap M1: Meta CHMv2-derived modelled canopy mask and polygons (candidate refinement, 2026-11-14)
+
+**Status: user-endorsed MODELING DIRECTION; output schema and real-data acceptance remain unapproved.**
+This is a forward-looking refinement of ``4, 8–9A and 13, following [M1-Plan-B Issue #179](https://github.com/iwamoto31206803-max/open-urban-environment-model/issues/179) and [bounded Meta geometry PoC Issue #184](https://github.com/iwamoto31206803-max/open-urban-environment-model/issues/184). Earlier audit findings and dated decisions remain intact. Concept v0.2's polygon + absolute top/bottom-Z requirement does not change.
+
+### 14.1 Source-conditioned model-presence convention
+
+The current Meta CHMv2 route does not need independent canopy boundary acquisition. Instead produce an **explicit, derived presence product** from the *effective-valid* CHM samples, without changing the original height raster:
+
+| Effective CHM state | **Meta-modelled** canopy class | Meaning |
+| --- | --- | --- |
+| Valid finite HAG **> 0 m** | **PRESENT (modelled)** | Meta predicted a positive canopy height; not a field-confirmed tree |
+| Valid finite HAG **= 0 m** | **ABSENT (modelled)** | Meta predicted zero canopy height; **not confirmed ecological absence** |
+| Masked/NoData, negative/invalid, outside support or unassessed | **UNKNOWN** | Cannot infer absence even if the raster storage contains a numeric zero |
+
+This is a **declared derived interpretation** (a simple binary rule over model height), not a new independently trained classifier, change to the source CHM or universal ecological presence definition. Keep height quantization, predictive misses and other possible errors explicit. Check zero/NoData/mask semantics for each future Meta release rather than generalizing the current Komae results.
+
+[Phase 4B Komae audit](experiments/voxcity_canopy_shadow/PHASE4B_CANOPY_PRESENCE_AND_COVERAGE_AUDIT.md) recorded **120,000 valid 1m samples, 40,789 positive, 79,211 zero and no invalid/masked/outside** on the existing target grid. These are **model-value counts**, not independent confirmation of tree presence. Existing `6 Standard state-code proposals are unratified; the experimental `12 Height Envelope `state==1` means numeric calculation validity only. TREE voxel occupancy is yet another, engine-specific representation.
+
+### 14.2 Small derived geometry path
+
+For the initial PoC, use the same **EPSG:6677, 1m, north-up GridSpec** as the retained Komae Height Envelope, with existing `height_envelope.sample_raster()` cell-centre nearest sampling of the **unchanged** Meta source crop. Compute the presence tri-state from **sampled CHM values and CHM-specific support/missing/invalid flags**, **not** from `state==1`, `top>bottom` or TREE alone. DEM validity remains separate: canopy can be modelled present when DEM-dependent absolute heights are missing.
+
+Polygonize **only modelled PRESENT** pixels on that 1m grid. Preserve the positive **and zero** valid pixels as an explicit **model-assessment domain**, without calling it an independent field-survey footprint. Candidate geometry: **4-neighbour connectivity**, no smoothing/morphological operations, no minimum-area filter, and no minimum height above zero (in particular, no inherited 3m cutoff). Retain isolated cells, diagonal-only separate components and interior zero/unknown holes; test actual geometry validity and rasterization roundtrip before adoption. These polygons are *derived* XY geometry, not separately acquired or individually delineated tree crowns.
+
+Proposed per-output evidence: Meta release and input/crop SHA, effective source mask, native CRS/transform, target GridSpec and nearest sampler, versioned `valid & H>0` rule, model-assessment domain, connectivity/polygonization method, stable component IDs (rule unresolved), output hashes, polygon area/count and boundary/small-polygon diagnostics. Preserve original CHM and existing Height Envelope unmodified. Native-grid polygonization is a future **separate comparison**, not a silent substitute for this 1m PoC.
+
+### 14.3 Standard and GSI compatibility
+
+- A CHMv2-derived polygon is a source-conditioned **modelled horizontal boundary**, not independent confirmation of CHMv2 heights, and its negative domain is modelled **absence**, not a verified absence of trees in the field.
+- Complete Standard Canopy acceptance still requires independently reviewed polygon ID/geometry, the assessed/unknown coverage domain, matching absolute-Z top/bottom, provenance/rights, structural QA and downstream Adapter suitability. Modelled XY may be sufficient for a declared **bounded technical model scenario**; it does not automatically establish full Standard acceptance or **M3 ecological accuracy**.
+- The separate GSI path remains **RGB-modelled 2D mask + OUEM point-derived height**. Both can produce an interpretable combination of *modelled canopy extent + height evidence + valid/unknown footprint* for downstream 3D, while preserving very different input-source methods.
+- Previous `13.3's rule against silently thresholding **the original Meta height raster** does not prohibit this **separately declared derived mask**. Neither the Meta source evidence validator nor existing numerical height calculation is to be bypassed. The synthetic-only `canopy_height_candidate.py` seam rejects an **independent Meta classifier input**; it is not a production polygonizer.
+
+### 14.4 Proposed execution gates; real data requires separate Codex task
+
+1. **Synthetic QA first:** positive/zero/masked/outside/invalid triage; 4-neighbour/diagonal components, isolated cells and holes; exact polygon-to-raster positive-mask roundtrip; polygon validity and area accounting; CRS/affine; unchanged source values; deterministic repeat; no inherited 3m cutoff.
+2. **Bounded real Komae PoC later with explicit authorization:** reuse existing Phase 2 **64m × 64m ROI** `(-23320, -40760, -23256, -40696)` on the 1m grid. Phase 4B previously counted **3,842 positive / 254 zero** in that ROI; Codex must independently recheck actual pinned input identity, sampled values and result counts. No new download, no overwrite, new output folder with source and output SHA. Expansion to full Komae 400×300m is separately reviewed.
+3. **Subsequent M1 acceptance review:** decide whether the labelled modelled polygon and coverage, plus existing Height Envelope, satisfy a *limited* Native/Standard Canopy technical gate. Complete Standard Canopy, integrated Building/Canopy/VoxCity and scientific validation remain distinct.
+
+**Not changed:** Meta acquisition and CHM pixel values, Height Envelope math/state/manifest, legacy 3m experiment, B1/B2/Phase 4A/4B evidence, GSI Segmentation repository, previously accepted Building/Terrain/Adapter contracts and Concept v0.2.
