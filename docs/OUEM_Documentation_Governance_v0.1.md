@@ -5,13 +5,14 @@ Alignment checked: 2026-10-28, main `888633bfe8df017b00ab2e471c57410dacc364ee`
 (PR #103 merged). The policy remains proposed. The user-agreed
 [Development Principles](OUEM_Development_Principles_v0.1.md) own development
 judgment and collaboration; adopting them does not approve this governance policy.
+Architecture reference refreshed 2026-11-14 for the formally registered Concept v0.3; the 2026-10-28 alignment record above remains historical.
 
 ## Responsibilities and existing owners
 
 | Role | Owns | Existing entry points |
 |---|---|---|
 | Development policy / agent instructions | Shared development principles and daily Codex practice | [Development Principles](OUEM_Development_Principles_v0.1.md), [AGENTS.md](../AGENTS.md) |
-| Architecture / Standard | Normative design, data meaning and contracts, subject to each document's status | [Concept v0.2](OUEM_Concept_Architecture_v0.2.md), [Building](OUEM_Standard_Building_v0.1.md), [Terrain](OUEM_Standard_Terrain_v0.1.md), [Building Adapter](OUEM_VoxCity_Adapter_v0.1.md), [Canopy DRAFT](OUEM_Standard_Canopy_v0.1_Draft.md) |
+| Architecture / Standard | Normative design, data meaning and contracts, subject to each document's status | [Concept v0.3](OUEM_Concept_Architecture_v0.3.md), [Building](OUEM_Standard_Building_v0.1.md), [Terrain](OUEM_Standard_Terrain_v0.1.md), [Building Adapter](OUEM_VoxCity_Adapter_v0.1.md), [Canopy DRAFT](OUEM_Standard_Canopy_v0.1_Draft.md) |
 | Implementation / Interface | Implemented CLI, inputs, outputs and processing boundaries | [Height Envelope usage/contract](CHM_Height_Envelope_PoC_v0.1.md), [Phase 2 usage](experiments/voxcity_canopy_shadow/PHASE2_USAGE.md), [runtime architecture](architecture.md), [execution runbook](../scripts/work/README.md), and linked source/tests |
 | Verification / Acceptance | What was executed, evidence identities, results, limits and approval scope | [Building acceptance](../experiments/a1_e2e_pilot/README.md), [acceptance records](acceptance/), [3D verification](verification/OUEM_Height_Envelope_3D_Visualization_Komae_20261026.md), [experiment index](experiments/voxcity_canopy_shadow/README.md) |
 | Current State | Dated navigation to implementation, evidence, open issues and next gate | [Canopy](status/CANOPY_CURRENT_STATE.md), [Building](status/BUILDING_CURRENT_STATE.md) |
