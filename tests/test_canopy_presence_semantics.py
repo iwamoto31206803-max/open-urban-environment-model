@@ -8,6 +8,7 @@ import rasterio
 from rasterio.transform import from_origin
 
 from ouem import height_envelope as env
+from ouem.canopy_height_candidate import review_synthetic_candidate
 from ouem.canopy_shadow_poc import ShadowBlocked, relative_grids, build_pair
 from ouem.canopy_shadow_sensitivity import build_isotropic
 
@@ -153,3 +154,94 @@ def test_acquisition_keeps_valid_zero_and_masked_zero_distinct(tmp_path):
         assert ds.nodata is None and np.all(ds.read(1)==0)
         assert ds.read_masks(1).tolist()==[[255,0],[255,255]]
     assert rec['nodata_pixels']==1
+
+
+def review_meta(grid, chm, dem):
+    return review_synthetic_candidate(
+        grid, chm, dem, profile="meta_estimated_canopy_hag",
+        hag_aligned_transform=grid.transform, dem_aligned_transform=grid.transform,
+        vertical_compatible=True, synthetic_assertion="SYNTHETIC_TEST_ONLY",
+        crown_ratio=0.1,
+    )
+
+
+def test_meta_decision_to_actual_tree_voxels(record_property):
+    from voxcity.generator.voxelizer import NUMBA_AVAILABLE
+
+    record_property("voxcity_numba_available", NUMBA_AVAILABLE)
+    grid = env.GridSpec((0, 0, 3, 2))
+    chm = samples([[8., 0., 1e-8], [.1, 1.2, 7.]])
+    dem = samples([[10., 10., 10.], [10., 12., 10.]])
+    snapshots = [
+        (sample.values.copy(), sample.missing.copy(), sample.outside.copy())
+        for sample in (chm, dem)
+    ]
+    review = review_meta(grid, chm, dem)
+    model = review["meta_modelled_presence"]
+    assert model["present"].tolist() == [[True, False, True], [True, True, True]]
+    assert model["absent"].tolist() == [[False, True, False], [False, False, False]]
+    assert not model["unknown"].any()
+    assert review["absolute_z_valid"].all()
+    assert model["tree_candidate"].tolist() == [[True, False, False], [True, True, True]]
+
+    top, bottom = review["top_z"], review["bottom_z"]
+    state = review["height_state"]
+    envelope = tuple(a.copy() for a in (top, bottom, state))
+    assert top[0, 2] == bottom[0, 2] == 10.  # Positive HAG, collapsed Float32 depth.
+    assert 10. < bottom[1, 0] < top[1, 0] < 10.5  # Both relative faces round to 0.
+    ground, high, low = relative_grids(top, bottom, dem.values, state)
+    relative = tuple(a.copy() for a in (ground, high, low))
+    pair = build_pair(ground, high, low, grid.bounds, 0)
+    control, canopy = pair.a.voxels.classes, pair.b.voxels.classes
+    tree = canopy == -2
+
+    # Hand-derived (south-up row, east column, Z layer) coordinates. At DEM
+    # 12 the surface is layer 2 and the first layer above ground is 3.
+    # The thin crown's two faces round to 1 and expand to [0, 1).
+    assert np.argwhere(tree).tolist() == [[0, 1, 3], [0, 2, 7], [1, 0, 8]]
+    assert pair.qa["thin_crown_expanded_cells"] == 1
+    assert pair.qa["absolute_z_origin_m"] == 10.
+    assert control[0, 1, :3].tolist() == [-1, -1, 1]
+    assert control.shape == canopy.shape
+    assert not (control == -2).any()
+    assert (control[tree] == 0).all()
+    np.testing.assert_array_equal(canopy[~tree], control[~tree])
+
+    meta = pair.b.voxels.meta
+    assert (meta.crs, meta.bounds, meta.meshsize) == ("EPSG:6677", grid.bounds, 1.)
+    x, y = grid.centres()
+    np.testing.assert_array_equal(x[0], meta.bounds[0] + np.array([.5, 1.5, 2.5]))
+    np.testing.assert_array_equal(y[::-1, 0], meta.bounds[1] + np.array([.5, 1.5]))
+    np.testing.assert_array_equal(pair.b.dem.elevation, dem.values[::-1])
+
+    for sample, expected in zip((chm, dem), snapshots):
+        np.testing.assert_array_equal(sample.values, expected[0])
+        np.testing.assert_array_equal(sample.missing, expected[1])
+        np.testing.assert_array_equal(sample.outside, expected[2])
+    for actual, expected in zip((top, bottom, state, ground, high, low), envelope + relative):
+        np.testing.assert_array_equal(actual, expected)
+
+
+@pytest.mark.parametrize("problem", ["missing_dem", "masked_chm", "outside_chm", "invalid_chm"])
+def test_meta_incomplete_domain_blocks_tree_preparation(problem):
+    grid = env.GridSpec((0, 0, 2, 1))
+    chm = samples([[5., 5.]])
+    dem = samples([[10., 10.]])
+    if problem == "missing_dem":
+        dem.missing[0, 1] = True
+    elif problem == "masked_chm":
+        chm.missing[0, 1] = True
+    elif problem == "outside_chm":
+        chm.outside[0, 1] = True
+    else:
+        chm.values[0, 1] = -1.
+
+    review = review_meta(grid, chm, dem)
+    model = review["meta_modelled_presence"]
+    assert model["present"].tolist() == [[True, problem == "missing_dem"]]
+    assert model["unknown"].tolist() == [[False, problem != "missing_dem"]]
+    assert not model["absent"].any()
+    assert review["absolute_z_valid"].tolist() == [[True, False]]
+    assert model["tree_candidate"].tolist() == [[True, False]]
+    with pytest.raises(ShadowBlocked, match="missing/invalid/outside"):
+        relative_grids(review["top_z"], review["bottom_z"], dem.values, review["height_state"])
