@@ -30,6 +30,10 @@ def _require_samples(label, samples, shape):
     if not isinstance(samples, env.Samples):
         raise env.EnvelopeBlocked(f"{label}: expected sampled height/terrain arrays")
     _require_shape(label, samples.values, shape)
+    if not isinstance(samples.values, np.ndarray) or samples.values.dtype.kind not in "uif":
+        raise env.EnvelopeBlocked(f"{label}: expected numeric samples")
+    if not isinstance(samples.metadata, Mapping):
+        raise env.EnvelopeBlocked(f"{label}: expected source metadata mapping")
     _require_boolean(label + " missing", samples.missing, shape)
     _require_boolean(label + " outside", samples.outside, shape)
 
@@ -54,7 +58,8 @@ def review_synthetic_candidate(
     """Check synthetic in-memory inputs and reuse the existing height core.
 
     The returned top/bottom are numeric candidate envelopes only, NOT TREE
-    placement: a positive point-derived HAG in a model-background cell is
+    placement. The Meta-derived interpretation is separate from independent
+    inference fields. A positive point-derived HAG in a model-background cell is
     deliberately retained in the numeric result. Source/rights/quality review
     and any masked-CHM fusion policy remain unimplemented.
     """
@@ -106,7 +111,22 @@ def review_synthetic_candidate(
     raw_hag = np.asarray(hag.values).copy()
     source_valid = (~hag.outside & ~hag.missing & np.isfinite(hag.values)
                     & (hag.values >= 0))
+    modelled_presence = None
     if prediction is None:
+        present = source_valid & (raw_hag > 0)
+        absolute_z_valid = state == env.VALID
+        modelled_presence = {
+            "rule": "meta_effective_valid_hag_positive_or_zero",
+            "source_support": ~hag.outside,
+            "assessed_domain": source_valid.copy(),
+            "present": present,
+            "absent": source_valid & (raw_hag == 0),
+            "unknown": ~source_valid,
+            "surveyed_coverage": None,
+            # Column eligibility only. Existing domain guards, rounding and
+            # building precedence still govern actual TREE placement.
+            "tree_candidate": present & absolute_z_valid & (top > bottom),
+        }
         unknown_presence = np.ones(shape, dtype=bool)
         inferred_height_conflict = np.zeros(shape, dtype=bool)
         missing_height_for_predicted_canopy = np.zeros(shape, dtype=bool)
@@ -118,6 +138,10 @@ def review_synthetic_candidate(
                                                & (state != env.VALID))
     return {
         "top_z": top, "bottom_z": bottom, "height_state": state, "height_qa": qa,
+        "hag_valid": source_valid,
+        "dem_valid": ~dem.outside & ~dem.missing & np.isfinite(dem.values),
+        "absolute_z_valid": state == env.VALID,
+        "meta_modelled_presence": modelled_presence,
         "raw_hag": raw_hag, "profile": profile, "epochs": epochs_copy,
         "predicted_canopy": prediction, "inference_valid": prediction_valid,
         "canopy_probability": probability, "unknown_presence": unknown_presence,
