@@ -1,28 +1,30 @@
 # OUEM Standard Canopy v0.1 — Draft
 
 **Status:** PROPOSED / DRAFT — design only; not an accepted Standard contract or implementation.
-**Scope:** Provider-independent canopy geometry for the initial Komae end-to-end PoC, with future CHM-source interchangeability.
-**Authority:** [OUEM Concept & Architecture v0.2](OUEM_Concept_Architecture_v0.2.md) takes precedence. This draft does not modify accepted Building, Terrain, or VoxCity Adapter contracts.
+**Scope:** Source-profile-aware canopy horizontal evidence, absolute-Z envelopes and optional geometry exports for the initial Komae PoC and future CHM-source interchangeability.
+**Authority:** [OUEM Concept & Architecture v0.3](OUEM_Concept_Architecture_v0.3.md) takes precedence. This draft does not modify accepted Building, Terrain, or VoxCity Adapter contracts. The 2026-10-25 and 2026-11-11 decisions below remain dated history; §14 records the later v0.3 alignment.
 
 ## 1. Purpose and architecture
 
-Represent canopy horizontal extent and vertical envelope independently of Meta/WRI CHMv2, LiDAR-derived CHM, and any specific analysis engine. The flow is Raw → Native → OUEM Standard → Engine/Analysis Adapter → VoxCity. Acquisition does not itself establish Standard acceptance. The CHMv2 AOI crop is an acquisition artifact, not a Standard Canopy raster.
+Represent canopy horizontal presence evidence and vertical envelopes in a source-profile-aware, engine-independent way: a modelled CHM/segmentation raster may be the horizontal basis, while an accepted source polygon remains the horizontal basis when such input exists. The flow is Raw → Native → OUEM Standard → Engine/Analysis Adapter → VoxCity. Acquisition does not itself establish Standard acceptance. The CHMv2 AOI crop is an acquisition artifact, not a Standard Canopy raster.
 
-Native retains source-specific height semantics, original grids, polygon provenance, masks, and acquisition evidence. Standardization validates source meaning and combines canopy extent, CHM, and compatible bare-earth terrain into canonical absolute-Z outputs. VoxCity-specific resampling, relative heights, collision policy, and voxelization belong to the Adapter. Preserve the existing `komae_canopy.py` experimental workflow; do not treat it as the Standardizer.
+Native retains source-specific height semantics, original grids, original polygons where supplied, masks, and acquisition evidence. Standardization validates source meaning and combines horizontal presence evidence with compatible height and bare-earth terrain for canonical absolute-Z envelopes, retaining independent validity and provenance. VoxCity-specific resampling, relative heights, collision policy, and voxelization belong to the Adapter. **Derived 2D polygons and generic 3D meshes are optional external geometry outputs, not mandatory steps between CHM and VoxCity.** Preserve the existing `komae_canopy.py` experimental workflow; do not treat it as the Standardizer.
 
-## 2. Proposed output bundle
+## 2. Proposed logical data and output bundle
 
-| Candidate artifact | Semantics | Status |
+This section describes **logical information first**, not an adopted file schema or a requirement to materialize every intermediate. The horizontal basis depends on the source profile. Separate source-modelled presence, source/assessment validity, independent ecological survey coverage (if any), height validity and DEM validity; do not collapse them into one flag or one numeric code.
+
+| Candidate representation | Semantics | Applicability and status |
 | --- | --- | --- |
-| `canopy.gpkg` | Original accepted canopy polygons and stable IDs; single trees and contiguous canopy allowed | Proposed |
-| `canopy_top_z.tif` | Canopy top **absolute elevation** in metres | Concept requirement; packaging proposed |
-| `canopy_bottom_z.tif` | Canopy bottom **absolute elevation** in metres | Concept requirement; packaging proposed |
-| `canopy_state.tif` | Explicit coverage / presence / height-validity classification | Proposed, encoding unresolved |
-| `canopy.manifest.json` | CRS, vertical semantics, source/algorithm provenance, hashes, GridSpec, QA | Proposed |
+| Horizontal presence evidence + assessment domain | Explicitly reproducible modelled present/absent/unknown for CHM/mask profiles; original polygons and their source assessment evidence for polygon profiles | **Common logical requirement; storage/serialization unresolved** |
+| `canopy_top_z.tif` | Canopy top **absolute elevation** in metres, with datum and validity | Concept requirement; filename/packaging proposed |
+| `canopy_bottom_z.tif` | Canopy bottom **absolute elevation** in metres, with inferred-base provenance | Concept requirement; filename/packaging proposed |
+| `canopy.manifest.json` | Source profiles, CRS/GridSpec, model/height/coverage evidence, rights, parameters, SHA and QA | Proposed metadata packaging |
+| Optional presence/assessment raster(s), e.g. `canopy_state.tif` | One possible durable rendering of separate logical state axes | **Optional materialization; encoding and filename unresolved** |
+| Source `canopy.gpkg` (when supplied) | Retained accepted original canopy polygons and IDs | Source-polygon profile only; no synthetic replacement |
+| Derived 2D polygon / generic 3D mesh | On-demand GIS/visualization/other-model outputs, with own QA and source links | **Optional outputs, not the VoxCity input gate** |
 
-The three core representations in Concept v0.2 are canopy polygons, top-Z raster, and bottom-Z raster. A separate state raster is a candidate encoding of the mandatory missing-versus-absent distinction, **not** a previously approved Concept requirement. Source polygons must remain available unchanged; rasterization must not silently replace them.
-
-A generic 3D surface mesh may be derived from Standard top/bottom; VoxCity voxels are Adapter outputs. LAD and transmissivity are **unset**, not zero. Building/canopy 2D overlaps are permitted; 3D collision resolution is downstream.
+A modelled CHM presence rule can be reconstructed from retained source samples, effective masks, sampling conditions and decision rules without always writing a separate raster file. A derived polygon is not an independently surveyed polygon or independent evidence of presence. VoxCity voxels are Adapter-specific outputs; LAD and transmissivity remain **unset**, not zero. Building/canopy 2D overlaps are permitted; 3D collision handling is downstream.
 
 ## 3. Coordinates and grid
 
@@ -33,16 +35,15 @@ A generic 3D surface mesh may be derived from Standard top/bottom; VoxCity voxel
 - Record a deterministic GridSpec (CRS, resolution, bounds, affine transform, width/height, alignment, cell-centre convention). All output rasters must match it exactly.
 - Retain accepted Standard Terrain v0.1 at its native 0.5 m grid; sample it onto the Canopy execution grid without modifying its canonical artifact. Terrain v0.1 itself does not resample.
 - CHM candidate resampling: nearest neighbour, preserving source masks/NoData. Terrain candidate: nearest neighbour for reproducible initial PoC, compare against bilinear with explicit masked-neighbour rules before finalizing.
-- Polygon-to-mask candidate: a cell is canopy-present if its centre is inside the accepted polygon union; define boundary-centre tie behaviour and test it before implementation acceptance. Track rasterization area difference and lost small polygons.
+- **Source-polygon profile only:** a polygon-to-mask candidate labels a cell present when its centre is inside the accepted polygon union; define boundary tie behaviour and quantify area differences/lost small polygons. **CHM/mask profiles do not require polygonization before raster analysis.**
 - Do not claim seamless adjoining AOI outputs solely from common grid alignment; source coverage, clipping, and boundary handling also require QA.
 
-## 4. Canopy polygon and coverage contract
+## 4. Horizontal presence evidence and coverage contract
 
-Accept Polygon/MultiPolygon and contiguous canopy without individual-tree segmentation. Candidate metadata: deterministic `ouem_id`, nullable `source_id` when the source lacks one, mandatory `source_dataset` and dataset provenance. The exact stable-ID generation rule, polygon validity repair policy, and serialization rules are unresolved.
-
-Multiple overlapping source polygons may be preserved. For the presence mask, candidate rule is their union; report overlap diagnostics. Do not silently merge the source geometries.
-
-An explicit **coverage footprint** is required conceptually to distinguish surveyed absence from unassessed space. Its storage format and relationship to canopy polygons are unresolved. Missing polygon outside known coverage **must not** imply no canopy.
+- **CHM / segmentation profile:** preserve source values, masks, inference provenance and assessment domain. The modelled presence decision is a separately traceable interpretation, which may be computed when needed from supported valid samples. It does not establish independently surveyed canopy existence or absence.
+- **Source-polygon profile:** retain accepted Polygon/MultiPolygon and contiguous canopy, without requiring individual-tree segmentation. Original geometries and identifiers remain available unchanged; validate source geometry and source IDs at admission to Standard. Candidate metadata include deterministic `ouem_id`, nullable `source_id` and mandatory dataset provenance; exact stable-ID and repair rules remain unresolved.
+- **Overlap and footprint:** source polygon overlaps may be retained, with a candidate union mask for analysis and documented overlap diagnostics. Independently surveyed ecological coverage (where evidenced), model-assessment domain, raster-source spatial support, modelled absence, and unassessed/unknown areas must remain distinguishable. A missing polygon or CHM NoData cell is not proof of canopy absence.
+- **Derived geometry export:** optional polygonization of the modelled-present raster uses explicitly recorded source/GridSpec/algorithm and its own QA. The exported geometry never replaces a source polygon and is not required for VoxCity analysis.
 
 ## 5. Height semantics and crown-base model
 
@@ -58,33 +59,35 @@ The source must explicitly establish that CHM is a height-above-ground quantity 
 
 **CR model interface:** versioned, replaceable estimation algorithm with recorded inputs, parameters, applicability, and per-output provenance. Initial Komae **candidate** is `constant_cr_v0.1`, `CR=0.60`, corresponding to legacy bottom HAG = 0.40 × tree height. This is a continuity choice, not an empirically validated ecological default or a permanent Standard requirement. Later models may be class-based or spatially varying without changing the Standard top/bottom contract.
 
-Candidate CR domain: `0 < CR <= 1`. A canopy-present cell with invalid, missing, negative, or zero height is not automatically declared canopy-absent. Minimum-tree-height thresholds, if used by analysis, are configurable and documented; do not silently apply the legacy 3 m cutoff to Standard.
+Candidate CR domain: `0 < CR <= 1`. A canopy-present cell with invalid, missing, negative, or zero height is not **generally** declared canopy-absent; presence and height validity are distinct axes. The Meta CHMv2 **model-specific** effective-valid `H=0` interpretation in §14 is not an independent ecological absence claim and must not be generalized to GSI mask-positive/height-missing cells. Minimum-tree-height thresholds, if used by analysis, are configurable and documented; do not silently apply the legacy 3 m cutoff to Standard.
 
 For valid cells, require finite `G`, `H`, `CR`, and `G <= Z_bottom <= Z_top`. Distinguish top-height evidence from inferred bottom-height evidence. Do not infer unobserved bottom as measured.
 
 ## 6. State, NoData, and uncertainty
 
-Candidate semantic classes:
+**The logical information is multi-axis; no universal numeric state schema is adopted here.**
 
-| Candidate code | Meaning |
+| Logical axis | What must remain distinguishable |
 | --- | --- |
-| 0 | Within verified coverage, no canopy polygon |
-| 1 | Canopy polygon present, valid top/bottom heights |
-| 2 | Canopy present, required height or terrain missing |
-| 3 | Canopy present, invalid or inconsistent height |
-| 255 | Outside verified assessment coverage / unassessed |
+| Source support / native validity | In-source coverage, effective source mask, invalid/NoData, outside-source and unprocessed |
+| Modelled presence / assessment | Modelled present, modelled absent, unknown or not assessed, with model identity and decision rule |
+| Independent ecological assessment | Surveyed coverage/presence/absence **only when independently supported**; otherwise NOT_VERIFIED |
+| Height and terrain validity | Numeric HAG availability/physical meaning, independent DEM validity, compatible absolute top/bottom-Z availability |
+| Engine occupancy / analysis validity | TREE voxel presence, building overwrite, observer/context/halo and whether B1/B2 analysis is valid; owned by Adapter, **not** ecological absence |
 
-These **numeric codes are not ratified**. Define datatype, NoData sentinel, priority when errors overlap, and exact coverage-boundary handling before implementation. Both top/bottom must be NoData wherever height is not valid. Never substitute zero for unknown; zero-height or thresholded vegetation must not silently erase presence.
+**Historical unratified codes from the earlier polygon-first proposal:** 0=inside verified survey coverage/no polygon; 1=polygon with valid heights; 2=polygon with missing heights; 3=polygon with inconsistent heights; 255=outside verified survey coverage. These were **never adopted** and must **not** be treated as the current raster-profile state encoding or as interchangeable with Height Envelope's numeric-validity `state==1`. Exact datatype, numeric codes, NoData and materialized file count remain separate decisions.
 
-A Standard bundle may represent partially missing canopy height accurately and still pass structural QA; its suitability for a particular VoxCity analysis is a separate Adapter acceptance decision. Any imputation is explicit, versioned, and provenance-bearing rather than a silent mutation of canonical observations.
+Where an absolute top/bottom is invalid it must not silently be fabricated as zero height. A Standard candidate may preserve partial height evidence and still pass relevant structural QA, while the Adapter must separately decide and document whether a particular model/analysis can proceed. Any imputation is separately versioned and provenance-bearing.
 
 ## 7. QA and acceptance gates
 
-**Mandatory structural/semantic checks:** declared horizontal CRS; verified vertical-reference compatibility; source height meaning; grid shape/affine/CRS identity; polygon geometry validity and IDs; coverage footprint; mask and NoData propagation; finite values; top >= bottom >= ground for valid cells; CR range and provenance; source and output SHA-256; deterministic rerun evidence.
+**Common structural and semantic QA for the applicable profile:** horizontal CRS/GridSpec/affine, supported source meaning and effective masks, model assessment domain versus surveyed coverage, height/DEM/absolute-Z compatibility, missing-versus-modelled-absent, finite values and `top >= bottom >= ground` where valid, CR provenance, model/source identities, rights, hashes and deterministic rerun evidence.
 
-**Diagnostics:** polygon overlap; polygon-to-raster area delta; small polygon loss; CHM/polygon disagreement; canopy cells with missing/invalid CHM or DEM; elevation and crown-depth distributions; sampling method and source pixel sizes; AOI-boundary consistency.
+**Conditional geometry QA:** if original polygons are the accepted horizontal basis, validate their IDs and geometries on Standard admission. If derived 2D polygons/3D meshes are generated or used, check their own shape, holes, areas, boundary/quantization effects, vertical compatibility and source links. **Optional geometry export QA must never be a prerequisite for the CHM/raster → VoxCity analysis lane.**
 
-**Distinct gates:** (1) contract/unit tests on synthetic data, (2) Komae real-data Standard Canopy acceptance with frozen input identities, (3) downstream Standard Building/Terrain/Canopy → VoxCity integration and environmental-analysis acceptance. Passing one gate does not imply passing another. Existing Building and Terrain acceptance remains unchanged. Vertical-offset concerns in cross-layer fusion must be tested explicitly, not silently compensated.
+**Adapter QA:** voxel dimensions, actual engine centres/orientation, D0/effective ground, rounding/thin crowns, Building precedence and pre-/post-overwrite TREE diagnostics, data/context/halo uncertainty and observers. Distinguish modelled source absence from an empty TREE voxel and from analysis-invalid/unknown regions.
+
+**Distinct gates:** (1) synthetic logical/contract tests, (2) bounded real-input technical checks only after authorization, (3) separately reviewed Native/Standard Canopy contract/data acceptance, and (4) downstream Building/Terrain/Canopy → VoxCity technical/analysis acceptance. Success in one gate is not scientific field validation (Roadmap M3) nor approval for the other gates. Existing Building and Terrain acceptance remains unchanged; vertical-offset concerns are not silently compensated.
 
 ## 8. Komae candidate PoC profile
 
@@ -93,24 +96,27 @@ A Standard bundle may represent partially missing canopy height accurately and s
 - CHM candidate: Meta/WRI CHMv2, from the separately audited AOI acquisition; source crop is EPSG:3857, not a canonical Standard raster.
 - Terrain: accepted Komae Standard Terrain (0.5 m, EPSG:6677, source-declared T.P.), subject to verified compatible source semantics.
 - CR candidate: constant 0.60.
-- **Full Standard acceptance dependency (deferred):** identify and accept a canopy polygon source and verified coverage footprint. This is **not** a blocker for the limited CHM + DEM + CR height-envelope PoC. CHM-derived polygons require an explicit separate provenance-bearing generation step; CHM alone must not silently be promoted to an independent polygon source.
+- **Complete Standard Canopy acceptance (deferred):** independently review a source-profile-appropriate horizontal evidence/assessment domain, compatible absolute top/bottom-Z, provenance/rights, NoData and structural QA. A **polygon source is required only for an original-polygon-based profile**, not for CHM/raster-first input. The current Height Envelope PoC remains experimental; Meta-derived polygons, if exported, are additional model geometry and cannot stand in for independent source polygons or ecological survey coverage.
 - No CHMv2-vs-LiDAR comparison is required before this end-to-end PoC. Source interchangeability is a contract objective; comparative performance assessment is deferred.
 
 ## 9. Open decisions and validation plan
 
-1. Canopy polygon source, acquisition/Native contract, coverage footprint, stable IDs.
-2. Exact raster state encoding, NoData sentinel, and outside-coverage semantics.
-3. Cell-centre-on-boundary tie rule and tiny-polygon diagnostics.
-4. Terrain nearest-vs-bilinear comparison and masked interpolation behaviour.
-5. CR=0.60 sensitivity, zero/low-height treatment, and later class/spatial CR evidence.
-6. Exact provenance schema, hashing, deterministic serialization, and output naming.
-7. Vertical compatibility gate and cross-layer building/terrain/canopy offset checks.
-8. Downstream VoxCity canopy Adapter behaviour on missing data and 3D overlap.
-9. Thresholds for structural QA vs real-data acceptance; no arbitrary universal tree-height cutoff.
-10. Derived mesh format and future LAD/transmissivity model (out of v0.1 scope).
+1. Source-profile horizontal evidence acceptance and assessment-domain documentation, including original polygons if the source supplies them.
+2. Reproducible modelled presence/unknown rule and source-specific validity, independent height/DEM validity, and provenance; exact output packaging and numeric codes remain unresolved.
+3. Terrain nearest-vs-bilinear comparison and masked interpolation behaviour.
+4. CR=0.60 sensitivity, zero/low-height treatment, later spatial CR and resulting TREE rounding.
+5. Vertical compatibility, building/terrain/canopy offset checks and real engine-grid correspondence.
+6. Required versus optional on-disk materialization, output names, hashes and deterministic serialization, without mandatory geometry conversion.
+7. Native/Standard/Adapter data contracts, full Canopy Standard acceptance, unknown/halo policy and source rights.
+8. **Source-polygon input and Standard:** cell-centre inclusion and boundary tie rules for rasterization, and admission QA for original polygon IDs and geometry.
+9. **Optional geometry export:** connectivity, holes, area, IDs and boundary accuracy for derived 2D polygons, and generation methods, output formats and quality checks for optional 3D meshes. Export QA is independent of CHM → VoxCity analysis.
+10. **Future canopy internal properties and optical models:** LAD and transmissivity remain unset in the initial Standard, as specified in Concept v0.3 §4.3.
 
+No arbitrary universal tree-height cutoff.
 
 ## 9A. Deferred polygon integration and phased execution (design review note)
+
+**Historical decision note:** The text below preserves the 2026-10-25 polygon-first plan as it stood then. The later, formally adopted [Concept v0.3](OUEM_Concept_Architecture_v0.3.md) supersedes its **universal polygon requirement**; consult §14 for the current candidate workflow. This annotation does not rewrite the archived execution evidence.
 
 **Decision (2026-10-25):** Retain canopy polygons and coverage semantics as required capabilities of the complete Standard Canopy architecture, but **defer acquisition/generation of real Komae canopy polygons**. Their absence does **not** block the next CHM + DEM + CR vertical-envelope PoC.
 
@@ -126,7 +132,7 @@ The statuses below distinguish the Concept baseline, explicitly selected candida
 
 | IDs | Subject | Status |
 | --- | --- | --- |
-| SC-01–SC-10 | Polygon + absolute top/bottom, source-neutrality, provenance, missing-vs-absent, Adapter boundary | Concept-derived principles; concrete packaging proposed |
+| SC-01–SC-10 | Historical polygon-first proposal, absolute top/bottom, provenance, missing-vs-absent, Adapter boundary | Historical proposed SC register; **horizontal basis superseded by Concept v0.3**; packaging unratified |
 | SC-11 | Cell-centre rasterization, preserve source polygon | **User-selected candidate** |
 | SC-12 | CHM nearest; validate DEM resampling | **User-selected candidate** |
 | SC-13 | Cellwise absolute top/bottom from CHM + terrain | **User-selected candidate** |
@@ -137,7 +143,7 @@ The statuses below distinguish the Concept baseline, explicitly selected candida
 
 ## 11. Related existing contracts
 
-- [Concept & Architecture v0.2](OUEM_Concept_Architecture_v0.2.md)
+- [Concept & Architecture v0.3](OUEM_Concept_Architecture_v0.3.md) (current formal upper concept); [v0.2](OUEM_Concept_Architecture_v0.2.md) (historical)
 - [Standard Terrain v0.1](OUEM_Standard_Terrain_v0.1.md)
 - [Standard Building v0.1](OUEM_Standard_Building_v0.1.md)
 - [Standard-to-VoxCity Building Adapter v0.1](OUEM_VoxCity_Adapter_v0.1.md)
@@ -204,6 +210,8 @@ neither closes those gates nor changes this document's DRAFT status.
 
 ## 13. Roadmap M1: source-neutral height input boundary (design proposal, 2026-11-11)
 
+**Historical design note (2026-11-11):** All subsequent text in §13 is preserved as a record of the design discussion on that date. This includes the statement that Concept v0.2 and §§2–9A retain their authority, which describes the framework at that time. Concept v0.3 is the current formal upper-level design, and §14 describes the current M1 candidate approach. The dated decisions and verification records remain intact, and existing source-specific validation and provenance requirements continue to apply.
+
 **Status: REVIEW PROPOSAL, not an accepted Standard/API or a new SC decision.**
 This note records the design direction discussed in [Roadmap M1-Plan-A #178](https://github.com/iwamoto31206803-max/open-urban-environment-model/issues/178) and [M1-Plan-B #179](https://github.com/iwamoto31206803-max/open-urban-environment-model/issues/179). The [integrated roadmap](planning/OUEM_Integrated_Roadmap_v0.1.md), Concept v0.2 and sections 2–9A above retain their authority. The detailed source-neutral input contract, file schema and real-data acceptance remain **unapproved**.
 
@@ -250,3 +258,30 @@ Do not flatten these axes into one boolean, one numeric state code or one CHM va
 **Next review decision:** whether to describe an explicit *source-neutral HAG candidate input contract* (logical fields first), retain source-specific evidence validators, and implement only a small synthetic geometry/evidence compatibility fixture before any GSI data acquisition or new real processing. Thresholds, point-cloud methodology, segmentation acceptance, polygon IDs and formal Standard/Adapter acceptance remain open.
 
 **Documentation/acceptance boundary:** this section changes no existing implementation, old results, source hashes, Concept requirement, accepted Terrain/Building/Adapter contract, experimental Height Envelope output schema, or formal Canopy acceptance status.
+
+## 14. Roadmap M1: raster-first canopy and optional geometry exports (current proposal, 2026-11-14)
+
+**Status: Concept v0.3's responsibility split is formally adopted; this section remains a proposed Standard/PoC implementation detail, NOT a ratified Canopy Standard or dataset acceptance.** This supersedes the mandatory-polygon reading of the dated §9A and §13 notes. See [Concept v0.3](OUEM_Concept_Architecture_v0.3.md), [design review #186](https://github.com/iwamoto31206803-max/open-urban-environment-model/issues/186), [bounded PoC Issue #184](https://github.com/iwamoto31206803-max/open-urban-environment-model/issues/184), and [Phase 4B](experiments/voxcity_canopy_shadow/PHASE4B_CANOPY_PRESENCE_AND_COVERAGE_AUDIT.md).
+
+### 14.1 Meta modelled-presence interpretation (source-specific)
+
+Keep original Meta CHMv2 height values, source masks and acquisition identities unchanged. For effective-valid finite sampled CHM **H>0 m** indicates **Meta-modelled PRESENT**, **H=0 m** indicates **Meta-modelled ABSENT**, and masked/NoData/negative/invalid/outside samples are **UNKNOWN**. These are explicitly **model-derived** labels, not field-observed presence or surveyed absence; the rule must be revisited for each source release. Never derive these classes from Height Envelope `state==1`, `top>bottom`, a `TREE==0` voxel or a made-up rectangle-wide survey footprint.
+
+The prior Phase 4B audit reported 120,000 valid 1m cells (40,789 positive, 79,211 zero) on the full Komae Height Envelope grid, and 3,842 positive / 254 zero within the earlier 64m ROI. These **historical model-value counts** are not new execution results or independent ecological validation. An effective CHM sample can have known modelled presence even if DEM validity prevents absolute-Z generation.
+
+### 14.2 Two independent consumers of common canopy evidence
+
+**Main analysis lane:** source-specific Native/height validation → common modelled horizontal evidence, height/HAG, assessment and DEM validity, compatible absolute top/bottom Z → Adapter sampling and TREE voxelization → B1/B2. Reuse existing Height Envelope numerical methods where compatible. Adapter owns engine grid/centres, D0, rounding, building priority, halo, missing-data guard and downstream analysis validity. Raster-first processing **must not require any 2D polygon or 3D mesh generation or persistence**. Logical presence/unknown must be reproducible from retained inputs and method; separate file materialization is a future packaging decision.
+
+**Independent optional geometry export lane:** the same evidence may produce derived 2D canopy polygons for GIS/other models, and later a generic 3D mesh for visualization/exchange. For the **optional** 2D PoC, consider 1m EPSG:6677 north-up GridSpec, cell-centre source sampling, positive-cell polygonization, candidate **4-neighbour connectivity**, no arbitrary cleanup or inherited 3m cutoff, and exact positive-mask raster roundtrip. Validate small/diagonal components, holes, area and boundaries, original source linkage and reproducible output hashes. Any original accepted canopy polygon remains a source input, not a derived replacement. **3D mesh implementation is deferred until a concrete need exists.**
+
+GSI remains a separately gated producer: RGB modelled 2D inference and point-cloud-based height candidate require georeferencing, compatible ground/vertical evidence, alignment, fused canopy semantics and source-specific QA. A positive point height alone is not a canopy CHM; a positive segmentation cell with unknown height remains presence-estimated/height-unknown. The existing `canopy_height_candidate.py` seam is synthetic-only, not a production GSI pipeline.
+
+### 14.3 Proposed next gates, kept separate
+
+1. **Synthetic-first:** Meta modelled present/absent/unknown, CHM-vs-DEM validity, original source values and GridSpec, GSI conflict cases, existing Height Envelope/voxel regressions; do not add a polygon precondition to this technical lane.
+2. **Separate optional exporter QA:** if implemented, test 4-neighbour, diagonal-only adjacency, holes, ID/area/provenance and polygon→raster roundtrip. Exporter acceptance is not prerequisite to raster/TREE acceptance.
+3. **Real Komae only after explicit authorization:** on the previously defined 64m × 64m ROI `(-23320, -40760, -23256, -40696)`, independently verify pinned raw and derived input identities; compare **old vs new input paths on the same actual engine centres/grid, DEM, CR, building/voxel policy, observer/halo and missing guards**, with pre-/post-building TREE diagnostics. Historical Phase 2 ROI counts are not automatically the expected counts for a different integrated scene. No download or overwrite; expansion to 400×300m requires separate review.
+4. **Independent acceptance:** M1 limited technical success, complete Standard Canopy/Data/Adapter acceptance, research M3 field accuracy and distribution/licensing remain distinct decisions. Missing source evidence or vertical compatibility may remain BLOCKED even if synthetic checks pass.
+
+**Not changed:** accepted Building/Terrain/Building Adapter contracts, source CHM, Height Envelope math/state/manifest, historic experiments, Phase 4A/4B/B1/B2 evidence, external Segmentation repo, and all existing dataset acceptance records.
