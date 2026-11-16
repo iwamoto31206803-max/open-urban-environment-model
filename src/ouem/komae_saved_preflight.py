@@ -76,6 +76,15 @@ def bind(watch, key, locator, ref, *, parse=False):
     return watch.capture(key, locator, ref["sha256"], ref["size_bytes"], json_data=parse)
 
 
+def recorded_code(ref):
+    digest_text(ref["sha256"], "historical code")
+    require(type(ref["size_bytes"]) is int and ref["size_bytes"] >= 0,
+            "historical code", "nonnegative recorded size required")
+    require(isinstance(ref["path"], str) and bool(ref["path"]),
+            "historical code", "recorded path required")
+    return ref["path"], ref["sha256"], ref["size_bytes"]
+
+
 def _verify(root, report_locator, final_sha, base_sha, envelope_sha, output_pins):
     watch = FrozenWatch(root)
     report = watch.capture("final", report_locator, final_sha, json_data=True)
@@ -96,10 +105,17 @@ def _verify(root, report_locator, final_sha, base_sha, envelope_sha, output_pins
             and envelope["cr_model"]["parameters"]["cr"] == report["preflight"]["source_CR"] == .6,
             "chain", "invalid recorded evidence or CR")
 
-    # Runtime code hashes describe the historical implementation. They do
-    # not authorize reading or requiring that checkout's Python source.
+    # These exact entries describe historical code in the pinned reports.
+    # Compare their metadata without opening code from the current checkout.
+    historical = {"implementation"}
+    recorded_code(inputs["implementation"])
+    for key in ("implementation", "roi_definition"):
+        mirror = "base_input:" + key
+        require(recorded_code(base["input_artifacts"][key]) == recorded_code(inputs[mirror]),
+                "historical code", "PR #98 and PR #99 records differ")
+        historical.add(mirror)
     for key, ref in inputs.items():
-        if key != "implementation":
+        if key not in historical:
             bind(watch, "input:" + key, ref["path"], ref)
     for key, ref in envelope["input_files"].items():
         recorded = inputs["envelope_input:" + key]
@@ -108,7 +124,8 @@ def _verify(root, report_locator, final_sha, base_sha, envelope_sha, output_pins
     require(envelope["input_files"]["terrain"]["sha256"] == base["input_artifacts"]["terrain"]["sha256"],
             "chain", "different recorded terrain")
     for key, ref in base["input_artifacts"].items():
-        bind(watch, "base-input:" + key, ref["path"], ref)
+        if key not in ("implementation", "roi_definition"):
+            bind(watch, "base-input:" + key, ref["path"], ref)
     for name, ref in base["outputs"].items():
         bind(watch, "base-output:" + name, child(base_ref["path"], name), ref)
     for name, ref in envelope["outputs"].items():
@@ -136,6 +153,7 @@ def _verify(root, report_locator, final_sha, base_sha, envelope_sha, output_pins
     return {"status": "PASS", "scope": "saved_identity_only",
             "report_sha256": final_sha, "checks": len(watch.identities),
             "recorded_numba": base["model"]["numba"],
+            "historical_code": "RECORDED_METADATA_ONLY",
             "semantic_revalidation": "NOT_EXECUTED"}
 
 
