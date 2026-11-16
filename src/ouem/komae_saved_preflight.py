@@ -52,7 +52,9 @@ class FrozenWatch(Watch):
         current = self.root
         for part in path.parts:
             current /= part
-            check_component(current)
+            info = check_component(current)
+            if stat.S_ISREG(info.st_mode):
+                self.stamp(info)
         return super().resolve(locator)
 
     @staticmethod
