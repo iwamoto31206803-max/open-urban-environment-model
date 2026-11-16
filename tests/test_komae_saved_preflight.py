@@ -26,10 +26,17 @@ def fixture(tmp_path, monkeypatch):
             "D0_effective_H_m": 19.586000442504883}
     terrain = write("terrain.tif", b"synthetic terrain identity only")
     base_voxels = write("base/voxels.npy", b"synthetic base identity only")
+    implementation = write("src/voxel.py", b"historical voxel implementation")
+    roi_definition = write("src/config.py", b"historical ROI implementation")
+    solar_implementation = write("src/solar.py", b"historical solar implementation")
+    (tmp_path / implementation["path"]).write_bytes(b"modern voxel implementation")
+    (tmp_path / roi_definition["path"]).unlink()
+    (tmp_path / solar_implementation["path"]).write_bytes(b"modern solar implementation")
     base = write("base/report.json", {
         "status": "COMPLETED", "input_immutability": "PASS",
         "model": {"grid": grid, "numba": True}, "consumer": {"technical_validation": "PASS"},
-        "input_artifacts": {"terrain": terrain}, "outputs": {"voxels.npy": base_voxels},
+        "input_artifacts": {"terrain": terrain, "implementation": implementation,
+                            "roi_definition": roi_definition}, "outputs": {"voxels.npy": base_voxels},
     })
     envelope = write("envelope/manifest.json", {
         "status": "COMPLETED", "schema": "ouem-height-envelope-poc/v0.1",
@@ -46,7 +53,10 @@ def fixture(tmp_path, monkeypatch):
         "preflight": {"status": "PASS", "source_model_report_sha256": base["sha256"], "source_CR": .6},
         "environment": {"voxcity": {"verified": True, "version": "1.7.0", "commit": audit.ENGINE_COMMIT}},
         "input_artifacts": {"PR98_report": base, "envelope_manifest": envelope,
-                            "envelope_input:terrain": terrain}, "outputs": outputs,
+                            "envelope_input:terrain": terrain,
+                            "implementation": solar_implementation,
+                            "base_input:implementation": dict(implementation),
+                            "base_input:roi_definition": dict(roi_definition)}, "outputs": outputs,
     }
 
     base_sha, envelope_sha = base["sha256"], envelope["sha256"]
@@ -68,6 +78,7 @@ def test_saved_identity_only(fixture):
     _, verify = fixture
     result = verify()
     assert result["status"] == "PASS"
+    assert result["historical_code"] == "RECORDED_METADATA_ONLY"
     assert result["semantic_revalidation"] == "NOT_EXECUTED"
 
 
@@ -121,3 +132,22 @@ def test_cli_redacts_errors(tmp_path, capsys, monkeypatch):
     stdout = capsys.readouterr().out
     assert json.loads(stdout)["status"] == "BLOCKED"
     assert str(tmp_path) not in stdout
+
+
+@pytest.mark.parametrize("key,field,value", [
+    ("implementation", "sha256", "0" * 64),
+    ("roi_definition", "size_bytes", 0),
+    ("roi_definition", "path", "src/other.py"),
+])
+def test_conflicting_historical_code_records_block(fixture, key, field, value):
+    report, verify = fixture
+    report["input_artifacts"]["base_input:" + key][field] = value
+    with pytest.raises(GeometryValidationError, match="PR #98 and PR #99 records differ"):
+        verify()
+
+
+def test_changed_data_still_blocks(tmp_path, fixture):
+    _, verify = fixture
+    (tmp_path / "terrain.tif").write_bytes(b"changed source terrain")
+    with pytest.raises(GeometryValidationError, match="SHA-256 mismatch"):
+        verify()
