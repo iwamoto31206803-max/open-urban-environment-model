@@ -109,24 +109,15 @@ def review_synthetic_candidate(
 
     top, bottom, state, qa = env.calculate(grid, hag, dem, env.ConstantCR(crown_ratio))
     raw_hag = np.asarray(hag.values).copy()
-    source_valid = (~hag.outside & ~hag.missing & np.isfinite(hag.values)
-                    & (hag.values >= 0))
+    source_valid = effective_hag(hag)
     modelled_presence = None
     if prediction is None:
-        present = source_valid & (raw_hag > 0)
-        absolute_z_valid = state == env.VALID
-        modelled_presence = {
-            "rule": "meta_effective_valid_hag_positive_or_zero",
-            "source_support": ~hag.outside,
-            "assessed_domain": source_valid.copy(),
-            "present": present,
-            "absent": source_valid & (raw_hag == 0),
-            "unknown": ~source_valid,
-            "surveyed_coverage": None,
-            # Column eligibility only. Existing domain guards, rounding and
-            # building precedence still govern actual TREE placement.
-            "tree_candidate": present & absolute_z_valid & (top > bottom),
-        }
+        modelled_presence = meta_presence_fields(hag, source_valid)
+        modelled_presence.update(
+            rule="meta_effective_valid_hag_positive_or_zero",
+            surveyed_coverage=None,
+            tree_candidate=modelled_presence["present"] & (state == env.VALID) & (top > bottom),
+        )
         unknown_presence = np.ones(shape, dtype=bool)
         inferred_height_conflict = np.zeros(shape, dtype=bool)
         missing_height_for_predicted_canopy = np.zeros(shape, dtype=bool)
@@ -152,6 +143,21 @@ def review_synthetic_candidate(
     }
 
 
+def effective_hag(hag):
+    return ~hag.outside & ~hag.missing & np.isfinite(hag.values) & (hag.values >= 0)
+
+
+def meta_presence_fields(hag, valid):
+    """Classify already sampled HAG and preserve source support separately."""
+    return {
+        "present": valid & (hag.values > 0),
+        "absent": valid & (hag.values == 0),
+        "unknown": ~valid,
+        "source_support": ~hag.outside,
+        "assessed_domain": valid.copy(),
+    }
+
+
 def map_synthetic_meta_to_engine(review, centre_x, centre_y, *, centre_epsg):
     """Map reviewed Meta diagnostics through their Envelope grid.
 
@@ -164,17 +170,22 @@ def map_synthetic_meta_to_engine(review, centre_x, centre_y, *, centre_epsg):
     if (review.get("review_scope") != "SYNTHETIC_ONLY_NOT_STANDARD_ACCEPTANCE"
             or model is None or not isinstance(grid, env.GridSpec)):
         raise env.EnvelopeBlocked("Expected a reviewed synthetic Meta envelope")
+    fields = {
+        "present": model["present"], "absent": model["absent"], "unknown": model["unknown"],
+        "source_support": model["source_support"], "assessed_domain": model["assessed_domain"],
+        "absolute_z_valid": review["absolute_z_valid"], "tree_candidate": model["tree_candidate"],
+    }
+    return map_envelope_fields(grid, fields, centre_x, centre_y, centre_epsg=centre_epsg)
+
+
+def map_envelope_fields(grid, fields, centre_x, centre_y, *, centre_epsg):
+    """Sample Boolean diagnostics on the Envelope grid in supplied XY order."""
     if centre_epsg != grid.epsg:
         raise env.EnvelopeBlocked("Engine centres must be projected in the Envelope CRS")
     x, y = np.asarray(centre_x, dtype=float), np.asarray(centre_y, dtype=float)
     if x.ndim != 2 or x.shape != y.shape or not x.size:
         raise env.EnvelopeBlocked("Engine centres require matching nonempty XY arrays")
     inside, rows, cols = env.nearest_cells(grid.transform, grid.width, grid.height, x, y)
-    fields = {
-        "present": model["present"], "absent": model["absent"], "unknown": model["unknown"],
-        "source_support": model["source_support"], "assessed_domain": model["assessed_domain"],
-        "absolute_z_valid": review["absolute_z_valid"], "tree_candidate": model["tree_candidate"],
-    }
     mapped = {}
     for name, values in fields.items():
         _require_shape(name, values, (grid.height, grid.width))
