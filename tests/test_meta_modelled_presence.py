@@ -82,3 +82,42 @@ def test_all_unknown_and_alignment_guards():
         review(grid, env.Samples(zero.T, missing, inside, {}), dem)
     with pytest.raises(env.EnvelopeBlocked, match="metadata mapping"):
         review(grid, env.Samples(zero, missing, inside, None), dem)
+
+
+def test_meta_mapping_uses_envelope_cells_in_engine_order(tmp_path):
+    from types import SimpleNamespace
+
+    grid = env.GridSpec((0, 0, 3, 2))
+    path = tmp_path / "synthetic_chm.tif"
+    with rasterio.open(path, "w", driver="GTiff", width=4, height=2,
+                       count=1, crs=6677, transform=from_origin(0, 2, .75, 1),
+                       dtype="float32", nodata=-9999) as dst:
+        dst.write(np.array([[5., 1., -1., 0.], [4., 0., 0., -9999.]], dtype="float32"), 1)
+    chm = env.sample_raster(path, grid)
+    dem = env.Samples(np.full((2, 3), 10.),
+                      np.array([[True, False, False], [False, False, False]]),
+                      np.zeros((2, 3), dtype=bool), {})
+    reviewed = review(grid, chm, dem)
+    heights_before = {name: reviewed[name].copy() for name in ("top_z", "bottom_z", "height_state")}
+
+    # South-up engine rows with shifted XY centres. At x=1 the Envelope
+    # tie goes east. A centre on the right outer edge is out of bounds.
+    x = np.array([[.9, 1., 2.3, 3.], [.8, 1.2, 2.4, np.nan]])
+    y = np.array([[.6, .5, .4, .3], [1.6, 1.5, 1.4, 1.3]])
+    mapped = candidate.map_synthetic_meta_to_engine(reviewed, x, y, centre_epsg=6677)
+    assert mapped["present"].tolist() == [[True, False, False, False], [True, False, False, False]]
+    assert mapped["absent"].tolist() == [[False, True, False, False], [False, False, True, False]]
+    assert mapped["unknown"].tolist() == [[False, False, True, True], [False, True, False, True]]
+    assert mapped["source_support"].tolist() == [[True, True, True, False]] * 2
+    assert mapped["outside_envelope"].tolist() == [[False, False, False, True]] * 2
+    assert mapped["tree_candidate"].tolist() == [[True, False, False, False], [False] * 4]
+    assert mapped["absolute_z_valid"].tolist() == [[True, True, False, False], [False, False, True, False]]
+
+    # Direct source sampling would classify the first south-up cell as zero.
+    direct = env.sample_raster(path, SimpleNamespace(
+        epsg=6677, width=4, height=2, centres=lambda: (x, y)))
+    assert direct.values[0, 0] == 0 and not direct.missing[0, 0]
+    for name, original in heights_before.items():
+        np.testing.assert_array_equal(reviewed[name], original)
+    with pytest.raises(env.EnvelopeBlocked, match="Envelope CRS"):
+        candidate.map_synthetic_meta_to_engine(reviewed, x, y, centre_epsg=4326)
