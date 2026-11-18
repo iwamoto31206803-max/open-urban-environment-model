@@ -178,6 +178,16 @@ class Samples:
     metadata: dict
 
 
+def nearest_cells(transform, width, height, xs, ys):
+    """Index centres in raster CRS; exact ties go east/south on north-up grids."""
+    inverse = ~transform
+    cols = inverse.a*xs + inverse.b*ys + inverse.c
+    rows = inverse.d*xs + inverse.e*ys + inverse.f
+    inside = (np.isfinite(cols) & np.isfinite(rows)
+              & (cols >= 0) & (rows >= 0) & (cols < width) & (rows < height))
+    return inside, np.floor(rows[inside]).astype(int), np.floor(cols[inside]).astype(int)
+
+
 def sample_raster(path, grid, *, method="nearest"):
     """Sampling strategy boundary: bilinear is deliberately not implemented yet."""
     if method != "nearest":
@@ -195,12 +205,8 @@ def sample_raster(path, grid, *, method="nearest"):
         xs, ys = grid.centres()
         tx = pyproj.Transformer.from_crs(grid.epsg, src.crs, always_xy=True)
         xs, ys = tx.transform(xs, ys)
-        inverse = ~src.transform
-        cols = inverse.a*xs + inverse.b*ys + inverse.c
-        rows = inverse.d*xs + inverse.e*ys + inverse.f
-        inside = np.isfinite(cols) & np.isfinite(rows) & (cols >= 0) & (rows >= 0) & (cols < src.width) & (rows < src.height)
+        inside, r, c = nearest_cells(src.transform, src.width, src.height, xs, ys)
         if inside.any():
-            r, c = np.floor(rows[inside]).astype(int), np.floor(cols[inside]).astype(int)
             r0, c0 = int(r.min()), int(c.min())
             window = Window(c0, r0, int(c.max())-c0+1, int(r.max())-r0+1)
             block = src.read(1, window=window)

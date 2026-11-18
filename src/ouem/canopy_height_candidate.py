@@ -142,6 +142,7 @@ def review_synthetic_candidate(
         "dem_valid": ~dem.outside & ~dem.missing & np.isfinite(dem.values),
         "absolute_z_valid": state == env.VALID,
         "meta_modelled_presence": modelled_presence,
+        "envelope_grid": grid,
         "raw_hag": raw_hag, "profile": profile, "epochs": epochs_copy,
         "predicted_canopy": prediction, "inference_valid": prediction_valid,
         "canopy_probability": probability, "unknown_presence": unknown_presence,
@@ -149,3 +150,36 @@ def review_synthetic_candidate(
         "predicted_canopy_height_unavailable": missing_height_for_predicted_canopy,
         "review_scope": "SYNTHETIC_ONLY_NOT_STANDARD_ACCEPTANCE",
     }
+
+
+def map_synthetic_meta_to_engine(review, centre_x, centre_y, *, centre_epsg):
+    """Map reviewed Meta diagnostics through their Envelope grid.
+
+    Centres are projected XY in the Envelope CRS and in engine array order.
+    The sampler uses half-open pixel bounds, flooring fractional row/column
+    at exact ties. Outside centres are unknown. No axis flip is applied.
+    """
+    grid = review.get("envelope_grid")
+    model = review.get("meta_modelled_presence")
+    if (review.get("review_scope") != "SYNTHETIC_ONLY_NOT_STANDARD_ACCEPTANCE"
+            or model is None or not isinstance(grid, env.GridSpec)):
+        raise env.EnvelopeBlocked("Expected a reviewed synthetic Meta envelope")
+    if centre_epsg != grid.epsg:
+        raise env.EnvelopeBlocked("Engine centres must be projected in the Envelope CRS")
+    x, y = np.asarray(centre_x, dtype=float), np.asarray(centre_y, dtype=float)
+    if x.ndim != 2 or x.shape != y.shape or not x.size:
+        raise env.EnvelopeBlocked("Engine centres require matching nonempty XY arrays")
+    inside, rows, cols = env.nearest_cells(grid.transform, grid.width, grid.height, x, y)
+    fields = {
+        "present": model["present"], "absent": model["absent"], "unknown": model["unknown"],
+        "source_support": model["source_support"], "assessed_domain": model["assessed_domain"],
+        "absolute_z_valid": review["absolute_z_valid"], "tree_candidate": model["tree_candidate"],
+    }
+    mapped = {}
+    for name, values in fields.items():
+        _require_shape(name, values, (grid.height, grid.width))
+        mask = np.full(x.shape, name == "unknown", dtype=bool)
+        mask[inside] = values[rows, cols]
+        mapped[name] = mask
+    mapped["outside_envelope"] = ~inside
+    return mapped
