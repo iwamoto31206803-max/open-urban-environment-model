@@ -1,15 +1,58 @@
 # Canopy Current State
 
-Current documentation review: **2026-11-06**, main
-`529d842dfc2af82843bdcd4bfa888e79dbff6328` (through PR #160 merged).
-This is a documentation/code/evidence review, not a new real-data execution.
-The original B1 technical evidence remains historical; no new Canopy, Solar or
-GIS run was performed for this review.
-This [informational entry point](../OUEM_Documentation_Governance_v0.1.md)
-reflects code and existing records; no new processing, accuracy validation or
-acceptance is declared.
+Current documentation checkpoint: **2026-11-19**, through merged PR #203
+(`18d7cc272af5fca948239f4702297509954e72e8`).
+This is a review of repository code, GitHub execution reports and historical
+evidence, **not** a new local execution or independent rereading of the private
+`comparison.json` bytes. This [informational entry point](../OUEM_Documentation_Governance_v0.1.md)
+does not change formal data contracts, scientific validation or acceptance.
 
-## Current milestone: B1 technical E2E closeout
+## Roadmap M1: bounded Meta CHM → VoxCity TREE technical checkpoint
+
+The following is a **limited technical success, not overall M1 or Standard Canopy
+acceptance**. The record concerns the single saved Komae PR #99
+Building+Terrain+Meta scene and its actual engine centres; it does not
+establish that the Meta predictions are field-correct.
+
+| Checkpoint | Evidence and attained scope |
+|---|---|
+| Frozen source/run identity | [#195](https://github.com/iwamoto31206803-max/open-urban-environment-model/issues/195): an independent 88-file copy passed identity checks against the pinned PR #99 reference; this is not new source accuracy validation. |
+| Logical Meta canopy presence → engine centres | [#196 / PR #197](https://github.com/iwamoto31206803-max/open-urban-environment-model/pull/197): synthetic two-stage mapping, preserving source-modelled PRESENT/ABSENT/UNKNOWN independently of height validity. |
+| Actual saved-tree diagnostic | [#198 / PR #199](https://github.com/iwamoto31206803-max/open-urban-environment-model/issues/198): source CHM → historical north-up EPSG:6677 Envelope grid → saved `uv_m/SOUTH_UP` VoxCity centres, compared with **previously saved** TREE; no new voxelization in this step. |
+| Common input → new TREE | [#200 / PR #201](https://github.com/iwamoto31206803-max/open-urban-environment-model/pull/201): complete-validity Meta fields and compatible absolute top/bottom Z reach the existing public VoxCity voxelization through `integrate_common_canopy`; synthetic placement and Building priority checks. |
+| Real new-TREE full-array comparison | [#202 / PR #203](https://github.com/iwamoto31206803-max/open-urban-environment-model/issues/202): Codex reports one GEEKOM-A6 run against the independent copy, and **MATCH** against stored Current, No-Canopy and TREE mask at every voxel of each 128×128×27 array, with **0 differences** both scene-wide and inside the 64×64 ROI. |
+
+In the frozen 128×128 scene, **16,384** sampled centres had source-supported,
+source-valid and absolute-Z-valid data: Meta-modelled PRESENT **11,741**,
+modelled ABSENT **4,643**, UNKNOWN **0**. New and saved TREE each had
+**11,175 occupied columns / 95,735 voxels**. The saved 64×64 evaluation ROI had
+PRESENT **3,842**, ABSENT **254**, UNKNOWN **0**, and matching TREE
+**3,742 columns / 34,632 voxels**. The **566** scene and **100** ROI
+model-positive columns without final TREE remain `UNRESOLVED` *in this
+diagnostic*; historical PR #99 separately attributes 566 fully suppressed
+candidate columns to Building precedence, but the new diagnostic did not
+independently establish column-by-column cause.
+
+This establishes reproducible output for **one complete-validity Meta profile**
+with the **same underlying VoxCity engine and historical source/height inputs**.
+It does not show arbitrary-domain/UNKNOWN support, a source-neutral GSI
+producer, an accepted Native/Standard Canopy implementation, broad-area transfer,
+independent ecological accuracy, or calibrated Solar/GVI physics. Formal
+Standard Canopy remains **DRAFT**; design/inventory issues
+[#178](https://github.com/iwamoto31206803-max/open-urban-environment-model/issues/178),
+[#179](https://github.com/iwamoto31206803-max/open-urban-environment-model/issues/179),
+[#183](https://github.com/iwamoto31206803-max/open-urban-environment-model/issues/183) and
+[optional geometry/raster PoC #184](https://github.com/iwamoto31206803-max/open-urban-environment-model/issues/184)
+remain open, and do not become automatically completed by #202.
+
+The executable diagnostic owner is
+[`komae_saved_tree_comparison.py`](../../src/ouem/komae_saved_tree_comparison.py);
+the public-engine consumer remains
+[`real_komae_solar.py`](../../src/ouem/real_komae_solar.py).
+See #202 for the local execution record and exact hashes; retained experimental
+outputs and source manifests are **not** replaced by this status summary.
+
+## Earlier milestone: B1 technical E2E closeout
 
 The exploratory Komae path combines source-H Building, Standard Terrain and an
 estimated Meta CHMv2 Height Envelope on the actual VoxCity grid, then compares
@@ -75,8 +118,11 @@ Numerical placement and pair checks do not validate estimated crowns above roofs
 ## Unresolved validation and acceptance
 
 [Standard Canopy](../OUEM_Standard_Canopy_v0.1_Draft.md) remains **DRAFT**.
-Canonical polygon acquisition, full Native / Standard Canopy production and its
-formal acceptance remain incomplete; the Canopy namespaces are placeholders.
+Source-polygon profiles still require review of original polygon geometry
+and IDs where such source data are admitted; a derived polygon is **optional**
+for the CHM/raster-first analysis path under Concept v0.3. Full Native / Standard
+Canopy production and formal acceptance remain incomplete; the Canopy
+namespaces are placeholders.
 The implemented Envelope route does not complete that proposed lifecycle.
 Source-H eligibility remains **NOT_ESTABLISHED**, mixed-lane Formal Acceptance
 **NOT_VERIFIED**, and Phase 5 A1–A4 **OPEN**.
