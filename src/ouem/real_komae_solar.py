@@ -139,6 +139,37 @@ def integrate_canopy(base, a, segments, sampled, d0, *, numba):
         presence_rule='state1 AND unmasked/inside/finite AND top>bottom; positive estimated crown depth, not verified tree presence; exclude below-effective-ground intervals without adjusting H')
 
 
+def integrate_common_canopy(base, a, segments, presence, top, bottom, valid, d0, *,
+                            profile, provenance, numba):
+    """Place complete Meta canopy inputs already aligned to the base engine centres.
+
+    Presence uses the mapped Envelope fields. Top and bottom are compatible
+    absolute elevations in metres. The caller owns alignment and provenance
+    verification. The return value follows integrate_canopy.
+    """
+    require(profile == "meta_estimated_canopy_hag"
+            and isinstance(provenance, str) and provenance.strip(),
+            "Canopy.common", "reviewed Meta profile and source reference required")
+    shape = base.shape[:2]
+    masks = [presence[name] for name in
+             ("present", "absent", "unknown", "assessed_domain", "source_support")]
+    require(all(isinstance(mask, np.ndarray) and mask.shape == shape and mask.dtype == bool
+                for mask in (*masks, valid)),
+            "Canopy.common", "Boolean masks must match the engine XY grid")
+    present, absent, unknown, assessed, supported = masks
+    require(not unknown.any() and assessed.all() and supported.all()
+            and np.all(present ^ absent) and valid.all(),
+            "Canopy.common", "complete assessed domain and valid heights required")
+    require(all(isinstance(z, np.ndarray) and z.shape == shape and z.dtype.kind in "iuf"
+                for z in (top, bottom)),
+            "Canopy.common", "numeric top and bottom must match the engine XY grid")
+    candidate = top > bottom
+    require(not np.any(absent & candidate), "Canopy.common",
+            "positive-depth Envelope conflicts with modelled absence")
+    sampled = dict(top=top, bottom=bottom, valid=valid, candidate=candidate & present)
+    return integrate_canopy(base, a, segments, sampled, d0, numba=numba)
+
+
 def shared_grid(grid, tree_qa):
     domain = tree_qa['vertical_domain']
     require(grid['shape'] == domain['base_shape'] and grid['D0_effective_H_m'] == domain['D0_H_m'],
