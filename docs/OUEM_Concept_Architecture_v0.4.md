@@ -1,13 +1,14 @@
 # Open Urban Environment Model（OUEM）
-## Concept & Architecture v0.4 Draft — M2環境指標の設計改定案
+## Concept & Architecture v0.4 — 統合設計（M2環境指標改定）
 
 - 草案日：2026-11-19
-- 状態：**レビュー草案（未承認・未登録）**。正式な上位概念設計は[Concept v0.3](OUEM_Concept_Architecture_v0.3.md)。
-- 改定の根拠：[Roadmap M2-A Issue #205](https://github.com/iwamoto31206803-max/open-urban-environment-model/issues/205)。
+- 正式登録日：2026-11-20
+- 状態：**正式登録版の上位概念設計**。旧正式版の[Concept v0.3](OUEM_Concept_Architecture_v0.3.md)は履歴として保持する。
+- 改定の根拠：[Roadmap M2-A Issue #205](https://github.com/iwamoto31206803-max/open-urban-environment-model/issues/205)、[レビュー・登録PR #206](https://github.com/iwamoto31206803-max/open-urban-environment-model/pull/206)、2026-11-20のユーザー承認。
 
 ## 文書の位置付けと適用範囲
 
-v0.3を基に、Phase B1/B2の指標選定とv0.1からの継承範囲を見直す案である。正式登録、実行条件の変更、契約変更、科学的検証、データセット受入にはそれぞれの承認を要する。
+本書は正式版v0.3を継承し、Phase B1/B2の指標選定とv0.1からの継承範囲に限って改定した**正式な上位概念設計v0.4**である。旧版v0.3以前は履歴として保持する。本書の正式登録は、実行条件・Standard／Adapter契約の変更、科学的検証、データセット受入を自動的に承認しない。これらは各責任文書と別の判断で扱う。
 
 - 現行の具体的な契約・動作は、[Standard Building v0.1](OUEM_Standard_Building_v0.1.md)、[Standard Terrain v0.1](OUEM_Standard_Terrain_v0.1.md)、[VoxCity Adapter v0.1](OUEM_VoxCity_Adapter_v0.1.md)を参照する。ライフサイクルと実装境界は[Phase A Implementation Design v0.1](Phase_A_Implementation_Design_v0.1.md)のCurrent-status noteと現行契約を併せて参照する。
 - 本書の一般化されたNative / Standard / Adapterの記述、空間基準、表現・QA・運用方針と現行契約の差分は、今後の仕様化・実装・検証で扱う。本書だけを根拠に現行スキーマ、処理条件、データ配置を変更しない。
@@ -181,10 +182,10 @@ VoxCityGML 0.3.0（`19628c033b1cbbbdee80fe781f516672765d1eee`）は統合・形�
 - §4.3：一律「ポリゴンを水平基準」から、ソースプロファイル依存の水平存在情報へ変更。モデル判定域／独立調査coverage、高さ有効性、推定／真値を区別。
 - §4.3：VoxCity主経路はラスタ・高さ情報からのAdapter接続とし、2Dポリゴン／3Dメッシュは必要時の独立派生出力へ分離。
 - §5・§6.1：共通QAと幾何出力固有QAを分け、水平判定ラスタの形式を追加。具体的なCanopy Standardスキーマ、コード値、受入条件は未確定。
-- 変更しない事項：v0.1からのB1/B2継承、CRの暫定性、鉛直根拠、Raw／Native／Standard／Adapter、過去の実行・Acceptance証拠、既存GSI／Meta実装。
+- 変更しない事項（**v0.3登録時点の歴史的判断**）：v0.1からのB1/B2継承（その後、v0.4 §7.1で対象部分のみ改定）、CRの暫定性、鉛直根拠、Raw／Native／Standard／Adapter、過去の実行・Acceptance証拠、既存GSI／Meta実装。
 
 ---
 
-### 10.2 v0.3からの変更案（M2-A／未承認）
+### 10.2 v0.3からの変更（M2-A／2026-11-20正式登録）
 
-§1、§7、§7.1および§9のB1/B2参照を、既存OSS指標を選ぶ方針に合わせる。§10.1はv0.3登録時点の履歴である。正式設計と登録の判断は[Concept v0.3](OUEM_Concept_Architecture_v0.3.md)および[文書ガバナンス](OUEM_Documentation_Governance_v0.1.md)を参照する。
+§1、§7、§7.1および§9のB1/B2参照を、既存OSSの公開指標・実装条件・CPU/GPUの差を明示して選択する方針へ変更した。v0.1の二値樹冠GVI・日陰形成時間等の一律必須条件は§7.1に記載した範囲で置き換える。§10.1はv0.3登録時点の歴史的判断として保持する。改定の判断・レビュー経緯は[Issue #205](https://github.com/iwamoto31206803-max/open-urban-environment-model/issues/205)および[PR #206](https://github.com/iwamoto31206803-max/open-urban-environment-model/pull/206)に記録する。これにより、新規実行・科学的精度・Standard／Adapter契約・データ受入が自動的に成立するものではない。
