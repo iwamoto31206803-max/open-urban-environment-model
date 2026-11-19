@@ -117,6 +117,48 @@ def test_common_canopy_places_tree_and_preserves_legacy_scene(monkeypatch):
             base, ground, segments, fields, inconsistent_top, bottom, valid, 10., **options)
 
 
+def test_common_tree_comparison_match_and_equal_count_mismatch():
+    from voxcity.generator.voxelizer import NUMBA_AVAILABLE
+
+    from ouem.komae_saved_tree_comparison import regenerate_and_compare
+
+    base, ground, segments, canopy = authored()
+    canopy["top"][:] = canopy["bottom"][:] = 10.
+    canopy["top"][0, 0] = 12.
+    canopy["bottom"][0, 0] = 11.
+    present = canopy["top"] > canopy["bottom"]
+    canopy["candidate"] = present
+    mapped = dict(present=present, absent=~present, unknown=np.zeros_like(present),
+                  assessed_domain=np.ones_like(present), source_support=np.ones_like(present))
+    segment_record = {
+        "shape": list(segments.shape),
+        "cells": [{"i": int(i), "j": int(j), "segments": segments[i, j]}
+                  for i, j in np.argwhere(ground["building_ids"] != 0)],
+    }
+    saved = base.copy()
+    saved[0, 0, 2] = -2
+    roi = np.zeros_like(present)
+    roi[0, 1] = True
+
+    def compare(reference):
+        return regenerate_and_compare(
+            base, ground, segment_record, mapped, canopy, 10., NUMBA_AVAILABLE,
+            reference, base, roi, provenance="synthetic fixture")
+
+    match = compare(saved)
+    assert match["status"] == "MATCH"
+    assert all(item["scene_mismatches"] == 0 for item in match["array_comparison"].values())
+    shifted = base.copy()
+    shifted[0, 1, 2] = -2
+    mismatch = compare(shifted)
+    assert mismatch["status"] == "MISMATCH"
+    for name in ("current", "tree"):
+        assert mismatch["array_comparison"][name]["scene_mismatches"] == 2
+        assert mismatch["array_comparison"][name]["roi_mismatches"] == 1
+    assert mismatch["array_comparison"]["no_canopy"]["equal"]
+    assert mismatch["generated_non_tree_control_equal"]
+
+
 def test_real_solar_common_observers_sign_and_crop_diagnostic():
     from voxcity.generator.voxelizer import NUMBA_AVAILABLE
     base,a,segments,sampled=authored()
