@@ -101,9 +101,9 @@ M0〜M5は**統合ロードマップ専用の識別子**。過去のPhase A/B、
 - **成立・主張は別**：M2が未終了でもM3の調査は可能。M3で精度が未確認でもM4の限定技術移植は可能。ただしM5の利用可能とする範囲は、技術的証拠・科学的検証・権利・正式な設計判断に制約される。
 - **選択的な技術経路**：VoxCityGMLを正式Adapterへ昇格させる判断やGSI点群からの詳細3D生成は、必要性・対象用途と証拠が整ったときに別途判断する。M1の無条件依存にはしない。
 
-## 5. 現在の重点と最初の作業候補
+## 5. M1の当初作業候補と2026-11-19時点の技術到達点
 
-**現在の重点：M1（樹冠）**。次の順で、原則として小さな設計・調査単位から始める。
+**以下の番号付きリストは、Concept v0.3整合後の当初の作業候補（2026-11-14時点）であり、現時点の未着手タスクリストではない。** 2026-11-19時点の実施済み範囲と残存境界はこの節の後半、および[Canopy Current State](../status/CANOPY_CURRENT_STATE.md)を参照する。
 
 1. **M1源情報の整理（既存Issue #178/#179/#181/#183）**：Metaの根拠付きCHM経路と、まだ実データ対応未確立のGSIセグメンテーション＋点高経路を分ける。合成fixtureのPASSをGSI実データ利用可能の証明にしない。新規取得・実処理は別承認。
 2. **上位設計反映（Concept v0.3、PR #187反映済み）**：[Canopy Standard DRAFT](../OUEM_Standard_Canopy_v0.1_Draft.md)の水平根拠・状態／欠測・QAを更新し、[Issue #184](https://github.com/iwamoto31206803-max/open-urban-environment-model/issues/184)のポリゴン生成を**任意の派生出力試験**とする。正式Standard/Adapter契約の変更は別承認。
@@ -111,6 +111,16 @@ M0〜M5は**統合ロードマップ専用の識別子**。過去のPhase A/B、
 4. **限定実データの技術照合候補**：別途明示承認後に固定64m×64m ROIのsource identity、共通入力旧／新経路のTREE voxel・建物優先・GridSpec・haloを同条件比較し証拠を記録。既存B1/B2/P1の保存証拠は改変しない。400×300m拡張は別判断。
 
 **並行する候補**：M3は参照データ候補の初期一覧、M4はG01 read-only preflightの設計を必要に応じて進める。どちらもM1の閉鎖条件に無断追加しない。樹冠セグメンテーション・リポジトリの独立進行／QA承認は同リポジトリが所有し、OUEMへは明示された入力／出力／権利／評価済み性能のhandoffに限る。
+
+### 5.1 2026-11-19の限定技術到達点（情報更新、M1全体の受入ではない）
+
+- [#195](https://github.com/iwamoto31206803-max/open-urban-environment-model/issues/195)で保存済みPR #99の独立コピーの同一性を確認し、[#196 / PR #197](https://github.com/iwamoto31206803-max/open-urban-environment-model/pull/197)でMetaモデル上の樹冠存在／不存在／判定不能を旧Height Envelope格子から実エンジン中心へ結ぶ合成試験を完了した。
+- [#198 / PR #199](https://github.com/iwamoto31206803-max/open-urban-environment-model/issues/198)で保存済みTREEと元CHMの存在判定を狛江市の同一格子上で比較した。続く[#200 / PR #201](https://github.com/iwamoto31206803-max/open-urban-environment-model/pull/201)では、完全有効なMeta樹冠情報を既存VoxCityのTREE生成へ接続する最小関数を合成試験した。
+- [#202 / PR #203](https://github.com/iwamoto31206803-max/open-urban-environment-model/issues/202)で、新しい経路からTREEを実際に生成し、保存済みPR #99の**Current・No-Canopy・TREEマスクの各128×128×27全ボクセルに対して差分0（MATCH）**を報告・独立レビューした。旧モデルの全域TREEは**11,175列・95,735ボクセル**、64×64評価ROIでは**3,742列・34,632ボクセル**であり、新しい経路と一致した。実行の独立レビューはGitHub報告とコード照合であり、非公開ローカルJSONの再計算を含まない。
+
+**四軸の判定を分離する。** 固定された狛江市Metaプロファイル／保存エンジン／完全有効領域における3D構築の**限定技術的再現性はPASS**。科学的な樹冠実在性・形状精度・光学妥当性は**NOT_VERIFIED**。Native/Standard Canopyの正式契約・データ受入は**DRAFT／未承認**。新しい入力や広域配布の権利・利用適格性は、この実験の成功から**推認しない**。Concept v0.3の全条件やRoadmap M1全体の出口を、今回のMATCHだけで充足したとは扱わない。
+
+[#178](https://github.com/iwamoto31206803-max/open-urban-environment-model/issues/178)・[#179](https://github.com/iwamoto31206803-max/open-urban-environment-model/issues/179)・[#183](https://github.com/iwamoto31206803-max/open-urban-environment-model/issues/183)・[#184](https://github.com/iwamoto31206803-max/open-urban-environment-model/issues/184)等の設計／ソース／任意幾何に関するOpen事項は保持する。ただし、**この整理時点では次の開発優先順位を決定しない**。旧実験・Acceptance・コード・データを変更せず、記録と現在地だけを明確化する。
 
 ## 6. 意思決定と運用ルール
 
