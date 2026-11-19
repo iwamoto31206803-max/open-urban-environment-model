@@ -146,8 +146,8 @@ VoxCityGML 0.3.0（`19628c033b1cbbbdee80fe781f516672765d1eee`）は統合・形�
 
 ### 7.1 v0.1からの継承と改定範囲
 
-- [B1のv0.1第6章](OUEM_Concept_Architecture_v0.1.md#6-b1-----solar--shade-assessment)から評価目的、Current／No-Canopyの比較、評価期間・気象の明示、タイル・余白・切り出し・GIS成果の原則を継承する。本案の§7が基本計算と指標の選定を規定し、旧§6.4のTier 1一式（日陰形成時間を含む）をM2の必須出力とする規定を置き換える。各出力の役割は選んだOSS指標と用途に応じて定義する。
-- [B2のv0.1第7章](OUEM_Concept_Architecture_v0.1.md#7-b2-----green-view-assessment)から、歩行者視点での樹冠評価の目的、水平範囲と上下視野・レイ設定の明示、写真式緑視率との関係を記録する原則を継承する。本案の§7が旧§7.1–7.5の正式名称・対象クラス・二値算定・360°の固定要件・指標別Tierの一律指定を置き換える。写真・現地観測との対応の科学的評価はM3で扱う。
+- [B1のv0.1第6章](OUEM_Concept_Architecture_v0.1.md#6-b1-----solar--shade-assessment)から評価目的、Current／No-Canopyの比較、評価期間・気象の明示、タイル・余白・切り出し・GIS成果の原則を継承する。本書の§7が基本計算と指標の選定を規定し、旧§6.4のTier 1一式（日陰形成時間を含む）をM2の必須出力とする規定を置き換える。各出力の役割は選んだOSS指標と用途に応じて定義する。
+- [B2のv0.1第7章](OUEM_Concept_Architecture_v0.1.md#7-b2-----green-view-assessment)から、歩行者視点での樹冠評価の目的、水平範囲と上下視野・レイ設定の明示、写真式緑視率との関係を記録する原則を継承する。本書の§7が旧§7.1–7.5の正式名称・対象クラス・二値算定・360°の固定要件・指標別Tierの一律指定を置き換える。写真・現地観測との対応の科学的評価はM3で扱う。
 - [v0.1第9章](OUEM_Concept_Architecture_v0.1.md#9-認識済みの主要engineering--validation-issues)の気象・時間帯、観測高さ、透過パラメータ等の検証課題を継承する。既存記録と未決事項は[B1 backlog](planning/OUEM_B1_Deferred_Validation_Backlog.md)と[B2 backlog](planning/OUEM_B2_Deferred_Validation_Backlog.md)を参照する。
 
 ## 8. 未決・要検証（決定事項ではない）
