@@ -68,6 +68,55 @@ def test_absolute_h_building_priority_and_unchanged_pair(case):
         assert qa['below_effective_ground_excluded_columns']==int(case=='below')
 
 
+def test_common_canopy_places_tree_and_preserves_legacy_scene(monkeypatch):
+    from voxcity.generator.voxelizer import NUMBA_AVAILABLE
+    from ouem.canopy_height_candidate import effective_hag, meta_presence_fields
+    from ouem.height_envelope import Samples
+
+    base, ground, segments, sampled = authored()
+    hag = np.zeros(base.shape[:2])
+    hag[0, 0] = hag[4, 4] = 2.
+    present = hag > 0
+    blank = np.zeros_like(present)
+    samples = Samples(hag, blank, blank, {})
+    fields = meta_presence_fields(samples, effective_hag(samples))
+    top = 10. + hag
+    bottom = np.where(present, 11., 10.)
+    valid = sampled["valid"]
+    expected = m.integrate_canopy(base, ground, segments,
+                                 dict(top=top, bottom=bottom, valid=valid, candidate=present),
+                                 10., numba=NUMBA_AVAILABLE)
+    options = dict(profile="meta_estimated_canopy_hag", provenance="synthetic fixture",
+                   numba=NUMBA_AVAILABLE)
+    current, control, tree, high, low, qa = m.integrate_common_canopy(
+        base, ground, segments, fields, top, bottom, valid, 10., **options)
+    for actual, legacy in zip((current, control, tree, high, low), expected[:5]):
+        np.testing.assert_array_equal(actual, legacy)
+    np.testing.assert_array_equal(control, base)
+    assert tree[0, 0, 2] and tree.sum() == 1
+    assert fields["present"][4, 4] and not tree[4, 4].any() and base[4, 4, 2] == -3
+    assert fields["absent"][0, 1] and not tree[0, 1].any()
+    assert qa["building_priority_removed_tree_voxels"] == 1
+
+    def unexpected_engine(*args, **kwargs):
+        pytest.fail("incompatible common input reached placement")
+
+    monkeypatch.setattr(m, "integrate_canopy", unexpected_engine)
+    unknown = fields["unknown"].copy()
+    unknown[0, 0] = True
+    invalid = valid.copy()
+    invalid[0, 0] = False
+    for mask, heights_valid in ((dict(fields, unknown=unknown), valid), (fields, invalid)):
+        with pytest.raises(GeometryValidationError, match="complete assessed domain"):
+            m.integrate_common_canopy(
+                base, ground, segments, mask, top, bottom, heights_valid, 10., **options)
+    inconsistent_top = top.copy()
+    inconsistent_top[0, 1] = 12.
+    with pytest.raises(GeometryValidationError, match="conflicts with modelled absence"):
+        m.integrate_common_canopy(
+            base, ground, segments, fields, inconsistent_top, bottom, valid, 10., **options)
+
+
 def test_real_solar_common_observers_sign_and_crop_diagnostic():
     from voxcity.generator.voxelizer import NUMBA_AVAILABLE
     base,a,segments,sampled=authored()
