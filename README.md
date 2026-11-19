@@ -12,6 +12,25 @@ The [Integrated Roadmap M0–M5 (review draft)](docs/planning/OUEM_Integrated_Ro
 sets proposed outcome milestones, completion boundaries and current priorities.
 It does not alter the Concept, Standards, or evidence/Acceptance status.
 
+## Roadmap M1 technical checkpoint — 2026-11-19
+
+The bounded **Meta CHMv2 → modelled canopy presence / absolute-Z envelope →
+existing VoxCity TREE** route has a same-scene real-data technical MATCH. With
+the saved Komae PR #99 Building/Terrain/Canopy inputs and engine, the newly
+generated Current, No-Canopy and TREE-mask arrays matched the preserved
+128×128×27 reference voxel-for-voxel (**0 mismatches**, including the saved
+64×64 ROI). The reference TREE contains 11,175 columns / 95,735 voxels in
+the whole scene and 3,742 columns / 34,632 voxels in the ROI.
+
+Start with the [Canopy Current State](docs/status/CANOPY_CURRENT_STATE.md) for the
+bounded #195–#203 evidence chain, [Issue #202's execution review](https://github.com/iwamoto31206803-max/open-urban-environment-model/issues/202#issuecomment-7009576894)
+for reported local execution conditions, and
+[`komae_saved_tree_comparison`](src/ouem/komae_saved_tree_comparison.py)
+for the diagnostic owner. This is **technical reproducibility for one
+complete-validity Meta scene**, not field validation, multi-source generality,
+a ratified Canopy Standard, or an overall Roadmap M1 completion declaration.
+There is no newly approved next development task at this checkpoint.
+
 ## Project tracks (2026-11-06 status baseline; 2026-11-10 P1 addendum)
 
 The bounded **Komae B1/B2 technical E2E** is already implemented and recorded;
@@ -31,7 +50,7 @@ is historical planning, not the current execution status. Subsequent
 and STEP 2-C2/C3/C4 reused existing VoxCity and B1/B2 calculation kernels.
 The candidate remains experimental and does not expand Accepted v0.1.
 
-## Current milestone
+## Earlier bounded environmental-assessment milestones
 
 **B1 Technical E2E Milestone reached for the bounded Komae A/B experiments.**
 Prepared Building, Terrain and estimated Canopy reach configuration-driven
@@ -124,7 +143,7 @@ scope; this guide adds no Acceptance or validation criteria.
 | Information owner | Start here / responsibility |
 |---|---|
 | Architecture / Standards | [Concept and Architecture v0.3](docs/OUEM_Concept_Architecture_v0.3.md), [runtime architecture](docs/architecture.md) and the Standards below own design and contracts, subject to their stated status. [Development Principles](docs/OUEM_Development_Principles_v0.1.md) own development decisions. |
-| Status / Closeout | [B1 Technical Closeout](docs/status/B1_TECHNICAL_MILESTONE_CLOSEOUT.md) and [B2 Technical Closeout](docs/status/B2_TECHNICAL_MILESTONE_CLOSEOUT.md) summarize milestone scope and link its evidence. Technical completion does not establish scientific validity. |
+| Status / Closeout | [Canopy Current State](docs/status/CANOPY_CURRENT_STATE.md) now owns the latest bounded Roadmap M1 evidence; [B1 Technical Closeout](docs/status/B1_TECHNICAL_MILESTONE_CLOSEOUT.md) and [B2 Technical Closeout](docs/status/B2_TECHNICAL_MILESTONE_CLOSEOUT.md) preserve earlier environmental-assessment milestones. Technical completion does not establish scientific validity. |
 | Backlog | [B1 deferred validation](docs/planning/OUEM_B1_Deferred_Validation_Backlog.md) and [B2 deferred validation](docs/planning/OUEM_B2_Deferred_Validation_Backlog.md) own unresolved verification questions; these remain open within their recorded scope. |
 | Experiments / RESULTS | [B1 Solar usage and evidence](docs/experiments/real_komae_solar/README.md), [B1 original results](docs/experiments/real_komae_solar/RESULTS.md), [B2 usage](docs/experiments/b2_gvi/README.md) / [results](docs/experiments/b2_gvi/RESULTS.md), and [Candidate B STEP 2 experiments](docs/experiments/real_komae_source_h/README.md) own execution conditions, numbers and provenance. Use the workflow table above and [Windows runbook](scripts/work/README.md) for operational entry points. |
 | Planning | [Repository Inventory](docs/planning/OUEM_Repository_Inventory_v0.1.md) and [Cleanup Plan](docs/planning/OUEM_Repository_Cleanup_Plan_v0.1.md) record the reviewed baseline and proposed work. [GIS Output Visualization Audit](docs/planning/OUEM_GIS_Output_Visualization_Audit_v0.1.md) is a dated design proposal; implemented GIS procedures and evidence are in the Solar guide. |
@@ -204,7 +223,9 @@ show dependencies and the linked tests provide the corresponding regression chec
 |---|---|---|
 | JSON validation, extents, saved configuration and stage handoff | [e2e_config](src/ouem/e2e_config.py) | [Configuration](tests/test_e2e_config.py) |
 | Building/Terrain validation, actual grid, base voxels and GIS export | [real_komae_voxel](src/ouem/real_komae_voxel.py) | [Voxel](tests/test_real_komae_voxel.py) |
-| Envelope sampling, shared Z, TREE integration, paired solar and GIS export | [real_komae_solar](src/ouem/real_komae_solar.py) | [Solar](tests/test_real_komae_solar.py), [shared vertical domain](tests/test_shared_vertical_domain.py) |
+| Envelope sampling, shared Z, TREE integration, paired solar and GIS export (including complete-validity common Meta input) | [real_komae_solar](src/ouem/real_komae_solar.py) | [Solar / common consumer](tests/test_real_komae_solar.py), [shared vertical domain](tests/test_shared_vertical_domain.py) |
+| Meta modelled presence and fields mapped via the Envelope grid | [canopy_height_candidate](src/ouem/canopy_height_candidate.py) | [Meta presence](tests/test_meta_modelled_presence.py) |
+| Frozen Komae presence/saved-TREE diagnostic and new-TREE full-array comparison | [komae_saved_tree_comparison](src/ouem/komae_saved_tree_comparison.py) | [Saved comparison](tests/test_komae_saved_tree_comparison.py), [full-array synthetic fixture](tests/test_real_komae_solar.py) |
 | Read-only saved-run verification, QML styles and presentation manifest | [gis_visualization](src/ouem/gis_visualization.py) | [Visualization](tests/test_gis_visualization.py) |
 | GIS-runtime alpha-safe styling and exact source-cell lookup | [gis_display](src/ouem/gis_display.py) | [Display helper](tests/test_gis_display.py) |
 | GIS-runtime QGZ creation and separate-process reopen check | [gis_project](src/ouem/gis_project.py) | [Project](tests/test_gis_project.py) |
