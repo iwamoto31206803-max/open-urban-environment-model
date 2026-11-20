@@ -9,8 +9,8 @@
   contracts, Acceptance, major dependencies or significant architecture. Existing
   task authorization counts; clarify consequential decisions not yet authorized.
 - Read relevant owners on demand before changing behavior, not the whole archive:
-  - [Concept v0.3](docs/OUEM_Concept_Architecture_v0.3.md): formally registered upper conceptual design.
-    [v0.2](docs/OUEM_Concept_Architecture_v0.2.md) is historical; [v0.1](docs/OUEM_Concept_Architecture_v0.1.md) retains inherited B1/B2 details.
+  - [Concept v0.4](docs/OUEM_Concept_Architecture_v0.4.md): formally registered upper conceptual design.
+    [v0.3](docs/OUEM_Concept_Architecture_v0.3.md) and [v0.2](docs/OUEM_Concept_Architecture_v0.2.md) are historical; [v0.1](docs/OUEM_Concept_Architecture_v0.1.md) retains Phase B details only as inherited/modified by v0.4 §7.1.
   - [Phase A design](docs/Phase_A_Implementation_Design_v0.1.md): lifecycle and
     boundaries; read its current-status note before using historical status claims.
   - [Building](docs/OUEM_Standard_Building_v0.1.md),
