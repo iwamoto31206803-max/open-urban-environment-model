@@ -1,6 +1,6 @@
 #Requires -Version 7.0
 [CmdletBinding()]
-param([switch]$Execute)
+param([switch]$Execute, [string]$DataRepo)
 
 function Invoke-CheckedGit {
     param([Parameter(ValueFromRemainingArguments)] [string[]]$Arguments)
@@ -114,18 +114,21 @@ raise SystemExit(envelope.main())
     Write-Host "Provisional completion: $manifest"
 }
 
-function Assert-OperatorSession {
+function Test-OperatorElevated {
     $identity = [Security.Principal.WindowsIdentity]::GetCurrent()
     try {
-        if (([Security.Principal.WindowsPrincipal]::new($identity)).IsInRole(
-            [Security.Principal.WindowsBuiltInRole]::Administrator) -or
-            $env:COMPUTERNAME -ne 'GEEKOM-A6' -or $env:CODEX_SESSION_ID) {
-            throw 'Execute is for ordinary non-admin PowerShell on GEEKOM-A6'
-        }
+        ([Security.Principal.WindowsPrincipal]::new($identity)).IsInRole(
+            [Security.Principal.WindowsBuiltInRole]::Administrator)
     } finally { $identity.Dispose() }
 }
 
-function Invoke-KunitachiEnvelope($Repo, $Runner, [switch]$Execute) {
+function Assert-OperatorSession {
+    if ((Test-OperatorElevated) -or $env:COMPUTERNAME -ne 'GEEKOM-A6' -or $env:CODEX_SESSION_ID) {
+        throw 'Execute is for ordinary non-admin PowerShell on GEEKOM-A6'
+    }
+}
+
+function Invoke-KunitachiEnvelope($Repo, $Runner, [switch]$Execute, [string]$DataRepo) {
     if (-not $IsWindows) { throw 'PowerShell 7 on Windows is required' }
     if ($Execute) { Assert-OperatorSession }
     if ((Invoke-CheckedGit -C $Repo remote get-url origin) -ne
@@ -134,13 +137,14 @@ function Invoke-KunitachiEnvelope($Repo, $Runner, [switch]$Execute) {
     }
     $pin = 'dc477ad6c6bb3d99e2b039fc319fa3b2f438cf43'
     $blob = '40bc462e1b944e9fbd02f6e456e907905551ffee'
-    $work = (Resolve-Path -LiteralPath (Join-Path $Repo 'data/work')).Path
+    if (-not $DataRepo) { $DataRepo = $Repo }
+    $work = (Resolve-Path -LiteralPath (Join-Path $DataRepo 'data/work')).Path
     $suffix = [guid]::NewGuid().ToString('N')
     $code = Join-Path $work "kunitachi-envelope-code-$suffix"
     $output = Join-Path $work "kunitachi-height-envelope-64m-$suffix"
     Assert-FreshOutput $code
     Assert-FreshOutput $output
-    $python = Join-Path $Repo '.venv/Scripts/python.exe'
+    $python = Join-Path $DataRepo '.venv/Scripts/python.exe'
     Assert-PinnedFile $python '21bb438c0d4a6f1f164b9a646f6ee000340185e5871180aec06db8d3f07c0082'
     Invoke-CheckedGit -C $Repo fetch --no-tags origin 'refs/heads/main:refs/remotes/origin/main'
     Assert-RunnerProvenance $Repo $Runner $pin -Execute:$Execute
@@ -193,5 +197,5 @@ if ($MyInvocation.InvocationName -ne '.') {
     # Handle native failures explicitly, including on hosts with this preference enabled.
     $PSNativeCommandUseErrorActionPreference = $false
     $repo = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
-    Invoke-KunitachiEnvelope $repo $PSCommandPath -Execute:$Execute
+    Invoke-KunitachiEnvelope $repo $PSCommandPath -Execute:$Execute -DataRepo $DataRepo
 }
