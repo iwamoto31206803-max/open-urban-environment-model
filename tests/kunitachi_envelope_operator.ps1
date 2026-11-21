@@ -41,6 +41,74 @@ try {
     Invoke-CheckedGit -C $fixtureRepo -c core.autocrlf=true worktree add --detach $crlfTree HEAD
     Assert-Throws { Assert-PinnedFile (Join-Path $crlfTree 'snapshot.txt') $hash } 'SHA-256 mismatch'
 
+    # Model a computational pin followed by the runner merge on main. Exercise
+    # the real provenance checks from a separate CRLF checkout of that main.
+    $pin = Invoke-CheckedGit -C $fixtureRepo rev-parse HEAD
+    $runnerRelative = 'scripts/operations/run_kunitachi_envelope.ps1'
+    $fixtureRunner = Join-Path $fixtureRepo $runnerRelative
+    [void][IO.Directory]::CreateDirectory((Split-Path -Parent $fixtureRunner))
+    Copy-Item -LiteralPath $RunnerPath -Destination $fixtureRunner
+    Invoke-CheckedGit -C $fixtureRepo config core.autocrlf true
+    Invoke-CheckedGit -C $fixtureRepo add -- $runnerRelative
+    Invoke-CheckedGit -C $fixtureRepo -c user.name=Fixture -c user.email=fixture@example.invalid `
+        -c core.hooksPath=NUL -c commit.gpgsign=false commit -qm 'Merge runner into main fixture'
+    $merged = Invoke-CheckedGit -C $fixtureRepo rev-parse HEAD
+    if ($merged -eq $pin) { throw 'Runner commit must follow the computational pin' }
+
+    $operatorTree = Join-Path $root 'operator checkout'
+    Invoke-CheckedGit -C $fixtureRepo worktree add --detach $operatorTree $merged
+    $operator = Join-Path $operatorTree $runnerRelative
+    if ([IO.File]::ReadAllText($operator) -notmatch "`r`n") { throw 'Runner was not checked out with CRLF' }
+    if ((Invoke-CheckedGit -C $operatorTree hash-object --no-filters -- $operator) -eq
+        (Invoke-CheckedGit -C $operatorTree rev-parse "HEAD:${runnerRelative}")) {
+        throw 'Fixture failed to exercise Git newline normalization'
+    }
+    . $operator
+    Assert-Throws { Assert-RunnerProvenance $operatorTree $operator $pin -Execute } 'merge-base'
+    Invoke-CheckedGit -C $fixtureRepo update-ref refs/remotes/origin/main $merged
+    Assert-RunnerProvenance $operatorTree $operator $pin -Execute
+    # Start the actual script from the merged checkout and route it to a
+    # separate data checkout. The absent fixture Python stops it before fetch.
+    Invoke-CheckedGit -C $fixtureRepo remote add origin 'https://github.com/iwamoto31206803-max/open-urban-environment-model.git'
+    $dataCheckout = Join-Path $root 'retained data checkout'
+    [void][IO.Directory]::CreateDirectory((Join-Path $dataCheckout 'data/work'))
+    $missingPython = Join-Path $dataCheckout '.venv/Scripts/python.exe'
+    Assert-Throws { & $operator -DataRepo $dataCheckout } $missingPython
+    Assert-Throws { Assert-RunnerProvenance $fixtureTree $operator $pin -Execute } 'rev-parse HEAD:'
+    Invoke-CheckedGit -C $fixtureRepo update-ref refs/remotes/origin/main $pin
+    Assert-Throws { Assert-RunnerProvenance $operatorTree $operator $pin -Execute } 'rev-parse origin/main:'
+
+    Add-Content -LiteralPath $fixtureRunner -Value '# new runner on main'
+    Invoke-CheckedGit -C $fixtureRepo add -- $runnerRelative
+    Invoke-CheckedGit -C $fixtureRepo -c user.name=Fixture -c user.email=fixture@example.invalid `
+        -c core.hooksPath=NUL -c commit.gpgsign=false commit -qm 'Replace runner on main fixture'
+    Invoke-CheckedGit -C $fixtureRepo update-ref refs/remotes/origin/main HEAD
+    Assert-Throws { Assert-RunnerProvenance $operatorTree $operator $pin -Execute } 'reviewed version on origin/main'
+    Add-Content -LiteralPath $operator -Value '# uncommitted runner edit'
+    Assert-Throws { Assert-RunnerProvenance $operatorTree $operator $pin -Execute } 'differs from its committed version'
+
+    # Run the real guard with only the Windows elevation fact stubbed for
+    # deterministic pass/fail cases. Verify the actual principal lookup too.
+    $oldComputer = $env:COMPUTERNAME
+    $oldSession = $env:CODEX_SESSION_ID
+    try {
+        $env:COMPUTERNAME = 'WRONG-HOST'
+        Assert-Throws { Assert-OperatorSession } 'ordinary non-admin PowerShell'
+        function Test-OperatorElevated { $script:elevated }
+        $script:elevated = $false
+        Assert-Throws { Assert-OperatorSession } 'ordinary non-admin PowerShell'
+        $env:COMPUTERNAME = 'GEEKOM-A6'
+        $env:CODEX_SESSION_ID = 'synthetic-session'
+        Assert-Throws { Assert-OperatorSession } 'ordinary non-admin PowerShell'
+        Remove-Item Env:CODEX_SESSION_ID
+        Assert-OperatorSession
+        $script:elevated = $true
+        Assert-Throws { Assert-OperatorSession } 'ordinary non-admin PowerShell'
+    } finally {
+        $env:COMPUTERNAME = $oldComputer
+        $env:CODEX_SESSION_ID = $oldSession
+    }
+
     # The real launcher receives a stub instead of Python. It must never retry or touch the target.
     function FakePython {
         $script:stubCalls++
