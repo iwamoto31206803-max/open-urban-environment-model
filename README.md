@@ -8,9 +8,10 @@ Phase A covers model construction; Phase B covers solar/shade and green view.
 The [concept and architecture v0.4](docs/OUEM_Concept_Architecture_v0.4.md) defines
 these phases and their variants.
 
-The [Integrated Roadmap M0–M5 (review draft)](docs/planning/OUEM_Integrated_Roadmap_v0.1.md)
-sets proposed outcome milestones, completion boundaries and current priorities.
-It does not alter the Concept, Standards, or evidence/Acceptance status.
+The [Integrated Roadmap v0.2 (review draft)](docs/planning/OUEM_Integrated_Roadmap_v0.2.md)
+sets the current development direction, staged milestones and evidence-limited completion boundaries.
+The earlier [v0.1 proposal](docs/planning/OUEM_Integrated_Roadmap_v0.1.md) remains historical.
+Roadmap priorities do not alter the Concept, Standards, or evidence/Acceptance status.
 
 ## Roadmap M1 technical checkpoint — 2026-11-19
 
