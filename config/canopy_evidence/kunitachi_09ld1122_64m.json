@@ -1,0 +1,23 @@
+{
+  "schema": "ouem-height-envelope-evidence/v0.1",
+  "chm_sha256": "2355b33f4d14a728620ac7b9543c44cf85f0c7039c4efb6c426a61207d66982a",
+  "acquisition_record_sha256": "ddea23791505db046e42ef016d2759de308563e7ab7a15027b24f36f1dc9b4de",
+  "height_semantics": "height_above_ground_m",
+  "height_reference": "local_ground",
+  "dem_quantity": "absolute_elevation_m",
+  "evidence": {
+    "source": "Meta and WRI CHMv2 exploration notebook; saved 2026-10-30, notebook SHA-256 ab633e66ce8da1b4f48fea0203703a4e2a5d56d28ed4129a710f5fb1222afffd",
+    "citation": "https://github.com/facebookresearch/dinov3/blob/main/notebooks/chmv2_dataset_exploration.ipynb",
+    "statement": "Each geotiff contains a single data band, which represents the top of canopy height above the ground in meters.",
+    "snapshot_path": "kunitachi_meta_chmv2_hag_excerpt.txt",
+    "snapshot_sha256": "e12f14a85773924a6a1d1e0cf78abec037b20e8d27b2752e529b6cace515b828"
+  },
+  "compatibility_review": {
+    "reviewer": "OUEM project owner (GitHub iwamoto31206803-max), bounded scenario decision B",
+    "reviewed_at": "2026-11-21",
+    "basis": "https://github.com/iwamoto31206803-max/open-urban-environment-model/issues/215#issuecomment-7056776092 (decision B) and https://github.com/iwamoto31206803-max/open-urban-environment-model/issues/215#issuecomment-7056560367 (evidence memo). Estimated local-ground HAG is added to provider-declared T.P. bare-earth DEM without offset, solely for the 64 m, building-free pipeline/placement/QA/reproducibility trial, nearest at 1 m, CR=0.60. Ground agreement, epochs, vertical realization, canopy absolute accuracy and scientific validity are NOT_VERIFIED.",
+    "vertical_combination": "relative_height_plus_dem_no_offset",
+    "dem_vertical_reference": "T.P. (Tokyo Peil / Tokyo Bay mean sea level)",
+    "dem_sha256": "e361663312a7d2c72308ba6a97bbf67411b7d0fffdefa871301684821147c124"
+  }
+}
