@@ -1,0 +1,17 @@
+study_area:
+  id: kunitachi_09ld1122_canopy_64m
+  name: Kunitachi 09LD1122 Canopy 64m Technical PoC
+  phase: M1_Stage_2
+
+crs:
+  epsg: 6677
+
+extent:
+  xmin: -35032
+  ymin: -33782
+  xmax: -34968
+  ymax: -33718
+
+size:
+  width_m: 64
+  height_m: 64
