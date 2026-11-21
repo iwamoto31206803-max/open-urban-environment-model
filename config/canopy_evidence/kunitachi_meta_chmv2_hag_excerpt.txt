@@ -1,0 +1,1 @@
+Each geotiff contains a single data band, which represents the top of canopy height above the ground in meters.
